@@ -1,6 +1,5 @@
 
 //= require tdmsinc-three.js
-//= require tiny-emitter
 //= require_tree ./qrates_visualizer
 //= require_self
 
@@ -10,7 +9,7 @@
    * Module dependencies.
    */
 
-  var mixin = exports.mixin;
+  var Emitter = exports.Emitter;
 
   /**
    * Expose `VinylVisualizer`.
@@ -25,16 +24,15 @@
    */
 
   function VinylVisualizer(el) {
-    TinyEmitter.call(this);
     this.el = el;
     this.setup();
   }
 
   /**
-   * Mixin `TinyEmitter`.
+   * Mixin `Emitter`.
    */
 
-  mixin(VinylVisualizer.prototype, TinyEmitter.prototype);
+  Emitter(VinylVisualizer.prototype);
 
   /**
    * Setup visualizer.
