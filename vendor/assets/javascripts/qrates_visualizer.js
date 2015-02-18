@@ -7,16 +7,10 @@
 (function(global, exports) {
 
   /**
-   * @param {Object} proto
-   * @param {Object} superProto
-   * @api private
+   * Module dependencies.
    */
 
-  function mixin(proto, superProto) {
-    for (var key in superProto) {
-      proto[key] = superProto[key];
-    }
-  }
+  var mixin = exports.mixin;
 
   /**
    * Expose `VinylVisualizer`.
