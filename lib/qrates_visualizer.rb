@@ -4,7 +4,9 @@ require "rails-assets-tiny-emitter"
 
 module QratesVisualizer
   module Rails
-    class Engine < ::Rails::Engine
+    if defined?(::Rails)
+      class Engine < ::Rails::Engine
+      end
     end
   end
 end
