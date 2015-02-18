@@ -86,4 +86,16 @@
     return this;
   };
 
+  /**
+   * @param {Number} width
+   * @param {Number} height
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.resize = function(width, height) {
+    // TODO: resize canvas.
+    return this;
+  };
+
 })(this, (this.qvv = (this.qvv || {})));

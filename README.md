@@ -38,6 +38,7 @@ Asset pipeline から読み込んで利用します。
 - VinylVisualizer(el:HTMLDivElement):VinylVisualizer
 - VinylVisualizer#view(type:Number, opts:Object, callback:Function):VinylVisualizer
 - VinylVisualizer#capture(opts:Object, callback:Function):VinylVisualizer
+- VinylVisualizer#resize(width:Number, height:Number):VinylVisualizer
 - VinylVisualizer.vinyl:Vinyl
 - VinylVisualizer.label:Label
 - VinylVisualizer.sleeve:Sleeve
