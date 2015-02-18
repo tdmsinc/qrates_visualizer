@@ -10,7 +10,7 @@
   /**
    * @param {Object} proto
    * @param {Object} superProto
-   * @api private
+   * @api public
    */
 
   function mixin(proto, superProto) {
