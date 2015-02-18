@@ -1,5 +1,8 @@
 require "qrates_visualizer/version"
 
 module QratesVisualizer
-  # Your code goes here...
+  module Rails
+    class Engine < ::Rails::Engine
+    end
+  end
 end
