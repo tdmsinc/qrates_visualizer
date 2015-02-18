@@ -4,4 +4,6 @@
  *= require_self
  */
 
-/* app.css */
+body {
+  margin: 0;
+}
