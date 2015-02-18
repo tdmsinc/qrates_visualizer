@@ -1,6 +1,7 @@
 
 //= require tdmsinc-three.js
 //= require_tree ./qrates_visualizer
+//= require_self
 
 (function(global, exports) {
 
