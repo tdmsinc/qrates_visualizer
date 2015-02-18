@@ -61,4 +61,29 @@
     });
   };
 
+  /**
+   * @param {Number} type
+   * @param {Object} opts
+   * @param {Function} callback
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.view = function(type, opts, callback) {
+    // TODO: change view
+    return this;
+  };
+
+  /**
+   * @param {Object} opts
+   * @param {Function} callback
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.capture = function(opts, callback) {
+    // TODO: capture image.
+    return this;
+  };
+
 })(this, (this.qvv = (this.qvv || {})));
