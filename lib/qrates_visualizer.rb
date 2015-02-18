@@ -1,5 +1,6 @@
 require "qrates_visualizer/version"
 require "rails-assets-tdmsinc-three.js"
+require "rails-assets-tiny-emitter"
 
 module QratesVisualizer
   module Rails

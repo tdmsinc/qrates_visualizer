@@ -1,5 +1,6 @@
 
 //= require tdmsinc-three.js
+//= require tiny-emitter
 //= require_tree ./qrates_visualizer
 //= require_self
 
