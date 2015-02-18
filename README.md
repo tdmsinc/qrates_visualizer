@@ -14,6 +14,15 @@ And then execute:
 
     $ bundle
 
+## Debugging
+
+単体動作確認用の Sinatra アプリケーションを起動して動作を確認できます。編集後の再起動は必要ありません。
+
+    $ bundle exec rackup
+    $ open http://localhost:9292/
+
+アップデートの目処が立ったところで、[QRATES 本体](https://github.com/tdmsinc/qrates) にて `bundle update qrates_visualizer` を実行し、変更を反映してください。
+
 ## API
 
 Asset pipeline から読み込んで利用します。
