@@ -10,6 +10,9 @@
    */
 
   var Emitter = exports.Emitter;
+  var Vinyl = exports.Vinyl;
+  var Label = exports.Label;
+  var Sleeve = exports.Sleeve;
 
   /**
    * Expose `VinylVisualizer`.
@@ -25,6 +28,9 @@
 
   function VinylVisualizer(el) {
     this.el = el;
+    this.vinyl = new Vinyl();
+    this.label = new Label();
+    this.sleeve = new Sleeve();
     this.setup();
   }
 
