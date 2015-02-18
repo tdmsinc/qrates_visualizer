@@ -16,6 +16,17 @@
   exports.Sleeve = Sleeve;
 
   /**
+   * Properties.
+   */
+
+  var properties = [
+    'type',
+    'hole',
+    'glossFinished',
+    'texture'
+  ];
+
+  /**
    * Constructor.
    *
    * @api public
@@ -30,5 +41,19 @@
    */
 
   Model(Sleeve.prototype);
+
+  /**
+   * Add accsesor methods.
+   */
+
+  properties.forEach(function(property) {
+    Sleeve.prototype[property] = function() {
+      var args = [].slice.call(arguments);
+      if (!arguments.length) {
+        return this.get.apply(this, [property].concat(args));
+      }
+      return this.set.apply(this, [property].concat(args));
+    };
+  });
 
 })(this, (this.qvv = (this.qvv || {})));
