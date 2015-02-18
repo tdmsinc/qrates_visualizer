@@ -1,31 +1,57 @@
 # QratesVisualizer
 
-TODO: Write a gem description
+The vinyl visualizer for QRATES.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'qrates_visualizer'
+gem 'qrates_visualizer', git: 'git@github.com:tdmsinc/qrates_visualizer.git'
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
+## API
 
-    $ gem install qrates_visualizer
+Asset pipeline から読み込んで利用します。
 
-## Usage
+```js
+//= require qrates_visualizer
+```
 
-TODO: Write usage instructions here
+名前空間 `qvv` 下に外部公開用のインタフェースを実装しています。
 
-## Contributing
+### VinylVisualizer
 
-1. Fork it ( https://github.com/[my-github-username]/qrates_visualizer/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+- VinylVisualizer(el:HTMLDivElement):VinylVisualizer
+- VinylVisualizer#view(type:Number, opts:Object, callback:Function):VinylVisualizer
+- VinylVisualizer#capture(opts:Object, callback:Function):VinylVisualizer
+- VinylVisualizer.vinyl:Vinyl
+- VinylVisualizer.label:Label
+- VinylVisualizer.sleeve:Sleeve
+
+### Vinyl
+
+- Vinyl#type([value:Number]):Vinyl
+- Vinyl#size([value:Number]):Vinyl
+- Vinyl#baseColor([value:Number]):Vinyl
+- Vinyl#transparentColor([value:Number]):Vinyl
+- Vinyl#holeSize([value:Number]):Vinyl
+- Vinyl#heavy([value:Boolean]):Vinyl
+- Vinyl#speed([value:Number]):Vinyl
+
+### Label
+
+- Label#type([value:Number]):Label
+- Label#sideATexture([value:Image]):Label
+- Label#sideBTexture([value:Image]):Label
+
+### Sleeve
+
+- Sleeve#type([value:Number]):Sleeve
+- Sleeve#hole([value:Number]):Sleeve
+- Sleeve#glossFinished([value:Boolean]):Sleeve
+- Sleeve#texture([value:Image]):Sleeve
