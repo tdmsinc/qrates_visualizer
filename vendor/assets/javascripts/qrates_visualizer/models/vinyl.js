@@ -23,7 +23,7 @@
     'type',
     'size',
     'color',
-    'splatter_color',
+    'splatterColor',
     'holeSize',
     'heavy',
     'speed'
