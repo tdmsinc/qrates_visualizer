@@ -47,8 +47,8 @@ Asset pipeline から読み込んで利用します。
 
 - Vinyl#type([value:Number]):Vinyl
 - Vinyl#size([value:Number]):Vinyl
-- Vinyl#baseColor([value:Number]):Vinyl
-- Vinyl#transparentColor([value:Number]):Vinyl
+- Vinyl#color([value:Number]):Vinyl
+- Vinyl#splatterColor([value:Number]):Vinyl
 - Vinyl#holeSize([value:Number]):Vinyl
 - Vinyl#heavy([value:Boolean]):Vinyl
 - Vinyl#speed([value:Number]):Vinyl

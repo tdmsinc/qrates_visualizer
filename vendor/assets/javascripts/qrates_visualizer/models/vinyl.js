@@ -22,8 +22,8 @@
   var properties = [
     'type',
     'size',
-    'baseColor',
-    'transparentColor',
+    'color',
+    'splatter_color',
     'holeSize',
     'heavy',
     'speed'
