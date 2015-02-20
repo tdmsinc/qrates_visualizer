@@ -35,37 +35,77 @@ Asset pipeline から読み込んで利用します。
 
 ### VinylVisualizer
 
-- VinylVisualizer(el:HTMLDivElement, opts:Object):VinylVisualizer
-- VinylVisualizer#view(type:Number, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
-- VinylVisualizer#capture(opts:Object, callback:Function.&lt;Error, Image&gt;):VinylVisualizer
-- VinylVisualizer#resize(width:Number, height:Number):VinylVisualizer
-- VinylVisualizer.vinyl:Vinyl
-- VinylVisualizer.label:Label
-- VinylVisualizer.sleeve:Sleeve
+#### VinylVisualizer(el:HTMLDivElement, opts:Object):VinylVisualizer
+
+VinylVisualizer のコンストラクタ。
+
+- `el:HTMLDivElement`: コンテナ要素。
+- `opts:Object`
+  - `opts.defaults.vinyl:Object`: Vinyl の初期値。
+  - `opts.defaults.label:Object`: Label の初期値。
+  - `opts.defaults.sleeve:Object`: Sleeve の初期値。
+
+#### VinylVisualizer#view(type:Number, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
+
+ビューのプリセットを切り替えます。
+
+- `type:Number`: プリセット番号。
+- `opts:Object`
+  - `opts.trasition:Number`: トランジションのミリ秒。
+- `callback:Function.<Error>`: トランジション完了後に実行されるコールバック。
+  - `Error`: エラーオブジェクト。エラー未発生時は `null` です。
+
+#### VinylVisualizer#capture(opts:Object, callback:Function.&lt;Error, Image&gt;):VinylVisualizer
+
+レンダリング結果をキャプチャします。`#view` と組み合わせて利用します。
+
+- `opts:Object`
+- `callback:Function<Error, Image>`: キャプチャ終了時に実行されるコールバック
+  - `Error`: エラーオブジェクト。エラー未発生時は `null` です。
+  - `Image`: キャプチャ結果。
+
+#### VinylVisualizer#resize(width:Number, height:Number):VinylVisualizer
+
+ビジュアライザのリサイズを行います。リサイズは `#capture` のキャプチャ結果にも影響があります。
+
+- `width:Number`: 横幅。
+- `height:Number`: 高さ。
+
+#### VinylVisualizer.vinyl:Vinyl
+
+Vinyl モデルのハンドラ。
+
+#### VinylVisualizer.label:Label
+
+Label モデルのハンドラ。
+
+#### VinylVisualizer.sleeve:Sleeve
+
+Sleeve モデルのハンドラ。
 
 ### Vinyl
 
-- Vinyl#type([value:Number]):Vinyl
-- Vinyl#size([value:Number]):Vinyl
-- Vinyl#color([value:Number]):Vinyl
-- Vinyl#splatterColor([value:Number]):Vinyl
-- Vinyl#holeSize([value:Number]):Vinyl
-- Vinyl#heavy([value:Boolean]):Vinyl
-- Vinyl#speed([value:Number]):Vinyl
-- Vinyl#sideATexture([value:Image]):Vinyl
-- Vinyl#sideBTexture([value:Image]):Vinyl
+#### Vinyl#type([value:Number]):Vinyl
+#### Vinyl#size([value:Number]):Vinyl
+#### Vinyl#color([value:Number]):Vinyl
+#### Vinyl#splatterColor([value:Number]):Vinyl
+#### Vinyl#holeSize([value:Number]):Vinyl
+#### Vinyl#heavy([value:Boolean]):Vinyl
+#### Vinyl#speed([value:Number]):Vinyl
+#### Vinyl#sideATexture([value:Image]):Vinyl
+#### Vinyl#sideBTexture([value:Image]):Vinyl
 
 ### Label
 
-- Label#type([value:Number]):Label
-- Label#sideATexture([value:Image]):Label
-- Label#sideBTexture([value:Image]):Label
+#### Label#type([value:Number]):Label
+#### Label#sideATexture([value:Image]):Label
+#### Label#sideBTexture([value:Image]):Label
 
 ### Sleeve
 
-- Sleeve#type([value:Number]):Sleeve
-- Sleeve#hole([value:Number]):Sleeve
-- Sleeve#glossFinished([value:Boolean]):Sleeve
-- Sleeve#frontTexture([value:Image]):Sleeve
-- Sleeve#backTexture([value:Image]):Sleeve
-- Sleeve#spineTexture([value:Image]):Sleeve
+#### Sleeve#type([value:Number]):Sleeve
+#### Sleeve#hole([value:Number]):Sleeve
+#### Sleeve#glossFinished([value:Boolean]):Sleeve
+#### Sleeve#frontTexture([value:Image]):Sleeve
+#### Sleeve#backTexture([value:Image]):Sleeve
+#### Sleeve#spineTexture([value:Image]):Sleeve
