@@ -71,6 +71,14 @@ VinylVisualizer のコンストラクタ。
 - `width:Number`: 横幅。
 - `height:Number`: 高さ。
 
+#### VinylVisualizer#play():VinylVisualizer
+
+Vinyl の回転を開始します。
+
+#### VinylVisualizer#pause():VinylVisualizer
+
+Vinyl の回転を停止します。
+
 #### VinylVisualizer.vinyl:Vinyl
 
 Vinyl モデルのハンドラ。

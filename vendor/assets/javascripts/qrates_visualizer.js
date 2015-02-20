@@ -100,4 +100,24 @@
     return this;
   };
 
+  /**
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.play = function() {
+    // TODO:
+    return this;
+  };
+
+  /**
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.pause = function() {
+    // TODO:
+    return this;
+  };
+
 })(this, (this.qvv = (this.qvv || {})));
