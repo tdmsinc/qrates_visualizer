@@ -1,5 +1,4 @@
 
-//= require tdmsinc-three.js
 //= require_tree ./qrates_visualizer
 //= require_self
 
@@ -10,6 +9,8 @@
    */
 
   var Emitter = exports.Emitter;
+  var World = exports.World;
+  var Loader = exports.Loader;
   var Vinyl = exports.Vinyl;
   var Label = exports.Label;
   var Sleeve = exports.Sleeve;
@@ -49,16 +50,19 @@
    */
 
   VinylVisualizer.prototype.setup = function() {
-    // TODO: preload assets.
-
-    // TODO: it's renderer for test.
-    var renderer = new THREE.WebGLRenderer({ antialiased: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.domElement.style.display = 'block';
-    this.el.appendChild(renderer.domElement);
-
     var self = this;
-    setTimeout(function() {
+    var el = this.el;
+    var loader = new Loader();
+
+    Object.keys(el.dataset).forEach(function(key) {
+      loader.add(key, el.dataset[key]);
+    }, this);
+
+    loader.load(function(err, assets) {
+      var world = self.world = new World(self, assets);
+      world.delegateEvents();
+      world.start();
+      el.appendChild(world.renderer.domElement);
       self.emit('ready');
     });
   };
