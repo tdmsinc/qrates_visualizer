@@ -37,8 +37,15 @@
 
   Model.prototype.set = function(key, value) {
     var settings = this.settings || (this.settings = {});
-    settings[key] = value;
-    return this.emit(key, value);
+    if (2 == arguments.length) {
+      settings[key] = value;
+      return this.emit(key, value);
+    }
+    for (var k in key) {
+      settings[k] = key[k];
+      this.emit(k, key[k]);
+    }
+    return this;
   };
 
   /**
