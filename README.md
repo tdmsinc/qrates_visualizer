@@ -35,7 +35,7 @@ Asset pipeline から読み込んで利用します。
 
 ### VinylVisualizer
 
-- VinylVisualizer(el:HTMLDivElement):VinylVisualizer
+- VinylVisualizer(el:HTMLDivElement, opts:Object):VinylVisualizer
 - VinylVisualizer#view(type:Number, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
 - VinylVisualizer#capture(opts:Object, callback:Function.&lt;Error, Image&gt;):VinylVisualizer
 - VinylVisualizer#resize(width:Number, height:Number):VinylVisualizer
