@@ -86,26 +86,136 @@ Sleeve モデルのハンドラ。
 ### Vinyl
 
 #### Vinyl#type([value:Number]):Vinyl
+
+タイプを指定します。引数を省略すると現在値を返します。
+
+- `value:Number`
+  - `1`: black
+  - `2`: color
+  - `3`: splatter
+
 #### Vinyl#size([value:Number]):Vinyl
+
+サイズを指定します。引数を省略すると現在値を返します。
+
+- `value:Number`
+  - `7`: 7″
+  - `10`: 10″
+  - `12`: 12″
+
 #### Vinyl#color([value:Number]):Vinyl
+
+カラーを設定します。引数を省略すると現在値を返します。
+
+- `value:Number`
+
 #### Vinyl#splatterColor([value:Number]):Vinyl
+
+スプラッター用の二色目を設定します。引数を省略すると現在値を返します。
+
+- `value:Number`
+
 #### Vinyl#holeSize([value:Number]):Vinyl
+
+ホールサイズを指定します。引数を省略すると現在値を返します。
+
+- `value:Number`
+  - `0`: small
+  - `1`: big
+
 #### Vinyl#heavy([value:Boolean]):Vinyl
+
+ヘビー vinyl を有効化・無効化します。引数を省略すると現在値を返します。
+
+- `value:Boolean`
+  - `true`: 有効
+  - `false`: 無効
+
 #### Vinyl#speed([value:Number]):Vinyl
+
+回転数を指定します。引数を省略すると現在値を返します。
+
+- `value:Number`
+  - `33`: 33rpm
+  - `45`: 45rpm
+
 #### Vinyl#sideATexture([value:Image]):Vinyl
+
+A 面用の盤面のテクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+
 #### Vinyl#sideBTexture([value:Image]):Vinyl
+
+B 面用の盤面のテクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
 
 ### Label
 
 #### Label#type([value:Number]):Label
+
+タイプを指定します。引数を省略すると現在値を返します。
+
+- `value:Number`
+  - `1`: white
+  - `2`: print - monochrome
+  - `3`: print - color
+
 #### Label#sideATexture([value:Image]):Label
+
+A 面用のレーベルのテクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+
 #### Label#sideBTexture([value:Image]):Label
+
+B 面用のレーベルのテクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
 
 ### Sleeve
 
 #### Sleeve#type([value:Number]):Sleeve
-#### Sleeve#hole([value:Number]):Sleeve
+
+タイプを指定します。引数を省略すると現在値を返します。
+
+- `value:Number`
+  - `1`: black
+  - `2`: white
+  - `3`: print
+  - `4`: print - 3mm spine
+
+#### Sleeve#hole([value:Boolean]):Sleeve
+
+ホールの有無を指定します。引数を省略すると現在値を返します。
+
+- `value:Boolean`
+  - `true`: ホールあり
+  - `false`: ホールなし
+
 #### Sleeve#glossFinished([value:Boolean]):Sleeve
+
+光沢仕上げの有無を指定します。引数を省略すると現在値を返します。
+
+- `value:Boolean`
+  - `true`: 光沢仕上げあり
+  - `false`: 光沢仕上げなし
+
 #### Sleeve#frontTexture([value:Image]):Sleeve
+
+前面のテクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+
 #### Sleeve#backTexture([value:Image]):Sleeve
+
+背面のテクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+
 #### Sleeve#spineTexture([value:Image]):Sleeve
+
+背表紙のテクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
