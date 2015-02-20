@@ -47,26 +47,26 @@ VinylVisualizer のコンストラクタ。
 
 #### VinylVisualizer#view(type:Number, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
 
-ビューのプリセットを切り替えます。
+ビューのプリセットを切り替えます。姿勢変更時に利用します。
 
 - `type:Number`: プリセット番号。
 - `opts:Object`
   - `opts.trasition:Number`: トランジションのミリ秒。
-- `callback:Function.<Error>`: トランジション完了後に実行されるコールバック。
+- `callback:Function.<Error>`: トランジション完了後に実行されるコールバック関数。
   - `Error`: エラーオブジェクト。エラー未発生時は `null` です。
 
 #### VinylVisualizer#capture(opts:Object, callback:Function.&lt;Error, Image&gt;):VinylVisualizer
 
-レンダリング結果をキャプチャします。`#view` と組み合わせて利用します。
+レンダリング結果をキャプチャします。通常 `#view` メソッドと組み合わせて利用します。
 
 - `opts:Object`
-- `callback:Function<Error, Image>`: キャプチャ終了時に実行されるコールバック
+- `callback:Function<Error, Image>`: キャプチャ終了時に実行されるコールバック関数。
   - `Error`: エラーオブジェクト。エラー未発生時は `null` です。
   - `Image`: キャプチャ結果。
 
 #### VinylVisualizer#resize(width:Number, height:Number):VinylVisualizer
 
-ビジュアライザのリサイズを行います。リサイズは `#capture` のキャプチャ結果にも影響があります。
+ビジュアライザのリサイズを行います。リサイズは `#capture` メソッドのキャプチャ結果にも影響があります。
 
 - `width:Number`: 横幅。
 - `height:Number`: 高さ。
