@@ -59,4 +59,14 @@
     return settings[key];
   };
 
+  /**
+   * @return {Object}
+   * @api public
+   */
+
+  Model.prototype.toObject =
+  Model.prototype.toJSON = function() {
+    return this.settings || (this.settings = {});
+  };
+
 })(this, (this.qvv = (this.qvv || {})));
