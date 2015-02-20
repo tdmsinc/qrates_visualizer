@@ -52,7 +52,7 @@ Asset pipeline から読み込んで利用します。
 - Vinyl#holeSize([value:Number]):Vinyl
 - Vinyl#heavy([value:Boolean]):Vinyl
 - Vinyl#speed([value:Number]):Vinyl
-- Vinyl#sideATexture([value:Image]):Vinyl
+- Vinyl#sideATexture([value:Image]):Vinyl
 - Vinyl#sideBTexture([value:Image]):Vinyl
 
 ### Label
