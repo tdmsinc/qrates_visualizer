@@ -2,11 +2,7 @@
 //= require qrates_visualizer
 //= require_self
 
-// initialize vinyl visualizer.
-var el = document.querySelector('.vinyl-visualizer-container');
-var vv = new qvv.VinylVisualizer(el);
-
-// initialize view model.
+// defaults
 var defaults = {
   visualizer: {
     width: window.innerWidth,
@@ -28,6 +24,18 @@ var defaults = {
     glossFinished: false
   }
 };
+
+// initialize vinyl visualizer.
+var el = document.querySelector('.vinyl-visualizer-container');
+var vv = new qvv.VinylVisualizer(el, {
+  defaults: {
+    vinyl: defaults.vinyl,
+    label: defaults.label,
+    sleeve: defaults.sleeve
+  }
+});
+
+// initialize view model.
 var vm = new Vue({ el: 'form', data: defaults });
 
 vm.$watch('visualizer.width', function(value) {
