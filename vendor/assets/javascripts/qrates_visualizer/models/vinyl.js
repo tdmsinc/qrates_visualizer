@@ -34,11 +34,13 @@
   /**
    * Constructor.
    *
+   * @param {Object} opts
    * @api public
    */
 
-  function Vinyl() {
-    // TODO:
+  function Vinyl(opts) {
+    opts = opts || {};
+    if (opts.defaults) this.set(opts.defaults);
   }
 
   /**

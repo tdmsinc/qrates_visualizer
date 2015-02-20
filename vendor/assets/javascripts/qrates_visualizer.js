@@ -26,11 +26,13 @@
    * @api public
    */
 
-  function VinylVisualizer(el) {
+  function VinylVisualizer(el, opts) {
+    opts = opts || {};
+    var defaults = opts.defaults || {};
     this.el = el;
-    this.vinyl = new Vinyl();
-    this.label = new Label();
-    this.sleeve = new Sleeve();
+    this.vinyl = new Vinyl({ defaults: defaults.vinyl });
+    this.label = new Label({ defaults: defaults.label });
+    this.sleeve = new Sleeve({ defaults: defaults.sleeve });
     this.setup();
   }
 

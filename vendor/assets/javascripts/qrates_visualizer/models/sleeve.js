@@ -31,11 +31,13 @@
   /**
    * Constructor.
    *
+   * @param {Object} opts
    * @api public
    */
 
-  function Sleeve() {
-    // TODO:
+  function Sleeve(opts) {
+    opts = opts || {};
+    if (opts.defaults) this.set(opts.defaults);
   }
 
   /**

@@ -28,11 +28,13 @@
   /**
    * Constructor.
    *
+   * @param {Object} opts
    * @api public
    */
 
-  function Label() {
-    // TODO:
+  function Label(opts) {
+    opts = opts || {};
+    if (opts.defaults) this.set(opts.defaults);
   }
 
   /**
