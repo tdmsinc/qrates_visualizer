@@ -58,8 +58,8 @@ form
     option value="33" 33rpm
     option value="45" 45rpm
 
-  p: label: input type="file" v-model="vinyl.front" placeholder="front" front
-  p: label: input type="file" v-model="vinyl.back" placeholder="back" back
+  p: label: input type="file" name="vinyl-a" A
+  p: label: input type="file" name="vinyl-b" B
 
   h1 Label options
 
@@ -69,8 +69,8 @@ form
     option value="2" 2. print - monochrome
     option value="3" 3. print - color
 
-  p: label: input type="file" v-model="label.a" placeholder="front" A
-  p: label: input type="file" v-model="label.b" placeholder="back" B
+  p: label: input type="file" name="label-a" A
+  p: label: input type="file" name="label-b" B
 
   h1 Sleeve options
 
@@ -85,6 +85,6 @@ form
 
   p: label: input type="checkbox" v-model="sleeve.glossFinished" gloss finished
 
-  p: label: input type="file" v-model="sleeve.front" placeholder="front" front
-  p: label: input type="file" v-model="sleeve.back" placeholder="back" back
-  p: label: input type="file" v-model="sleeve.spine" placeholder="spine" spine
+  p: label: input type="file" name="sleeve-front" front
+  p: label: input type="file" name="sleeve-back" back
+  p: label: input type="file" name="sleeve-spine" spine
