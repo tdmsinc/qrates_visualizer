@@ -52,6 +52,8 @@ Asset pipeline から読み込んで利用します。
 - Vinyl#holeSize([value:Number]):Vinyl
 - Vinyl#heavy([value:Boolean]):Vinyl
 - Vinyl#speed([value:Number]):Vinyl
+- Vinyl#sideATexture([value:Image]):Vinyl
+- Vinyl#sideBTexture([value:Image]):Vinyl
 
 ### Label
 
@@ -64,4 +66,6 @@ Asset pipeline から読み込んで利用します。
 - Sleeve#type([value:Number]):Sleeve
 - Sleeve#hole([value:Number]):Sleeve
 - Sleeve#glossFinished([value:Boolean]):Sleeve
-- Sleeve#texture([value:Image]):Sleeve
+- Sleeve#frontTexture([value:Image]):Sleeve
+- Sleeve#backTexture([value:Image]):Sleeve
+- Sleeve#spineTexture([value:Image]):Sleeve

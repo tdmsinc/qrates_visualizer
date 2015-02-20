@@ -23,7 +23,9 @@
     'type',
     'hole',
     'glossFinished',
-    'texture'
+    'frontTexture',
+    'backTexture',
+    'spineTexture'
   ];
 
   /**

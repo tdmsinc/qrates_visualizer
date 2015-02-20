@@ -26,7 +26,9 @@
     'splatterColor',
     'holeSize',
     'heavy',
-    'speed'
+    'speed',
+    'sideATexture',
+    'sideBTexture'
   ];
 
   /**
