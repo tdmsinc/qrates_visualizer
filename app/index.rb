@@ -2,6 +2,8 @@
 ENV['RACK_ENV'] ||= 'development'
 
 require 'bundler/setup'
+require 'sinatra/base'
+require 'sinatra/asset_pipeline'
 
 Bundler.require(:default, ENV['RACK_ENV'])
 
