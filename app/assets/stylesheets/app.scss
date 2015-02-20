@@ -1,0 +1,46 @@
+
+/**
+ *= require qrates_visualizer
+ *= require_self
+ */
+
+body {
+  margin: 0;
+  line-height: 1.4em;
+  font-family: 'Helvetica Neue';
+}
+
+form {
+  padding: 1em;
+  width: 18em;
+  position: fixed;
+  right: 1em;
+  top: 1em;
+  background-color: #fff;
+  height: 85%;
+  overflow-x: scroll;
+  opacity: .3;
+  transition: 300ms ease opacity;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  h1 {
+    font-weight: normal;
+    font-size: 1em;
+  }
+
+  p {
+    margin-left: 1em;
+  }
+
+  label {
+    font-size: .8em;
+  }
+
+  input[type=text],
+  input[type=number] {
+    width: 5em;
+  }
+}

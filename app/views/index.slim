@@ -3,3 +3,88 @@
   data-image=image_path('qrates_visualizer/checkerboard.png')
   data-texture=image_path('qrates_visualizer/checkerboard.png')
 )
+
+form
+
+  h1 Visualizer options
+  p
+    select number="" v-model="visualizer.view"
+      option disabled="" ▾ view
+      option value="1" 1
+      option value="2" 2
+      option value="3" 3
+      option value="4" 4
+      option value="5" 5
+      option value="6" 6
+      option value="7" 7
+      option value="8" 8
+    | &nbsp;
+    input type="number" number="" v-model="visualizer.transition" placeholder="transition"
+
+  p
+    input type="number" number="" v-model="visualizer.width" placeholder="width"
+    |  x&nbsp;
+    input type="number" number="" v-model="visualizer.height" placeholder="height"
+
+  h1 Vinyl options
+
+  p: select number="" v-model="vinyl.type"
+    option disabled="" ▾ type
+    option value="1" 1. black
+    option value="2" 2. color
+    option value="3" 3. splatter
+
+  p: select number="" v-model="vinyl.size"
+    option disabled="" ▾ size
+    option value="7" 7″
+    option value="10" 10″
+    option value="12" 12″
+
+  p: select number="" v-model="vinyl.color"
+    option disabled="" ▾ color
+
+  p: select number="" v-model="vinyl.splatterColor"
+    option disabled="" ▾ splatter color
+
+  p: select number="" v-model="vinyl.holeSize"
+    option disabled="" ▾ hole size
+    option value="0" 0. small
+    option value="1" 1. big
+
+  p: label: input type="checkbox" v-model="vinyl.heavy" heavy
+
+  p: select number="" v-model="vinyl.speed"
+    option disabled="" ▾ speed
+    option value="33" 33rpm
+    option value="45" 45rpm
+
+  p: label: input type="file" v-model="vinyl.front" placeholder="front" front
+  p: label: input type="file" v-model="vinyl.back" placeholder="back" back
+
+  h1 Label options
+
+  p: select number="" v-model="label.type"
+    option disabled="" ▾ type
+    option value="1" 1. white
+    option value="2" 2. print - monochrome
+    option value="3" 3. print - color
+
+  p: label: input type="file" v-model="label.a" placeholder="front" A
+  p: label: input type="file" v-model="label.b" placeholder="back" B
+
+  h1 Sleeve options
+
+  p: select number="" v-model="sleeve.type"
+    option disabled="" ▾ type
+    option value="1" 1. black
+    option value="2" 2. white
+    option value="3" 3. print
+    option value="4" 4. print - 3mm spine
+
+  p: label: input type="checkbox" v-model="sleeve.hole" hole
+
+  p: label: input type="checkbox" v-model="sleeve.glossFinished" gloss finished
+
+  p: label: input type="file" v-model="sleeve.front" placeholder="front" front
+  p: label: input type="file" v-model="sleeve.back" placeholder="back" back
+  p: label: input type="file" v-model="sleeve.spine" placeholder="spine" spine
