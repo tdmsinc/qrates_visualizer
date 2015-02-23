@@ -5,10 +5,7 @@
 //= require_self
 
 (function(global, exports) {
-
-  var clock = new THREE.Clock();
-  var delta = clock.getDelta(); // seconds.
-  var container, stats;
+  var container;
   var labelObj, vinylObj, sleeveObj;
   var sleeve;
   var labelTexture, vinylTexture, sleeveTexture, shadowTexture;
@@ -42,93 +39,88 @@
   function Sleeve() {
   }
 
-  Sleeve.prototype.setup = function(scene, opts) {
+  Sleeve.prototype.setup = function(scene, assets, opts) {
     opts = opts || {
-      size: $('#container').data('size')
+      size: 12
     };
 
     var self = this;
 
-    self.scene = scene;
-    self.body = null;
-    self.face = null;
-    self.back = null;
-    self.spine = null;
-    self.faceTexture = new THREE.Texture();
-    self.backTexture = new THREE.Texture();
-    self.spineTexture = new THREE.Texture();
+    this.scene = scene;
+    this.body = null;
+    this.face = assets['assetsModelSleeveFace-' + opts.size] || null;
+    this.back = assets['assetsModelSleeveBack-' + opts.size] || null;
+    this.spine = assets['assetsModelSleeveSpine-' + opts.size] || null;
 
-    self.position = {
-      x: 0,
-      y: 0,
-      z: 0,
-      set: function(x, y, z) {
-        self.position.x = x;
-        self.position.y = y;
-        self.position.z = z;
+    this.updateFaceTexture(assets['assetsTextureSleeveFace-' + opts.size] || null);
+    this.updateBackTexture(assets['assetsTextureSleeveBack-' + opts.size] || null);
+    this.updateSpineTexture(assets['assetsTextureSleeveSpine-' + opts.size] || null);
 
-        self.update();
-      }
-    };
+    this.initMaterial(this.face, this.faceTexture);
+    this.initMaterial(self.back, this.backTexture);
+    this.initMaterial(self.spine, this.spineTexture);
 
-    self.rotation = {
-      x: 0,
-      y: 0,
-      z: 0,
-      set: function(x, y, z) {
-        self.rotation.x = x;
-        self.rotation.y = y;
-        self.rotation.z = z;
+    this.position = new THREE.Vector3(0, 0, 0);
+    this.rotation = new THREE.Vector3(0, 0, 0);
 
-        self.update();
-      }
-    };
-
-    self.loadTextures(opts.size)
-      .then(function() {
-        return self.loadModels(opts.size);
-      })
-      .then(function() {
-        // self.scene.add(self.body);
-        self.scene.add(self.face);
-        self.scene.add(self.back);
-        self.scene.add(self.spine);
-
-        self.update();
-      });
+    this.scene.add(this.face);
+    this.scene.add(this.back);
+    this.scene.add(this.spine);
   };
 
-  Sleeve.prototype.loadTextures = function(size) {
-    var self = this;
-
-    return new Promise(function(resolve, reject) {
-      var manager = new THREE.LoadingManager();
-
-      manager.onLoad = function(){
-        resolve();
-      };
-
-      manager.onError = function() {
-        reject();
-      };
-
-      var loader = new THREE.TextureLoader(manager);
-
-      loader.load($('#container').data('sleeve-texture-face').replace('%', size), function(texture) {
-        self.faceTexture = texture;
-        self.faceTexture.needsUpdate = true;
-      });
-
-      loader.load($('#container').data('sleeve-texture-back').replace('%', size), function(texture) {
-        self.backTexture = texture;
-        self.backTexture.needsUpdate = true;
-      });
-
-      loader.load($('#container').data('sleeve-texture-spine').replace('%', size), function(texture) {
-        self.spineTexture = texture;
-        self.spineTexture.needsUpdate = true;
-      });
+  Sleeve.prototype.initMaterial = function(obj, tex) {
+    obj.traverse(function(child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = new THREE.MeshPhongMaterial({
+          map: tex,
+          ambient: 0xFFFFFF,
+          color: 0xFFFFFF,
+          shininess: 36,
+          specular: 0x363636,
+        });
+      }
     });
+
+    return obj;
+  };
+
+  Sleeve.prototype.updateFaceTexture = function(img) {
+    if (!this.faceTexture) {
+      this.faceTexture = new THREE.Texture();
+    }
+
+    if (!img) {
+      return;
+    }
+
+    this.faceTexture.image = img;
+    this.faceTexture.needsUpdate = true;
+  };
+
+  Sleeve.prototype.updateBackTexture = function(img) {
+    if (!this.backTexture) {
+      this.backTexture = new THREE.Texture();
+    }
+
+    if (!img) {
+      return;
+    }
+
+    this.backTexture.image = img;
+    this.backTexture.needsUpdate = true;
+  };
+
+  Sleeve.prototype.updateSpineTexture = function(img) {
+    if (!this.faceTexture) {
+      this.spineTexture = new THREE.Texture();
+    }
+
+    if (!img) {
+      return;
+    }
+
+    this.spineTexture.image = img;
+    this.spineTexture.needsUpdate = true;
   };
 
   Sleeve.prototype.loadModels = function(size, callback) {
@@ -198,12 +190,12 @@
   };
 
   Sleeve.prototype.update = function() {
-    if (!(this.body && this.face && this.back && this.spine)) {
-      return;
-    }
+    // if (!(this.body && this.face && this.back && this.spine)) {
+    //   return;
+    // }
 
-    this.body.position.set(this.position.x, this.position.y, this.position.z);
-    this.body.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    // this.body.position.set(this.position.x, this.position.y, this.position.z);
+    // this.body.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
     this.face.position.set(this.position.x, this.position.y + 1.5, this.position.z);
     this.face.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
@@ -213,6 +205,32 @@
 
     this.spine.position.set(this.position.x - 157.4, this.position.y, this.position.z);
     this.spine.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z + Math.PI / 2);
+  };
+
+  //--------------------------------------------------------------
+  function Vinyl() {
+
+  }
+
+  Vinyl.prototype.setup = function() {
+
+  };
+
+  Vinyl.prototype.update = function() {
+
+  };
+
+  //--------------------------------------------------------------
+  function Label() {
+
+  }
+
+  Label.prototype.setup = function() {
+
+  };
+
+  Label.prototype.update = function() {
+
   };
 
 
@@ -400,26 +418,17 @@
     this.parent = parent;
     this.assets = assets;
     this.opts = opts || {};
-
+console.log(assets);
     // init
     var scene = this.scene = new THREE.Scene();
 
-    var camera = this.camera = new THREE.PerspectiveCamera(
-      props.fov, window.innerWidth / window.innerHeight, 1, 10000);
+    var camera = this.camera = new THREE.PerspectiveCamera(props.fov, window.innerWidth / window.innerHeight, 1, 10000);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     camera.position.z = 30;
 
     var renderer = this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.setClearColor(0xFFFFFF, 1.0);
-    // renderer.shadowMapType = THREE.PCFSoftShadowMap;
-    // renderer.shadowMapEnabled = true;
-
-    var axes = this.axes = buildAxes(200);
-    axes.visible = false;
-    scene.add(axes);
-
-    // var controls = this.controls = new THREE.TrackballControls(camera, renderer.domElement);
 
     this.initGui();
     this.initLights();
@@ -435,19 +444,24 @@
     // ground.receiveShadow = true;
     scene.add(ground);
 
-    var labelTexture = this.labelTexture = new THREE.Texture();
-    // labelTexture.image = image;
-    labelTexture.needsUpdate = true;
+    var sleeveAssets = {};
+    var vinylAssets  = {};
+    var labelAssets  = {};
 
-    var vinylTexture = this.vinylTexture = new THREE.Texture();
-    // vinylTexture.image = image;
-    vinylTexture.needsUpdate = true;
+    Object.keys(assets).forEach(function(key) {
+      if (key.match(/sleeve/i)) { sleeveAssets[key] = assets[key]; }
+      if (key.match(/vinyl/i))  { vinylAssets[key]  = assets[key]; }
+      if (key.match(/label/i))  { labelAssets[key]  = assets[key]; }
+    });
 
-    var sleeveTexture = this.sleeveTexture = new THREE.Texture();
-    // sleeveTexture.image = image;
-    sleeveTexture.needsUpdate = true;
+    this.sleeve = new Sleeve();
+    this.sleeve.setup(this.scene, sleeveAssets, { size: 12 });
 
-    // changeVinylSize(12);
+    this.vinyl = new Vinyl();
+    this.vinyl.setup();
+
+    this.label = new Label();
+    this.label.setup();
   }
 
   /**
@@ -762,6 +776,7 @@
 
   World.prototype.start =
   World.prototype.resume = function() {
+    this.request = requestAnimationFrame(this.draw.bind(this));
     return this;
   };
 
@@ -770,7 +785,20 @@
    */
 
   World.prototype.pause = function() {
+    this.request = cancelAnimationFrame(this.request);
     return this;
+  };
+
+  World.prototype.update = function() {
+    if (this.sleeve) { this.sleeve.update(); }
+    if (this.vinyl)  { this.vinyl.update(); }
+    if (this.label)  { this.label.update(); }
+  };
+
+  World.prototype.draw = function() {
+    this.update();
+    this.renderer.render(this.scene, this.camera);
+    this.request = requestAnimationFrame(this.draw.bind(this));
   };
 
   /**
@@ -779,6 +807,8 @@
 
   World.prototype.delegateEvents = function() {
     var parent = this.parent;
+
+    parent.on('resize', this.onResize.bind(this));
 
     parent.vinyl.on('type', this.onVinylTypeChanged.bind(this));
     parent.vinyl.on('size', this.onVinylSizeChanged.bind(this));
@@ -808,6 +838,10 @@
     var parent = this.parent;
 
     return this;
+  };
+
+  World.prototype.onResize = function() {
+
   };
 
   World.prototype.onVinylTypeChanged = function(value) {
