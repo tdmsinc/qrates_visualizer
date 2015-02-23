@@ -770,15 +770,50 @@ console.log(assets);
       });
   };
 
-  World.prototype.resize = function(width, height) {
-    console.log('world.resize');
+  World.prototype.capture = function(opts, callback) {
+    console.log('World::capture');
+    // TODO: process
+    if (callback) callback();
   };
+
+  World.prototype.resize = function(width, height) {
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(width, height);
+    this.draw();
+  };
+
   /**
    *
    */
+  World.prototype.play = function() {
+    // »ØÜž¥¹¥¿©`¥È
+    console.log('World::play');
+  };
 
-  World.prototype.start =
-  World.prototype.resume = function() {
+  /**
+   *
+   */
+  World.prototype.pause = function() {
+    // »ØÜž¥¹¥È¥Ã¥×
+    console.log('World::pause');
+  };
+
+  /**
+   *
+   */
+  World.prototype.updateView = function(type, otps, callback) {
+    console.log('World::updateView');
+    // TODO: process
+    if (callback) callback();
+  };
+
+  /**
+   *
+   */
+  World.prototype.startRender =
+  World.prototype.resumeRender = function() {
+    console.log('World::startRender');
     this.request = requestAnimationFrame(this.draw.bind(this));
     return this;
   };
@@ -786,18 +821,23 @@ console.log(assets);
   /**
    *
    */
-
-  World.prototype.pause = function() {
+  World.prototype.stopRender = function() {
     this.request = cancelAnimationFrame(this.request);
     return this;
   };
 
+  /**
+   *
+   */
   World.prototype.update = function() {
     if (this.sleeve) { this.sleeve.update(); }
     if (this.vinyl)  { this.vinyl.update(); }
     if (this.label)  { this.label.update(); }
   };
 
+  /**
+   *
+   */
   World.prototype.draw = function() {
     this.update();
     this.renderer.render(this.scene, this.camera);
@@ -807,11 +847,8 @@ console.log(assets);
   /**
    *
    */
-
   World.prototype.delegateEvents = function() {
     var parent = this.parent;
-
-    parent.on('resize', this.onResize.bind(this));
 
     parent.vinyl.on('type', this.onVinylTypeChanged.bind(this));
     parent.vinyl.on('size', this.onVinylSizeChanged.bind(this));
@@ -841,10 +878,6 @@ console.log(assets);
     var parent = this.parent;
 
     return this;
-  };
-
-  World.prototype.onResize = function() {
-
   };
 
   World.prototype.onVinylTypeChanged = function(value) {
