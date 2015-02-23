@@ -28,7 +28,7 @@
    */
 
   function VinylVisualizer(el, opts) {
-    opts = opts || {};
+    this.opts = opts = opts || {};
     var defaults = opts.defaults || {};
     this.el = el;
     this.vinyl = new Vinyl({ defaults: defaults.vinyl });
@@ -59,7 +59,7 @@
     }, this);
 
     loader.load(function(err, assets) {
-      var world = self.world = new World(self, assets, {});
+      var world = self.world = new World(self, assets, self.opts);
       world.delegateEvents();
       world.startRender();
       el.appendChild(world.renderer.domElement);
