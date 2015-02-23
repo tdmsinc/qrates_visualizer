@@ -43,7 +43,7 @@ var vv = new qvv.VinylVisualizer(el, {
   },
   camera: {
     fov: 35,
-    aspect: window.innerWidth, window.innerHeight,
+    aspect: window.innerWidth / window.innerHeight,
     near: 1,
     far: 10000
   },
