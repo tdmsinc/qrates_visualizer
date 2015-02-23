@@ -770,6 +770,9 @@ console.log(assets);
       });
   };
 
+  World.prototype.resize = function(width, height) {
+    console.log('world.resize');
+  };
   /**
    *
    */
