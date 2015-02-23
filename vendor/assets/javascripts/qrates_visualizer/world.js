@@ -409,17 +409,17 @@
     this.parent = parent;
     this.assets = assets;
     this.opts = opts || {};
-console.log(assets);
+console.log('options', opts);
     // init
     var scene = this.scene = new THREE.Scene();
 
-    var camera = this.camera = new THREE.PerspectiveCamera(props.fov, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
-    camera.position.z = 30;
+    var camera = this.camera = new THREE.PerspectiveCamera(this.opts.camera.fov, this.opts.camera.aspect, this.opts.camera.near, this.opts.camera.far);
+    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    this.camera.position.z = 30;
 
-    var renderer = this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    renderer.setClearColor(0xFFFFFF, 1.0);
+    var renderer = this.renderer = new THREE.WebGLRenderer(this.opts.renderer);
+    this.renderer.setSize(this.opts.width, this.opts.height);
+    this.renderer.setClearColor(0xFFFFFF, 1.0);
 
     this.initGui();
     this.initLights();
@@ -453,6 +453,9 @@ console.log(assets);
 
     this.label = new Label();
     this.label.setup();
+
+    // this.camera.position.set(0, 17, 100);
+
   }
 
   /**
@@ -768,6 +771,7 @@ console.log(assets);
   };
 
   World.prototype.resize = function(width, height) {
+    console.log('World::resize');
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
@@ -819,7 +823,7 @@ console.log(assets);
    *
    */
   World.prototype.update = function() {
-    if (this.sleeve) { this.sleeve.update(); }
+    if (this.sleeve) { this.sleeve.position.z += 0.1;this.sleeve.update(); }
     if (this.vinyl)  { this.vinyl.update(); }
     if (this.label)  { this.label.update(); }
   };
