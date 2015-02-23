@@ -100,7 +100,8 @@
    */
 
   VinylVisualizer.prototype.resize = function(width, height) {
-    // TODO: resize canvas.
+    if (!this.world) return this;
+    this.world.resize(width, height);
     return this;
   };
 

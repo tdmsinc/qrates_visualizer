@@ -55,6 +55,14 @@ vv.on('ready', function() {
   console.log('visualizer is ready.');
 
   //
+  // delegate resize.
+  //
+
+  window.addEventListener('resize', function(e) {
+    vv.resize(e.target.innerWidth, e.target.innerHeight);
+  }, false);
+
+  //
   // delegate events
   //
 
