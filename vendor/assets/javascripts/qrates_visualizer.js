@@ -76,7 +76,8 @@
    */
 
   VinylVisualizer.prototype.view = function(type, opts, callback) {
-    // TODO: change view
+    if (!this.world) return this;
+    this.world.updateView(type, opts, callback);
     return this;
   };
 
@@ -88,7 +89,8 @@
    */
 
   VinylVisualizer.prototype.capture = function(opts, callback) {
-    // TODO: capture image.
+    if (!this.world) return this;
+    this.world.capture(opts, callback);
     return this;
   };
 
@@ -111,7 +113,8 @@
    */
 
   VinylVisualizer.prototype.play = function() {
-    // TODO:
+    if (!this.world) return this;
+    this.world.play();
     return this;
   };
 
@@ -121,7 +124,8 @@
    */
 
   VinylVisualizer.prototype.pause = function() {
-    // TODO:
+    if (!this.world) return this;
+    this.world.pause();
     return this;
   };
 
