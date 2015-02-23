@@ -59,7 +59,7 @@
     }, this);
 
     loader.load(function(err, assets) {
-      var world = self.world = new World(self, assets);
+      var world = self.world = new World(self, assets, {});
       world.delegateEvents();
       world.startRender();
       el.appendChild(world.renderer.domElement);
