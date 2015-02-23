@@ -34,6 +34,19 @@ var defaults = {
 
 var el = document.querySelector('.vinyl-visualizer-container');
 var vv = new qvv.VinylVisualizer(el, {
+  width: window.innerWidth,
+  height: window.innerHeight,
+  render: {
+    antialias: true,
+    alpha: true,
+    preserveDrawingBuffer: false
+  },
+  camera: {
+    fov: 35,
+    aspect: window.innerWidth, window.innerHeight,
+    near: 1,
+    far: 10000
+  },
   defaults: {
     vinyl: defaults.vinyl,
     label: defaults.label,
