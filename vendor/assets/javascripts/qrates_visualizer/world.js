@@ -21,7 +21,7 @@
     color: 0xFFFFFF,
     size: 12,
     label: null,
-    axes: false,
+    rotate: false,
     camera_pos: 1,
     fov: 35,
     bumpScale: 0.282,
@@ -41,29 +41,32 @@
 
   Sleeve.prototype.setup = function(scene, assets, opts) {
     opts = opts || {
-      size: 12
+      size: 7
     };
 
-    var self = this;
-
     this.scene = scene;
+
     this.body = null;
-    this.face = assets['assetsModelSleeveFace-' + opts.size] || null;
-    this.back = assets['assetsModelSleeveBack-' + opts.size] || null;
-    this.spine = assets['assetsModelSleeveSpine-' + opts.size] || null;
+    this.front = assets['assetsModelSleeveFront-' + opts.size];
+    this.back = assets['assetsModelSleeveBack-' + opts.size];
+    this.spine = assets['assetsModelSleeveSpine-' + opts.size];
 
-    this.updateFaceTexture(assets['assetsTextureSleeveFace-' + opts.size] || null);
-    this.updateBackTexture(assets['assetsTextureSleeveBack-' + opts.size] || null);
-    this.updateSpineTexture(assets['assetsTextureSleeveSpine-' + opts.size] || null);
+    this.frontTexture = new THREE.Texture();
+    this.backTexture = new THREE.Texture();
+    this.spineTexture = new THREE.Texture();
 
-    this.initMaterial(this.face, this.faceTexture);
-    this.initMaterial(self.back, this.backTexture);
-    this.initMaterial(self.spine, this.spineTexture);
+    this.updateTexture(this.frontTexture, assets['assetsTextureSleeveFront-' + opts.size] || assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this.backTexture, assets['assetsTextureSleeveBack-' + opts.size] || assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this.spineTexture, assets['assetsTextureSleeveSpine-' + opts.size] || assets['assetsTextureSleeveDefault']);
+
+    this.initMaterial(this.front, this.frontTexture);
+    this.initMaterial(this.back, this.backTexture);
+    this.initMaterial(this.spine, this.spineTexture);
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this.scene.add(this.face);
+    this.scene.add(this.front);
     this.scene.add(this.back);
     this.scene.add(this.spine);
   };
@@ -75,8 +78,10 @@
           map: tex,
           ambient: 0xFFFFFF,
           color: 0xFFFFFF,
-          shininess: 36,
+          shininess: 35,
           specular: 0x363636,
+          shading: THREE.SmoothShading,
+          vertexColor: THREE.VertexColors
         });
       }
     });
@@ -84,205 +89,180 @@
     return obj;
   };
 
-  Sleeve.prototype.updateFaceTexture = function(img) {
-    if (!this.faceTexture) {
-      this.faceTexture = new THREE.Texture();
-    }
-
-    if (!img) {
+  Sleeve.prototype.updateTexture = function(tex, img) {
+    if (!tex || !img) {
       return;
     }
 
-    this.faceTexture.image = img;
-    this.faceTexture.needsUpdate = true;
+    tex.image = img;
+    tex.needsUpdate = true;
   };
 
-  Sleeve.prototype.updateBackTexture = function(img) {
-    if (!this.backTexture) {
-      this.backTexture = new THREE.Texture();
-    }
-
-    if (!img) {
-      return;
-    }
-
-    this.backTexture.image = img;
-    this.backTexture.needsUpdate = true;
-  };
-
-  Sleeve.prototype.updateSpineTexture = function(img) {
-    if (!this.faceTexture) {
-      this.spineTexture = new THREE.Texture();
-    }
-
-    if (!img) {
-      return;
-    }
-
-    this.spineTexture.image = img;
-    this.spineTexture.needsUpdate = true;
-  };
-
-  Sleeve.prototype.loadModels = function(size, callback) {
-    var self = this;
-
-    return new Promise(function(resolve, reject) {
-      var manager = new THREE.LoadingManager();
-
-      manager.onLoad = function() {
-        resolve();
-      };
-
-      manager.onError = function() {
-        reject();
-      };
-
-      var loader = new THREE.OBJLoader(manager);
-      loader.load($('#container').data('sleeve-obj-body').replace('%', size), function(obj) {
-        self.body = obj;
-      });
-
-      loader.load($('#container').data('sleeve-obj-face').replace('%', size), function(obj) {
-        obj.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            child.material = new THREE.MeshBasicMaterial({
-              ambient: 0xFFFFFF,
-              color: 0xFFFFFF,
-              map: self.faceTexture,
-              shininess: 35,
-              specular: 0x363636,
-            });
-          }
-        });
-
-        obj.position.y = 1.5;
-        self.face = obj;
-      });
-
-      loader.load($('#container').data('sleeve-obj-back').replace('%', size), function(obj) {
-        obj.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            child.material = new THREE.MeshBasicMaterial({
-              map: self.backTexture
-            });
-          }
-        });
-
-        obj.position.y = -1.5;
-        self.back = obj;
-      });
-
-      loader.load($('#container').data('sleeve-obj-spine').replace('%', size), function(obj) {
-        obj.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            child.material = new THREE.MeshBasicMaterial({
-              map: self.spineTexture
-            });
-          }
-        });
-
-        obj.position.x = -157.4;
-        obj.position.y = 0;
-        obj.rotation.z = Math.PI / 2;
-        self.spine = obj;
-      });
-    });
+  Sleeve.prototype.setVisible = function(value) {
+    this.front.visible = this.back.visible = this.spine.visible = value;
   };
 
   Sleeve.prototype.update = function() {
-    // if (!(this.body && this.face && this.back && this.spine)) {
-    //   return;
-    // }
+    this.front.position.set(this.position.x, this.position.y, this.position.z);
+    this.front.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
-    // this.body.position.set(this.position.x, this.position.y, this.position.z);
-    // this.body.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
-
-    this.face.position.set(this.position.x, this.position.y + 1.5, this.position.z);
-    this.face.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
-
-    this.back.position.set(this.position.x, this.position.y - 1.5, this.position.z);
+    this.back.position.set(this.position.x, this.position.y, this.position.z);
     this.back.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
-    this.spine.position.set(this.position.x - 157.4, this.position.y, this.position.z);
-    this.spine.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z + Math.PI / 2);
+    this.spine.position.set(this.position.x, this.position.y, this.position.z);
+    this.spine.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
   };
+
 
   //--------------------------------------------------------------
   function Vinyl() {
 
   }
 
-  Vinyl.prototype.setup = function() {
+  Vinyl.prototype.setup = function(scene, assets, opts) {
+    opts = opts || {
+      color: 0x000000,
+      size: 7
+    };
+console.log(assets);
+    this.scene = scene;
 
+    this.body = assets['assetsModelVinyl'];
+    
+    this.texture = new THREE.Texture();
+    this.bumpMapTexture = new THREE.Texture();
+
+    this.updateTexture(this.texture, assets['assetsTextureVinyl' + opts.size] || assets['assetsTextureVinylDefault']);
+    this.updateTexture(this.bumpMapTexture, assets['assetsTextureVinylBumpmap'] || assets['assetsTextureVinylDefaultBumpmap']);
+
+    var self = this;
+    this.body.traverse(function(child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = new THREE.MeshPhongMaterial({
+          ambient: 0xFFFFFF,
+          bumpMap: self.bumpMapTexture,
+          bumpScale: opts.bumpScale || 0.18,
+          color: opts.color,
+          map: self.texture,
+          shininess: 35,
+          specular: 0x363636,
+          shading: THREE.SmoothShading,
+          vertexColor: THREE.VertexColors
+        });
+      }
+    });
+
+    this.position = new THREE.Vector3(0, 0, 0);
+    this.rotation = new THREE.Vector3(0, 0, 0);
+
+    this.scene.add(this.body);
+  };
+
+  Vinyl.prototype.updateTexture = function(tex, img) {
+    if (!tex || !img) {
+      return;
+    }
+
+    tex.image = img;
+    tex.needsUpdate = true;
+  };
+
+  Vinyl.prototype.setBumpScale = function(value) {
+    this.body.traverse(function(child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.bumpScale = value;
+      }
+    });
+  };
+
+  Vinyl.prototype.setVisible = function(value) {
+    this.body.visible = value;
   };
 
   Vinyl.prototype.update = function() {
+    if (!(this.body)) {
+      return;
+    }
 
+    this.body.position.set(this.position.x, this.position.y, this.position.z);
+    this.body.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
   };
+
 
   //--------------------------------------------------------------
   function Label() {
 
   }
 
-  Label.prototype.setup = function() {
+  Label.prototype.setup = function(scene, assets, opts) {
+    opts = opts || {
+      size: 7
+    };
 
+    this.scene = scene;
+
+    this.front = assets['assetsModelLabelFront-' + opts.size];
+    this.back  = assets['assetsModelLabelBack-' + opts.size];
+
+    this.frontTexture = new THREE.Texture();
+    this.backTexture  = new THREE.Texture();
+
+    this.updateTexture(this.frontTexture, assets['assetsTextureLabelFront']);
+    this.updateTexture(this.backTexture, assets['assetsTextureLabelBack']);
+
+    this.initMaterial(this.front, this.frontTexture);
+    this.initMaterial(this.back, this.backTexture);
+
+    this.position = new THREE.Vector3(0, 0, 0);
+    this.rotation = new THREE.Vector3(0, 0, 0);
+
+    this.scene.add(this.front);
+    this.scene.add(this.back);
+
+    this.back.rotation.z = this.rotation.z + Math.PI;
   };
 
-  Label.prototype.update = function() {
+  Label.prototype.initMaterial = function(obj, tex) {
+    obj.traverse(function(child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = new THREE.MeshPhongMaterial({
+          ambient: 0xFFFFFF,
+          color: 0xFFFFFF,
+          map: tex,
+          shininess: 5,
+          specular: 0x363636,
+          shading: THREE.SmoothShading,
+          vertexColor: THREE.VertexColors
+        });
+      }
+    });
 
+    return obj;
   };
 
-
-  //--------------------------------------------------------------
-  function loadModel(options) {
-    if (0 > [7, 10, 12].indexOf(options.size)) {
+  Label.prototype.updateTexture = function(tex, img) {
+    if (!tex || !img) {
       return;
     }
 
-    return new Promise(function(resolve, reject) {
-      var objLoader = new THREE.OBJLoader();
+    tex.image = img;
+    tex.needsUpdate = true;
+  };
 
-      var path;
+  Label.prototype.setVisible = function(value) {
+    this.front.visible = this.back.visible = value;
+  };
 
-      if ('label' == options.type) {
-        path = 'models/vinyl_' + options.size + '_inner.obj';
-      } else if ('vinyl' == options.type) {
-        path = 'models/vinyl_' + options.size + '_outer.obj';
-      } else if ('sleeve' == options.type) {
-        path = 'models/sleeve_' + options.size + '.obj';
-      }
+  Label.prototype.update = function() {
+    if (!(this.front && this.back)) {
+      return;
+    }
 
-      objLoader.load(path, function(obj) {
-        obj.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-
-            var material = new THREE.MeshPhongMaterial({
-              map: options.map,
-              ambient: options.ambient,
-              bumpMap: options.bumpMap,
-              bumpScale: options.bumpScale,
-              color: options.color,
-              emissive: 0,
-              shininess: options.shininess,
-              specular: options.specular,
-              shading: THREE.SmoothShading,
-              vertexColor: THREE.VertexColors
-            });
-
-            child.material = material;
-            // child.castShadow = true;
-          }
-        });
-
-        resolve(obj);
-      });
-    });
-  }
-
-  //--------------------------------------------------------------
-
-
+    this.front.position.set(this.position.x, this.position.y, this.position.z);
+    this.back.position.set(this.position.x, this.position.y, this.position.z);
+    this.front.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this.back.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z + Math.PI);
+  };
 
   //--------------------------------------------------------------
   function buildAxis( src, dst, colorHex, dashed ) {
@@ -318,74 +298,6 @@
     return axes;
   }
 
-  //--------------------------------------------------------------
-  function init() {
-    // $(window).on('dragover', function(e) {
-    //   if (0 === $('.overlay').length) {
-    //     $('body').prepend('<div class="overlay"></div>');
-    //   }
-    //   return false;
-    // });
-    //
-    // $(window).on('drop', function(e) {
-    //   if (e.originalEvent.dataTransfer.files.length) {
-    //     var file = e.originalEvent.dataTransfer.files[0];
-    //
-    //     if (file.type.match(/jpeg|png|gif|tiff/)) {
-    //       var reader = new FileReader();
-    //       reader.addEventListener('load', function(e) {
-    //         var img = new Image();
-    //
-    //         img.onload = function() {
-    //           if (file.name.match(/vinyl/)) {
-    //             vinylTexture.image = img;
-    //             vinylTexture.needsUpdate = true;
-    //           } else if (file.name.match(/label/)) {
-    //             labelTexture.image = img;
-    //             labelTexture.needsUpdate = true;
-    //           } else if (file.name.match(/sleeve/)) {
-    //             sleeveTexture.image = img;
-    //             sleeveTexture.needsUpdate = true;
-    //           }
-    //         };
-    //
-    //         img.src = e.target.result;
-    //       });
-    //
-    //       reader.readAsDataURL(file);
-    //     }
-    //   }
-    //
-    //   $('.overlay').remove();
-    //
-    //   return false;
-    // });
-  }
-
-  //--------------------------------------------------------------
-  function update() {
-    // controls.update();
-    if (labelObj && vinylObj) {
-      labelObj.rotation.y -= 0.03;
-      vinylObj.rotation.y = labelObj.rotation.y;
-    }
-  }
-
-  //--------------------------------------------------------------
-  function animate() {
-    update();
-    render();
-    requestAnimationFrame( animate );
-  }
-
-  //--------------------------------------------------------------
-  function render() {
-    renderer.render( scene, camera );
-  }
-
-  // init();
-  // animate();
-
   /**
    * Module dependencies.
    */
@@ -409,13 +321,11 @@
     this.parent = parent;
     this.assets = assets;
     this.opts = opts || {};
-console.log('options', opts);
+
     // init
     var scene = this.scene = new THREE.Scene();
 
     var camera = this.camera = new THREE.PerspectiveCamera(this.opts.camera.fov, this.opts.camera.aspect, this.opts.camera.near, this.opts.camera.far);
-    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-    this.camera.position.z = 30;
 
     var renderer = this.renderer = new THREE.WebGLRenderer(this.opts.renderer);
     this.renderer.setSize(this.opts.width, this.opts.height);
@@ -433,29 +343,24 @@ console.log('options', opts);
     ground.position.set(0, 0, 0);
     ground.rotation.x = 90 * Math.PI / 180;
     // ground.receiveShadow = true;
-    scene.add(ground);
+    // scene.add(ground);
 
-    var sleeveAssets = {};
-    var vinylAssets  = {};
-    var labelAssets  = {};
-
-    Object.keys(assets).forEach(function(key) {
-      if (key.match(/sleeve/i)) { sleeveAssets[key] = assets[key]; }
-      if (key.match(/vinyl/i))  { vinylAssets[key]  = assets[key]; }
-      if (key.match(/label/i))  { labelAssets[key]  = assets[key]; }
-    });
+    this.enableRotate = false;
+    this.rotationAmount = 0;
 
     this.sleeve = new Sleeve();
-    this.sleeve.setup(this.scene, sleeveAssets, { size: 12 });
+    this.sleeve.setup(this.scene, assets, { size: 7 });
+    this.sleeve.position.x = -80;
+    this.sleeve.setVisible(false);
 
     this.vinyl = new Vinyl();
-    this.vinyl.setup();
+    this.vinyl.setup(this.scene, assets, { size: 7 });
 
     this.label = new Label();
-    this.label.setup();
+    this.label.setup(this.scene, assets, { size: 7 });
 
-    // this.camera.position.set(0, 17, 100);
-
+    this.camera.position.set(-200, 250, 200);
+    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
   }
 
   /**
@@ -508,7 +413,7 @@ console.log('options', opts);
 
   World.prototype.initGui = function() {
     var gui = this.gui = new dat.GUI();
-    var axesController = gui.add(props, 'axes');
+    var rotationController = gui.add(props, 'rotate');
     var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
     var sizeController = gui.add(props, 'size', [7, 10, 12]);
     var labelController = gui.add(props, 'label', [1, 2, 3, 4, 5, 6, 7, 8]);
@@ -523,11 +428,12 @@ console.log('options', opts);
     var bumpScaleController = gui.add(props, 'bumpScale', 0, 1.0);
     var fovController = gui.add(props, 'fov', 20, 50);
 
+    var self = this;
     var axes = this.axes;
     var camera = this.camera;
 
-    axesController.onChange(function(value) {
-      axes.visible = value;
+    rotationController.onChange(function(value) {
+      self.enableRotate = value;
     });
 
     colorController.onChange(function(value) {
@@ -650,29 +556,30 @@ console.log('options', opts);
     });
 
     cameraXController.onChange(function(value) {
-      camera.position.x = value;
+      self.camera.position.x = value;
+      self.camera.lookAt(new THREE.Vector3(0, 0, 0));
     });
 
     cameraYController.onChange(function(value) {
-      camera.position.y = value;
+      self.camera.position.y = value;
+      self.camera.lookAt(new THREE.Vector3(0, 0, 0));
     });
 
     cameraZController.onChange(function(value) {
-      camera.position.z = value;
+      self.camera.position.z = value;
+      self.camera.lookAt(new THREE.Vector3(0, 0, 0));
     });
 
     rotateXController.onChange(function(value) {
-      // sleeve.rotation.x = labelObj.rotation.x = vinylObj.rotation.x = value;
-      labelObj.rotation.x = vinylObj.rotation.x = value;
+      // labelObj.rotation.x = vinylObj.rotation.x = value;
     });
 
     rotateYController.onChange(function(value) {
-      labelObj.rotation.y = vinylObj.rotation.y = value;
+      // labelObj.rotation.y = vinylObj.rotation.y = value;
     });
 
     rotateZController.onChange(function(value) {
-      // sleeve.rotation.z = labelObj.rotation.z = vinylObj.rotation.z = value;
-      labelObj.rotation.z = vinylObj.rotation.z = value;
+      // labelObj.rotation.z = vinylObj.rotation.z = value;
     });
 
     sleeveXController.onChange(function(value) {
@@ -680,88 +587,21 @@ console.log('options', opts);
     });
 
     bumpScaleController.onChange(function(value) {
-      if (!vinylObj) {
+      if (!self.vinyl) {
         return;
       }
 
-      vinylObj.traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.bumpScale = Number(value);
-        }
-      });
+      self.vinyl.setBumpScale(value);
     });
 
     fovController.onChange(function(value) {
-      // camera.setLens(value);
+      self.camera.setLens(value);
     });
   };
 
-  World.prototype.changeVinylSize = function(size) {
-    var scene = this.scene;
-    var labelObj = this.labelObj;
-    var vinylObj = this.vinylObj;
-
-    scene.remove(labelObj);
-    scene.remove(vinylObj);
-
-    loadModel({
-      ambient: 0xFFFFFF,
-      color: 0xFFFFFF,
-      map: labelTexture,
-      size: Number(size),
-      shininess: 5,
-      specular: 0x363636,
-      type: 'label'
-    })
-      .then(function(obj) {
-        labelObj = obj;
-
-        return loadModel({
-          ambient: 0xFFFFFF,
-          bumpMap: vinylTexture,
-          bumpScale: props.bumpScale,
-          color: 0,
-          map: null,//vinylTexture,
-          size: Number(size),
-          shininess: 35,
-          specular: 0x363636,
-          type: 'vinyl'
-        });
-      })
-      .then(function(obj) {
-        vinylObj = obj;
-
-        return loadModel({
-          ambient: 0xFFFFFF,
-          color: 0xFFFFFF,
-          map: sleeveTexture,//vinylTexture,
-          size: Number(size),
-          shininess: 35,
-          specular: 0x363636,
-          type: 'sleeve'
-        });
-      })
-      .then(function(obj) {
-        sleeveObj = obj;
-
-        scene.add(labelObj);
-        scene.add(vinylObj);
-        // scene.add(sleeveObj);
-
-        labelObj.position.y = vinylObj.position.y = 18;
-
-        sleeveObj.position.set(-15, 18, 0);
-
-        camera.position.set(0, 17, 64);
-        labelObj.rotation.set(props.rotateX, 0, 0);
-        vinylObj.rotation.set(props.rotateX, 0, 0);
-        // sleeveObj.rotation.set(props.rotateX, 0, 0);
-
-        // sleeve = new Sleeve();
-        // sleeve.setup(scene);
-        // sleeve.position.set(-15, 18, 0);
-        // sleeve.rotation.set(props.rotateX, 0, 0);
-      });
+  World.prototype.setVinylSize = function(size) {
+    console.log('World::setVinylSize');
+    // TODO: process
   };
 
   World.prototype.capture = function(opts, callback) {
@@ -783,6 +623,7 @@ console.log('options', opts);
    */
   World.prototype.play = function() {
     console.log('World::play');
+    this.enableRotate = true;
   };
 
   /**
@@ -790,6 +631,7 @@ console.log('options', opts);
    */
   World.prototype.pause = function() {
     console.log('World::pause');
+    this.enableRotate = false;
   };
 
   /**
@@ -823,9 +665,29 @@ console.log('options', opts);
    *
    */
   World.prototype.update = function() {
-    if (this.sleeve) { this.sleeve.position.z += 0.1;this.sleeve.update(); }
-    if (this.vinyl)  { this.vinyl.update(); }
-    if (this.label)  { this.label.update(); }
+    if (this.enableRotate) {
+      this.rotationAmount = Math.min(this.rotationAmount + 0.001, 0.07);
+    } else {
+      this.rotationAmount = Math.max(this.rotationAmount - 0.001, 0);
+    }
+
+    if (this.sleeve) {
+      this.sleeve.update();
+    }
+
+    if (this.vinyl) {
+      if (this.enableRotate) {
+        this.vinyl.rotation.y += this.rotationAmount;
+      }
+      this.vinyl.update();
+    }
+
+    if (this.label) {
+      if (this.enableRotate) {
+        this.label.rotation.y += this.rotationAmount;
+      }
+      this.label.update();
+    }
   };
 
   /**
