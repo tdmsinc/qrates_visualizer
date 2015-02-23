@@ -320,15 +320,6 @@
 
   //--------------------------------------------------------------
   function init() {
-    // $(window).on('resize', function(e) {
-    //   camera.aspect = window.innerWidth / window.innerHeight;
-    //   camera.updateProjectionMatrix();
-    //
-    //   renderer.setSize(window.innerWidth, window.innerHeight);
-    //
-    //   render();
-    // });
-    //
     // $(window).on('dragover', function(e) {
     //   if (0 === $('.overlay').length) {
     //     $('body').prepend('<div class="overlay"></div>');
@@ -787,7 +778,6 @@ console.log(assets);
    *
    */
   World.prototype.play = function() {
-    // »ØÜž¥¹¥¿©`¥È
     console.log('World::play');
   };
 
@@ -795,7 +785,6 @@ console.log(assets);
    *
    */
   World.prototype.pause = function() {
-    // »ØÜž¥¹¥È¥Ã¥×
     console.log('World::pause');
   };
 
