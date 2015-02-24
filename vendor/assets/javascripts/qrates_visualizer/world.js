@@ -45,11 +45,30 @@
     };
 
     this.scene = scene;
-
+    this.currentSize = opts.size.toString();
+    // TODO: create models of each size.
+    // ex.
+    // this.front_7 = ...
+    // this.front_10 = ... 
     this.body = null;
-    this.front = assets['assetsModelSleeveFront-' + opts.size];
-    this.back = assets['assetsModelSleeveBack-' + opts.size];
-    this.spine = assets['assetsModelSleeveSpine-' + opts.size];
+
+    this.front = {
+      '7' : assets['assetsModelSleeveFront-7'],
+      '10': assets['assetsModelSleeveFront-10'],
+      '12': assets['assetsModelSleeveFront-12']
+    };
+
+    this.back = {
+      '7' : assets['assetsModelSleeveBack-7'],
+      '10': assets['assetsModelSleeveBack-10'],
+      '12': assets['assetsModelSleeveBack-12']
+    };
+
+    this.spine = {
+      '7' : assets['assetsModelSleeveSpine-7'],
+      '10': assets['assetsModelSleeveSpine-10'],
+      '12': assets['assetsModelSleeveSpine-12']
+    };
 
     this.frontTexture = new THREE.Texture();
     this.backTexture = new THREE.Texture();
@@ -59,16 +78,16 @@
     this.updateTexture(this.backTexture, assets['assetsTextureSleeveBack-' + opts.size] || assets['assetsTextureSleeveDefault']);
     this.updateTexture(this.spineTexture, assets['assetsTextureSleeveSpine-' + opts.size] || assets['assetsTextureSleeveDefault']);
 
-    this.initMaterial(this.front, this.frontTexture);
-    this.initMaterial(this.back, this.backTexture);
-    this.initMaterial(this.spine, this.spineTexture);
+    this.initMaterial(this.front[this.currentSize], this.frontTexture);
+    this.initMaterial(this.back[this.currentSize], this.backTexture);
+    this.initMaterial(this.spine[this.currentSize], this.spineTexture);
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this.scene.add(this.front);
-    this.scene.add(this.back);
-    this.scene.add(this.spine);
+    this.scene.add(this.front[this.currentSize]);
+    this.scene.add(this.back[this.currentSize]);
+    this.scene.add(this.spine[this.currentSize]);
   };
 
   Sleeve.prototype.initMaterial = function(obj, tex) {
@@ -99,18 +118,18 @@
   };
 
   Sleeve.prototype.setVisible = function(value) {
-    this.front.visible = this.back.visible = this.spine.visible = value;
+    this.front[this.currentSize].visible = this.back[this.currentSize].visible = this.spine[this.currentSize].visible = value;
   };
 
   Sleeve.prototype.update = function() {
-    this.front.position.set(this.position.x, this.position.y, this.position.z);
-    this.front.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this.front[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
+    this.front[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
-    this.back.position.set(this.position.x, this.position.y, this.position.z);
-    this.back.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this.back[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
+    this.back[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
-    this.spine.position.set(this.position.x, this.position.y, this.position.z);
-    this.spine.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this.spine[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
+    this.spine[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
   };
 
 
@@ -200,9 +219,19 @@ console.log(assets);
     };
 
     this.scene = scene;
+    this.currentSize = opts.size.toString();
 
-    this.front = assets['assetsModelLabelFront-' + opts.size];
-    this.back  = assets['assetsModelLabelBack-' + opts.size];
+    this.front = {
+      '7' : assets['assetsModelLabelFront-7'],
+      '10': assets['assetsModelLabelFront-10'],
+      '12': assets['assetsModelLabelFront-10']
+    };
+
+    this.back = {
+      '7' : assets['assetsModelLabelBack-7'],
+      '10': assets['assetsModelLabelBack-10'],
+      '12': assets['assetsModelLabelBack-10']
+    };
 
     this.frontTexture = new THREE.Texture();
     this.backTexture  = new THREE.Texture();
@@ -210,16 +239,16 @@ console.log(assets);
     this.updateTexture(this.frontTexture, assets['assetsTextureLabelFront']);
     this.updateTexture(this.backTexture, assets['assetsTextureLabelBack']);
 
-    this.initMaterial(this.front, this.frontTexture);
-    this.initMaterial(this.back, this.backTexture);
+    this.initMaterial(this.front[this.currentSize], this.frontTexture);
+    this.initMaterial(this.back[this.currentSize], this.backTexture);
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this.scene.add(this.front);
-    this.scene.add(this.back);
+    this.scene.add(this.front[this.currentSize]);
+    this.scene.add(this.back[this.currentSize]);
 
-    this.back.rotation.z = this.rotation.z + Math.PI;
+    this.back['7'].rotation.z = this.rotation.z + Math.PI;
   };
 
   Label.prototype.initMaterial = function(obj, tex) {
@@ -258,10 +287,10 @@ console.log(assets);
       return;
     }
 
-    this.front.position.set(this.position.x, this.position.y, this.position.z);
-    this.back.position.set(this.position.x, this.position.y, this.position.z);
-    this.front.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
-    this.back.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z + Math.PI);
+    this.front[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
+    this.back[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
+    this.front[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this.back[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z + Math.PI);
   };
 
   //--------------------------------------------------------------
@@ -740,7 +769,7 @@ console.log(assets);
   };
 
   World.prototype.onVinylSizeChanged = function(value) {
-    console.log(value);
+    console.log('World::onVinylSizeChanged', value);
   };
 
   World.prototype.onVinylColorChanged = function(value) {
