@@ -40,12 +40,12 @@
   }
 
   Sleeve.prototype.setup = function(scene, assets, opts) {
-    opts = opts || {
+    this.opts = opts || {
       size: 7
     };
 
     this.scene = scene;
-    this.currentSize = opts.size.toString();
+    this.currentSize = this.opts.size.toString();
     // TODO: create models of each size.
     // ex.
     // this.front_7 = ...
@@ -55,7 +55,7 @@
     this.front = {
       '7' : assets['assetsModelSleeveFront-7'],
       '10': assets['assetsModelSleeveFront-10'],
-      '12': assets['assetsModelSleeveFront-12']
+      '12': assets['assetsModelSleeveFront-12'],
     };
 
     this.back = {
@@ -70,17 +70,19 @@
       '12': assets['assetsModelSleeveSpine-12']
     };
 
-    this.frontTexture = new THREE.Texture();
-    this.backTexture = new THREE.Texture();
-    this.spineTexture = new THREE.Texture();
+    this.textures = {
+      front: new THREE.Texture(),
+      back: new THREE.Texture(),
+      spine: new THREE.Texture()
+    };
 
-    this.updateTexture(this.frontTexture, assets['assetsTextureSleeveFront-' + opts.size] || assets['assetsTextureSleeveDefault']);
-    this.updateTexture(this.backTexture, assets['assetsTextureSleeveBack-' + opts.size] || assets['assetsTextureSleeveDefault']);
-    this.updateTexture(this.spineTexture, assets['assetsTextureSleeveSpine-' + opts.size] || assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this.textures.front, assets['assetsTextureSleeveFront'] || assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this.textures.back, assets['assetsTextureSleeveBack'] || assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this.textures.spine, assets['assetsTextureSleeveSpine'] || assets['assetsTextureSleeveDefault']);
 
-    this.initMaterial(this.front[this.currentSize], this.frontTexture);
-    this.initMaterial(this.back[this.currentSize], this.backTexture);
-    this.initMaterial(this.spine[this.currentSize], this.spineTexture);
+    this.initMaterial(this.front[this.currentSize], this.textures.front);
+    this.initMaterial(this.back[this.currentSize], this.textures.back);
+    this.initMaterial(this.spine[this.currentSize], this.textures.spine);
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
@@ -139,30 +141,57 @@
   }
 
   Vinyl.prototype.setup = function(scene, assets, opts) {
-    opts = opts || {
+    this.opts = opts || {
+      bumpScale: 0.36,
       color: 0x000000,
       size: 7
     };
 console.log(assets);
-    this.scene = scene;
+    this._scene = scene;
+    this._size = this.opts.size.toString();
 
-    this.body = assets['assetsModelVinyl'];
-    
-    this.texture = new THREE.Texture();
-    this.bumpMapTexture = new THREE.Texture();
+    this.body = {
+      '7': assets['assetsModelVinyl-7'],
+      '10': assets['assetsModelVinyl-10'],
+      '12': assets['assetsModelVinyl-12'],
+    };
 
-    this.updateTexture(this.texture, assets['assetsTextureVinyl' + opts.size] || assets['assetsTextureVinylDefault']);
-    this.updateTexture(this.bumpMapTexture, assets['assetsTextureVinylBumpmap'] || assets['assetsTextureVinylDefaultBumpmap']);
+    this.textures = {
+      splatter: new THREE.Texture(),
+      bumpMap: {
+        '7': new THREE.Texture(),
+        '10': new THREE.Texture(),
+        '12': new THREE.Texture()
+      }
+    };
 
     var self = this;
-    this.body.traverse(function(child) {
+
+    Object.keys(self.textures.bumpMap).forEach(function(key) {
+      self.updateTexture(self.textures.bumpMap[key], assets['assetsTextureVinylBumpmap-' + key]);
+    });
+
+    Object.keys(self.body).forEach(function(key) {
+      self.initMaterial(self.body[key], self.textures.bumpMap[key]);
+    });
+
+    this.position = new THREE.Vector3(0, 0, 0);
+    this.rotation = new THREE.Vector3(0, 0, 0);
+
+    this._scene.add(this.body[this._size]);
+  };
+
+  Vinyl.prototype.initMaterial = function(obj, tex) {
+    var self = this;
+console.log(self.opts);
+    obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material = new THREE.MeshPhongMaterial({
           ambient: 0xFFFFFF,
-          bumpMap: self.bumpMapTexture,
-          bumpScale: opts.bumpScale || 0.18,
-          color: opts.color,
-          map: self.texture,
+          bumpMap: tex,
+          bumpScale: 0.36,
+          color: self.opts.color,
+          map: tex,
           shininess: 35,
           specular: 0x363636,
           shading: THREE.SmoothShading,
@@ -171,10 +200,7 @@ console.log(assets);
       }
     });
 
-    this.position = new THREE.Vector3(0, 0, 0);
-    this.rotation = new THREE.Vector3(0, 0, 0);
-
-    this.scene.add(this.body);
+    return obj;
   };
 
   Vinyl.prototype.updateTexture = function(tex, img) {
@@ -187,24 +213,39 @@ console.log(assets);
   };
 
   Vinyl.prototype.setBumpScale = function(value) {
-    this.body.traverse(function(child) {
-      if (child instanceof THREE.Mesh) {
-        child.material.bumpScale = value;
-      }
+    var self = this;
+
+    Object.keys(self.body).forEach(function(key) {
+      self.body[key].traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.bumpScale = value;
+        }
+      });
     });
   };
 
-  Vinyl.prototype.setVisible = function(value) {
-    this.body.visible = value;
-  };
-
-  Vinyl.prototype.update = function() {
-    if (!(this.body)) {
+  Vinyl.prototype.setSize = function(size) {
+    if (!size) {
       return;
     }
 
-    this.body.position.set(this.position.x, this.position.y, this.position.z);
-    this.body.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._scene.remove(this.body[this._size]);
+
+    this._size = size.toString();
+    this._scene.add(this.body[this._size]);
+  };
+
+  Vinyl.prototype.setVisible = function(value) {
+    this.body[this._size].visible = value;
+  };
+
+  Vinyl.prototype.update = function() {
+    if (!(this.body && this.body[this._size])) {
+      return;
+    }
+
+    this.body[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this.body[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
   };
 
 
@@ -214,24 +255,35 @@ console.log(assets);
   }
 
   Label.prototype.setup = function(scene, assets, opts) {
-    opts = opts || {
+    this.opts = opts || {
       size: 7
     };
 
-    this.scene = scene;
-    this.currentSize = opts.size.toString();
+    this._scene = scene;
+    this._size = this.opts.size.toString();
+    this._largeHole = false;
+
+    this._smallHoleFront = assets['assetsModelLabelFrontSmall-7'];
+    this._smallHoleBack = assets['assetsModelLabelBackSmall-7'];
+    this._largeHoleFront = assets['assetsModelLabelFrontLarge-7'];
+    this._largeHoleBack = assets['assetsModelLabelBackLarge-7'];
 
     this.front = {
-      '7' : assets['assetsModelLabelFront-7'],
+      '7' : this._smallHoleFront,
       '10': assets['assetsModelLabelFront-10'],
-      '12': assets['assetsModelLabelFront-10']
+      '12': assets['assetsModelLabelFront-12'],
+      current: null
     };
 
     this.back = {
-      '7' : assets['assetsModelLabelBack-7'],
+      '7' : this._smallHoleBack,
       '10': assets['assetsModelLabelBack-10'],
-      '12': assets['assetsModelLabelBack-10']
+      '12': assets['assetsModelLabelBack-12'],
+      current: null
     };
+
+    this.front.current = this.front[this._size];
+    this.back.current = this.back[this._size];
 
     this.frontTexture = new THREE.Texture();
     this.backTexture  = new THREE.Texture();
@@ -239,16 +291,19 @@ console.log(assets);
     this.updateTexture(this.frontTexture, assets['assetsTextureLabelFront']);
     this.updateTexture(this.backTexture, assets['assetsTextureLabelBack']);
 
-    this.initMaterial(this.front[this.currentSize], this.frontTexture);
-    this.initMaterial(this.back[this.currentSize], this.backTexture);
+    this.initMaterial(this.front.current, this.frontTexture);
+    this.initMaterial(this.back.current, this.backTexture);
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this.scene.add(this.front[this.currentSize]);
-    this.scene.add(this.back[this.currentSize]);
-
-    this.back['7'].rotation.z = this.rotation.z + Math.PI;
+    this._scene.add(this.front.current);
+    this._scene.add(this.back.current);
+    
+    var self = this;
+    Object.keys(this.back).forEach(function(key) {
+      self.back[key].rotation.z = self.rotation.z + Math.PI;
+    });
   };
 
   Label.prototype.initMaterial = function(obj, tex) {
@@ -278,8 +333,52 @@ console.log(assets);
     tex.needsUpdate = true;
   };
 
+  Label.prototype.setSize = function(size) {
+    if (!size) {
+      return;
+    }
+
+    console.log('Label::setSize', size);
+
+    this._scene.remove(this.front.current);
+    this._scene.remove(this.back.current);
+
+    this._size = size.toString();
+
+    this.front.current = this.front[this._size];
+    this.back.current = this.back[this._size];
+
+    this.initMaterial(this.front.current, this.frontTexture);
+    this.initMaterial(this.back.current, this.backTexture);
+
+    this._scene.add(this.front.current);
+    this._scene.add(this.back.current);
+  };
+
+  Label.prototype.setLargeHole = function(value) {
+    if ('7' !== this._size) {
+      return;
+    }
+
+    this._scene.remove(this.front.current);
+    this._scene.remove(this.back.current);
+
+    this._largeHole = value;
+
+    this.front['7'] = this._largeHole ? this._largeHoleFront : this._smallHoleFront;
+    this.back['7'] = this._largeHole ? this._largeHoleBack : this._smallHoleBack;
+    this.front.current = this.front['7'];
+    this.back.current = this.back['7'];
+
+    this.initMaterial(this.front.current, this.frontTexture);
+    this.initMaterial(this.back.current, this.backTexture);
+
+    this._scene.add(this.front.current);
+    this._scene.add(this.back.current);
+  };
+
   Label.prototype.setVisible = function(value) {
-    this.front.visible = this.back.visible = value;
+    this.front[this._size].visible = this.back[this._size].visible = value;
   };
 
   Label.prototype.update = function() {
@@ -287,10 +386,10 @@ console.log(assets);
       return;
     }
 
-    this.front[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
-    this.back[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
-    this.front[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
-    this.back[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z + Math.PI);
+    this.front[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this.back[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this.front[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this.back[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z + Math.PI);
   };
 
   //--------------------------------------------------------------
@@ -374,19 +473,21 @@ console.log(assets);
     // ground.receiveShadow = true;
     // scene.add(ground);
 
+    var size = 12;
+
     this.enableRotate = false;
     this.rotationAmount = 0;
 
     this.sleeve = new Sleeve();
-    this.sleeve.setup(this.scene, assets, { size: 7 });
+    this.sleeve.setup(this.scene, assets, { size: size });
     this.sleeve.position.x = -80;
     this.sleeve.setVisible(false);
 
     this.vinyl = new Vinyl();
-    this.vinyl.setup(this.scene, assets, { size: 7 });
+    this.vinyl.setup(this.scene, assets, { size: size, color: 0xFFFFFF });
 
     this.label = new Label();
-    this.label.setup(this.scene, assets, { size: 7 });
+    this.label.setup(this.scene, assets, { size: size });
 
     this.camera.position.set(-200, 250, 200);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -770,6 +871,18 @@ console.log(assets);
 
   World.prototype.onVinylSizeChanged = function(value) {
     console.log('World::onVinylSizeChanged', value);
+    var size;
+
+    if (1 == value) {
+      size = 7;
+    } else if (2 == value) {
+      size = 10;
+    } else if (3 == value) {
+      size = 12;
+    }
+
+    this.vinyl.setSize(size);
+    this.label.setSize(size);
   };
 
   World.prototype.onVinylColorChanged = function(value) {
@@ -781,7 +894,8 @@ console.log(assets);
   };
 
   World.prototype.onVinylHoleSizeChanged = function(value) {
-    console.log(value);
+    console.log('World::onVinylHoleSizeChanged', value);
+    this.label.setLargeHole(0 === value ? false : true);
   };
 
   World.prototype.onVinylHeavyChanged = function(value) {
