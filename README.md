@@ -116,12 +116,28 @@ Sleeve モデルのハンドラ。
 カラーを設定します。引数を省略すると現在値を返します。
 
 - `value:Number`
+  - `0`: Black
+  - `1`: White
+  - `2`: Yellow
+  - `3`: Red
+  - `4`: Orange
+  - `5`: Blue
+  - `6`: Brown
+  - `7`: Green
+  - `8`: Gray
+  - `9`: Transparent Green
+  - `10`: Transparent Yellow
+  - `11`: Transparent Red
+  - `12`: Transparent Violet
+  - `13`: Transparent Blue
+  - `14`: Transparent
 
 #### Vinyl#splatterColor([value:Number]):Vinyl
 
 スプラッター用の二色目を設定します。引数を省略すると現在値を返します。
 
 - `value:Number`
+  - _`Vinyl#color`_ のパラメータと同様。
 
 #### Vinyl#holeSize([value:Number]):Vinyl
 
