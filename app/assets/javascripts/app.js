@@ -94,6 +94,8 @@ vv.on('ready', function() {
 
   vm.$watch('vinyl.type', function(value) { vv.vinyl.type(value); });
   vm.$watch('vinyl.size', function(value) { vv.vinyl.size(value); });
+  vm.$watch('vinyl.color', function(value) { vv.vinyl.color(value); });
+  vm.$watch('vinyl.splatter', function(value) { vv.vinyl.splatter(value); });
   vm.$watch('vinyl.holeSize', function(value) { vv.vinyl.holeSize(value); });
   vm.$watch('vinyl.heavy', function(value) { vv.vinyl.heavy(value); });
   vm.$watch('vinyl.speed', function(value) { vv.vinyl.speed(value); });
