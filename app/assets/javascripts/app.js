@@ -13,7 +13,7 @@ var defaults = {
   },
   vinyl: {
     type: 1,
-    size: 7,
+    size: 1,
     holeSize: 0,
     heavy: false,
     speed: 45,
