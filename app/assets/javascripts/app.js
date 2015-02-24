@@ -13,7 +13,9 @@ var defaults = {
   },
   vinyl: {
     type: 1,
-    size: 7,
+    size: 1,
+    color: 0,
+    splatterColor: 0,
     holeSize: 0,
     heavy: false,
     speed: 45,
@@ -65,6 +67,7 @@ var vm = new Vue({ el: 'form', data: defaults });
 //
 
 vv.on('ready', function() {
+
   console.log('visualizer is ready.');
 
   //
