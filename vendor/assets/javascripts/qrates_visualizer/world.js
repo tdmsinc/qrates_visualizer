@@ -183,7 +183,7 @@ console.log(assets);
 
   Vinyl.prototype.initMaterial = function(obj, tex) {
     var self = this;
-console.log(self.opts);
+
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material = new THREE.MeshPhongMaterial({
@@ -233,6 +233,19 @@ console.log(self.opts);
 
     this._size = size.toString();
     this._scene.add(this.body[this._size]);
+  };
+
+  Vinyl.prototype.setColor = function(hexColor, opacity) {
+    var self = this;
+
+    Object.keys(self.body).forEach(function(key) {
+      self.body[key].traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.color.setHex(hexColor);
+          child.material.opacity = opacity;
+        }
+      });
+    });
   };
 
   Vinyl.prototype.setVisible = function(value) {
@@ -375,6 +388,16 @@ console.log(self.opts);
 
     this._scene.add(this.front.current);
     this._scene.add(this.back.current);
+  };
+
+  Label.prototype.setTexture = function(sideA, sideB) {
+    if (sideA) {
+      this.updateTexture(this.frontTexture, sideA);
+    }
+
+    if (sideB) {
+      this.updateTexture(this.backTexture, sideB);
+    }
   };
 
   Label.prototype.setVisible = function(value) {
@@ -847,7 +870,7 @@ console.log(self.opts);
 
     parent.label.on('type', this.onLabelTypeChanged.bind(this));
     parent.label.on('sideATexture', this.onLabelSideATextureChanged.bind(this));
-    parent.label.on('sideATexture', this.onLabelSideBTextureChanged.bind(this));
+    parent.label.on('sideBTexture', this.onLabelSideBTextureChanged.bind(this));
 
     parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
     parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
@@ -886,11 +909,31 @@ console.log(self.opts);
   };
 
   World.prototype.onVinylColorChanged = function(value) {
-    console.log(value);
+    console.log('World::onVinylColorChanged', value);
+
+    var colors = [
+      { color: 0x000000, opacity: 1.0 },
+      { color: 0xFFFFFF, opacity: 1.0 },
+      { color: 0xF6EB97, opacity: 1.0 },
+      { color: 0xD12145, opacity: 1.0 },
+      { color: 0xD8682A, opacity: 1.0 },
+      { color: 0x009FD8, opacity: 1.0 },
+      { color: 0x5D3031, opacity: 1.0 },
+      { color: 0x66B07F, opacity: 1.0 },
+      { color: 0x858588, opacity: 1.0 },
+      { color: 0x156C3F, opacity: 0.85 },
+      { color: 0xEDDC24, opacity: 0.85 },
+      { color: 0x882125, opacity: 0.85 },
+      { color: 0x28151F, opacity: 0.85 },
+      { color: 0x1B3961, opacity: 0.85 },
+      { color: 0xFFFFFF, opacity: 0.85 }
+    ];
+
+    this.vinyl.setColor(colors[value].color, colors[value].opacity);
   };
 
   World.prototype.onVinylSplatterColorChanged = function(value) {
-    console.log(value);
+    console.log('World::onVinylSplatterColorChanged', value);
   };
 
   World.prototype.onVinylHoleSizeChanged = function(value) {
@@ -915,15 +958,17 @@ console.log(self.opts);
   };
 
   World.prototype.onLabelTypeChanged = function(value) {
-    console.log(value);
+    console.log('World::onLabelTypeChanged', value);
   };
 
   World.prototype.onLabelSideATextureChanged = function(value) {
-    console.log(value);
+    console.log('World::onLabelSideATextureChanged', value);
+    this.label.setTexture(value, null);
   };
 
   World.prototype.onLabelSideBTextureChanged = function(value) {
-    console.log(value);
+    console.log('World::onLabelSideBTextureChanged', value);
+    this.label.setTexture(null, value);
   };
 
   World.prototype.onSleeveTypeChanged = function(value) {
