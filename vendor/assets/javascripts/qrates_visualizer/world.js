@@ -35,6 +35,24 @@
     x:0.0, y: 17.0, z: 30.0,
   };
 
+  var colors = [
+    { color: 0x000000, opacity: 1.0 },
+    { color: 0xFFFFFF, opacity: 1.0 },
+    { color: 0xF6EB97, opacity: 1.0 },
+    { color: 0xD12145, opacity: 1.0 },
+    { color: 0xD8682A, opacity: 1.0 },
+    { color: 0x009FD8, opacity: 1.0 },
+    { color: 0x5D3031, opacity: 1.0 },
+    { color: 0x66B07F, opacity: 1.0 },
+    { color: 0x858588, opacity: 1.0 },
+    { color: 0x156C3F, opacity: 0.85 },
+    { color: 0xEDDC24, opacity: 0.85 },
+    { color: 0x882125, opacity: 0.85 },
+    { color: 0x28151F, opacity: 0.85 },
+    { color: 0x1B3961, opacity: 0.85 },
+    { color: 0xFFFFFF, opacity: 0.85 }
+  ];
+
   //--------------------------------------------------------------
   function Sleeve() {
   }
@@ -45,11 +63,9 @@
     };
 
     this._scene = scene;
-    this._size = this._opts.size.toString();
-    // TODO: create models of each size.
-    // ex.
-    // this.front_7 = ...
-    // this.front_10 = ...
+    // this._size = this._opts.size.toString();
+    this._size = '7';
+    
     this.body = null;
 
     this.front = {
@@ -70,19 +86,29 @@
       '12': assets['assetsModelSleeveSpine-12']
     };
 
-    this.textures = {
+    this._textures = {
       front: new THREE.Texture(),
       back: new THREE.Texture(),
       spine: new THREE.Texture()
     };
 
-    this.updateTexture(this.textures.front, assets['assetsTextureSleeveFront'] || assets['assetsTextureSleeveDefault']);
-    this.updateTexture(this.textures.back, assets['assetsTextureSleeveBack'] || assets['assetsTextureSleeveDefault']);
-    this.updateTexture(this.textures.spine, assets['assetsTextureSleeveSpine'] || assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this._textures.front, assets['assetsTextureSleeveFront'] || assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this._textures.back, assets['assetsTextureSleeveBack'] || assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this._textures.spine, assets['assetsTextureSleeveSpine'] || assets['assetsTextureSleeveDefault']);
 
-    this.initMaterial(this.front[this._size], this.textures.front);
-    this.initMaterial(this.back[this._size], this.textures.back);
-    this.initMaterial(this.spine[this._size], this.textures.spine);
+    var self = this;
+
+    Object.keys(this.front).forEach(function(key) {
+      self.initMaterial(self.front[key], self._textures.front);
+    });
+
+    Object.keys(this.back).forEach(function(key) {
+      self.initMaterial(self.back[key], self._textures.back);
+    });
+
+    Object.keys(this.spine).forEach(function(key) {
+      self.initMaterial(self.spine[key], self._textures.spine);
+    });
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
@@ -117,6 +143,36 @@
 
     tex.image = img;
     tex.needsUpdate = true;
+  };
+
+  Sleeve.prototype.setTexture = function(sideA, sideB, spine) {
+    if (sideA) {
+      this.updateTexture(this._textures.front, sideA);
+    }
+
+    if (sideB) {
+      this.updateTexture(this._textures.back, sideB);
+    }
+
+    if (spine) {
+      this.updateTexture(this._textures.spine, spine);
+    }
+  };
+
+  Sleeve.prototype.setSize = function(size) {
+    if (!size) {
+      return;
+    }
+
+    this._scene.remove(this.front[this._size]);
+    this._scene.remove(this.back[this._size]);
+    this._scene.remove(this.spine[this._size]);
+
+    this._size = size.toString();
+
+    this._scene.add(this.front[this._size]);
+    this._scene.add(this.back[this._size]);
+    this._scene.add(this.spine[this._size]);
   };
 
   Sleeve.prototype.setVisible = function(value) {
@@ -165,7 +221,7 @@ console.log(assets);
       '12': assets['assetsModelVinyl-12'],
     };
 
-    this.textures = {
+    this._textures = {
       splatter: new THREE.Texture(),
       bumpMap: {
         '7': new THREE.Texture(),
@@ -176,12 +232,12 @@ console.log(assets);
 
     var self = this;
 
-    Object.keys(self.textures.bumpMap).forEach(function(key) {
-      self.updateTexture(self.textures.bumpMap[key], assets['assetsTextureVinylBumpmap-' + key]);
+    Object.keys(self._textures.bumpMap).forEach(function(key) {
+      self.updateTexture(self._textures.bumpMap[key], assets['assetsTextureVinylBumpmap-' + key]);
     });
 
     Object.keys(self.body).forEach(function(key) {
-      self.initMaterial(self.body[key], self.textures.bumpMap[key]);
+      self.initMaterial(self.body[key], self._textures.bumpMap[key]);
     });
 
     this.position = new THREE.Vector3(0, 0, 0);
@@ -512,43 +568,43 @@ console.log(assets);
     this._opts = opts || {};
 
     // init
-    var scene = this._scene = new THREE.Scene();
+    this._scene = new THREE.Scene();
+    this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
 
-    var camera = this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
-
-    var renderer = this.renderer = new THREE.WebGLRenderer(this._opts.renderer);
-    this.renderer.setSize(this._opts.width, this._opts.height);
-    this.renderer.setClearColor(0xFFFFFF, 1.0);
+    this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
+    this._renderer.setSize(this._opts.width, this._opts.height);
+    this._renderer.setClearColor(0xFFFFFF, 1.0);
 
     this.initGui();
-    this.initLights();
+    this._lights = this.createLights();
+    this._scene.add(this._lights);
 
     var shadowTexture = this.shadowTexture = new THREE.Texture();
     shadowTexture.image = assets['assetsTextureShadow'];
     shadowTexture.needsUpdate = true;
-    var pgeometry = new THREE.PlaneGeometry(30, 30);
+    var pgeometry = new THREE.PlaneGeometry(300, 300);
     var pmaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, side: THREE.DoubleSide, map: shadowTexture });
     var ground = new THREE.Mesh(pgeometry, pmaterial);
-    ground.position.set(0, 0, 0);
+    ground.position.set(0, -80, 0);
     ground.rotation.x = 90 * Math.PI / 180;
     // ground.receiveShadow = true;
-    // scene.add(ground);
+    // this._scene.add(ground);
 
-    var size = 12;
+    var size = 7;
 
     this.enableRotate = false;
     this.rotationAmount = 0;
 
-    this.sleeve = new Sleeve();
-    this.sleeve.setup(this._scene, assets, { size: size });
-    this.sleeve.position.x = -80;
-    this.sleeve.setVisible(false);
+    this._sleeve = new Sleeve();
+    this._sleeve.setup(this._scene, assets, { size: size });
+    this._sleeve.position.x = -80;
+    // this._sleeve.setVisible(false);
 
-    this.vinyl = new Vinyl();
-    this.vinyl.setup(this._scene, assets, { size: size, color: 0xFFFFFF });
+    this._vinyl = new Vinyl();
+    this._vinyl.setup(this._scene, assets, { size: size, color: 0xFFFFFF });
 
-    this.label = new Label();
-    this.label.setup(this._scene, assets, { size: size });
+    this._label = new Label();
+    this._label.setup(this._scene, assets, { size: size });
 
     this._camera.position.set(-200, 250, 200);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -564,41 +620,42 @@ console.log(assets);
    *
    */
 
-  World.prototype.initLights = function() {
-    var scene = this._scene;
+  World.prototype.getRenderer = function() {
+    return this._renderer;
+  };
 
-    var sl = new THREE.SpotLight(0xFFFFFF);
-    this._scene.add(sl);
-
+  World.prototype.createLights = function() {
+    var lights = new THREE.Object3D();
+    
     var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
     spotLight1.position.set(100, 200, 150);
-    this._scene.add(spotLight1);
+    lights.add(spotLight1);
 
     var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
     spotLight2.position.set(-76.36000061035156, 200, 150);
-    // spotLight2.castShadow = true;
-    // spotLight2.shadowMapWidth = spotLight2.shadowMapHeight = 2048;
-    this._scene.add(spotLight2);
+    lights.add(spotLight2);
 
     var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
     pointLight1.position.set(21.09000015258789, 213.86000061035156, -84.06999969482422);
-    this._scene.add(pointLight1);
+    lights.add(pointLight1);
 
     var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
     pointLight2.position.set(-2.059999942779541, -80.05000305175781, 10.65999984741211);
-    this._scene.add(pointLight2);
+    lights.add(pointLight2);
 
     var hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 1.0);
     hemisphereLight1.position.set(-128.50999450683594, 243.4199981689453, 52.41999816894531);
-    this._scene.add(hemisphereLight1);
+    lights.add(hemisphereLight1);
 
     var hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 1.0);
     hemisphereLight2.position.set(100, 244.38999938964844, 193.2899932861328);
-    this._scene.add(hemisphereLight2);
+    lights.add(hemisphereLight2);
 
     var ambientLight = new THREE.AmbientLight(0x0D0D0D);
     ambientLight.position.set(0, 20.049999237060547, 178.11000061035156);
-    this._scene.add(ambientLight);
+    lights.add(ambientLight);
+
+    return lights;
   };
 
   /**
@@ -813,7 +870,7 @@ console.log(assets);
     console.log('World::resize');
     this._camera.aspect = width / height;
     this._camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
+    this._renderer.setSize(width, height);
     this.draw();
   };
 
@@ -870,22 +927,22 @@ console.log(assets);
       this.rotationAmount = Math.max(this.rotationAmount - 0.001, 0);
     }
 
-    if (this.sleeve) {
-      this.sleeve.update();
+    if (this._sleeve) {
+      this._sleeve.update();
     }
 
-    if (this.vinyl) {
+    if (this._vinyl) {
       if (this.enableRotate) {
-        this.vinyl.rotation.y += this.rotationAmount;
+        this._vinyl.rotation.y += this.rotationAmount;
       }
-      this.vinyl.update();
+      this._vinyl.update();
     }
 
-    if (this.label) {
+    if (this._label) {
       if (this.enableRotate) {
-        this.label.rotation.y += this.rotationAmount;
+        this._label.rotation.y += this.rotationAmount;
       }
-      this.label.update();
+      this._label.update();
     }
   };
 
@@ -894,7 +951,7 @@ console.log(assets);
    */
   World.prototype.draw = function() {
     this.update();
-    this.renderer.render(this._scene, this._camera);
+    this._renderer.render(this._scene, this._camera);
     this.request = requestAnimationFrame(this.draw.bind(this));
   };
 
@@ -938,11 +995,11 @@ console.log(assets);
     console.log('World::onVinylTypeChanged', value);
 
     if (1 === value) {
-      this.vinyl.setColorMode(this.vinyl.COLOR_MODE_BLACK);
+      this._vinyl.setColorMode(this._vinyl.COLOR_MODE_BLACK);
     } else if (2 === value) {
-      this.vinyl.setColorMode(this.vinyl.COLOR_MODE_COLOR);
+      this._vinyl.setColorMode(this._vinyl.COLOR_MODE_COLOR);
     } else if (3 === value) {
-      this.vinyl.setColorMode(this.vinyl.COLOR_MODE_SPLATTER);
+      this._vinyl.setColorMode(this._vinyl.COLOR_MODE_SPLATTER);
     }
   };
 
@@ -958,57 +1015,42 @@ console.log(assets);
       size = 12;
     }
 
-    this.vinyl.setSize(size);
-    this.label.setSize(size);
+    this._sleeve.setSize(size);
+    this._vinyl.setSize(size);
+    this._label.setSize(size);
   };
 
   World.prototype.onVinylColorChanged = function(value) {
     console.log('World::onVinylColorChanged', value);
 
-    var colors = [
-      { color: 0x000000, opacity: 1.0 },
-      { color: 0xFFFFFF, opacity: 1.0 },
-      { color: 0xF6EB97, opacity: 1.0 },
-      { color: 0xD12145, opacity: 1.0 },
-      { color: 0xD8682A, opacity: 1.0 },
-      { color: 0x009FD8, opacity: 1.0 },
-      { color: 0x5D3031, opacity: 1.0 },
-      { color: 0x66B07F, opacity: 1.0 },
-      { color: 0x858588, opacity: 1.0 },
-      { color: 0x156C3F, opacity: 0.85 },
-      { color: 0xEDDC24, opacity: 0.85 },
-      { color: 0x882125, opacity: 0.85 },
-      { color: 0x28151F, opacity: 0.85 },
-      { color: 0x1B3961, opacity: 0.85 },
-      { color: 0xFFFFFF, opacity: 0.85 }
-    ];
-
-    this.vinyl.setColor(colors[value].color);
+    this._vinyl.setColor(colors[value].color);
   };
 
   World.prototype.onVinylSplatterColorChanged = function(value) {
     console.log('World::onVinylSplatterColorChanged', value);
+
+    this._vinyl.setColor(colors[value].color);
   };
 
   World.prototype.onVinylHoleSizeChanged = function(value) {
     console.log('World::onVinylHoleSizeChanged', value);
-    this.label.setLargeHole(0 === value ? false : true);
+    this._label.setLargeHole(0 === value ? false : true);
   };
 
   World.prototype.onVinylHeavyChanged = function(value) {
-    console.log(value);
+    console.log('World::onVinylHeavyChanged', value);
   };
 
   World.prototype.onVinylSpeedChanged = function(value) {
-    console.log(value);
+    console.log('World::onVinylSpeedChanged', value);
   };
 
   World.prototype.onVinylSideATextureChanged = function(value) {
-    console.log(value);
+    console.log('World::onVinylSideATextureChanged', value);
   };
 
   World.prototype.onVinylSideBTextureChanged = function(value) {
-    console.log(value);
+    console.log('World::onVinylSideBTextureChanged', value);
   };
 
   World.prototype.onLabelTypeChanged = function(value) {
@@ -1017,12 +1059,12 @@ console.log(assets);
 
   World.prototype.onLabelSideATextureChanged = function(value) {
     console.log('World::onLabelSideATextureChanged', value);
-    this.label.setTexture(value, null);
+    this._label.setTexture(value, null);
   };
 
   World.prototype.onLabelSideBTextureChanged = function(value) {
     console.log('World::onLabelSideBTextureChanged', value);
-    this.label.setTexture(null, value);
+    this._label.setTexture(null, value);
   };
 
   World.prototype.onSleeveTypeChanged = function(value) {
@@ -1038,11 +1080,15 @@ console.log(assets);
   };
 
   World.prototype.onSleeveFrontTextureChanged = function(value) {
-    console.log(value);
+    console.log('World::onSleeveFrontTextureChanged', value);
+
+    this._sleeve.setTexture(value, null);
   };
 
   World.prototype.onSleeveBackTextureChanged = function(value) {
-    console.log(value);
+    console.log('World::onSleeveBackTextureChanged', value);
+
+    this._sleeve.setTexture(null, value);
   };
 
   World.prototype.onSleeveSpineTextureChanged = function(value) {

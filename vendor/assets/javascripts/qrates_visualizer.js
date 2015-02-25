@@ -62,7 +62,7 @@
       var world = self.world = new World(self, assets, self.opts);
       world.delegateEvents();
       world.startRender();
-      el.appendChild(world.renderer.domElement);
+      el.appendChild(world.getRenderer().domElement);
       self.emit('ready');
     });
   };
