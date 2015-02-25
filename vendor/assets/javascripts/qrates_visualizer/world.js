@@ -70,18 +70,27 @@
     this._scene = scene;
     // this._size = this._opts.size.toString();
     this._size = '7';
+    this._holed = false;
     this._type = this.TYPE_BLACK;
     
     this._front = {
-      '7' : assets['assetsModelSleeveFront-7'],
-      '10': assets['assetsModelSleeveFront-10'],
-      '12': assets['assetsModelSleeveFront-12'],
+      current   : null,
+      '7'       : assets['assetsModelSleeveFront-7'],
+      '10'      : assets['assetsModelSleeveFront-10'],
+      '12'      : assets['assetsModelSleeveFront-12'],
+      'holed-7' : assets['assetsModelSleeveFrontHoled-7'],
+      'holed-10': assets['assetsModelSleeveFrontHoled-10'],
+      'holed-12': assets['assetsModelSleeveFrontHoled-12']
     };
 
     this._back = {
-      '7' : assets['assetsModelSleeveBack-7'],
-      '10': assets['assetsModelSleeveBack-10'],
-      '12': assets['assetsModelSleeveBack-12']
+      current   : null,
+      '7'       : assets['assetsModelSleeveBack-7'],
+      '10'      : assets['assetsModelSleeveBack-10'],
+      '12'      : assets['assetsModelSleeveBack-12'],
+      'holed-7' : assets['assetsModelSleeveBackHoled-7'],
+      'holed-10': assets['assetsModelSleeveBackHoled-10'],
+      'holed-12': assets['assetsModelSleeveBackHoled-12']
     };
 
     this._spine = {
@@ -117,12 +126,19 @@
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this._scene.add(this._front[this._size]);
-    this._scene.add(this._back[this._size]);
+    this._front.current = this._front[this._size];
+    this._back.current = this._back[this._size];
+
+    this._scene.add(this._front.current);
+    this._scene.add(this._back.current);
     this._scene.add(this._spine[this._size]);
   };
 
   Sleeve.prototype.initMaterial = function(obj, tex) {
+    if (!obj) {
+      return;
+    }
+
     var self = this;
 
     obj.traverse(function(child) {
@@ -196,27 +212,40 @@
       return;
     }
 
-    this._scene.remove(this._front[this._size]);
-    this._scene.remove(this._back[this._size]);
+    this._scene.remove(this._front.current);
+    this._scene.remove(this._back.current);
     this._scene.remove(this._spine[this._size]);
 
     this._size = size.toString();
 
-    this._scene.add(this._front[this._size]);
-    this._scene.add(this._back[this._size]);
+    if (this._holed) {
+      this._front.current = this._front['holed-' + this._size];
+      this._back.current = this._back['holed-' + this._size];
+    } else {
+      this._front.current = this._front[this._size];
+      this._back.current = this._back[this._size];
+    }
+
+    this._scene.add(this._front.current);
+    this._scene.add(this._back.current);
     this._scene.add(this._spine[this._size]);
   };
 
+  Sleeve.prototype.setHole = function(value) {
+    this._holed = value;
+    this.setSize(this._size);
+  };
+
   Sleeve.prototype.setVisible = function(value) {
-    this._front[this._size].visible = this._back[this._size].visible = this._spine[this._size].visible = value;
+    this._front.current.visible = this._back.current.visible = this._spine[this._size].visible = value;
   };
 
   Sleeve.prototype.update = function() {
-    this._front[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this._front[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._front.current.position.set(this.position.x, this.position.y, this.position.z);
+    this._front.current.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
-    this._back[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this._back[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._back.current.position.set(this.position.x, this.position.y, this.position.z);
+    this._back.current.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
     this._spine[this._size].position.set(this.position.x, this.position.y, this.position.z);
     this._spine[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
@@ -1129,7 +1158,9 @@ console.log(assets);
   };
 
   World.prototype.onSleeveHoleChanged = function(value) {
-    console.log(value);
+    console.log('World::onSleeveHoleChanged', value);
+
+    this._sleeve.setHole(value);
   };
 
   World.prototype.onSleeveGlossFinishChanged = function(value) {
