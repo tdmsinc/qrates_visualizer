@@ -26,7 +26,7 @@ var defaults = {
   sleeve: {
     type: 1,
     hole: false,
-    glossFinished: false
+    glossFinish: false
   }
 };
 
@@ -102,7 +102,7 @@ vv.on('ready', function() {
   vm.$watch('label.type', function(value) { vv.label.type(value); });
   vm.$watch('sleeve.type', function(value) { vv.sleeve.type(value); });
   vm.$watch('sleeve.hole', function(value) { vv.sleeve.hole(value); });
-  vm.$watch('sleeve.glossFinished', function(value) { vv.sleeve.glossFinished(value); });
+  vm.$watch('sleeve.glossFinish', function(value) { vv.sleeve.glossFinish(value); });
 
   //
   // file watcher
@@ -194,6 +194,6 @@ vv.vinyl.on('size', function(value) {
 vv.label.on('type', function(value) {
   console.log('change label.type', value);
 });
-vv.sleeve.on('glossFinished', function(value) {
-  console.log('change sleeve.glossFinished', value);
+vv.sleeve.on('glossFinish', function(value) {
+  console.log('change sleeve.glossFinish', value);
 });

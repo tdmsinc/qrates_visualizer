@@ -22,7 +22,7 @@
   var properties = [
     'type',
     'hole',
-    'glossFinished',
+    'glossFinish',
     'frontTexture',
     'backTexture',
     'spineTexture'

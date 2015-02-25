@@ -49,7 +49,7 @@
     // TODO: create models of each size.
     // ex.
     // this.front_7 = ...
-    // this.front_10 = ... 
+    // this.front_10 = ...
     this.body = null;
 
     this.front = {
@@ -312,7 +312,7 @@ console.log(assets);
 
     this._scene.add(this.front.current);
     this._scene.add(this.back.current);
-    
+
     var self = this;
     Object.keys(this.back).forEach(function(key) {
       self.back[key].rotation.z = self.rotation.z + Math.PI;
@@ -874,7 +874,7 @@ console.log(assets);
 
     parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
     parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
-    parent.sleeve.on('glossFinished', this.onSleeveGlossFinishedChanged.bind(this));
+    parent.sleeve.on('glossFinish', this.onSleeveGlossFinishChanged.bind(this));
     parent.sleeve.on('frontTexture', this.onSleeveFrontTextureChanged.bind(this));
     parent.sleeve.on('backTexture', this.onSleeveBackTextureChanged.bind(this));
     parent.sleeve.on('spineTexture', this.onSleeveSpineTextureChanged.bind(this));
@@ -979,7 +979,7 @@ console.log(assets);
     console.log(value);
   };
 
-  World.prototype.onSleeveGlossFinishedChanged = function(value) {
+  World.prototype.onSleeveGlossFinishChanged = function(value) {
     console.log(value);
   };
 
