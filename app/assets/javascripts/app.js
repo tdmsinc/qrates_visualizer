@@ -36,6 +36,19 @@ var defaults = {
 
 var el = document.querySelector('.vinyl-visualizer-container');
 var vv = new qvv.VinylVisualizer(el, {
+  width: window.innerWidth,
+  height: window.innerHeight,
+  renderer: {
+    antialias: true,
+    alpha: true,
+    preserveDrawingBuffer: false
+  },
+  camera: {
+    fov: 35,
+    aspect: window.innerWidth / window.innerHeight,
+    near: 1,
+    far: 10000
+  },
   defaults: {
     vinyl: defaults.vinyl,
     label: defaults.label,
@@ -58,6 +71,14 @@ vv.on('ready', function() {
   console.log('visualizer is ready.');
 
   //
+  // delegate resize.
+  //
+
+  window.addEventListener('resize', function(e) {
+    vv.resize(e.target.innerWidth, e.target.innerHeight);
+  }, false);
+
+  //
   // delegate events
   //
 
@@ -73,6 +94,8 @@ vv.on('ready', function() {
 
   vm.$watch('vinyl.type', function(value) { vv.vinyl.type(value); });
   vm.$watch('vinyl.size', function(value) { vv.vinyl.size(value); });
+  vm.$watch('vinyl.color', function(value) { vv.vinyl.color(value); });
+  vm.$watch('vinyl.splatter', function(value) { vv.vinyl.splatter(value); });
   vm.$watch('vinyl.holeSize', function(value) { vv.vinyl.holeSize(value); });
   vm.$watch('vinyl.heavy', function(value) { vv.vinyl.heavy(value); });
   vm.$watch('vinyl.speed', function(value) { vv.vinyl.speed(value); });

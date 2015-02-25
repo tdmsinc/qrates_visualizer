@@ -1,5 +1,4 @@
 
-//= require tdmsinc-three.js
 //= require_tree ./qrates_visualizer
 //= require_self
 
@@ -10,6 +9,8 @@
    */
 
   var Emitter = exports.Emitter;
+  var World = exports.World;
+  var Loader = exports.Loader;
   var Vinyl = exports.Vinyl;
   var Label = exports.Label;
   var Sleeve = exports.Sleeve;
@@ -27,7 +28,7 @@
    */
 
   function VinylVisualizer(el, opts) {
-    opts = opts || {};
+    this.opts = opts = opts || {};
     var defaults = opts.defaults || {};
     this.el = el;
     this.vinyl = new Vinyl({ defaults: defaults.vinyl });
@@ -49,16 +50,19 @@
    */
 
   VinylVisualizer.prototype.setup = function() {
-    // TODO: preload assets.
-
-    // TODO: it's renderer for test.
-    var renderer = new THREE.WebGLRenderer({ antialiased: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.domElement.style.display = 'block';
-    this.el.appendChild(renderer.domElement);
-
     var self = this;
-    setTimeout(function() {
+    var el = this.el;
+    var loader = new Loader();
+
+    Object.keys(el.dataset).forEach(function(key) {
+      loader.add(key, el.dataset[key]);
+    }, this);
+
+    loader.load(function(err, assets) {
+      var world = self.world = new World(self, assets, self.opts);
+      world.delegateEvents();
+      world.startRender();
+      el.appendChild(world.renderer.domElement);
       self.emit('ready');
     });
   };
@@ -72,7 +76,8 @@
    */
 
   VinylVisualizer.prototype.view = function(type, opts, callback) {
-    // TODO: change view
+    if (!this.world) return this;
+    this.world.updateView(type, opts, callback);
     return this;
   };
 
@@ -84,7 +89,8 @@
    */
 
   VinylVisualizer.prototype.capture = function(opts, callback) {
-    // TODO: capture image.
+    if (!this.world) return this;
+    this.world.capture(opts, callback);
     return this;
   };
 
@@ -96,7 +102,8 @@
    */
 
   VinylVisualizer.prototype.resize = function(width, height) {
-    // TODO: resize canvas.
+    if (!this.world) return this;
+    this.world.resize(width, height);
     return this;
   };
 
@@ -106,7 +113,8 @@
    */
 
   VinylVisualizer.prototype.play = function() {
-    // TODO:
+    if (!this.world) return this;
+    this.world.play();
     return this;
   };
 
@@ -116,7 +124,8 @@
    */
 
   VinylVisualizer.prototype.pause = function() {
-    // TODO:
+    if (!this.world) return this;
+    this.world.pause();
     return this;
   };
 
