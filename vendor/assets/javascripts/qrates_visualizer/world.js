@@ -62,9 +62,15 @@
       size: 7
     };
 
+    this.TYPE_BLACK       = 'black';
+    this.TYPE_WHITE       = 'white';
+    this.TYPE_PRINT       = 'print';
+    this.TYPE_PRINT_SPINE = 'spine';
+
     this._scene = scene;
     // this._size = this._opts.size.toString();
     this._size = '7';
+    this._type = this.TYPE_BLACK;
     
     this.body = null;
 
@@ -92,9 +98,9 @@
       spine: new THREE.Texture()
     };
 
-    this.updateTexture(this._textures.front, assets['assetsTextureSleeveFront'] || assets['assetsTextureSleeveDefault']);
-    this.updateTexture(this._textures.back, assets['assetsTextureSleeveBack'] || assets['assetsTextureSleeveDefault']);
-    this.updateTexture(this._textures.spine, assets['assetsTextureSleeveSpine'] || assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this._textures.front, assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this._textures.back, assets['assetsTextureSleeveDefault']);
+    this.updateTexture(this._textures.spine, assets['assetsTextureSleeveDefault']);
 
     var self = this;
 
@@ -119,12 +125,14 @@
   };
 
   Sleeve.prototype.initMaterial = function(obj, tex) {
+    var self = this;
+
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material = new THREE.MeshPhongMaterial({
           map: tex,
           ambient: 0xFFFFFF,
-          color: 0xFFFFFF,
+          color: self.TYPE_BLACK === self._type ? 0x000000 : 0xFFFFFF,
           shininess: 35,
           specular: 0x363636,
           shading: THREE.SmoothShading,
@@ -157,6 +165,32 @@
     if (spine) {
       this.updateTexture(this._textures.spine, spine);
     }
+  };
+
+  Sleeve.prototype.setType = function(type) {
+
+    if (-1 === [this.TYPE_BLACK, this.TYPE_WHITE, this.TYPE_PRINT, this.TYPE_PRINT_SPINE].indexOf(type)) {
+      return;
+    }
+
+    this._type = type;
+
+    var self = this;
+
+    Object.keys(this.front).forEach(function(key) {
+      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.front;
+      self.initMaterial(self.front[key], tex);
+    });
+
+    Object.keys(this.back).forEach(function(key) {
+      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.back;
+      self.initMaterial(self.back[key], tex);
+    });
+
+    Object.keys(this.spine).forEach(function(key) {
+      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.spine;
+      self.initMaterial(self.spine[key], tex);
+    });
   };
 
   Sleeve.prototype.setSize = function(size) {
@@ -1068,7 +1102,10 @@ console.log(assets);
   };
 
   World.prototype.onSleeveTypeChanged = function(value) {
-    console.log(value);
+    console.log('World::onSleeveTypeChanged', value);
+
+    var types = [this._sleeve.TYPE_BLACK, this._sleeve.TYPE_WHITE, this._sleeve.TYPE_PRINT, this._sleeve.TYPE_PRINT_SPINE];
+    this._sleeve.setType(types[value - 1]);
   };
 
   World.prototype.onSleeveHoleChanged = function(value) {
