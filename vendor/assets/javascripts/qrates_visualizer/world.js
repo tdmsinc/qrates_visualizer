@@ -40,12 +40,12 @@
   }
 
   Sleeve.prototype.setup = function(scene, assets, opts) {
-    this.opts = opts || {
+    this._opts = opts || {
       size: 7
     };
 
-    this.scene = scene;
-    this.currentSize = this.opts.size.toString();
+    this._scene = scene;
+    this._size = this._opts.size.toString();
     // TODO: create models of each size.
     // ex.
     // this.front_7 = ...
@@ -80,16 +80,16 @@
     this.updateTexture(this.textures.back, assets['assetsTextureSleeveBack'] || assets['assetsTextureSleeveDefault']);
     this.updateTexture(this.textures.spine, assets['assetsTextureSleeveSpine'] || assets['assetsTextureSleeveDefault']);
 
-    this.initMaterial(this.front[this.currentSize], this.textures.front);
-    this.initMaterial(this.back[this.currentSize], this.textures.back);
-    this.initMaterial(this.spine[this.currentSize], this.textures.spine);
+    this.initMaterial(this.front[this._size], this.textures.front);
+    this.initMaterial(this.back[this._size], this.textures.back);
+    this.initMaterial(this.spine[this._size], this.textures.spine);
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this.scene.add(this.front[this.currentSize]);
-    this.scene.add(this.back[this.currentSize]);
-    this.scene.add(this.spine[this.currentSize]);
+    this._scene.add(this.front[this._size]);
+    this._scene.add(this.back[this._size]);
+    this._scene.add(this.spine[this._size]);
   };
 
   Sleeve.prototype.initMaterial = function(obj, tex) {
@@ -120,18 +120,18 @@
   };
 
   Sleeve.prototype.setVisible = function(value) {
-    this.front[this.currentSize].visible = this.back[this.currentSize].visible = this.spine[this.currentSize].visible = value;
+    this.front[this._size].visible = this.back[this._size].visible = this.spine[this._size].visible = value;
   };
 
   Sleeve.prototype.update = function() {
-    this.front[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
-    this.front[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this.front[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this.front[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
-    this.back[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
-    this.back[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this.back[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this.back[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
-    this.spine[this.currentSize].position.set(this.position.x, this.position.y, this.position.z);
-    this.spine[this.currentSize].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this.spine[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this.spine[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
   };
 
 
@@ -141,14 +141,23 @@
   }
 
   Vinyl.prototype.setup = function(scene, assets, opts) {
-    this.opts = opts || {
+    this._opts = opts || {
       bumpScale: 0.36,
       color: 0x000000,
       size: 7
     };
+
+    // color modes a.k.a. vinyl types
+    this.COLOR_MODE_BLACK    = 'black';
+    this.COLOR_MODE_COLOR    = 'color';
+    this.COLOR_MODE_SPLATTER = 'splatter';
+
 console.log(assets);
     this._scene = scene;
-    this._size = this.opts.size.toString();
+    this._size = this._opts.size.toString();
+    this._colorMode = this.COLOR_MODE_BLACK;
+    this._color = 0x000000;
+    this._opacity = 1.0;
 
     this.body = {
       '7': assets['assetsModelVinyl-7'],
@@ -190,8 +199,10 @@ console.log(assets);
           ambient: 0xFFFFFF,
           bumpMap: tex,
           bumpScale: 0.36,
-          color: self.opts.color,
+          color: self._color,
+          emissive: 0,
           map: tex,
+          opacity: self.opacity,
           shininess: 35,
           specular: 0x363636,
           shading: THREE.SmoothShading,
@@ -235,14 +246,41 @@ console.log(assets);
     this._scene.add(this.body[this._size]);
   };
 
-  Vinyl.prototype.setColor = function(hexColor, opacity) {
-    var self = this;
+  Vinyl.prototype.setColorMode = function(mode) {
+    if (!mode) {
+      return;
+    }
 
+    if (this.COLOR_MODE_BLACK === mode) {
+      this._colorMode = this.COLOR_MODE_BLACK;
+      this.setColor(0x000000, 1.0);
+    } else if (this.COLOR_MODE_COLOR === mode) {
+      this._colorMode = this.COLOR_MODE_COLOR;
+      this.setColor(self.color, 1.0);
+    } else if (this.COLOR_MODE_SPLATTER === mode) {
+      this._colorMode = this.COLOR_MODE_SPLATTER;
+      this.setColor(self._color, 0.8);
+    }
+  };
+
+  Vinyl.prototype.setColor = function(hexColor) {
+    if (this._colorMode === this.COLOR_MODE_BLACK) {
+      this._color = 0x000000;
+      this.opacity = 1.0;
+    } else if (this._colorMode === this.COLOR_MODE_COLOR) {
+      this._color = hexColor;
+      this._opacity = 1.0;
+    } else if (this._colorMode === this.COLOR_MODE_SPLATTER) {
+      this._color = hexColor;
+      this._opacity = 0.8;
+    }
+
+    var self = this;
     Object.keys(self.body).forEach(function(key) {
       self.body[key].traverse(function(child) {
         if (child instanceof THREE.Mesh) {
-          child.material.color.setHex(hexColor);
-          child.material.opacity = opacity;
+          child.material.color.setHex(self._color);
+          child.material.opacity = self._opacity;
         }
       });
     });
@@ -268,12 +306,12 @@ console.log(assets);
   }
 
   Label.prototype.setup = function(scene, assets, opts) {
-    this.opts = opts || {
+    this._opts = opts || {
       size: 7
     };
 
     this._scene = scene;
-    this._size = this.opts.size.toString();
+    this._size = this._opts.size.toString();
     this._largeHole = false;
 
     this._smallHoleFront = assets['assetsModelLabelFrontSmall-7'];
@@ -469,17 +507,17 @@ console.log(assets);
    */
 
   function World(parent, assets, opts) {
-    this.parent = parent;
-    this.assets = assets;
-    this.opts = opts || {};
+    this._parent = parent;
+    this._assets = assets;
+    this._opts = opts || {};
 
     // init
-    var scene = this.scene = new THREE.Scene();
+    var scene = this._scene = new THREE.Scene();
 
-    var camera = this.camera = new THREE.PerspectiveCamera(this.opts.camera.fov, this.opts.camera.aspect, this.opts.camera.near, this.opts.camera.far);
+    var camera = this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
 
-    var renderer = this.renderer = new THREE.WebGLRenderer(this.opts.renderer);
-    this.renderer.setSize(this.opts.width, this.opts.height);
+    var renderer = this.renderer = new THREE.WebGLRenderer(this._opts.renderer);
+    this.renderer.setSize(this._opts.width, this._opts.height);
     this.renderer.setClearColor(0xFFFFFF, 1.0);
 
     this.initGui();
@@ -502,18 +540,18 @@ console.log(assets);
     this.rotationAmount = 0;
 
     this.sleeve = new Sleeve();
-    this.sleeve.setup(this.scene, assets, { size: size });
+    this.sleeve.setup(this._scene, assets, { size: size });
     this.sleeve.position.x = -80;
     this.sleeve.setVisible(false);
 
     this.vinyl = new Vinyl();
-    this.vinyl.setup(this.scene, assets, { size: size, color: 0xFFFFFF });
+    this.vinyl.setup(this._scene, assets, { size: size, color: 0xFFFFFF });
 
     this.label = new Label();
-    this.label.setup(this.scene, assets, { size: size });
+    this.label.setup(this._scene, assets, { size: size });
 
-    this.camera.position.set(-200, 250, 200);
-    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    this._camera.position.set(-200, 250, 200);
+    this._camera.lookAt(new THREE.Vector3(0, 0, 0));
   }
 
   /**
@@ -527,37 +565,40 @@ console.log(assets);
    */
 
   World.prototype.initLights = function() {
-    var scene = this.scene;
+    var scene = this._scene;
+
+    var sl = new THREE.SpotLight(0xFFFFFF);
+    this._scene.add(sl);
 
     var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
     spotLight1.position.set(100, 200, 150);
-    scene.add(spotLight1);
+    this._scene.add(spotLight1);
 
     var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
     spotLight2.position.set(-76.36000061035156, 200, 150);
     // spotLight2.castShadow = true;
     // spotLight2.shadowMapWidth = spotLight2.shadowMapHeight = 2048;
-    scene.add(spotLight2);
+    this._scene.add(spotLight2);
 
     var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
     pointLight1.position.set(21.09000015258789, 213.86000061035156, -84.06999969482422);
-    scene.add(pointLight1);
+    this._scene.add(pointLight1);
 
     var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
     pointLight2.position.set(-2.059999942779541, -80.05000305175781, 10.65999984741211);
-    scene.add(pointLight2);
+    this._scene.add(pointLight2);
 
     var hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 1.0);
     hemisphereLight1.position.set(-128.50999450683594, 243.4199981689453, 52.41999816894531);
-    scene.add(hemisphereLight1);
+    this._scene.add(hemisphereLight1);
 
     var hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 1.0);
     hemisphereLight2.position.set(100, 244.38999938964844, 193.2899932861328);
-    scene.add(hemisphereLight2);
+    this._scene.add(hemisphereLight2);
 
     var ambientLight = new THREE.AmbientLight(0x0D0D0D);
     ambientLight.position.set(0, 20.049999237060547, 178.11000061035156);
-    scene.add(ambientLight);
+    this._scene.add(ambientLight);
   };
 
   /**
@@ -571,9 +612,9 @@ console.log(assets);
     var sizeController = gui.add(props, 'size', [7, 10, 12]);
     var labelController = gui.add(props, 'label', [1, 2, 3, 4, 5, 6, 7, 8]);
     var cameraPositionController = gui.add(props, 'camera_pos', [1, 2, 3, 4]);
-    var cameraXController = gui.add(cameraProps, 'x', -200, 200);
-    var cameraYController = gui.add(cameraProps, 'y', -200, 200);
-    var cameraZController = gui.add(cameraProps, 'z', -200, 200);
+    var cameraXController = gui.add(cameraProps, 'x', -1000, 1000);
+    var cameraYController = gui.add(cameraProps, 'y', -1000, 1000);
+    var cameraZController = gui.add(cameraProps, 'z', -1000, 1000);
     var rotateXController = gui.add(props, 'rotateX', -Math.PI / 2, Math.PI / 2);
     var rotateYController = gui.add(props, 'rotateY', -Math.PI / 2, Math.PI / 2);
     var rotateZController = gui.add(props, 'rotateZ', -Math.PI / 2, Math.PI / 2);
@@ -583,7 +624,7 @@ console.log(assets);
 
     var self = this;
     var axes = this.axes;
-    var camera = this.camera;
+    var camera = this._camera;
 
     rotationController.onChange(function(value) {
       self.enableRotate = value;
@@ -709,18 +750,18 @@ console.log(assets);
     });
 
     cameraXController.onChange(function(value) {
-      self.camera.position.x = value;
-      self.camera.lookAt(new THREE.Vector3(0, 0, 0));
+      self._camera.position.x = value;
+      self._camera.lookAt(new THREE.Vector3(0, 0, 0));
     });
 
     cameraYController.onChange(function(value) {
-      self.camera.position.y = value;
-      self.camera.lookAt(new THREE.Vector3(0, 0, 0));
+      self._camera.position.y = value;
+      self._camera.lookAt(new THREE.Vector3(0, 0, 0));
     });
 
     cameraZController.onChange(function(value) {
-      self.camera.position.z = value;
-      self.camera.lookAt(new THREE.Vector3(0, 0, 0));
+      self._camera.position.z = value;
+      self._camera.lookAt(new THREE.Vector3(0, 0, 0));
     });
 
     rotateXController.onChange(function(value) {
@@ -748,7 +789,7 @@ console.log(assets);
     });
 
     fovController.onChange(function(value) {
-      self.camera.setLens(value);
+      self._camera.setLens(value);
     });
   };
 
@@ -765,8 +806,8 @@ console.log(assets);
 
   World.prototype.resize = function(width, height) {
     console.log('World::resize');
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
+    this._camera.aspect = width / height;
+    this._camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
     this.draw();
   };
@@ -848,7 +889,7 @@ console.log(assets);
    */
   World.prototype.draw = function() {
     this.update();
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this._scene, this._camera);
     this.request = requestAnimationFrame(this.draw.bind(this));
   };
 
@@ -856,7 +897,7 @@ console.log(assets);
    *
    */
   World.prototype.delegateEvents = function() {
-    var parent = this.parent;
+    var parent = this._parent;
 
     parent.vinyl.on('type', this.onVinylTypeChanged.bind(this));
     parent.vinyl.on('size', this.onVinylSizeChanged.bind(this));
@@ -883,13 +924,21 @@ console.log(assets);
   };
 
   World.prototype.undelegateEvents = function() {
-    var parent = this.parent;
+    var parent = this._parent;
 
     return this;
   };
 
   World.prototype.onVinylTypeChanged = function(value) {
-    console.log(value);
+    console.log('World::onVinylTypeChanged', value);
+
+    if (1 === value) {
+      this.vinyl.setColorMode(this.vinyl.COLOR_MODE_BLACK);
+    } else if (2 === value) {
+      this.vinyl.setColorMode(this.vinyl.COLOR_MODE_COLOR);
+    } else if (3 === value) {
+      this.vinyl.setColorMode(this.vinyl.COLOR_MODE_SPLATTER);
+    }
   };
 
   World.prototype.onVinylSizeChanged = function(value) {
@@ -929,7 +978,7 @@ console.log(assets);
       { color: 0xFFFFFF, opacity: 0.85 }
     ];
 
-    this.vinyl.setColor(colors[value].color, colors[value].opacity);
+    this.vinyl.setColor(colors[value].color);
   };
 
   World.prototype.onVinylSplatterColorChanged = function(value) {
