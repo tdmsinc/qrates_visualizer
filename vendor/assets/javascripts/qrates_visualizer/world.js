@@ -603,7 +603,10 @@ console.log(assets);
 
     // init
     this._scene = new THREE.Scene();
+
     this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
+    this._camera.lookAt(new THREE.Vector3(0, 0, 0));
+    this._camera.targetPosition = new THREE.Vector3(0, 409, 106);
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._opts.width, this._opts.height);
@@ -640,8 +643,7 @@ console.log(assets);
     this._label = new Label();
     this._label.setup(this._scene, assets, { size: size });
 
-    this._camera.position.set(-200, 250, 200);
-    this._camera.lookAt(new THREE.Vector3(0, 0, 0));
+    // this._camera.position.set(-200, 250, 200);
   }
 
   /**
@@ -821,24 +823,16 @@ console.log(assets);
     cameraPositionController.onChange(function(value) {
       switch (Number(value)) {
         case 1:
-          camera.position.set(0, 17, 47);
-          labelObj.rotation.set(1.4255541939532348, 0, 0);
-          vinylObj.rotation.set(1.4255541939532348, 0, 0);
+          self._camera.targetPosition.set(0, 409, 106);
           break;
         case 2:
-          camera.position.set(0, 17, 17);
-          labelObj.rotation.set(1.323405880745912, 0, 0);
-          vinylObj.rotation.set(1.323405880745912, 0, 0);
+          self._camera.targetPosition.set(0, 149, 1);
           break;
         case 3:
-          camera.position.set(0, 17, 73);
-          labelObj.rotation.set(1.3574553184816862, 0, 0);
-          vinylObj.rotation.set(1.3574553184816862, 0, 0);
+          self._camera.targetPosition.set(127, 192, 214);
           break;
         case 4:
-          camera.position.set(4, 17, 56);
-          labelObj.rotation.set(1.3574553184816862, -0.20881881736392782, 0.43812049961578214);
-          vinylObj.rotation.set(1.3574553184816862, -0.20881881736392782, 0.43812049961578214);
+          self._camera.targetPosition.set(127, 0, 0);
           break;
         default:
           break;
@@ -846,18 +840,15 @@ console.log(assets);
     });
 
     cameraXController.onChange(function(value) {
-      self._camera.position.x = value;
-      self._camera.lookAt(new THREE.Vector3(0, 0, 0));
+      self._camera.targetPosition.x = value;
     });
 
     cameraYController.onChange(function(value) {
-      self._camera.position.y = value;
-      self._camera.lookAt(new THREE.Vector3(0, 0, 0));
+      self._camera.targetPosition.y = value;
     });
 
     cameraZController.onChange(function(value) {
-      self._camera.position.z = value;
-      self._camera.lookAt(new THREE.Vector3(0, 0, 0));
+      self._camera.targetPosition.z = value;
     });
 
     rotateXController.onChange(function(value) {
@@ -978,6 +969,11 @@ console.log(assets);
       }
       this._label.update();
     }
+
+    this._camera.position.x += (this._camera.targetPosition.x - this._camera.position.x) / 8;
+    this._camera.position.y += (this._camera.targetPosition.y - this._camera.position.y) / 8;
+    this._camera.position.z += (this._camera.targetPosition.z - this._camera.position.z) / 8;
+    this._camera.lookAt(new THREE.Vector3(0, 0, 0));
   };
 
   /**
