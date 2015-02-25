@@ -606,7 +606,12 @@ console.log(assets);
    */
 
   World.prototype.initGui = function() {
-    var gui = this.gui = new dat.GUI();
+    if (!window.dat) {
+      console.warn('dat.GUI is not loaded');
+      return false;
+    }
+
+    var gui = this.gui = new window.dat.GUI();
     var rotationController = gui.add(props, 'rotate');
     var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
     var sizeController = gui.add(props, 'size', [7, 10, 12]);
