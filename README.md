@@ -218,7 +218,7 @@ B 面用のレーベルのテクスチャを指定します。引数を省略す
   - `true`: ホールあり
   - `false`: ホールなし
 
-#### Sleeve#glossFinished([value:Boolean]):Sleeve
+#### Sleeve#glossFinish([value:Boolean]):Sleeve
 
 光沢仕上げの有無を指定します。引数を省略すると現在値を返します。
 
