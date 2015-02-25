@@ -72,21 +72,19 @@
     this._size = '7';
     this._type = this.TYPE_BLACK;
     
-    this.body = null;
-
-    this.front = {
+    this._front = {
       '7' : assets['assetsModelSleeveFront-7'],
       '10': assets['assetsModelSleeveFront-10'],
       '12': assets['assetsModelSleeveFront-12'],
     };
 
-    this.back = {
+    this._back = {
       '7' : assets['assetsModelSleeveBack-7'],
       '10': assets['assetsModelSleeveBack-10'],
       '12': assets['assetsModelSleeveBack-12']
     };
 
-    this.spine = {
+    this._spine = {
       '7' : assets['assetsModelSleeveSpine-7'],
       '10': assets['assetsModelSleeveSpine-10'],
       '12': assets['assetsModelSleeveSpine-12']
@@ -94,7 +92,7 @@
 
     this._textures = {
       front: new THREE.Texture(),
-      back: new THREE.Texture(),
+      back : new THREE.Texture(),
       spine: new THREE.Texture()
     };
 
@@ -104,24 +102,24 @@
 
     var self = this;
 
-    Object.keys(this.front).forEach(function(key) {
-      self.initMaterial(self.front[key], self._textures.front);
+    Object.keys(this._front).forEach(function(key){
+      self.initMaterial(self._front[key], self._textures.front);
     });
 
-    Object.keys(this.back).forEach(function(key) {
-      self.initMaterial(self.back[key], self._textures.back);
+    Object.keys(this._back).forEach(function(key) {
+      self.initMaterial(self._back[key], self._textures.back);
     });
 
-    Object.keys(this.spine).forEach(function(key) {
-      self.initMaterial(self.spine[key], self._textures.spine);
+    Object.keys(this._spine).forEach(function(key) {
+      self.initMaterial(self._spine[key], self._textures.spine);
     });
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this._scene.add(this.front[this._size]);
-    this._scene.add(this.back[this._size]);
-    this._scene.add(this.spine[this._size]);
+    this._scene.add(this._front[this._size]);
+    this._scene.add(this._back[this._size]);
+    this._scene.add(this._spine[this._size]);
   };
 
   Sleeve.prototype.initMaterial = function(obj, tex) {
@@ -177,19 +175,19 @@
 
     var self = this;
 
-    Object.keys(this.front).forEach(function(key) {
+    Object.keys(this._front).forEach(function(key) {
       var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.front;
-      self.initMaterial(self.front[key], tex);
+      self.initMaterial(self._front[key], tex);
     });
 
-    Object.keys(this.back).forEach(function(key) {
+    Object.keys(this._back).forEach(function(key) {
       var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.back;
-      self.initMaterial(self.back[key], tex);
+      self.initMaterial(self._back[key], tex);
     });
 
-    Object.keys(this.spine).forEach(function(key) {
+    Object.keys(this._spine).forEach(function(key) {
       var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.spine;
-      self.initMaterial(self.spine[key], tex);
+      self.initMaterial(self._spine[key], tex);
     });
   };
 
@@ -198,30 +196,30 @@
       return;
     }
 
-    this._scene.remove(this.front[this._size]);
-    this._scene.remove(this.back[this._size]);
-    this._scene.remove(this.spine[this._size]);
+    this._scene.remove(this._front[this._size]);
+    this._scene.remove(this._back[this._size]);
+    this._scene.remove(this._spine[this._size]);
 
     this._size = size.toString();
 
-    this._scene.add(this.front[this._size]);
-    this._scene.add(this.back[this._size]);
-    this._scene.add(this.spine[this._size]);
+    this._scene.add(this._front[this._size]);
+    this._scene.add(this._back[this._size]);
+    this._scene.add(this._spine[this._size]);
   };
 
   Sleeve.prototype.setVisible = function(value) {
-    this.front[this._size].visible = this.back[this._size].visible = this.spine[this._size].visible = value;
+    this._front[this._size].visible = this._back[this._size].visible = this._spine[this._size].visible = value;
   };
 
   Sleeve.prototype.update = function() {
-    this.front[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this.front[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._front[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this._front[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
-    this.back[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this.back[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._back[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this._back[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
-    this.spine[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this.spine[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._spine[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this._spine[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
   };
 
 
@@ -249,8 +247,8 @@ console.log(assets);
     this._color = 0x000000;
     this._opacity = 1.0;
 
-    this.body = {
-      '7': assets['assetsModelVinyl-7'],
+    this._body = {
+      '7' : assets['assetsModelVinyl-7'],
       '10': assets['assetsModelVinyl-10'],
       '12': assets['assetsModelVinyl-12'],
     };
@@ -258,7 +256,7 @@ console.log(assets);
     this._textures = {
       splatter: new THREE.Texture(),
       bumpMap: {
-        '7': new THREE.Texture(),
+        '7' : new THREE.Texture(),
         '10': new THREE.Texture(),
         '12': new THREE.Texture()
       }
@@ -270,14 +268,14 @@ console.log(assets);
       self.updateTexture(self._textures.bumpMap[key], assets['assetsTextureVinylBumpmap-' + key]);
     });
 
-    Object.keys(self.body).forEach(function(key) {
-      self.initMaterial(self.body[key], self._textures.bumpMap[key]);
+    Object.keys(self._body).forEach(function(key) {
+      self.initMaterial(self._body[key], self._textures.bumpMap[key]);
     });
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this._scene.add(this.body[this._size]);
+    this._scene.add(this._body[this._size]);
   };
 
   Vinyl.prototype.initMaterial = function(obj, tex) {
@@ -316,8 +314,8 @@ console.log(assets);
   Vinyl.prototype.setBumpScale = function(value) {
     var self = this;
 
-    Object.keys(self.body).forEach(function(key) {
-      self.body[key].traverse(function(child) {
+    Object.keys(self._body).forEach(function(key) {
+      self._body[key].traverse(function(child) {
         if (child instanceof THREE.Mesh) {
           child.material.bumpScale = value;
         }
@@ -330,10 +328,10 @@ console.log(assets);
       return;
     }
 
-    this._scene.remove(this.body[this._size]);
+    this._scene.remove(this._body[this._size]);
 
     this._size = size.toString();
-    this._scene.add(this.body[this._size]);
+    this._scene.add(this._body[this._size]);
   };
 
   Vinyl.prototype.setColorMode = function(mode) {
@@ -366,8 +364,8 @@ console.log(assets);
     }
 
     var self = this;
-    Object.keys(self.body).forEach(function(key) {
-      self.body[key].traverse(function(child) {
+    Object.keys(self._body).forEach(function(key) {
+      self._body[key].traverse(function(child) {
         if (child instanceof THREE.Mesh) {
           child.material.color.setHex(self._color);
           child.material.opacity = self._opacity;
@@ -377,16 +375,16 @@ console.log(assets);
   };
 
   Vinyl.prototype.setVisible = function(value) {
-    this.body[this._size].visible = value;
+    this._body[this._size].visible = value;
   };
 
   Vinyl.prototype.update = function() {
-    if (!(this.body && this.body[this._size])) {
+    if (!(this._body && this._body[this._size])) {
       return;
     }
 
-    this.body[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this.body[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._body[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this._body[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
   };
 
 
@@ -409,41 +407,41 @@ console.log(assets);
     this._largeHoleFront = assets['assetsModelLabelFrontLarge-7'];
     this._largeHoleBack = assets['assetsModelLabelBackLarge-7'];
 
-    this.front = {
+    this._front = {
       '7' : this._smallHoleFront,
       '10': assets['assetsModelLabelFront-10'],
       '12': assets['assetsModelLabelFront-12'],
       current: null
     };
 
-    this.back = {
+    this._back = {
       '7' : this._smallHoleBack,
       '10': assets['assetsModelLabelBack-10'],
       '12': assets['assetsModelLabelBack-12'],
       current: null
     };
 
-    this.front.current = this.front[this._size];
-    this.back.current = this.back[this._size];
+    this._front.current = this._front[this._size];
+    this._back.current = this._back[this._size];
 
-    this.frontTexture = new THREE.Texture();
-    this.backTexture  = new THREE.Texture();
+    this._frontTexture = new THREE.Texture();
+    this._backTexture  = new THREE.Texture();
 
-    this.updateTexture(this.frontTexture, assets['assetsTextureLabelFront']);
-    this.updateTexture(this.backTexture, assets['assetsTextureLabelBack']);
+    this.updateTexture(this._frontTexture, assets['assetsTextureLabelFront']);
+    this.updateTexture(this._backTexture, assets['assetsTextureLabelBack']);
 
-    this.initMaterial(this.front.current, this.frontTexture);
-    this.initMaterial(this.back.current, this.backTexture);
+    this.initMaterial(this._front.current, this._frontTexture);
+    this.initMaterial(this._back.current, this._backTexture);
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this._scene.add(this.front.current);
-    this._scene.add(this.back.current);
+    this._scene.add(this._front.current);
+    this._scene.add(this._back.current);
 
     var self = this;
-    Object.keys(this.back).forEach(function(key) {
-      self.back[key].rotation.z = self.rotation.z + Math.PI;
+    Object.keys(this._back).forEach(function(key) {
+      self._back[key].rotation.z = self.rotation.z + Math.PI;
     });
   };
 
@@ -481,19 +479,19 @@ console.log(assets);
 
     console.log('Label::setSize', size);
 
-    this._scene.remove(this.front.current);
-    this._scene.remove(this.back.current);
+    this._scene.remove(this._front.current);
+    this._scene.remove(this._back.current);
 
     this._size = size.toString();
 
-    this.front.current = this.front[this._size];
-    this.back.current = this.back[this._size];
+    this._front.current = this._front[this._size];
+    this._back.current = this._back[this._size];
 
-    this.initMaterial(this.front.current, this.frontTexture);
-    this.initMaterial(this.back.current, this.backTexture);
+    this.initMaterial(this._front.current, this._frontTexture);
+    this.initMaterial(this._back.current, this._backTexture);
 
-    this._scene.add(this.front.current);
-    this._scene.add(this.back.current);
+    this._scene.add(this._front.current);
+    this._scene.add(this._back.current);
   };
 
   Label.prototype.setLargeHole = function(value) {
@@ -501,46 +499,46 @@ console.log(assets);
       return;
     }
 
-    this._scene.remove(this.front.current);
-    this._scene.remove(this.back.current);
+    this._scene.remove(this._front.current);
+    this._scene.remove(this._back.current);
 
     this._largeHole = value;
 
-    this.front['7'] = this._largeHole ? this._largeHoleFront : this._smallHoleFront;
-    this.back['7'] = this._largeHole ? this._largeHoleBack : this._smallHoleBack;
-    this.front.current = this.front['7'];
-    this.back.current = this.back['7'];
+    this._front['7'] = this._largeHole ? this._largeHoleFront : this._smallHoleFront;
+    this._back['7'] = this._largeHole ? this._largeHoleBack : this._smallHoleBack;
+    this._front.current = this._front['7'];
+    this._back.current = this._back['7'];
 
-    this.initMaterial(this.front.current, this.frontTexture);
-    this.initMaterial(this.back.current, this.backTexture);
+    this.initMaterial(this._front.current, this._frontTexture);
+    this.initMaterial(this._back.current, this._backTexture);
 
-    this._scene.add(this.front.current);
-    this._scene.add(this.back.current);
+    this._scene.add(this._front.current);
+    this._scene.add(this._back.current);
   };
 
   Label.prototype.setTexture = function(sideA, sideB) {
     if (sideA) {
-      this.updateTexture(this.frontTexture, sideA);
+      this.updateTexture(this._frontTexture, sideA);
     }
 
     if (sideB) {
-      this.updateTexture(this.backTexture, sideB);
+      this.updateTexture(this._backTexture, sideB);
     }
   };
 
   Label.prototype.setVisible = function(value) {
-    this.front[this._size].visible = this.back[this._size].visible = value;
+    this._front[this._size].visible = this._back[this._size].visible = value;
   };
 
   Label.prototype.update = function() {
-    if (!(this.front && this.back)) {
+    if (!(this._front && this._back)) {
       return;
     }
 
-    this.front[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this.back[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this.front[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
-    this.back[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z + Math.PI);
+    this._front[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this._back[this._size].position.set(this.position.x, this.position.y, this.position.z);
+    this._front[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._back[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z + Math.PI);
   };
 
   //--------------------------------------------------------------
@@ -599,7 +597,9 @@ console.log(assets);
   function World(parent, assets, opts) {
     this._parent = parent;
     this._assets = assets;
-    this._opts = opts || {};
+    this._opts = opts || {
+      rpm: 45
+    };
 
     // init
     this._scene = new THREE.Scene();
@@ -643,7 +643,8 @@ console.log(assets);
     this._label = new Label();
     this._label.setup(this._scene, assets, { size: size });
 
-    // this._camera.position.set(-200, 250, 200);
+    this._rpm = opts.defaults.vinyl.speed;
+    this._clock = new THREE.Clock();
   }
 
   /**
@@ -919,8 +920,25 @@ console.log(assets);
    *
    */
   World.prototype.updateView = function(type, otps, callback) {
-    console.log('World::updateView');
-    // TODO: process
+    console.log('World::updateView', type);
+    
+    switch (Number(type)) {
+      case 1:
+        this._camera.targetPosition.set(0, 409, 106);
+        break;
+      case 2:
+        this._camera.targetPosition.set(0, 149, 1);
+        break;
+      case 3:
+        this._camera.targetPosition.set(127, 192, 214);
+        break;
+      case 4:
+        this._camera.targetPosition.set(127, 0, 0);
+        break;
+      default:
+        break;
+    }
+
     if (callback) callback();
   };
 
@@ -946,6 +964,10 @@ console.log(assets);
    *
    */
   World.prototype.update = function() {
+    // console.log(this._clock.getElapsedTime() - this._clock.oldTime);
+    var amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
+    // console.log(this._clock.getDelta() * 198);
+
     if (this.enableRotate) {
       this.rotationAmount = Math.min(this.rotationAmount + 0.001, 0.07);
     } else {
@@ -958,14 +980,14 @@ console.log(assets);
 
     if (this._vinyl) {
       if (this.enableRotate) {
-        this._vinyl.rotation.y += this.rotationAmount;
+        this._vinyl.rotation.y -= amount;
       }
       this._vinyl.update();
     }
 
     if (this._label) {
       if (this.enableRotate) {
-        this._label.rotation.y += this.rotationAmount;
+        this._label.rotation.y -= amount;
       }
       this._label.update();
     }
@@ -1073,6 +1095,8 @@ console.log(assets);
 
   World.prototype.onVinylSpeedChanged = function(value) {
     console.log('World::onVinylSpeedChanged', value);
+
+    this._rpm = value;
   };
 
   World.prototype.onVinylSideATextureChanged = function(value) {
