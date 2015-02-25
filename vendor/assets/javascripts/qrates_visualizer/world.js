@@ -22,6 +22,7 @@
     size: 12,
     label: null,
     rotate: false,
+    out: false,
     camera_pos: 1,
     fov: 35,
     bumpScale: 0.282,
@@ -663,14 +664,16 @@ console.log(assets);
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, { size: size });
-    this._sleeve.position.x = -80;
-    // this._sleeve.setVisible(false);
+    this._sleeve.position.x = 0;
+    this._sleeve.targetPosition = new THREE.Vector3(0);
 
     this._vinyl = new Vinyl();
     this._vinyl.setup(this._scene, assets, { size: size, color: 0xFFFFFF });
+    this._vinyl.targetPosition = new THREE.Vector3(0);
 
     this._label = new Label();
     this._label.setup(this._scene, assets, { size: size });
+    this._label.targetPosition = new THREE.Vector3(0);
 
     this._rpm = opts.defaults.vinyl.speed;
     this._clock = new THREE.Clock();
@@ -736,6 +739,7 @@ console.log(assets);
 
     var gui = this.gui = new window.dat.GUI();
     var rotationController = gui.add(props, 'rotate');
+    var outFromSleeveController = gui.add(props, 'out');
     var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
     var sizeController = gui.add(props, 'size', [7, 10, 12]);
     var labelController = gui.add(props, 'label', [1, 2, 3, 4, 5, 6, 7, 8]);
@@ -756,6 +760,14 @@ console.log(assets);
 
     rotationController.onChange(function(value) {
       self.enableRotate = value;
+    });
+
+    outFromSleeveController.onChange(function(value) {
+      var offset = '7' === self._sleeve._size ? 80 : 120;
+
+      self._sleeve.targetPosition.x = value ? -offset : 0;
+      self._vinyl.targetPosition.x = value ? offset : 0;
+      self._label.targetPosition.x = value ? offset : 0;
     });
 
     colorController.onChange(function(value) {
@@ -1004,6 +1016,7 @@ console.log(assets);
     }
 
     if (this._sleeve) {
+      this._sleeve.position.x += (this._sleeve.targetPosition.x - this._sleeve.position.x) / 8;
       this._sleeve.update();
     }
 
@@ -1011,6 +1024,7 @@ console.log(assets);
       if (this.enableRotate) {
         this._vinyl.rotation.y -= amount;
       }
+      this._vinyl.position.x += (this._vinyl.targetPosition.x - this._vinyl.position.x) / 8;
       this._vinyl.update();
     }
 
@@ -1018,6 +1032,7 @@ console.log(assets);
       if (this.enableRotate) {
         this._label.rotation.y -= amount;
       }
+      this._label.position.x += (this._label.targetPosition.x - this._label.position.x) / 8;
       this._label.update();
     }
 
@@ -1096,6 +1111,12 @@ console.log(assets);
       size = 12;
     }
 
+    var offset = 7 === size ? 80 : 120;
+
+    this._sleeve.targetPosition.x = value ? -offset : 0;
+    this._vinyl.targetPosition.x = value ? offset : 0;
+    this._label.targetPosition.x = value ? offset : 0;
+
     this._sleeve.setSize(size);
     this._vinyl.setSize(size);
     this._label.setSize(size);
@@ -1115,6 +1136,7 @@ console.log(assets);
 
   World.prototype.onVinylHoleSizeChanged = function(value) {
     console.log('World::onVinylHoleSizeChanged', value);
+
     this._label.setLargeHole(0 === value ? false : true);
   };
 
@@ -1142,11 +1164,13 @@ console.log(assets);
 
   World.prototype.onLabelSideATextureChanged = function(value) {
     console.log('World::onLabelSideATextureChanged', value);
+
     this._label.setTexture(value, null);
   };
 
   World.prototype.onLabelSideBTextureChanged = function(value) {
     console.log('World::onLabelSideBTextureChanged', value);
+
     this._label.setTexture(null, value);
   };
 
