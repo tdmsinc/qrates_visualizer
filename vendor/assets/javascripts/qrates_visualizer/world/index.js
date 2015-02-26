@@ -374,11 +374,11 @@
     });
 
     bumpScaleController.onChange(function(value) {
-      if (!self.vinyl) {
+      if (!self._vinyl) {
         return;
       }
 
-      self.vinyl.setBumpScale(value);
+      self._vinyl.setBumpScale(value);
     });
 
     fovController.onChange(function(value) {
@@ -624,6 +624,9 @@
 
   World.prototype.onLabelTypeChanged = function(value) {
     console.log('World::onLabelTypeChanged', value);
+
+    var types = [this._label.TYPE_WHITE, this._label.TYPE_PRINT_MONOCHROME, this._label.TYPE_PRINT_COLOR];
+    this._label.setType(types[value - 1]);
   };
 
   World.prototype.onLabelSideATextureChanged = function(value) {
