@@ -1,7 +1,7 @@
 
 //= require tdmsinc-three.js
-//= require ./emitter
-//= require_tree ./world
+//= require ../emitter
+//= require_tree .
 //= require_self
 
 (function(global, exports) {
