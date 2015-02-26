@@ -1,4 +1,7 @@
 
+//= require tdmsinc-three.js
+//= require_self
+
 (function(global, exports) {
 
   exports.world = exports.world || {};
