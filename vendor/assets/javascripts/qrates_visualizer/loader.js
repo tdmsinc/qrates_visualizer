@@ -62,9 +62,12 @@
     Object.keys(this.targets).forEach(function(key) {
       var loader;
       var path = this.targets[key];
-      var ext = path.slice(path.length - 4);
-      if ('.obj' === ext) loader = new THREE.OBJLoader(manager);
-      if ('.png' === ext) loader = new THREE.ImageLoader(manager);
+      var ext = path.split('.')[1];
+
+      if ('obj' === ext) loader = new THREE.OBJLoader(manager);
+      if ('png' === ext) loader = new THREE.ImageLoader(manager);
+      if ('vert' === ext || 'frag' === ext) loader = new ShaderLoader(manager);
+
       loader.load(path, function(obj) {
         assets[key] = obj;
       });

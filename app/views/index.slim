@@ -1,46 +1,3 @@
-
-/ .vinyl-visualizer-container(
-/   data-assets-texture-vinyl-bumpmap=asset_path('qrates_visualizer/vinyls/vinyl_bumpmap.png')
-/   data-assets-texture-shadow=asset_path('qrates_visualizer/shadow.png')
-/   data-assets-texture-sleeve-default=asset_path('qrates_visualizer/sleeves/sleeve_default.png')
-
-/   data-assets-texture-label-front=asset_path('qrates_visualizer/labels/label_front.png');
-/   data-assets-texture-label-back=asset_path('qrates_visualizer/labels/label_back.png');
-
-/   data-assets-model-sleeve-front-7=asset_path('qrates_visualizer/sleeves/sleeve_front_7.obj')
-/   data-assets-model-sleeve-back-7=asset_path('qrates_visualizer/sleeves/sleeve_back_7.obj')
-/   data-assets-model-sleeve-spine-7=asset_path('qrates_visualizer/sleeves/sleeve_spine_7.obj')
-
-/   data-assets-model-sleeve-front-10=asset_path('qrates_visualizer/sleeves/sleeve_front_10.obj')
-/   data-assets-model-sleeve-back-10=asset_path('qrates_visualizer/sleeves/sleeve_back_10.obj')
-/   data-assets-model-sleeve-spine-10=asset_path('qrates_visualizer/sleeves/sleeve_spine_10.obj')
-
-/   data-assets-model-sleeve-front-12=asset_path('qrates_visualizer/sleeves/sleeve_front_12.obj')
-/   data-assets-model-sleeve-back-12=asset_path('qrates_visualizer/sleeves/sleeve_back_12.obj')
-/   data-assets-model-sleeve-spine-12=asset_path('qrates_visualizer/sleeves/sleeve_spine_12.obj')
-
-/   data-assets-model-label-7-small=asset_path('qrates_visualizer/labels/label_7_small.obj')
-/   data-assets-model-label-7-large=asset_path('qrates_visualizer/labels/label_7_large.obj')
-/   data-assets-model-label-10=asset_path('qrates_visualizer/labels/label_10.obj')
-
-/   data-assets-model-vinyl-7=asset_path('qrates_visualizer/vinyls/vinyl_7.obj');
-/   data-assets-model-vinyl-10=asset_path('qrates_visualizer/vinyls/vinyl_10.obj');
-/   data-assets-model-vinyl-12=asset_path('qrates_visualizer/vinyls/vinyl_12.obj');
-
-/   data-assets-model-sleeve-12=asset_path('qrates_visualizer/sleeves/sleeve_12.obj')
-/   data-assets-model-sleeve-back-12=asset_path('qrates_visualizer/sleeves/sleeve_back_12.obj')
-/   data-assets-model-sleeve-body-12=asset_path('qrates_visualizer/sleeves/sleeve_body_12.obj')
-/   data-assets-model-sleeve-front-12=asset_path('qrates_visualizer/sleeves/sleeve_face_12.obj')
-/   data-assets-model-sleeve-spine-12=asset_path('qrates_visualizer/sleeves/sleeve_spine_12.obj')
-
-/   data-assets-model-vinyl-12-inner=asset_path('qrates_visualizer/vinyls/vinyl_12_inner.obj')
-/   data-assets-model-vinyl-12-outer=asset_path('qrates_visualizer/vinyls/vinyl_12_outer.obj')
-/   data-assets-model-vinyl-10-inner=asset_path('qrates_visualizer/vinyls/vinyl_10_inner.obj')
-/   data-assets-model-vinyl-10-outer=asset_path('qrates_visualizer/vinyls/vinyl_10_outer.obj')
-/   data-assets-model-vinyl-7-inner=asset_path('qrates_visualizer/vinyls/vinyl_7_inner.obj')
-/   data-assets-model-vinyl-7-outer=asset_path('qrates_visualizer/vinyls/vinyl_7_outer.obj')
-/ )
-
 .vinyl-visualizer-container(
   data-assets-texture-shadow=asset_path('qrates_visualizer/shadow.png')
 
@@ -83,6 +40,9 @@
   data-assets-model-vinyl-7=asset_path('qrates_visualizer/vinyls/vinyl_7.obj');
   data-assets-model-vinyl-10=asset_path('qrates_visualizer/vinyls/vinyl_10.obj');
   data-assets-model-vinyl-12=asset_path('qrates_visualizer/vinyls/vinyl_12.obj');
+
+  data-assets-vertex-shader-label-color=asset_path('qrates_visualizer/labelColor.vert')
+  data-assets-fragment-shader-label-color=asset_path('qrates_visualizer/labelColor.frag')
 )
 
 form
