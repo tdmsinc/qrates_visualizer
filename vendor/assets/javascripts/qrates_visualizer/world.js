@@ -21,6 +21,7 @@
     color: 0xFFFFFF,
     size: 12,
     label: null,
+    render: true,
     rotate: false,
     out: false,
     camera_pos: 1,
@@ -704,6 +705,7 @@
     }
 
     var gui = this.gui = new window.dat.GUI();
+    var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
     var outFromSleeveController = gui.add(props, 'out');
     var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
@@ -723,6 +725,14 @@
     var self = this;
     var axes = this.axes;
     var camera = this._camera;
+
+    renderController.onChange(function(value) {
+      if (value) {
+        self.startRender();
+      } else {
+        self.stopRender();
+      }
+    });
 
     rotationController.onChange(function(value) {
       self.enableRotate = value;
