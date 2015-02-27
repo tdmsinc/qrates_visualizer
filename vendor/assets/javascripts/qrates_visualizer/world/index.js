@@ -84,14 +84,10 @@
       rpm: 45
     };
 
-    console.log(assets);
-
-    // init
     this._scene = new THREE.Scene();
 
     this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
-    this._camera.targetPosition = new THREE.Vector3(0, 409, 106);
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._opts.width, this._opts.height);
@@ -131,7 +127,10 @@
     this._label.targetPosition = new THREE.Vector3(0);
 
     this._rpm = opts.defaults.vinyl.speed;
+
     this._clock = new THREE.Clock();
+
+    this.setCameraPosition(0, 409, 106);
   }
 
   /**
@@ -227,11 +226,9 @@
     });
 
     outFromSleeveController.onChange(function(value) {
-      var offset = '7' === self._sleeve._size ? 80 : 120;
+      var offset = value ? ('7' === self._sleeve._size ? -120 : -160) : 0;
 
-      self._sleeve.targetPosition.x = value ? -offset : 0;
-      self._vinyl.targetPosition.x = value ? offset : 0;
-      self._label.targetPosition.x = value ? offset : 0;
+      self.setSleevePosition(offset, 0, 0);
     });
 
     colorController.onChange(function(value) {
@@ -386,6 +383,34 @@
     });
   };
 
+  World.prototype.setCameraPosition = function(x, y, z) {
+    var self = this;
+
+    new TWEEN.Tween(this._camera.position)
+      .to({ x: x, y: y, z: z }, 1000)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function() {
+        self._camera.lookAt(new THREE.Vector3(0, 0, 0));
+      })
+      .start();
+  };
+
+  World.prototype.setSleevePosition = function(x, y, z) {
+    if (!this._sleeve) {
+      return;
+    }
+
+    var self = this;
+
+    new TWEEN.Tween(this._sleeve.position)
+      .to({ x: x, y: y, z: z }, 500)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function() {
+        self._sleeve.update();
+      })
+      .start();
+  };
+
   World.prototype.setVinylSize = function(size) {
     console.log('World::setVinylSize');
     // TODO: process
@@ -427,18 +452,20 @@
   World.prototype.updateView = function(type, otps, callback) {
     console.log('World::updateView', type);
 
+    var self = this;
+
     switch (Number(type)) {
       case 1:
-        this._camera.targetPosition.set(0, 409, 106);
+        this.setCameraPosition(0, 409, 106);
         break;
       case 2:
-        this._camera.targetPosition.set(0, 149, 1);
+        this.setCameraPosition(0, 149, 1);
         break;
       case 3:
-        this._camera.targetPosition.set(127, 192, 214);
+        this.setCameraPosition(127, 192, 214);
         break;
       case 4:
-        this._camera.targetPosition.set(127, 0, 0);
+        this.setCameraPosition(127, 0, 0);
         break;
       default:
         break;
@@ -469,9 +496,7 @@
    *
    */
   World.prototype.update = function() {
-    // console.log(this._clock.getElapsedTime() - this._clock.oldTime);
     var amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
-    // console.log(this._clock.getDelta() * 198);
 
     if (this.enableRotate) {
       this.rotationAmount = Math.min(this.rotationAmount + 0.001, 0.07);
@@ -480,7 +505,6 @@
     }
 
     if (this._sleeve) {
-      this._sleeve.position.x += (this._sleeve.targetPosition.x - this._sleeve.position.x) / 8;
       this._sleeve.update();
     }
 
@@ -488,7 +512,6 @@
       if (this.enableRotate) {
         this._vinyl.rotation.y -= amount;
       }
-      this._vinyl.position.x += (this._vinyl.targetPosition.x - this._vinyl.position.x) / 8;
       this._vinyl.update();
     }
 
@@ -500,10 +523,7 @@
       this._label.update();
     }
 
-    this._camera.position.x += (this._camera.targetPosition.x - this._camera.position.x) / 8;
-    this._camera.position.y += (this._camera.targetPosition.y - this._camera.position.y) / 8;
-    this._camera.position.z += (this._camera.targetPosition.z - this._camera.position.z) / 8;
-    this._camera.lookAt(new THREE.Vector3(0, 0, 0));
+    TWEEN.update();
   };
 
   /**
@@ -575,11 +595,8 @@
       size = 12;
     }
 
-    var offset = 7 === size ? 80 : 120;
-
-    this._sleeve.targetPosition.x = value ? -offset : 0;
-    this._vinyl.targetPosition.x = value ? offset : 0;
-    this._label.targetPosition.x = value ? offset : 0;
+    var offset = 0 !== this._sleeve.position.x ? (7 === size ? -120 : -160) : 0;
+    this.setSleevePosition(offset, 0, 0);
 
     this._sleeve.setSize(size);
     this._vinyl.setSize(size);
