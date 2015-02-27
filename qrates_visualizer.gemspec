@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'rails-assets-tdmsinc-three.js', '~> 0.68.1'
   spec.add_dependency 'rails-assets-tiny-emitter', '1.0.0'
+  spec.add_dependency 'rails-assets-tdmsinc-tween.js', '~> 0.14.0'
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
