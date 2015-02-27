@@ -197,3 +197,14 @@ vv.label.on('type', function(value) {
 vv.sleeve.on('glossFinish', function(value) {
   console.log('change sleeve.glossFinish', value);
 });
+
+//
+// utils.
+//
+
+var form = document.querySelector('form');
+var show = document.querySelector('.action-show');
+
+show.addEventListener('click', function(e) {
+  form.classList.toggle('show');
+}, false);
