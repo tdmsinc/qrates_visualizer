@@ -36,6 +36,8 @@
     };
 
     this._textures = {
+      front: new THREE.Texture(),
+      back: new THREE.Texture(),
       splatter: new THREE.Texture(),
       bumpMap: {
         '7' : new THREE.Texture(),
@@ -43,6 +45,9 @@
         '12': new THREE.Texture()
       }
     };
+
+    // this.updateTexture(this._textures.front, assets['assetsTextureVinylBumpmap-' + key]);
+    // this.updateTexture(this._textures.bumpMap[key], assets['assetsTextureVinylBumpmap-' + key]);
 
     var self = this;
 
@@ -71,7 +76,7 @@
           bumpScale: 0.36,
           color: self._color,
           emissive: 0,
-          map: tex,
+          map: null,
           opacity: self.opacity,
           shininess: 35,
           specular: 0x363636,
@@ -91,6 +96,16 @@
 
     tex.image = img;
     tex.needsUpdate = true;
+  };
+
+  Vinyl.prototype.setTexture = function(sideA, sideB) {
+    if (sideA) {
+      this.updateTexture(this._textures.front, sideA);
+    }
+
+    if (sideB) {
+      this.updateTexture(this._textures.back, sideB);
+    }
   };
 
   Vinyl.prototype.setBumpScale = function(value) {

@@ -383,7 +383,11 @@
     });
   };
 
-  World.prototype.setCameraPosition = function(x, y, z) {
+  World.prototype.setCameraPosition = function(x, y, z, callback) {
+    if (!callback) {
+      callback = null;
+    }
+
     var self = this;
 
     new TWEEN.Tween(this._camera.position)
@@ -392,10 +396,15 @@
       .onUpdate(function() {
         self._camera.lookAt(new THREE.Vector3(0, 0, 0));
       })
+      .onComplete(callback)
       .start();
   };
 
-  World.prototype.setSleevePosition = function(x, y, z) {
+  World.prototype.setSleevePosition = function(x, y, z, callback) {
+    if (!callback) {
+      callback = null;
+    }
+
     if (!this._sleeve) {
       return;
     }
@@ -408,6 +417,7 @@
       .onUpdate(function() {
         self._sleeve.update();
       })
+      .onComplete(callback)
       .start();
   };
 
@@ -456,22 +466,20 @@
 
     switch (Number(type)) {
       case 1:
-        this.setCameraPosition(0, 409, 106);
+        this.setCameraPosition(0, 409, 106, callback);
         break;
       case 2:
-        this.setCameraPosition(0, 149, 1);
+        this.setCameraPosition(0, 149, 1, callback);
         break;
       case 3:
-        this.setCameraPosition(127, 192, 214);
+        this.setCameraPosition(127, 192, 214, callback);
         break;
       case 4:
-        this.setCameraPosition(127, 0, 0);
+        this.setCameraPosition(127, 0, 0, callback);
         break;
       default:
         break;
     }
-
-    if (callback) callback();
   };
 
   /**
@@ -633,6 +641,8 @@
 
   World.prototype.onVinylSideATextureChanged = function(value) {
     console.log('World::onVinylSideATextureChanged', value);
+
+    this._vinyl.set
   };
 
   World.prototype.onVinylSideBTextureChanged = function(value) {
