@@ -10,20 +10,34 @@ body {
   font-family: 'Helvetica Neue';
 }
 
+.action-show {
+  position: fixed;
+  font-size: .7em;
+  top: .5em;
+  left: 25em;
+  cursor: pointer;
+}
+
 form {
   padding: 1em;
   width: 18em;
   position: fixed;
   left: 1em;
   top: 1em;
-  background-color: #fff;
+  background-color: #aaa;
   height: 85%;
   overflow-x: scroll;
+  height: .25em;
   opacity: .3;
-  transition: 300ms ease opacity;
+  outline: 1px solid #efefef;
+  transition-duration: 100ms;
+  transition-timing-function: ease-out;
+  transition-property: height, opacity, background-color;
 
-  &:hover {
+  &.show {
+    background-color: #fff;
     opacity: 1;
+    height: 85%;
   }
 
   h1 {
