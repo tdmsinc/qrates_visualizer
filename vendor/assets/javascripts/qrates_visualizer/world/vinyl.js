@@ -116,7 +116,7 @@
       this.updateTexture(this._textures.front, sideA);
 
       Object.keys(self._front).forEach(function(key) {
-        self.initMaterial(self._front[key], this._textures.front, self._textures.bumpMap[key]);
+        self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap[key]);
       });
     }
 
@@ -124,7 +124,7 @@
       this.updateTexture(this._textures.back, sideB);
 
       Object.keys(self._back).forEach(function(key) {
-        self.initMaterial(self._back[key], this._textures.back, self._textures.bumpMap[key]);
+        self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap[key]);
       });
     }
   };
