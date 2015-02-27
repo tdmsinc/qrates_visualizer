@@ -73,11 +73,14 @@
   };
 
   Vinyl.prototype.initMaterial = function(obj, tex, bumpMapTex) {
+    if (!obj) {
+      return false;
+    }
+
     var self = this;
 
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
-        console.log(self._color);
         child.material = new THREE.MeshPhongMaterial({
           ambient: 0xFFFFFF,
           bumpMap: bumpMapTex,
@@ -116,7 +119,8 @@
       this.updateTexture(this._textures.front, sideA);
 
       Object.keys(self._front).forEach(function(key) {
-        self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap[key]);
+        var tex = self.COLOR_MODE_SPLATTER === self._colorMode ? self._textures.front : null;
+        self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
       });
     }
 
@@ -124,7 +128,8 @@
       this.updateTexture(this._textures.back, sideB);
 
       Object.keys(self._back).forEach(function(key) {
-        self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap[key]);
+        var tex = self.COLOR_MODE_SPLATTER === self._colorMode ? self._textures.back : null;
+        self.initMaterial(self._back[key], tex, self._textures.bumpMap[key]);
       });
     }
   };
@@ -166,7 +171,7 @@
     }
 
     this._colorMode = mode;
-    this._color = this.COLOR_MODE_SPLATTER === this._colorMode ? 0xFFFFFF : this._defaultColor;
+    this._color = this.COLOR_MODE_SPLATTER === mode ? 0xFFFFFF : this._defaultColor;
 
     var self = this;
 
@@ -182,7 +187,7 @@
   };
 
   Vinyl.prototype.setColor = function(hexColor) {
-    this._color = hexColor;
+    this._color = this.COLOR_MODE_SPLATTER === this._colorMode ? 0xFFFFFF : hexColor;
     this._opacity = this.COLOR_MODE_SPLATTER === this._colorMode ? 0.8 : 1.0;
 
     var self = this;
@@ -194,7 +199,7 @@
 
     Object.keys(self._back).forEach(function(key) {
       var tex = self.COLOR_MODE_SPLATTER === self._colorMode ? self._textures.back : null;
-      self.initMaterial(self._back[key], tex, self._textures.bumpMap[key]);
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
     });
   };
 
