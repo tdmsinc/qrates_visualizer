@@ -26,10 +26,16 @@
     this._scene = scene;
     this._size = this._opts.size.toString();
     this._colorMode = this.COLOR_MODE_BLACK;
-    this._color = 0x000000;
+    this._defaultColor = this._color = 0x000000;
     this._opacity = 1.0;
 
-    this._body = {
+    this._front = {
+      '7' : assets['assetsModelVinyl-7'],
+      '10': assets['assetsModelVinyl-10'],
+      '12': assets['assetsModelVinyl-12'],
+    };
+
+    this._back = {
       '7' : assets['assetsModelVinyl-7'],
       '10': assets['assetsModelVinyl-10'],
       '12': assets['assetsModelVinyl-12'],
@@ -46,38 +52,39 @@
       }
     };
 
-    // this.updateTexture(this._textures.front, assets['assetsTextureVinylBumpmap-' + key]);
-    // this.updateTexture(this._textures.bumpMap[key], assets['assetsTextureVinylBumpmap-' + key]);
-
     var self = this;
 
     Object.keys(self._textures.bumpMap).forEach(function(key) {
       self.updateTexture(self._textures.bumpMap[key], assets['assetsTextureVinylBumpmap-' + key]);
     });
 
-    Object.keys(self._body).forEach(function(key) {
-      self.initMaterial(self._body[key], self._textures.bumpMap[key]);
+    Object.keys(self._front).forEach(function(key) {
+      self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap[key]);
     });
 
-    this.position = new THREE.Vector3(0, 0, 0);
-    this.rotation = new THREE.Vector3(0, 0, 0);
+    Object.keys(self._back).forEach(function(key) {
+      self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap[key]);
+    });
 
-    this._scene.add(this._body[this._size]);
+    this._position = new THREE.Vector3(0, 0, 0);
+    this._rotation = new THREE.Vector3(0, 0, 0);
+
+    this._scene.add(this._front[this._size]);
   };
 
-  Vinyl.prototype.initMaterial = function(obj, tex) {
+  Vinyl.prototype.initMaterial = function(obj, tex, bumpMapTex) {
     var self = this;
 
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
+        console.log(self._color);
         child.material = new THREE.MeshPhongMaterial({
           ambient: 0xFFFFFF,
-          bumpMap: tex,
+          bumpMap: bumpMapTex,
           bumpScale: 0.36,
           color: self._color,
-          emissive: 0,
-          map: null,
-          opacity: self.opacity,
+          map: tex,
+          opacity: self._opacity,
           shininess: 35,
           specular: 0x363636,
           shading: THREE.SmoothShading,
@@ -99,20 +106,42 @@
   };
 
   Vinyl.prototype.setTexture = function(sideA, sideB) {
+    if (this.COLOR_MODE_SPLATTER !== this._colorMode) {
+      return false;
+    }
+
+    var self = this;
+
     if (sideA) {
       this.updateTexture(this._textures.front, sideA);
+
+      Object.keys(self._front).forEach(function(key) {
+        self.initMaterial(self._front[key], this._textures.front, self._textures.bumpMap[key]);
+      });
     }
 
     if (sideB) {
       this.updateTexture(this._textures.back, sideB);
+
+      Object.keys(self._back).forEach(function(key) {
+        self.initMaterial(self._back[key], this._textures.back, self._textures.bumpMap[key]);
+      });
     }
   };
 
   Vinyl.prototype.setBumpScale = function(value) {
     var self = this;
 
-    Object.keys(self._body).forEach(function(key) {
-      self._body[key].traverse(function(child) {
+    Object.keys(self._front).forEach(function(key) {
+      self._front[key].traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.bumpScale = value;
+        }
+      });
+    });
+
+    Object.keys(self._back).forEach(function(key) {
+      self._back[key].traverse(function(child) {
         if (child instanceof THREE.Mesh) {
           child.material.bumpScale = value;
         }
@@ -125,10 +154,10 @@
       return;
     }
 
-    this._scene.remove(this._body[this._size]);
+    this._scene.remove(this._front[this._size]);
 
     this._size = size.toString();
-    this._scene.add(this._body[this._size]);
+    this._scene.add(this._front[this._size]);
   };
 
   Vinyl.prototype.setColorMode = function(mode) {
@@ -136,52 +165,50 @@
       return;
     }
 
-    if (this.COLOR_MODE_BLACK === mode) {
-      this._colorMode = this.COLOR_MODE_BLACK;
-      this.setColor(0x000000, 1.0);
-    } else if (this.COLOR_MODE_COLOR === mode) {
-      this._colorMode = this.COLOR_MODE_COLOR;
-      this.setColor(self.color, 1.0);
-    } else if (this.COLOR_MODE_SPLATTER === mode) {
-      this._colorMode = this.COLOR_MODE_SPLATTER;
-      this.setColor(self._color, 0.8);
-    }
+    this._colorMode = mode;
+    this._color = this.COLOR_MODE_SPLATTER === this._colorMode ? 0xFFFFFF : this._defaultColor;
+
+    var self = this;
+
+    Object.keys(self._front).forEach(function(key) {
+      var tex = self.COLOR_MODE_SPLATTER === self._colorMode ? self._textures.front : null;
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
+    });
+
+    Object.keys(self._back).forEach(function(key) {
+      var tex = self.COLOR_MODE_SPLATTER === self._colorMode ? self._textures.back : null;
+      self.initMaterial(self._back[key], tex, self._textures.bumpMap[key]);
+    });
   };
 
   Vinyl.prototype.setColor = function(hexColor) {
-    if (this._colorMode === this.COLOR_MODE_BLACK) {
-      this._color = 0x000000;
-      this.opacity = 1.0;
-    } else if (this._colorMode === this.COLOR_MODE_COLOR) {
-      this._color = hexColor;
-      this._opacity = 1.0;
-    } else if (this._colorMode === this.COLOR_MODE_SPLATTER) {
-      this._color = hexColor;
-      this._opacity = 0.8;
-    }
+    this._color = hexColor;
+    this._opacity = this.COLOR_MODE_SPLATTER === this._colorMode ? 0.8 : 1.0;
 
     var self = this;
-    Object.keys(self._body).forEach(function(key) {
-      self._body[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.color.setHex(self._color);
-          child.material.opacity = self._opacity;
-        }
-      });
+
+    Object.keys(self._front).forEach(function(key) {
+      var tex = self.COLOR_MODE_SPLATTER === self._colorMode ? self._textures.front : null;
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
+    });
+
+    Object.keys(self._back).forEach(function(key) {
+      var tex = self.COLOR_MODE_SPLATTER === self._colorMode ? self._textures.back : null;
+      self.initMaterial(self._back[key], tex, self._textures.bumpMap[key]);
     });
   };
 
   Vinyl.prototype.setVisible = function(value) {
-    this._body[this._size].visible = value;
+    this._front[this._size].visible = value;
   };
 
   Vinyl.prototype.update = function() {
-    if (!(this._body && this._body[this._size])) {
+    if (!(this._front && this._front[this._size])) {
       return;
     }
 
-    this._body[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this._body[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._front[this._size].position.set(this._position.x, this._position.y, this._position.z);
+    this._front[this._size].rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
   };
 
 })(this, (this.qvv = (this.qvv || {})));

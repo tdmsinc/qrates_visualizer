@@ -6,21 +6,6 @@
 
   exports.world = exports.world || {};
   exports.world.Label = Label;
-  exports.world.ShaderMeshPhongMaterial = ShaderMeshPhongMaterial;
-
-  var clock = new THREE.Clock();
-
-  function ShaderMeshPhongMaterial(params) {
-    this.fragmentShader = 'void main() {}';
-    this.vertexShader = 'void main() {}';
-    this.uniforms = {};
-    this.defines = {};
-    this.attributes = null;
-
-    THREE.MeshPhongMaterial.call(this, params);
-  }
-
-  ShaderMeshPhongMaterial.prototype = Object.create(THREE.MeshPhongMaterial.prototype);
 
   //--------------------------------------------------------------
   function Label() {

@@ -326,16 +326,16 @@
     cameraPositionController.onChange(function(value) {
       switch (Number(value)) {
         case 1:
-          self._camera.targetPosition.set(0, 409, 106);
+          self._camera.setCameraPosition(0, 409, 106);
           break;
         case 2:
-          self._camera.targetPosition.set(0, 149, 1);
+          self._camera.setCameraPosition(0, 149, 1);
           break;
         case 3:
-          self._camera.targetPosition.set(127, 192, 214);
+          self._camera.setCameraPosition(127, 192, 214);
           break;
         case 4:
-          self._camera.targetPosition.set(127, 0, 0);
+          self._camera.setCameraPosition(127, 0, 0);
           break;
         default:
           break;
@@ -557,7 +557,7 @@
     parent.vinyl.on('heavy', this.onVinylHeavyChanged.bind(this));
     parent.vinyl.on('speed', this.onVinylSpeedChanged.bind(this));
     parent.vinyl.on('sideATexture', this.onVinylSideATextureChanged.bind(this));
-    parent.vinyl.on('sideATexture', this.onVinylSideBTextureChanged.bind(this));
+    parent.vinyl.on('sideBTexture', this.onVinylSideBTextureChanged.bind(this));
 
     parent.label.on('type', this.onLabelTypeChanged.bind(this));
     parent.label.on('sideATexture', this.onLabelSideATextureChanged.bind(this));
@@ -640,13 +640,15 @@
   };
 
   World.prototype.onVinylSideATextureChanged = function(value) {
-    console.log('World::onVinylSideATextureChanged', value);
+    console.log('World::onVinylSideATextureChanged');
 
-    this._vinyl.set
+    this._vinyl.setTexture(value);
   };
 
   World.prototype.onVinylSideBTextureChanged = function(value) {
     console.log('World::onVinylSideBTextureChanged', value);
+
+    this._vinyl.setTexture(null, value);
   };
 
   World.prototype.onLabelTypeChanged = function(value) {
@@ -657,7 +659,7 @@
   };
 
   World.prototype.onLabelSideATextureChanged = function(value) {
-    console.log('World::onLabelSideATextureChanged', value);
+    console.log('World::onLabelSideATextureChanged');
 
     this._label.setTexture(value, null);
   };
@@ -686,19 +688,19 @@
   };
 
   World.prototype.onSleeveFrontTextureChanged = function(value) {
-    console.log('World::onSleeveFrontTextureChanged', value);
+    console.log('World::onSleeveFrontTextureChanged');
 
     this._sleeve.setTexture(value, null);
   };
 
   World.prototype.onSleeveBackTextureChanged = function(value) {
-    console.log('World::onSleeveBackTextureChanged', value);
+    console.log('World::onSleeveBackTextureChanged');
 
     this._sleeve.setTexture(null, value);
   };
 
   World.prototype.onSleeveSpineTextureChanged = function(value) {
-    console.log(value);
+    console.log('World::onSleeveSpineTextureChanged');
   };
 
 })(this, (this.qvv = (this.qvv || {})));

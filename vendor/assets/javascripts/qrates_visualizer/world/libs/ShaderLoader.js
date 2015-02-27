@@ -30,7 +30,6 @@ ShaderLoader.prototype.load = function(url, onLoad, onProgress, onError) {
 	req.dataType = 'text';
 
 	req.onreadystatechange = function(event) {
-		console.log(req);
 		if (3 === req.readyState) {
 			if (onProgress !== undefined) {
 				onProgress(event);

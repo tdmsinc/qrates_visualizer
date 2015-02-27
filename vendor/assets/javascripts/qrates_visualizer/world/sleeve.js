@@ -48,9 +48,9 @@
     };
 
     this._spine = {
-      '7' : assets['assetsModelSleeveSpine-7'],
-      '10': assets['assetsModelSleeveSpine-10'],
-      '12': assets['assetsModelSleeveSpine-12']
+      '7' : assets['assetsModelSleeveSpine-7'] || new THREE.Object3D(),
+      '10': assets['assetsModelSleeveSpine-10'] || new THREE.Object3D(),
+      '12': assets['assetsModelSleeveSpine-12'] || new THREE.Object3D()
     };
 
     this._textures = {
