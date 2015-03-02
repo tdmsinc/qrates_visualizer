@@ -478,10 +478,14 @@
         this.setCameraPosition(127, 0, 0, callback);
         break;
       case 5:
+        this.setCameraPosition(0, 409, 106, callback);
+
         var offset = '7' === self._sleeve._size ? -120 : -160;
         self.setSleevePosition(offset, 0, 0);
         break;
       case 6:
+        this.setCameraPosition(0, 409, 106, callback);
+        
         self.setSleevePosition(0, 0, 0);
         break;
       default:
