@@ -51,7 +51,7 @@ VinylVisualizer のコンストラクタ。
 
 - `type:Number`: プリセット番号。
 - `opts:Object`
-  - `opts.trasition:Number`: トランジションのミリ秒。
+  - `opts.duration:Number`: トランジションのミリ秒。
 - `callback:Function.<Error>`: トランジション完了後に実行されるコールバック関数。
   - `Error`: エラーオブジェクト。エラー未発生時は `null` です。
 
@@ -172,6 +172,12 @@ A 面用の盤面のテクスチャを指定します。引数を省略すると
 #### Vinyl#sideBTexture([value:Image]):Vinyl
 
 B 面用の盤面のテクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
+
+#### Vinyl#bumpMapTexture([value:Image]):Vinly
+
+盤面の溝を表現するためのバンプマップ用テクスチャを指定します。引数を省略すると現在値を返します。
 
 - `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
 
