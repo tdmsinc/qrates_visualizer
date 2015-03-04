@@ -448,7 +448,7 @@
 
   World.prototype.capture = function(opts, callback) {
     console.log('World::capture');
-    
+
     var image = new Image();
     image.src = this._renderer.domElement.toDataURL('image/png');
     image.onload = function() {
@@ -483,7 +483,7 @@
   /**
    *
    */
-  World.prototype.updateView = function(type, otps, callback) {
+  World.prototype.updateView = function(type, opts, callback) {
     console.log('World::updateView', type);
 
     var self = this;
