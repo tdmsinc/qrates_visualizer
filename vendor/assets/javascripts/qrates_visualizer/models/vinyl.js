@@ -28,7 +28,8 @@
     'heavy',
     'speed',
     'sideATexture',
-    'sideBTexture'
+    'sideBTexture',
+    'bumpMapTexture'
   ];
 
   /**

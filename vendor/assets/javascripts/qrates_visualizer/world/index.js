@@ -584,6 +584,7 @@
     parent.vinyl.on('speed', this.onVinylSpeedChanged.bind(this));
     parent.vinyl.on('sideATexture', this.onVinylSideATextureChanged.bind(this));
     parent.vinyl.on('sideBTexture', this.onVinylSideBTextureChanged.bind(this));
+    parent.vinyl.on('bumpMapTexture', this.onVinylBumpMapTextureChanged.bind(this));
 
     parent.label.on('type', this.onLabelTypeChanged.bind(this));
     parent.label.on('sideATexture', this.onLabelSideATextureChanged.bind(this));
@@ -675,6 +676,12 @@
     console.log('World::onVinylSideBTextureChanged', value);
 
     this._vinyl.setTexture(null, value);
+  };
+
+  World.prototype.onVinylBumpMapTextureChanged = function(value) {
+    console.log('World::onVinylBumpMapTextureChanged');
+
+    this._vinyl.setBumpMapTexture(value);
   };
 
   World.prototype.onLabelTypeChanged = function(value) {

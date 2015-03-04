@@ -110,6 +110,7 @@ vv.on('ready', function() {
 
   var vinylA = document.querySelector('input[name=vinyl-a]');
   var vinylB = document.querySelector('input[name=vinyl-b]');
+  var vinylBumpMap = document.querySelector('input[name=vinyl-bumpmap]');
   var labelA = document.querySelector('input[name=label-a]');
   var labelB = document.querySelector('input[name=label-b]');
   var sleeveFront = document.querySelector('input[name=sleeve-front]');
@@ -147,6 +148,12 @@ vv.on('ready', function() {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
       vv.vinyl.sideBTexture(img);
+    });
+  };
+  vinylBumpMap.onchange = function(e) {
+    load(e.target.files.item(0), function(err, img) {
+      if (err) return console.error(err);
+      vv.vinyl.bumpMapTexture(img);
     });
   };
   labelA.onchange = function(e) {

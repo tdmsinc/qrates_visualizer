@@ -134,6 +134,14 @@
     }
   };
 
+  Vinyl.prototype.setBumpMapTexture = function(texture) {
+    var self = this;
+
+    Object.keys(self._textures.bumpMap).forEach(function(key) {
+      self.updateTexture(self._textures.bumpMap[key], texture);
+    });
+  };
+
   Vinyl.prototype.setBumpScale = function(value) {
     var self = this;
 
