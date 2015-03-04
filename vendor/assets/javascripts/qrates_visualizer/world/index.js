@@ -95,7 +95,7 @@
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._opts.width, this._opts.height);
-    this._renderer.setClearColor(0xFFFFFF, 1.0);
+    this._renderer.setClearColor(0xFFFFFF, 0.0);
 
     this.initGui();
     this._lights = this.createLights();
@@ -394,20 +394,29 @@
     });
   };
 
-  World.prototype.setCameraPosition = function(x, y, z, callback) {
+  World.prototype.setCameraPosition = function(tx, ty, tz, opts, callback) {
     if (!callback) {
       callback = null;
     }
 
+    opts = opts || {
+      durarion: 1000
+    };
+
+    this.startRender();
+
     var self = this;
 
     new TWEEN.Tween(this._camera.position)
-      .to({ x: x, y: y, z: z }, 1000)
+      .to({ x: tx, y: ty, z: tz }, opts.duration || 1000)
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         self._camera.lookAt(new THREE.Vector3(0, 0, 0));
       })
-      .onComplete(callback)
+      .onComplete(function() {
+        self.stopRender();
+        if (callback) callback();
+      })
       .start();
   };
 
@@ -481,25 +490,25 @@
 
     switch (Number(type)) {
       case 1:
-        this.setCameraPosition(0, 409, 106, callback);
+        this.setCameraPosition(0, 409, 106, opts, callback);
         break;
       case 2:
-        this.setCameraPosition(0, 149, 1, callback);
+        this.setCameraPosition(0, 149, 1, opts, callback);
         break;
       case 3:
-        this.setCameraPosition(127, 192, 214, callback);
+        this.setCameraPosition(127, 192, 214, opts, callback);
         break;
       case 4:
-        this.setCameraPosition(127, 0, 0, callback);
+        this.setCameraPosition(127, 0, 0, opts, callback);
         break;
       case 5:
-        this.setCameraPosition(0, 409, 106, callback);
+        this.setCameraPosition(0, 409, 106, opts, callback);
 
         var offset = '7' === self._sleeve._size ? -120 : -160;
         self.setSleevePosition(offset, 0, 0);
         break;
       case 6:
-        this.setCameraPosition(0, 409, 106, callback);
+        this.setCameraPosition(0, 409, 106, opts, callback);
 
         self.setSleevePosition(0, 0, 0);
         break;
