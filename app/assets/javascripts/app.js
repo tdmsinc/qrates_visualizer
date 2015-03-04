@@ -41,7 +41,7 @@ var vv = new qvv.VinylVisualizer(el, {
   renderer: {
     antialias: true,
     alpha: true,
-    preserveDrawingBuffer: false
+    preserveDrawingBuffer: true
   },
   camera: {
     fov: 35,

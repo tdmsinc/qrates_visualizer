@@ -30,7 +30,7 @@
     rotateX: Math.PI / 2 - 0.3,
     rotateY: 0.0,
     rotateZ: 0.0,
-    sleeveX: -15,
+    sleeveX: -15
   };
 
   var cameraProps = {
@@ -81,7 +81,11 @@
     this._parent = parent;
     this._assets = assets;
     this._opts = opts || {
-      rpm: 45
+      renderer: {
+        antialias: true,
+        preserveDrawingBuffer: true,
+        rpm: 45
+      }
     };
 
     this._scene = new THREE.Scene();
@@ -191,10 +195,21 @@
       return false;
     }
 
+    var self = this;
+    var axes = this.axes;
+    var camera = this._camera;
+
+    var temp = {
+      capture: function() {
+        self.capture();
+      }
+    };
+
     var gui = this.gui = new window.dat.GUI();
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
     var outFromSleeveController = gui.add(props, 'out');
+    var captureController = gui.add(temp, 'capture');
     var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
     var sizeController = gui.add(props, 'size', [7, 10, 12]);
     var labelController = gui.add(props, 'label', [1, 2, 3, 4, 5, 6, 7, 8]);
@@ -208,10 +223,6 @@
     var sleeveXController = gui.add(props, 'sleeveX', -32, 0);
     var bumpScaleController = gui.add(props, 'bumpScale', 0, 1.0);
     var fovController = gui.add(props, 'fov', 20, 50);
-
-    var self = this;
-    var axes = this.axes;
-    var camera = this._camera;
 
     renderController.onChange(function(value) {
       if (value) {
@@ -428,8 +439,12 @@
 
   World.prototype.capture = function(opts, callback) {
     console.log('World::capture');
-    // TODO: process
-    if (callback) callback();
+    
+    var image = new Image();
+    image.src = this._renderer.domElement.toDataURL('image/png');
+    image.onload = function() {
+      if (callback) callback(null, this);
+    };
   };
 
   World.prototype.resize = function(width, height) {
