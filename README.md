@@ -51,7 +51,7 @@ VinylVisualizer のコンストラクタ。
 
 - `type:Number`: プリセット番号。
 - `opts:Object`
-  - `opts.trasition:Number`: トランジションのミリ秒。
+  - `opts.duration:Number`: トランジションのミリ秒。
 - `callback:Function.<Error>`: トランジション完了後に実行されるコールバック関数。
   - `Error`: エラーオブジェクト。エラー未発生時は `null` です。
 
