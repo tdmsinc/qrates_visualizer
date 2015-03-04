@@ -175,6 +175,12 @@ B 面用の盤面のテクスチャを指定します。引数を省略すると
 
 - `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
 
+#### Vinyl#bumpMapTexture([value:Image]):Vinly
+
+盤面の溝を表現するためのバンプマップ用テクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
+
 ### Label
 
 #### Label#type([value:Number]):Label
