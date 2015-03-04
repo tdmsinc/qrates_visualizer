@@ -69,6 +69,40 @@
   };
 
   /**
+   * @param {Object} opts
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.startAutoRotation = function(opts) {
+    if (this.timer) return this;
+    opts = opts || {};
+    var count = 0;
+    var self = this;
+    var duration = opts.duration || 1000;
+    var interval = opts.interval || 4000;
+    this.timer = setTimeout(function() {
+      var callee = arguments.callee;
+      var type = (count++ % 5) + 1;
+      self.view(type, { duration: duration }, function() {
+        self.timer = setTimeout(callee, interval);
+      });
+    }, 0);
+    return this;
+  };
+
+  /**
+   * @param {Object} opts
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.stopAutoRotation = function(opts) {
+    this.timer = clearTimeout(this.timer);
+    return this;
+  };
+
+  /**
    * @param {Number} type
    * @param {Object} opts
    * @param {Function} callback

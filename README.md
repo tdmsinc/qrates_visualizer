@@ -55,6 +55,20 @@ VinylVisualizer のコンストラクタ。
 - `callback:Function.<Error>`: トランジション完了後に実行されるコールバック関数。
   - `Error`: エラーオブジェクト。エラー未発生時は `null` です。
 
+#### VinylVisualizer#startAutoRotation(opts:Object):VinylVisualizer
+
+自動でビューのプリセットを変更します。
+
+- `opts:Object`
+  - `opts.interval:Number`: 切り替えのインターバルをミリ秒で指定。デフォルト値 4000。
+  - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。デフォルト値 1000。
+
+#### VinylVisualizer#stopAutoRotation(opts:Object):VinylVisualizer
+
+`VinylVisualizer#startAutoRotation` で開始した自動プリセット切り替えを停止します。
+
+- `opts:Object`
+
 #### VinylVisualizer#capture(opts:Object, callback:Function.&lt;Error, Image&gt;):VinylVisualizer
 
 レンダリング結果をキャプチャします。通常 `#view` メソッドと組み合わせて利用します。
