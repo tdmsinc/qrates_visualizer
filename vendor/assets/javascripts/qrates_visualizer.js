@@ -130,4 +130,24 @@
     return this;
   };
 
+  /**
+   * @return {VinylVisualizer}
+   * @api public
+   */
+  VinylVisualizer.prototype.startRender = function() {
+    if (!this.world) return this;
+    this.world.startRender();
+    return this;
+  };
+
+  /**
+   * @return {VinylVisualizer}
+   * @api public
+   */
+  VinylVisualizer.prototype.stopRender = function() {
+    if (!this.world) return this;
+    this.world.stopRender();
+    return this;
+  };
+
 })(this, (this.qvv = (this.qvv || {})));

@@ -87,28 +87,15 @@
 
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
-        if (self.TYPE_WHITE === self._type) {
-          child.material = new THREE.MeshPhongMaterial({
-            ambient: 0xFFFFFF,
-            color: 0xFFFFFF,
-            map: tex,
-            shininess: 5,
-            specular: 0x363636,
-            shading: THREE.SmoothShading,
-            vertexColor: THREE.VertexColors,
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader
-          });
-        } else {
-          child.material = new THREE.ShaderMaterial({
-            fragmentShader: self._shaders.fragmentShader,
-            vertexShader: self._shaders.vertexShader,
-            uniforms: {
-              texture: { type: 't', value: tex },
-              mode   : { type: 'i', value: self._type }
-            }
-          });
-        }
+        child.material = new THREE.MeshPhongMaterial({
+          ambient: 0xFFFFFF,
+          color: 0xFFFFFF,
+          map: tex,
+          shininess: 5,
+          specular: 0x363636,
+          shading: THREE.SmoothShading,
+          vertexColor: THREE.VertexColors
+        });
       }
     });
 

@@ -485,7 +485,7 @@
         break;
       case 6:
         this.setCameraPosition(0, 409, 106, callback);
-        
+
         self.setSleevePosition(0, 0, 0);
         break;
       default:
@@ -499,7 +499,7 @@
   World.prototype.startRender =
   World.prototype.resumeRender = function() {
     console.log('World::startRender');
-    this.request = requestAnimationFrame(this.draw.bind(this));
+    this._request = requestAnimationFrame(this.draw.bind(this));
     return this;
   };
 
@@ -507,7 +507,7 @@
    *
    */
   World.prototype.stopRender = function() {
-    this.request = cancelAnimationFrame(this.request);
+    this._request = cancelAnimationFrame(this._request);
     return this;
   };
 
@@ -529,7 +529,7 @@
 
     if (this._vinyl) {
       if (this.enableRotate) {
-        this._vinyl.rotation.y -= amount;
+        this._vinyl._rotation.y -= amount;
       }
       this._vinyl.update();
     }
@@ -551,7 +551,7 @@
   World.prototype.draw = function() {
     this.update();
     this._renderer.render(this._scene, this._camera);
-    this.request = requestAnimationFrame(this.draw.bind(this));
+    this._request = requestAnimationFrame(this.draw.bind(this));
   };
 
   /**
