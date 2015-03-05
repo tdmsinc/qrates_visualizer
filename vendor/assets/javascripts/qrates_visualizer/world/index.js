@@ -135,6 +135,7 @@
     this._clock = new THREE.Clock();
 
     this.setCameraPosition(0, 409, 106);
+    this.setSleevePosition(-120, 0, 0);
   }
 
   /**
