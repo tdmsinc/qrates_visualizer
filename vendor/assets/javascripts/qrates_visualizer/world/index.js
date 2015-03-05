@@ -491,27 +491,31 @@
 
     switch (Number(type)) {
       case 1:
-        this.setCameraPosition(0, 409, 106, opts, callback);
+        this.setCameraPosition(0, 400, 100, opts, callback);
         break;
       case 2:
-        this.setCameraPosition(0, 149, 1, opts, callback);
+        this.setCameraPosition(0, 180, 1, opts, callback);
         break;
       case 3:
-        this.setCameraPosition(127, 192, 214, opts, callback);
+        this.setCameraPosition(0, 0, 180, opts, callback);
         break;
       case 4:
-        this.setCameraPosition(127, 0, 0, opts, callback);
+        this.setCameraPosition(127, 192, 214, opts, callback);
         break;
       case 5:
-        this.setCameraPosition(0, 409, 106, opts, callback);
-
-        var offset = '7' === self._sleeve._size ? -120 : -160;
-        self.setSleevePosition(offset, 0, 0);
+        this.setCameraPosition(0, 386.4, -3.5, opts, callback);
+        /**var offset = '7' === self._sleeve._size ? -120 : -160;
+        self.setSleevePosition(offset, 0, 0); */
         break;
       case 6:
-        this.setCameraPosition(0, 409, 106, opts, callback);
-
-        self.setSleevePosition(0, 0, 0);
+        this.setCameraPosition(0, 346.3, -100, opts, callback);
+        /**self.setSleevePosition(0, 0, 0);*/
+        break;
+      case 7:
+        this.setCameraPosition(0, 282.6, -182.9, opts, callback);        
+        break;
+      case 8:
+        this.setCameraPosition(0, 199.8, -246.4, opts, callback);        
         break;
       default:
         break;
