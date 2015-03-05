@@ -156,31 +156,31 @@
     var lights = new THREE.Object3D();
 
     var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
-    spotLight1.position.set(100, 200, 150);
+    spotLight1.position.set(1000, 2000, 1500);
     lights.add(spotLight1);
 
     var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
-    spotLight2.position.set(-76.36000061035156, 200, 150);
+    spotLight2.position.set(-760, 2000, 1500);
     lights.add(spotLight2);
 
     var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
-    pointLight1.position.set(21.09000015258789, 213.86000061035156, -84.06999969482422);
+    pointLight1.position.set(210, 2140, -840);
     lights.add(pointLight1);
 
     var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
-    pointLight2.position.set(-2.059999942779541, -80.05000305175781, 10.65999984741211);
+    pointLight2.position.set(-210, -800, 105);
     lights.add(pointLight2);
 
     var hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 1.0);
-    hemisphereLight1.position.set(-128.50999450683594, 243.4199981689453, 52.41999816894531);
+    hemisphereLight1.position.set(-1240, 2440, 525);
     lights.add(hemisphereLight1);
 
     var hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 1.0);
-    hemisphereLight2.position.set(100, 244.38999938964844, 193.2899932861328);
+    hemisphereLight2.position.set(1000, 2440, 1940);
     lights.add(hemisphereLight2);
 
     var ambientLight = new THREE.AmbientLight(0x0D0D0D);
-    ambientLight.position.set(0, 20.049999237060547, 178.11000061035156);
+    ambientLight.position.set(0, 200, 1780);
     lights.add(ambientLight);
 
     return lights;
