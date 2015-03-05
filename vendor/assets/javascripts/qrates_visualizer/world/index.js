@@ -404,15 +404,17 @@
       durarion: 1000
     };
 
-    this.startRender();
-
     var self = this;
 
     new TWEEN.Tween(this._camera.position)
       .to({ x: tx, y: ty, z: tz }, opts.duration || 1000)
       .easing(TWEEN.Easing.Quartic.Out)
+      .onStart(function() {
+        // self.startRender();
+      })
       .onUpdate(function() {
         self._camera.lookAt(new THREE.Vector3(0, 0, 0));
+        self._vinyl.setBumpScale(Math.max(self._camera.position.z / 500, 0.1));
       })
       .onComplete(function() {
         self.stopRender();
@@ -445,6 +447,10 @@
   World.prototype.setVinylSize = function(size) {
     console.log('World::setVinylSize');
     // TODO: process
+  };
+
+  World.prototype.rotate = function() {
+
   };
 
   World.prototype.capture = function(opts, callback) {
@@ -532,6 +538,7 @@
    *
    */
   World.prototype.stopRender = function() {
+    console.log('World::stopRender');
     this._request = cancelAnimationFrame(this._request);
     return this;
   };
@@ -556,6 +563,7 @@
       if (this.enableRotate) {
         this._vinyl._rotation.y -= amount;
       }
+
       this._vinyl.update();
     }
 
