@@ -142,6 +142,15 @@
     });
   };
 
+  Vinyl.prototype.setSideABumpMapTexture = function(texture) {
+    this.setBumpMapTexture(texture);
+  };
+
+  Vinyl.prototype.setSideBBumpMapTexture = function(texture) {
+    // TODO: A / B 面を分ける
+    this.setBumpMapTexture(texture);
+  };
+
   Vinyl.prototype.setBumpScale = function(value) {
     var self = this;
 

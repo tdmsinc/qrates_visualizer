@@ -483,7 +483,7 @@
   /**
    *
    */
-  World.prototype.updateView = function(type, otps, callback) {
+  World.prototype.updateView = function(type, opts, callback) {
     console.log('World::updateView', type);
 
     var self = this;
@@ -691,6 +691,18 @@
     console.log('World::onVinylBumpMapTextureChanged');
 
     this._vinyl.setBumpMapTexture(value);
+  };
+
+  World.prototype.onVinylSideABumpMapTextureChanged = function(value) {
+    console.log('World::onVinylSideABumpMapTextureChanged');
+
+    this._vinyl.setSideABumpMapTexture(value);
+  };
+
+  World.prototype.onVinylSideBBumpMapTextureChanged = function(value) {
+    console.log('World::onVinylSideBBumpMapTextureChanged');
+
+    this._vinyl.setSideBBumpMapTexture(value);
   };
 
   World.prototype.onLabelTypeChanged = function(value) {
