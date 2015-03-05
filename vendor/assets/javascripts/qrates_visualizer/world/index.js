@@ -95,7 +95,7 @@
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._opts.width, this._opts.height);
-    this._renderer.setClearColor(0xFFFFFF, 0.0);
+    this._renderer.setClearColor(0, 0.0);
 
     this.initGui();
     this._lights = this.createLights();
