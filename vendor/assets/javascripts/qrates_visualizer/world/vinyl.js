@@ -90,7 +90,7 @@
           opacity: self._opacity,
           shininess: 35,
           specular: 0x363636,
-          shading: THREE.SmoothShading,
+          shading: THREE.FlatShading,
           vertexColor: THREE.VertexColors
         });
       }

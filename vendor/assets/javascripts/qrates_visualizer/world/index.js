@@ -23,6 +23,7 @@
     label: null,
     render: true,
     rotate: false,
+    sleeve: true,
     out: false,
     camera_pos: 1,
     fov: 35,
@@ -88,6 +89,8 @@
       }
     };
 
+    this._isRendering = false;
+
     this._scene = new THREE.Scene();
 
     this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
@@ -95,7 +98,7 @@
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._opts.width, this._opts.height);
-    this._renderer.setClearColor(0xFFFFFF, 0.0);
+    this._renderer.setClearColor(0, 0.0);
 
     this.initGui();
     this._lights = this.createLights();
@@ -119,7 +122,7 @@
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, { size: size });
-    this._sleeve.position.x = 0;
+    this._sleeve.position.set(-120, 0, 0);
     this._sleeve.targetPosition = new THREE.Vector3(0);
 
     this._vinyl = new Vinyl();
@@ -135,7 +138,6 @@
     this._clock = new THREE.Clock();
 
     this.setCameraPosition(0, 409, 106);
-    this.setSleevePosition(-120, 0, 0);
   }
 
   /**
@@ -156,31 +158,31 @@
     var lights = new THREE.Object3D();
 
     var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
-    spotLight1.position.set(1000, 2000, 1500);
+    spotLight1.position.set(335, 1955, 475);
     lights.add(spotLight1);
 
     var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
-    spotLight2.position.set(-760, 2000, 1500);
+    spotLight2.position.set(-980, 1900, -880);
     lights.add(spotLight2);
 
     var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
-    pointLight1.position.set(210, 2140, -840);
+    pointLight1.position.set(25, 10, -2300);
     lights.add(pointLight1);
 
     var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
-    pointLight2.position.set(-210, -800, 105);
+    pointLight2.position.set(-2, -160, 1480);
     lights.add(pointLight2);
 
-    var hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 1.0);
-    hemisphereLight1.position.set(-1240, 2440, 525);
+    var hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 0.2);
+    hemisphereLight1.position.set(380, 140, -1225);
     lights.add(hemisphereLight1);
 
-    var hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 1.0);
-    hemisphereLight2.position.set(1000, 2440, 1940);
+    var hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 0.2);
+    hemisphereLight2.position.set(-360, 60, 1285);
     lights.add(hemisphereLight2);
 
     var ambientLight = new THREE.AmbientLight(0x0D0D0D);
-    ambientLight.position.set(0, 200, 1780);
+    ambientLight.position.set(0, 820, 2);
     lights.add(ambientLight);
 
     return lights;
@@ -210,6 +212,7 @@
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
     var outFromSleeveController = gui.add(props, 'out');
+    var sleeveVisibilityController = gui.add(props, 'sleeve');
     var captureController = gui.add(temp, 'capture');
     var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
     var sizeController = gui.add(props, 'size', [7, 10, 12]);
@@ -241,6 +244,12 @@
       var offset = value ? ('7' === self._sleeve._size ? -120 : -160) : 0;
 
       self.setSleevePosition(offset, 0, 0);
+    });
+
+    sleeveVisibilityController.onChange(function(value) {
+      self.setSleeveVisibility(value, null, function() {
+        console.log('sleeve visibility is changed');
+      });
     });
 
     colorController.onChange(function(value) {
@@ -404,24 +413,39 @@
       durarion: 1000
     };
 
-    this.startRender();
-
     var self = this;
+
+    // self.startRender();
 
     new TWEEN.Tween(this._camera.position)
       .to({ x: tx, y: ty, z: tz }, opts.duration || 1000)
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         self._camera.lookAt(new THREE.Vector3(0, 0, 0));
+        self._vinyl.setBumpScale(Math.max(self._camera.position.z / 500, 0.1));
       })
       .onComplete(function() {
-        self.stopRender();
+        // self.stopRender();
         if (callback) callback();
       })
       .start();
   };
 
-  World.prototype.setSleevePosition = function(x, y, z, callback) {
+  World.prototype.setSleeveVisibility = function(yn, opts, callback) {
+    opts = opts || {
+      durarion: 1000
+    };
+
+    var self = this;
+
+    // self.startRender();
+
+    this._sleeve.setVisible(yn, opts, function() {
+      // self.stopRender();
+    });
+  };
+
+  World.prototype.setSleevePosition = function(x, y, z, opts, callback) {
     if (!callback) {
       callback = null;
     }
@@ -430,21 +454,31 @@
       return;
     }
 
+    opts = opts || {
+      durarion: 1000
+    };
+
     var self = this;
 
+    // self.startRender();
+
     new TWEEN.Tween(this._sleeve.position)
-      .to({ x: x, y: y, z: z }, 500)
+      .to({ x: x, y: y, z: z }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function() {
-        self._sleeve.update();
+      .onComplete(function() {
+        // self.stopRender();
+        if (callback) callback();
       })
-      .onComplete(callback)
       .start();
   };
 
   World.prototype.setVinylSize = function(size) {
     console.log('World::setVinylSize');
     // TODO: process
+  };
+
+  World.prototype.rotate = function() {
+
   };
 
   World.prototype.capture = function(opts, callback) {
@@ -491,27 +525,31 @@
 
     switch (Number(type)) {
       case 1:
-        this.setCameraPosition(0, 409, 106, opts, callback);
+        this.setCameraPosition(0, 400, 100, opts, callback);
         break;
       case 2:
-        this.setCameraPosition(0, 149, 1, opts, callback);
+        this.setCameraPosition(0, 180, 1, opts, callback);
         break;
       case 3:
-        this.setCameraPosition(127, 192, 214, opts, callback);
+        this.setCameraPosition(0, 0, 180, opts, callback);
         break;
       case 4:
-        this.setCameraPosition(127, 0, 0, opts, callback);
+        this.setCameraPosition(127, 192, 214, opts, callback);
         break;
       case 5:
-        this.setCameraPosition(0, 409, 106, opts, callback);
-
-        var offset = '7' === self._sleeve._size ? -120 : -160;
-        self.setSleevePosition(offset, 0, 0);
+        this.setCameraPosition(0, 386.4, -3.5, opts, callback);
+        /**var offset = '7' === self._sleeve._size ? -120 : -160;
+        self.setSleevePosition(offset, 0, 0); */
         break;
       case 6:
-        this.setCameraPosition(0, 409, 106, opts, callback);
-
-        self.setSleevePosition(0, 0, 0);
+        this.setCameraPosition(0, 346.3, -100, opts, callback);
+        /**self.setSleevePosition(0, 0, 0);*/
+        break;
+      case 7:
+        this.setCameraPosition(0, 282.6, -182.9, opts, callback);
+        break;
+      case 8:
+        this.setCameraPosition(0, 199.8, -246.4, opts, callback);
         break;
       default:
         break;
@@ -524,7 +562,11 @@
   World.prototype.startRender =
   World.prototype.resumeRender = function() {
     console.log('World::startRender');
-    this._request = requestAnimationFrame(this.draw.bind(this));
+    if (!this._isRendering) {
+      this._isRendering = true;
+      this._request = requestAnimationFrame(this.draw.bind(this));
+    }
+
     return this;
   };
 
@@ -532,7 +574,12 @@
    *
    */
   World.prototype.stopRender = function() {
-    this._request = cancelAnimationFrame(this._request);
+    console.log('World::stopRender');
+    if (this._isRendering) {
+      this._isRendering = false;
+      this._request = cancelAnimationFrame(this._request);
+    }
+    
     return this;
   };
 
@@ -540,6 +587,7 @@
    *
    */
   World.prototype.update = function() {
+    console.log('update');
     var amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
 
     if (this.enableRotate) {
@@ -556,6 +604,7 @@
       if (this.enableRotate) {
         this._vinyl._rotation.y -= amount;
       }
+
       this._vinyl.update();
     }
 
@@ -574,6 +623,10 @@
    *
    */
   World.prototype.draw = function() {
+    if (!this._isRendering) {
+      return;
+    }
+
     this.update();
     this._renderer.render(this._scene, this._camera);
     this._request = requestAnimationFrame(this.draw.bind(this));
