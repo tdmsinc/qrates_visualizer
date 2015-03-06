@@ -203,7 +203,6 @@
     var cameraYController = gui.add(cameraProps, 'y', -1000, 1000);
     var cameraZController = gui.add(cameraProps, 'z', -1000, 1000);
     var bumpScaleController = gui.add(props, 'bumpScale', 0, 1.0);
-    var fovController = gui.add(props, 'fov', 20, 50);
 
     renderController.onChange(function(value) {
       if (value) {
@@ -237,10 +236,6 @@
       }
 
       self._vinyl.setBumpScale(value);
-    });
-
-    fovController.onChange(function(value) {
-      self._camera.setLens(value);
     });
   };
 
@@ -294,8 +289,6 @@
   };
 
   World.prototype.cover = function(value) {
-    console.log('World::cover', value);
-
     this._sleeve.setCoveredRatio(value);
   };
 
