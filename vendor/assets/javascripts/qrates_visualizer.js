@@ -222,14 +222,18 @@
   };
 
   /**
-   * @param {Number} distance
+   * @param {Number} step
    * @return {VinylVisualizer}
    * @api public
    */
 
-  VinylVisualizer.prototype.zoom = function(distance) {
+  VinylVisualizer.prototype.zoom = function(step) {
     if (!this.world) return this;
-    this.world.zoom(distance);
+    if (step > 0) {
+      this.world.zoomIn(step);
+    } else {
+      this.world.zoomOut(Math.abs(step));
+    }
     return this;
   };
 

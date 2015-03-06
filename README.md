@@ -117,11 +117,11 @@ Vinyl が Sleeve に収納されている状況を指定します。
 
 - `value:Number`: 収納状態を値で指定します。0 が完全に Sleeve に収まっている状態、1 が完全に Sleeve から出ている状態。
 
-#### VinylVisualizer#zoom(distance:Number):VinylVisualizer
+#### VinylVisualizer#zoom(step:Number):VinylVisualizer
 
-ズームレベルを変更します。
+ズームレベルをインクリメンタルに変更します。値は正数指定で寄り、負数指定で引きです。
 
-- `distance:Number`: ズームレベルを座標で指定。通常 200 ~ 400 の間を指定します。
+- `step:Number`: ズームレベルを指定。
 
 #### VinylVisualizer#sleeveVisibility(value:Boolean):VinylVisualizer
 
