@@ -127,7 +127,7 @@ Vinyl が Sleeve に収納されている状況を指定します。
 
 Sleeve の可視状態を変更します。
 
-- `value:Boolean`
+- `value:Boolean`
   - `true`: Sleeve を可視状態に変更
   - `false`: Sleeve を不可視状態に変更
 
