@@ -16,6 +16,7 @@
     sleeve: true,
     out: false,
     zoom: 100,
+    'covered ratio': 0.8,
     bumpScale: 0.282,
     sleeveX: -15
   };
@@ -108,16 +109,13 @@
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, { size: size });
-    this._sleeve.position.set(-120, 0, 0);
-    this._sleeve.targetPosition = new THREE.Vector3(0);
+    this._sleeve.setCoveredRatio(0.8);
 
     this._vinyl = new Vinyl();
     this._vinyl.setup(this._scene, assets, { size: size, color: 0xFFFFFF });
-    this._vinyl.targetPosition = new THREE.Vector3(0);
 
     this._label = new Label();
     this._label.setup(this._scene, assets, { size: size });
-    this._label.targetPosition = new THREE.Vector3(0);
 
     this._rpm = opts.defaults.vinyl.speed;
 
@@ -197,7 +195,7 @@
     var gui = this.gui = new window.dat.GUI();
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
-    var outFromSleeveController = gui.add(props, 'out');
+    var outFromSleeveController = gui.add(props, 'covered ratio', 0.0, 1.0);
     var sleeveVisibilityController = gui.add(props, 'sleeve');
     var captureController = gui.add(temp, 'capture');
     var zoomController = gui.add(props, 'zoom', 0, 400);
@@ -220,9 +218,7 @@
     });
 
     outFromSleeveController.onChange(function(value) {
-      var offset = value ? ('7' === self._sleeve._size ? -120 : -160) : 0;
-
-      self.setSleevePosition(offset, 0, 0);
+      self.cover(value);
     });
 
     sleeveVisibilityController.onChange(function(value) {
@@ -233,18 +229,6 @@
 
     zoomController.onChange(function(value) {
       self.zoom(value);
-    });
-
-    cameraXController.onChange(function(value) {
-      self._camera.targetPosition.x = value;
-    });
-
-    cameraYController.onChange(function(value) {
-      self._camera.targetPosition.y = value;
-    });
-
-    cameraZController.onChange(function(value) {
-      self._camera.targetPosition.z = value;
     });
 
     bumpScaleController.onChange(function(value) {
@@ -301,33 +285,6 @@
     });
   };
 
-  World.prototype.setSleevePosition = function(x, y, z, opts, callback) {
-    if (!callback) {
-      callback = null;
-    }
-
-    if (!this._sleeve) {
-      return;
-    }
-
-    opts = opts || {
-      durarion: 1000
-    };
-
-    var self = this;
-
-    // self.startRender();
-
-    new TWEEN.Tween(this._sleeve.position)
-      .to({ x: x, y: y, z: z }, opts.duration)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .onComplete(function() {
-        // self.stopRender();
-        if (callback) callback();
-      })
-      .start();
-  };
-
   World.prototype.lookReverse = function(value) {
     console.log('World::lookReverse', value);
   };
@@ -338,6 +295,8 @@
 
   World.prototype.cover = function(value) {
     console.log('World::cover', value);
+
+    this._sleeve.setCoveredRatio(value);
   };
 
   World.prototype.zoom = function(distance) {
@@ -410,12 +369,9 @@
         break;
       case 5:
         this.setCameraPosition(0, 386.4, -3.5, opts, callback);
-        /**var offset = '7' === self._sleeve._size ? -120 : -160;
-        self.setSleevePosition(offset, 0, 0); */
         break;
       case 6:
         this.setCameraPosition(0, 346.3, -100, opts, callback);
-        /**self.setSleevePosition(0, 0, 0);*/
         break;
       case 7:
         this.setCameraPosition(0, 282.6, -182.9, opts, callback);
@@ -483,7 +439,6 @@
       if (this.enableRotate) {
         this._label.rotation.y -= amount;
       }
-      this._label.position.x += (this._label.targetPosition.x - this._label.position.x) / 8;
       this._label.update();
     }
 
@@ -565,9 +520,6 @@
     } else if (3 == value) {
       size = 12;
     }
-
-    var offset = 0 !== this._sleeve.position.x ? (7 === size ? -120 : -160) : 0;
-    this.setSleevePosition(offset, 0, 0);
 
     this._sleeve.setSize(size);
     this._vinyl.setSize(size);

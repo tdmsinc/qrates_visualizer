@@ -27,6 +27,7 @@
     this._holed = false;
     this._type = this.TYPE_BLACK;
     this._opacity = 1.0;
+    this._coveredRatio = 0.0;
 
     this._front = {
       current   : null,
@@ -80,6 +81,9 @@
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
+
+    this._opacityTween = new TWEEN.Tween(this);
+    this._positionTween = new TWEEN.Tween(this.position);
 
     this._front.current = this._front[this._size];
     this._back.current = this._back[this._size];
@@ -189,6 +193,8 @@
     this._scene.add(this._front.current);
     this._scene.add(this._back.current);
     this._scene.add(this._spine[this._size]);
+
+    this.setCoveredRatio(this._coveredRatio);
   };
 
   Sleeve.prototype.setHole = function(value) {
@@ -196,8 +202,20 @@
     this.setSize(this._size);
   };
 
-  Sleeve.prototype.setGlossFinished = function(value) {
+  Sleeve.prototype.setGlossFinish = function(value) {
 
+  };
+
+  Sleeve.prototype.setCoveredRatio = function(ratio) {
+    var offset = new THREE.Box3().setFromObject(this._front.current).size().x;
+
+    this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
+
+    this._positionTween
+      .stop()
+      .to({ x: this._coveredRatio * -offset }, 500)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .start();
   };
 
   Sleeve.prototype.setVisible = function(yn, opts, callback) {
@@ -208,16 +226,15 @@
 
       var self = this;
 
-      var opacityTween = new TWEEN.Tween(self)
+      this._opacityTween
+        .stop()
         .to({ _opacity: to }, dur)
         .easing(TWEEN.Easing.Quartic.Out)
         .onComplete(function() {
           if (1 === ++count && callback) callback();
         });
 
-      var positionTween = new TWEEN.Tween(self.position);
-
-      opacityTween.start();
+      this._opacityTween.start();
     }
     // this._front.current.visible = this._back.current.visible = this._spine[this._size].visible = value;
   };
