@@ -189,9 +189,23 @@ B 面用の盤面のテクスチャを指定します。引数を省略すると
 
 - `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
 
-#### Vinyl#bumpMapTexture([value:Image]):Vinly
+#### ~~Vinyl#bumpMapTexture([value:Image]):Vinly~~ [Deprecated]
 
-盤面の溝を表現するためのバンプマップ用テクスチャを指定します。引数を省略すると現在値を返します。
+~~盤面の溝を表現するためのバンプマップ用テクスチャを指定します。引数を省略すると現在値を返します。~~
+
+- ~~`value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。~~
+
+廃止予定のメソッドです。`Vinyl#sideAbumpMapTexture` か `Vinyl#sideBBumpMapTexture` を替わりに使ってください。
+
+#### Vinyl#sideABumpMapTexture([value:Image]):Vinly
+
+A 面の溝を表現するためのバンプマップ用テクスチャを指定します。引数を省略すると現在値を返します。
+
+- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
+
+#### Vinyl#sideBBumpMapTexture([value:Image]):Vinly
+
+B 面の溝を表現するためのバンプマップ用テクスチャを指定します。引数を省略すると現在値を返します。
 
 - `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
 

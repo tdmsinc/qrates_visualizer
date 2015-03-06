@@ -595,6 +595,8 @@
     parent.vinyl.on('sideATexture', this.onVinylSideATextureChanged.bind(this));
     parent.vinyl.on('sideBTexture', this.onVinylSideBTextureChanged.bind(this));
     parent.vinyl.on('bumpMapTexture', this.onVinylBumpMapTextureChanged.bind(this));
+    parent.vinyl.on('sideABumpMapTexture', this.onVinylSideABumpMapTextureChanged.bind(this));
+    parent.vinyl.on('sideBBumpMapTexture', this.onVinylSideBBumpMapTextureChanged.bind(this));
 
     parent.label.on('type', this.onLabelTypeChanged.bind(this));
     parent.label.on('sideATexture', this.onLabelSideATextureChanged.bind(this));
