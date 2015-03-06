@@ -93,6 +93,14 @@ Vinyl の回転を開始します。
 
 Vinyl の回転を停止します。
 
+#### VinylVisualizer#startRender():VinylVisualizer
+
+WebGL のレンダリングを開始します。
+
+#### VinylVisualizer#stopRender():VinylVisualizer
+
+WebGL のレンダリングを一時停止します。
+
 #### VinylVisualizer.vinyl:Vinyl
 
 Vinyl モデルのハンドラ。
