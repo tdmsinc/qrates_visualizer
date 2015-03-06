@@ -229,10 +229,10 @@
 
   VinylVisualizer.prototype.zoom = function(step) {
     if (!this.world) return this;
-    if (step > 0) {
-      this.world.zoomIn(step);
-    } else {
+    if (step < 0) {
       this.world.zoomOut(Math.abs(step));
+    } else {
+      this.world.zoomIn(step);
     }
     return this;
   };
