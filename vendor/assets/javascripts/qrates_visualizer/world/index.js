@@ -15,6 +15,7 @@
     rotate: false,
     sleeve: true,
     out: false,
+    zoom: 100,
     camera_pos: 1,
     fov: 35,
     bumpScale: 0.282,
@@ -204,8 +205,7 @@
     var outFromSleeveController = gui.add(props, 'out');
     var sleeveVisibilityController = gui.add(props, 'sleeve');
     var captureController = gui.add(temp, 'capture');
-    var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
-    var sizeController = gui.add(props, 'size', [7, 10, 12]);
+    var zoomController = gui.add(props, 'zoom', 0, 400);
     var cameraPositionController = gui.add(props, 'camera_pos', [1, 2, 3, 4]);
     var cameraXController = gui.add(cameraProps, 'x', -1000, 1000);
     var cameraYController = gui.add(cameraProps, 'y', -1000, 1000);
@@ -241,86 +241,8 @@
       });
     });
 
-    colorController.onChange(function(value) {
-      if (!vinylObj) {
-        return;
-      }
-
-      vinylObj.traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          switch (value) {
-            case 'Black':
-              currentColor = 0x000000;
-              currentOpacity = 1.0;
-              break;
-            case 'Blanc':
-              currentColor = 0xFFFFFF;
-              currentOpacity = 1.0;
-              break;
-            case 'Jaune':
-              currentColor = 0xF6EB97;
-              currentOpacity = 1.0;
-              break;
-            case 'Rouge':
-              currentColor = 0xD12145;
-              currentOpacity = 1.0;
-              break;
-            case 'Orange':
-              currentColor = 0xD8682A;
-              currentOpacity = 1.0;
-              break;
-            case 'Bleu':
-              currentColor = 0x009FD8;
-              currentOpacity = 1.0;
-              break;
-            case 'Brun':
-              currentColor = 0x5D3031;
-              currentOpacity = 1.0;
-              break;
-            case 'Vert':
-              currentColor = 0x66B07F;
-              currentOpacity = 1.0;
-              break;
-            case 'Gris':
-              currentColor = 0x858588;
-              currentOpacity = 1.0;
-              break;
-            case 'Vert(transparent)':
-              currentColor = 0x156C3F;
-              currentOpacity = 0.85;
-              break;
-            case 'Jaune(transparent)':
-              currentColor = 0xEDDC24;
-              currentOpacity = 0.85;
-              break;
-            case 'Rouge(transparent)':
-              currentColor = 0x882125;
-              currentOpacity = 0.85;
-              break;
-            case 'Violet(transparent)':
-              currentColor = 0x28151F;
-              currentOpacity = 0.85;
-              break;
-            case 'Bleu(transparent)':
-              currentColor = 0x1B3961;
-              currentOpacity = 0.85;
-              break;
-            case 'Transparent':
-              currentColor = 0xFFFFFF;
-              currentOpacity = 0.85;
-              break;
-            default:
-              break;
-          }
-
-          child.material.color.setHex(currentColor);
-          child.material.opacity = currentOpacity;
-        }
-      });
-    });
-
-    sizeController.onChange(function(value) {
-      changeVinylSize(value);
+    zoomController.onChange(function(value) {
+      self.zoom(value);
     });
 
     cameraPositionController.onChange(function(value) {
@@ -468,12 +390,17 @@
     console.log('World::cover', value);
   };
 
-  World.prototype.zoom = function(value) {
-    console.log('World::lookAround', value);
-  };
+  World.prototype.zoom = function(distance) {
+    console.log('World::zoom', distance);
 
-  World.prototype.rotate = function() {
+    var self = this;
 
+    new TWEEN.Tween(self._camera.position)
+      .to({ z: distance }, 500)
+      .onUpdate(function() {
+        self._camera.lookAt(new THREE.Vector3(0, 0, 0));
+      })
+      .start();
   };
 
   World.prototype.capture = function(opts, callback) {
