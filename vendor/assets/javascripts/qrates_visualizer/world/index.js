@@ -23,6 +23,7 @@
     label: null,
     render: true,
     rotate: false,
+    sleeve: true,
     out: false,
     camera_pos: 1,
     fov: 35,
@@ -88,6 +89,8 @@
       }
     };
 
+    this._isRendering = false;
+
     this._scene = new THREE.Scene();
 
     this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
@@ -119,7 +122,7 @@
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, { size: size });
-    this._sleeve.position.x = 0;
+    this._sleeve.position.set(-120, 0, 0);
     this._sleeve.targetPosition = new THREE.Vector3(0);
 
     this._vinyl = new Vinyl();
@@ -135,7 +138,6 @@
     this._clock = new THREE.Clock();
 
     this.setCameraPosition(0, 409, 106);
-    this.setSleevePosition(-120, 0, 0);
   }
 
   /**
@@ -210,6 +212,7 @@
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
     var outFromSleeveController = gui.add(props, 'out');
+    var sleeveVisibilityController = gui.add(props, 'sleeve');
     var captureController = gui.add(temp, 'capture');
     var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
     var sizeController = gui.add(props, 'size', [7, 10, 12]);
@@ -241,6 +244,12 @@
       var offset = value ? ('7' === self._sleeve._size ? -120 : -160) : 0;
 
       self.setSleevePosition(offset, 0, 0);
+    });
+
+    sleeveVisibilityController.onChange(function(value) {
+      self.setSleeveVisibility(value, null, function() {
+        console.log('sleeve visibility is changed');
+      });
     });
 
     colorController.onChange(function(value) {
@@ -406,24 +415,37 @@
 
     var self = this;
 
+    // self.startRender();
+
     new TWEEN.Tween(this._camera.position)
       .to({ x: tx, y: ty, z: tz }, opts.duration || 1000)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onStart(function() {
-        // self.startRender();
-      })
       .onUpdate(function() {
         self._camera.lookAt(new THREE.Vector3(0, 0, 0));
         self._vinyl.setBumpScale(Math.max(self._camera.position.z / 500, 0.1));
       })
       .onComplete(function() {
-        self.stopRender();
+        // self.stopRender();
         if (callback) callback();
       })
       .start();
   };
 
-  World.prototype.setSleevePosition = function(x, y, z, callback) {
+  World.prototype.setSleeveVisibility = function(yn, opts, callback) {
+    opts = opts || {
+      durarion: 1000
+    };
+
+    var self = this;
+
+    // self.startRender();
+
+    this._sleeve.setVisible(yn, opts, function() {
+      // self.stopRender();
+    });
+  };
+
+  World.prototype.setSleevePosition = function(x, y, z, opts, callback) {
     if (!callback) {
       callback = null;
     }
@@ -432,15 +454,21 @@
       return;
     }
 
+    opts = opts || {
+      durarion: 1000
+    };
+
     var self = this;
 
+    // self.startRender();
+
     new TWEEN.Tween(this._sleeve.position)
-      .to({ x: x, y: y, z: z }, 500)
+      .to({ x: x, y: y, z: z }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function() {
-        self._sleeve.update();
+      .onComplete(function() {
+        // self.stopRender();
+        if (callback) callback();
       })
-      .onComplete(callback)
       .start();
   };
 
@@ -518,10 +546,10 @@
         /**self.setSleevePosition(0, 0, 0);*/
         break;
       case 7:
-        this.setCameraPosition(0, 282.6, -182.9, opts, callback);        
+        this.setCameraPosition(0, 282.6, -182.9, opts, callback);
         break;
       case 8:
-        this.setCameraPosition(0, 199.8, -246.4, opts, callback);        
+        this.setCameraPosition(0, 199.8, -246.4, opts, callback);
         break;
       default:
         break;
@@ -534,7 +562,11 @@
   World.prototype.startRender =
   World.prototype.resumeRender = function() {
     console.log('World::startRender');
-    this._request = requestAnimationFrame(this.draw.bind(this));
+    if (!this._isRendering) {
+      this._isRendering = true;
+      this._request = requestAnimationFrame(this.draw.bind(this));
+    }
+
     return this;
   };
 
@@ -543,7 +575,11 @@
    */
   World.prototype.stopRender = function() {
     console.log('World::stopRender');
-    this._request = cancelAnimationFrame(this._request);
+    if (this._isRendering) {
+      this._isRendering = false;
+      this._request = cancelAnimationFrame(this._request);
+    }
+    
     return this;
   };
 
@@ -551,6 +587,7 @@
    *
    */
   World.prototype.update = function() {
+    console.log('update');
     var amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
 
     if (this.enableRotate) {
@@ -586,6 +623,10 @@
    *
    */
   World.prototype.draw = function() {
+    if (!this._isRendering) {
+      return;
+    }
+
     this.update();
     this._renderer.render(this._scene, this._camera);
     this._request = requestAnimationFrame(this.draw.bind(this));

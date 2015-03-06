@@ -26,6 +26,7 @@
     this._size = '7';
     this._holed = false;
     this._type = this.TYPE_BLACK;
+    this._opacity = 1.0;
 
     this._front = {
       current   : null,
@@ -102,10 +103,14 @@
           ambient: 0xFFFFFF,
           color: self.TYPE_BLACK === self._type ? 0x000000 : 0xFFFFFF,
           shininess: 35,
+          side: THREE.DoubleSide,
           specular: 0x363636,
           shading: THREE.SmoothShading,
+          transparent: true,
           vertexColor: THREE.VertexColors
         });
+
+        child.geometry.computeVertexNormals();
       }
     });
 
@@ -159,6 +164,7 @@
       var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.spine;
       self.initMaterial(self._spine[key], tex);
     });
+
   };
 
   Sleeve.prototype.setSize = function(size) {
@@ -190,19 +196,52 @@
     this.setSize(this._size);
   };
 
-  Sleeve.prototype.setVisible = function(value) {
-    this._front.current.visible = this._back.current.visible = this._spine[this._size].visible = value;
+  Sleeve.prototype.setGlossFinished = function(value) {
+
+  };
+
+  Sleeve.prototype.setVisible = function(yn, opts, callback) {
+    if (TWEEN) {
+      var to = yn ? 1 : 0;
+      var dur = opts ? opts.duration || 500 : 500;
+      var count = 0;
+
+      var self = this;
+
+      var opacityTween = new TWEEN.Tween(self)
+        .to({ _opacity: to }, dur)
+        .easing(TWEEN.Easing.Quartic.Out)
+        .onComplete(function() {
+          if (1 === ++count && callback) callback();
+        });
+
+      var positionTween = new TWEEN.Tween(self.position);
+
+      opacityTween.start();
+    }
+    // this._front.current.visible = this._back.current.visible = this._spine[this._size].visible = value;
   };
 
   Sleeve.prototype.update = function() {
-    this._front.current.position.set(this.position.x, this.position.y, this.position.z);
-    this._front.current.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    var self = this;
 
-    this._back.current.position.set(this.position.x, this.position.y, this.position.z);
-    this._back.current.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    Object.keys(self._front).forEach(function(key) {
+      self._front[key].position.set(self.position.x, self.position.y, self.position.z);
+      self._front[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
+      self._front[key].children[0].material.opacity = self._opacity;
+    });
 
-    this._spine[this._size].position.set(this.position.x, this.position.y, this.position.z);
-    this._spine[this._size].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    Object.keys(self._back).forEach(function(key) {
+      self._back[key].position.set(self.position.x, self.position.y, self.position.z);
+      self._back[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
+      self._back[key].children[0].material.opacity = self._opacity;
+    });
+
+    Object.keys(self._spine).forEach(function(key) {
+      self._spine[key].position.set(self.position.x, self.position.y, self.position.z);
+      self._spine[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
+      // self._spine[key].children[0].material.opacity = self._opacity;
+    });
   };
 
 })(this, (this.qvv = (this.qvv || {})));
