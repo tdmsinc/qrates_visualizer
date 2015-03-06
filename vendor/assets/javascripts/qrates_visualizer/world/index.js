@@ -5,17 +5,7 @@
 //= require_self
 
 (function(global, exports) {
-  var container;
-  var labelObj, vinylObj, sleeveObj;
-  var sleeve;
-  var labelTexture, vinylTexture, sleeveTexture, shadowTexture;
-  var currentColor = 0x000000;
-  var currentOpacity = 1.0;
   var gui, axes;
-
-  var camera, scene, renderer, controls;
-
-  var mouseX = 0, mouseY = 0;
 
   var props = {
     color: 0xFFFFFF,
@@ -216,7 +206,6 @@
     var captureController = gui.add(temp, 'capture');
     var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
     var sizeController = gui.add(props, 'size', [7, 10, 12]);
-    var labelController = gui.add(props, 'label', [1, 2, 3, 4, 5, 6, 7, 8]);
     var cameraPositionController = gui.add(props, 'camera_pos', [1, 2, 3, 4]);
     var cameraXController = gui.add(cameraProps, 'x', -1000, 1000);
     var cameraYController = gui.add(cameraProps, 'y', -1000, 1000);
@@ -332,16 +321,6 @@
 
     sizeController.onChange(function(value) {
       changeVinylSize(value);
-    });
-
-    labelController.onChange(function(value) {
-      THREE.ImageUtils.loadTexture('textures/label_' + value + '.jpg', THREE.UVMapping, function(tex) {
-        labelObj.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            child.material.map = tex;
-          }
-        });
-      });
     });
 
     cameraPositionController.onChange(function(value) {
@@ -587,7 +566,6 @@
    *
    */
   World.prototype.update = function() {
-    console.log('update');
     var amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
 
     if (this.enableRotate) {
