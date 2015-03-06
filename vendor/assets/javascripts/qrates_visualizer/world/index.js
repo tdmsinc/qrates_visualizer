@@ -16,12 +16,7 @@
     sleeve: true,
     out: false,
     zoom: 100,
-    camera_pos: 1,
-    fov: 35,
     bumpScale: 0.282,
-    rotateX: Math.PI / 2 - 0.3,
-    rotateY: 0.0,
-    rotateZ: 0.0,
     sleeveX: -15
   };
 
@@ -206,14 +201,9 @@
     var sleeveVisibilityController = gui.add(props, 'sleeve');
     var captureController = gui.add(temp, 'capture');
     var zoomController = gui.add(props, 'zoom', 0, 400);
-    var cameraPositionController = gui.add(props, 'camera_pos', [1, 2, 3, 4]);
     var cameraXController = gui.add(cameraProps, 'x', -1000, 1000);
     var cameraYController = gui.add(cameraProps, 'y', -1000, 1000);
     var cameraZController = gui.add(cameraProps, 'z', -1000, 1000);
-    var rotateXController = gui.add(props, 'rotateX', -Math.PI / 2, Math.PI / 2);
-    var rotateYController = gui.add(props, 'rotateY', -Math.PI / 2, Math.PI / 2);
-    var rotateZController = gui.add(props, 'rotateZ', -Math.PI / 2, Math.PI / 2);
-    var sleeveXController = gui.add(props, 'sleeveX', -32, 0);
     var bumpScaleController = gui.add(props, 'bumpScale', 0, 1.0);
     var fovController = gui.add(props, 'fov', 20, 50);
 
@@ -245,25 +235,6 @@
       self.zoom(value);
     });
 
-    cameraPositionController.onChange(function(value) {
-      switch (Number(value)) {
-        case 1:
-          self.setCameraPosition(0, 409, 106);
-          break;
-        case 2:
-          self.setCameraPosition(0, 149, 1);
-          break;
-        case 3:
-          self.setCameraPosition(127, 192, 214);
-          break;
-        case 4:
-          self.setCameraPosition(127, 0, 0);
-          break;
-        default:
-          break;
-      }
-    });
-
     cameraXController.onChange(function(value) {
       self._camera.targetPosition.x = value;
     });
@@ -274,22 +245,6 @@
 
     cameraZController.onChange(function(value) {
       self._camera.targetPosition.z = value;
-    });
-
-    rotateXController.onChange(function(value) {
-      // labelObj.rotation.x = vinylObj.rotation.x = value;
-    });
-
-    rotateYController.onChange(function(value) {
-      // labelObj.rotation.y = vinylObj.rotation.y = value;
-    });
-
-    rotateZController.onChange(function(value) {
-      // labelObj.rotation.z = vinylObj.rotation.z = value;
-    });
-
-    sleeveXController.onChange(function(value) {
-      // sleeve.position.x = value;
     });
 
     bumpScaleController.onChange(function(value) {
@@ -371,11 +326,6 @@
         if (callback) callback();
       })
       .start();
-  };
-
-  World.prototype.setVinylSize = function(size) {
-    console.log('World::setVinylSize');
-    // TODO: process
   };
 
   World.prototype.lookReverse = function(value) {
