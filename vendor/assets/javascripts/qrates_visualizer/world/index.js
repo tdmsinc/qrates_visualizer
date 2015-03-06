@@ -326,16 +326,16 @@
     cameraPositionController.onChange(function(value) {
       switch (Number(value)) {
         case 1:
-          self._camera.setCameraPosition(0, 409, 106);
+          self.setCameraPosition(0, 409, 106);
           break;
         case 2:
-          self._camera.setCameraPosition(0, 149, 1);
+          self.setCameraPosition(0, 149, 1);
           break;
         case 3:
-          self._camera.setCameraPosition(127, 192, 214);
+          self.setCameraPosition(127, 192, 214);
           break;
         case 4:
-          self._camera.setCameraPosition(127, 0, 0);
+          self.setCameraPosition(127, 0, 0);
           break;
         default:
           break;
@@ -456,6 +456,22 @@
     // TODO: process
   };
 
+  World.prototype.lookReverse = function(value) {
+    console.log('World::lookReverse', value);
+  };
+
+  World.prototype.lookAround = function(value) {
+    console.log('World::lookAround', value);
+  };
+
+  World.prototype.cover = function(value) {
+    console.log('World::cover', value);
+  };
+
+  World.prototype.zoom = function(value) {
+    console.log('World::lookAround', value);
+  };
+
   World.prototype.rotate = function() {
 
   };
@@ -540,8 +556,8 @@
    */
   World.prototype.startRender =
   World.prototype.resumeRender = function() {
-    console.log('World::startRender');
-    if (!this._isRendering) {
+    console.log('World::startRender', this._request);
+    if (!this._request) {
       this._isRendering = true;
       this._request = requestAnimationFrame(this.draw.bind(this));
     }
@@ -553,8 +569,8 @@
    *
    */
   World.prototype.stopRender = function() {
-    console.log('World::stopRender');
-    if (this._isRendering) {
+    console.log('World::stopRender', this._request);
+    if (this._request) {
       this._isRendering = false;
       this._request = cancelAnimationFrame(this._request);
     }
@@ -790,5 +806,4 @@
   World.prototype.onSleeveSpineTextureChanged = function(value) {
     console.log('World::onSleeveSpineTextureChanged');
   };
-
 })(this, (this.qvv = (this.qvv || {})));
