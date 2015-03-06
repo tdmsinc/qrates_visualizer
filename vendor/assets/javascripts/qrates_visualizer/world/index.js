@@ -15,7 +15,7 @@
     rotate: false,
     sleeve: true,
     out: false,
-    zoom: 100,
+    zoom: 1.0,
     'covered ratio': 0.8,
     bumpScale: 0.282,
     sleeveX: -15
@@ -86,6 +86,10 @@
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._opts.width, this._opts.height);
     this._renderer.setClearColor(0, 0.0);
+
+    this._orbitControls = new THREE.OrbitControls(this._camera);
+    this._orbitControls.target = new THREE.Vector3(0, 0, 0);
+    this._orbitControls.update();
 
     this.initGui();
     this._lights = this.createLights();
@@ -204,6 +208,12 @@
     var cameraZController = gui.add(cameraProps, 'z', -1000, 1000);
     var bumpScaleController = gui.add(props, 'bumpScale', 0, 1.0);
 
+    gui.add(this, 'lookReverse').name('flip');
+
+    gui.add(props, 'zoom', 0.0, 1.0).onChange(function(value) {
+      self.zoom(value);
+    });
+
     renderController.onChange(function(value) {
       if (value) {
         self.startRender();
@@ -282,6 +292,8 @@
 
   World.prototype.lookReverse = function(value) {
     console.log('World::lookReverse', value);
+
+    this._orbitControls.rotateLeft(Math.PI);
   };
 
   World.prototype.lookAround = function(value) {
@@ -292,17 +304,12 @@
     this._sleeve.setCoveredRatio(value);
   };
 
-  World.prototype.zoom = function(distance) {
-    console.log('World::zoom', distance);
+  World.prototype.zoomIn = function(step) {
+    this._orbitControls.dollyIn(Math.PI / 12 * step);
+  };
 
-    var self = this;
-
-    new TWEEN.Tween(self._camera.position)
-      .to({ z: distance }, 500)
-      .onUpdate(function() {
-        self._camera.lookAt(new THREE.Vector3(0, 0, 0));
-      })
-      .start();
+  World.prototype.zoomOut = function(step) {
+    this._orbitControls.dollyOut(Math.PI / 12 * step);
   };
 
   World.prototype.capture = function(opts, callback) {
@@ -436,6 +443,8 @@
     }
 
     TWEEN.update();
+
+    this._orbitControls.update();
   };
 
   /**

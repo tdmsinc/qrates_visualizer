@@ -241,7 +241,7 @@
 
   VinylVisualizer.prototype.sleeveVisibility = function(value) {
     if (!this.world) return this;
-    this.world.sleeveVisibility(value);
+    this.world.setSleeveVisibility(value);
     return this;
   };
 
