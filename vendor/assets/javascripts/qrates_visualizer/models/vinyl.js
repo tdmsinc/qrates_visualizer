@@ -29,9 +29,8 @@
     'speed',
     'sideATexture',
     'sideBTexture',
-    'bumpMapTexture',
     'sideABumpMapTexture',
-    'sideBBumpMapTexture',
+    'sideBBumpMapTexture'
   ];
 
   /**

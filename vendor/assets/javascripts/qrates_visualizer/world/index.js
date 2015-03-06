@@ -5,17 +5,7 @@
 //= require_self
 
 (function(global, exports) {
-  var container;
-  var labelObj, vinylObj, sleeveObj;
-  var sleeve;
-  var labelTexture, vinylTexture, sleeveTexture, shadowTexture;
-  var currentColor = 0x000000;
-  var currentOpacity = 1.0;
   var gui, axes;
-
-  var camera, scene, renderer, controls;
-
-  var mouseX = 0, mouseY = 0;
 
   var props = {
     color: 0xFFFFFF,
@@ -216,7 +206,6 @@
     var captureController = gui.add(temp, 'capture');
     var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
     var sizeController = gui.add(props, 'size', [7, 10, 12]);
-    var labelController = gui.add(props, 'label', [1, 2, 3, 4, 5, 6, 7, 8]);
     var cameraPositionController = gui.add(props, 'camera_pos', [1, 2, 3, 4]);
     var cameraXController = gui.add(cameraProps, 'x', -1000, 1000);
     var cameraYController = gui.add(cameraProps, 'y', -1000, 1000);
@@ -334,29 +323,19 @@
       changeVinylSize(value);
     });
 
-    labelController.onChange(function(value) {
-      THREE.ImageUtils.loadTexture('textures/label_' + value + '.jpg', THREE.UVMapping, function(tex) {
-        labelObj.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            child.material.map = tex;
-          }
-        });
-      });
-    });
-
     cameraPositionController.onChange(function(value) {
       switch (Number(value)) {
         case 1:
-          self._camera.setCameraPosition(0, 409, 106);
+          self.setCameraPosition(0, 409, 106);
           break;
         case 2:
-          self._camera.setCameraPosition(0, 149, 1);
+          self.setCameraPosition(0, 149, 1);
           break;
         case 3:
-          self._camera.setCameraPosition(127, 192, 214);
+          self.setCameraPosition(127, 192, 214);
           break;
         case 4:
-          self._camera.setCameraPosition(127, 0, 0);
+          self.setCameraPosition(127, 0, 0);
           break;
         default:
           break;
@@ -477,6 +456,22 @@
     // TODO: process
   };
 
+  World.prototype.lookReverse = function(value) {
+    console.log('World::lookReverse', value);
+  };
+
+  World.prototype.lookAround = function(value) {
+    console.log('World::lookAround', value);
+  };
+
+  World.prototype.cover = function(value) {
+    console.log('World::cover', value);
+  };
+
+  World.prototype.zoom = function(value) {
+    console.log('World::lookAround', value);
+  };
+
   World.prototype.rotate = function() {
 
   };
@@ -561,8 +556,8 @@
    */
   World.prototype.startRender =
   World.prototype.resumeRender = function() {
-    console.log('World::startRender');
-    if (!this._isRendering) {
+    console.log('World::startRender', this._request);
+    if (!this._request) {
       this._isRendering = true;
       this._request = requestAnimationFrame(this.draw.bind(this));
     }
@@ -574,8 +569,8 @@
    *
    */
   World.prototype.stopRender = function() {
-    console.log('World::stopRender');
-    if (this._isRendering) {
+    console.log('World::stopRender', this._request);
+    if (this._request) {
       this._isRendering = false;
       this._request = cancelAnimationFrame(this._request);
     }
@@ -587,7 +582,6 @@
    *
    */
   World.prototype.update = function() {
-    console.log('update');
     var amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
 
     if (this.enableRotate) {
@@ -812,5 +806,4 @@
   World.prototype.onSleeveSpineTextureChanged = function(value) {
     console.log('World::onSleeveSpineTextureChanged');
   };
-
 })(this, (this.qvv = (this.qvv || {})));
