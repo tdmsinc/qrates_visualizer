@@ -193,6 +193,12 @@
     var temp = {
       capture: function() {
         self.capture();
+      },
+      'zoom in': function() {
+        self.zoomIn(1);
+      },
+      'zoom out': function() {
+        self.zoomOut(1);
       }
     };
 
@@ -210,9 +216,8 @@
 
     gui.add(this, 'lookReverse').name('flip');
 
-    gui.add(props, 'zoom', 0.0, 1.0).onChange(function(value) {
-      self.zoom(value);
-    });
+    gui.add(temp, 'zoom in');
+    gui.add(temp, 'zoom out');
 
     renderController.onChange(function(value) {
       if (value) {
@@ -305,11 +310,11 @@
   };
 
   World.prototype.zoomIn = function(step) {
-    this._orbitControls.dollyIn(Math.PI / 12 * step);
+    this._orbitControls.dollyIn(1.2 * (step || 1));
   };
 
   World.prototype.zoomOut = function(step) {
-    this._orbitControls.dollyOut(Math.PI / 12 * step);
+    this._orbitControls.dollyOut(1.2 * (step || 1));
   };
 
   World.prototype.capture = function(opts, callback) {
