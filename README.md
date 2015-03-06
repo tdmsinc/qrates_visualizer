@@ -101,6 +101,36 @@ WebGL のレンダリングを開始します。
 
 WebGL のレンダリングを一時停止します。
 
+#### VinylVisualizer#lookReverse():VinylVisualizer
+
+オブジェクトの裏側にカメラを移動します。
+
+#### VinylVisualizer#lookAround(degree:Number):VinylVisualizer
+
+オブジェクトに対するカメラの位置をインクリメンタルに変更します。
+
+- `degree:Number`: カメラの移動量を角度で指定。負数で逆回転します。
+
+#### VinylVisualizer#cover(value:Number):VinylVisualizer
+
+Vinyl が Sleeve に収納されている状況を指定します。
+
+- `value`: 収納状態を値で指定します。0 が完全に Sleeve に収まっている状態、1 が完全に Sleeve から出ている状態。
+
+#### VinylVisualizer#zoom(distance:Number):VinylVisualizer
+
+ズームレベルを変更します。
+
+- `distance:Number`: ズームレベルを座標で指定。通常 200 ~ 400 の間を指定します。
+
+#### VinylVisualizer#sleeveVisibility(value:Boolean):VinylVisualizer
+
+Sleeve の可視状態を変更します。
+
+- `value:Boolean`
+  - `true`: Sleeve を可視状態に変更
+  - `false`: Sleeve を不可視状態に変更
+
 #### VinylVisualizer.vinyl:Vinyl
 
 Vinyl モデルのハンドラ。
