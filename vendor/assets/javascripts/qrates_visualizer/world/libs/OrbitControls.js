@@ -92,9 +92,9 @@ THREE.OrbitControls = function ( object, domElement ) {
 	var dollyEnd = new THREE.Vector2();
 	var dollyDelta = new THREE.Vector2();
 
-	var phiDelta = 0;
-	var thetaDelta = 0;
-	var scale = 1;
+	this.phiDelta = 0;
+	this.thetaDelta = 0;
+	this.scale = 1;
 	var pan = new THREE.Vector3();
 
 	var lastPosition = new THREE.Vector3();
@@ -128,7 +128,14 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		}
 
-		thetaDelta -= angle;
+		var to = this.thetaDelta - angle;
+
+		new TWEEN.Tween(this)
+			.to({ thetaDelta: to }, 500)
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.start();
+
+		// this.thetaDelta -= angle;
 
 	};
 
@@ -140,7 +147,14 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		}
 
-		phiDelta -= angle;
+		var to = this.phiDelta - angle;
+
+		new TWEEN.Tween(this)
+			.to({ phiDelta: to }, 500)
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.start();
+		
+		// this.phiDelta -= angle;
 
 	};
 
@@ -213,7 +227,14 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		}
 
-		scale /= dollyScale;
+		var to = this.scale / dollyScale;
+
+		new TWEEN.Tween(this)
+			.to({ scale: to }, 500)
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.start();
+
+		// this.scale /= dollyScale;
 
 	};
 
@@ -225,7 +246,14 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		}
 
-		scale *= dollyScale;
+		var to = this.scale * dollyScale;
+
+		new TWEEN.Tween(this)
+			.to({ scale: to }, 500)
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.start();
+
+		// this.scale *= dollyScale;
 
 	};
 
@@ -252,8 +280,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		}
 
-		theta += thetaDelta;
-		phi += phiDelta;
+		theta += this.thetaDelta;
+		phi += this.phiDelta;
 
 		// restrict phi to be between desired limits
 		phi = Math.max( this.minPolarAngle, Math.min( this.maxPolarAngle, phi ) );
@@ -261,7 +289,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		// restrict phi to be betwee EPS and PI-EPS
 		phi = Math.max( EPS, Math.min( Math.PI - EPS, phi ) );
 
-		var radius = offset.length() * scale;
+		var radius = offset.length() * this.scale;
 
 		// restrict radius to be between desired limits
 		radius = Math.max( this.minDistance, Math.min( this.maxDistance, radius ) );
@@ -280,9 +308,9 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		this.object.lookAt( this.target );
 
-		thetaDelta = 0;
-		phiDelta = 0;
-		scale = 1;
+		this.thetaDelta = 0;
+		this.phiDelta = 0;
+		this.scale = 1;
 		pan.set( 0, 0, 0 );
 
 		// update condition is:

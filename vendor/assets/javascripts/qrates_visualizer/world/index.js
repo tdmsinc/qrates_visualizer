@@ -310,11 +310,11 @@
   };
 
   World.prototype.zoomIn = function(step) {
-    this._orbitControls.dollyIn(1.2 * (step || 1));
+    this._orbitControls.dollyIn(1.02 * (step || 1));
   };
 
   World.prototype.zoomOut = function(step) {
-    this._orbitControls.dollyOut(1.2 * (step || 1));
+    this._orbitControls.dollyOut(1.02 * (step || 1));
   };
 
   World.prototype.capture = function(opts, callback) {
