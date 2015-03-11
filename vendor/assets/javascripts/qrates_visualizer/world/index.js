@@ -15,12 +15,9 @@
     rotate: false,
     sleeve: true,
     out: false,
-    camera_pos: 1,
-    fov: 35,
+    zoom: 1.0,
+    'covered ratio': 0.8,
     bumpScale: 0.282,
-    rotateX: Math.PI / 2 - 0.3,
-    rotateY: 0.0,
-    rotateZ: 0.0,
     sleeveX: -15
   };
 
@@ -90,6 +87,10 @@
     this._renderer.setSize(this._opts.width, this._opts.height);
     this._renderer.setClearColor(0, 0.0);
 
+    this._orbitControls = new THREE.OrbitControls(this._camera);
+    this._orbitControls.target = new THREE.Vector3(0, 0, 0);
+    this._orbitControls.update();
+
     this.initGui();
     this._lights = this.createLights();
     this._scene.add(this._lights);
@@ -112,16 +113,13 @@
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, { size: size });
-    this._sleeve.position.set(-120, 0, 0);
-    this._sleeve.targetPosition = new THREE.Vector3(0);
+    this._sleeve.setCoveredRatio(0.8);
 
     this._vinyl = new Vinyl();
     this._vinyl.setup(this._scene, assets, { size: size, color: 0xFFFFFF });
-    this._vinyl.targetPosition = new THREE.Vector3(0);
 
     this._label = new Label();
     this._label.setup(this._scene, assets, { size: size });
-    this._label.targetPosition = new THREE.Vector3(0);
 
     this._rpm = opts.defaults.vinyl.speed;
 
@@ -195,27 +193,35 @@
     var temp = {
       capture: function() {
         self.capture();
+      },
+      'zoom in': function() {
+        self.zoomIn(1);
+      },
+      'zoom out': function() {
+        self.zoomOut(1);
+      },
+      'look around': function() {
+        self.lookAround(1);
       }
     };
 
     var gui = this.gui = new window.dat.GUI();
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
-    var outFromSleeveController = gui.add(props, 'out');
+    var outFromSleeveController = gui.add(props, 'covered ratio', 0.0, 1.0);
     var sleeveVisibilityController = gui.add(props, 'sleeve');
     var captureController = gui.add(temp, 'capture');
-    var colorController = gui.add(props, 'color', ['Black', 'Blanc', 'Jaune', 'Rouge', 'Orange', 'Bleu', 'Brun', 'Vert', 'Gris', 'Vert(transparent)', 'Jaune(transparent)', 'Rouge(transparent)', 'Violet(transparent)', 'Bleu(transparent)', 'Transparent']);
-    var sizeController = gui.add(props, 'size', [7, 10, 12]);
-    var cameraPositionController = gui.add(props, 'camera_pos', [1, 2, 3, 4]);
+    var zoomController = gui.add(props, 'zoom', 0, 400);
     var cameraXController = gui.add(cameraProps, 'x', -1000, 1000);
     var cameraYController = gui.add(cameraProps, 'y', -1000, 1000);
     var cameraZController = gui.add(cameraProps, 'z', -1000, 1000);
-    var rotateXController = gui.add(props, 'rotateX', -Math.PI / 2, Math.PI / 2);
-    var rotateYController = gui.add(props, 'rotateY', -Math.PI / 2, Math.PI / 2);
-    var rotateZController = gui.add(props, 'rotateZ', -Math.PI / 2, Math.PI / 2);
-    var sleeveXController = gui.add(props, 'sleeveX', -32, 0);
     var bumpScaleController = gui.add(props, 'bumpScale', 0, 1.0);
-    var fovController = gui.add(props, 'fov', 20, 50);
+
+    gui.add(this, 'lookReverse').name('flip');
+
+    gui.add(temp, 'zoom in');
+    gui.add(temp, 'zoom out');
+    gui.add(temp, 'look around');
 
     renderController.onChange(function(value) {
       if (value) {
@@ -230,9 +236,7 @@
     });
 
     outFromSleeveController.onChange(function(value) {
-      var offset = value ? ('7' === self._sleeve._size ? -120 : -160) : 0;
-
-      self.setSleevePosition(offset, 0, 0);
+      self.cover(value);
     });
 
     sleeveVisibilityController.onChange(function(value) {
@@ -241,133 +245,8 @@
       });
     });
 
-    colorController.onChange(function(value) {
-      if (!vinylObj) {
-        return;
-      }
-
-      vinylObj.traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          switch (value) {
-            case 'Black':
-              currentColor = 0x000000;
-              currentOpacity = 1.0;
-              break;
-            case 'Blanc':
-              currentColor = 0xFFFFFF;
-              currentOpacity = 1.0;
-              break;
-            case 'Jaune':
-              currentColor = 0xF6EB97;
-              currentOpacity = 1.0;
-              break;
-            case 'Rouge':
-              currentColor = 0xD12145;
-              currentOpacity = 1.0;
-              break;
-            case 'Orange':
-              currentColor = 0xD8682A;
-              currentOpacity = 1.0;
-              break;
-            case 'Bleu':
-              currentColor = 0x009FD8;
-              currentOpacity = 1.0;
-              break;
-            case 'Brun':
-              currentColor = 0x5D3031;
-              currentOpacity = 1.0;
-              break;
-            case 'Vert':
-              currentColor = 0x66B07F;
-              currentOpacity = 1.0;
-              break;
-            case 'Gris':
-              currentColor = 0x858588;
-              currentOpacity = 1.0;
-              break;
-            case 'Vert(transparent)':
-              currentColor = 0x156C3F;
-              currentOpacity = 0.85;
-              break;
-            case 'Jaune(transparent)':
-              currentColor = 0xEDDC24;
-              currentOpacity = 0.85;
-              break;
-            case 'Rouge(transparent)':
-              currentColor = 0x882125;
-              currentOpacity = 0.85;
-              break;
-            case 'Violet(transparent)':
-              currentColor = 0x28151F;
-              currentOpacity = 0.85;
-              break;
-            case 'Bleu(transparent)':
-              currentColor = 0x1B3961;
-              currentOpacity = 0.85;
-              break;
-            case 'Transparent':
-              currentColor = 0xFFFFFF;
-              currentOpacity = 0.85;
-              break;
-            default:
-              break;
-          }
-
-          child.material.color.setHex(currentColor);
-          child.material.opacity = currentOpacity;
-        }
-      });
-    });
-
-    sizeController.onChange(function(value) {
-      changeVinylSize(value);
-    });
-
-    cameraPositionController.onChange(function(value) {
-      switch (Number(value)) {
-        case 1:
-          self.setCameraPosition(0, 409, 106);
-          break;
-        case 2:
-          self.setCameraPosition(0, 149, 1);
-          break;
-        case 3:
-          self.setCameraPosition(127, 192, 214);
-          break;
-        case 4:
-          self.setCameraPosition(127, 0, 0);
-          break;
-        default:
-          break;
-      }
-    });
-
-    cameraXController.onChange(function(value) {
-      self._camera.targetPosition.x = value;
-    });
-
-    cameraYController.onChange(function(value) {
-      self._camera.targetPosition.y = value;
-    });
-
-    cameraZController.onChange(function(value) {
-      self._camera.targetPosition.z = value;
-    });
-
-    rotateXController.onChange(function(value) {
-      // labelObj.rotation.x = vinylObj.rotation.x = value;
-    });
-
-    rotateYController.onChange(function(value) {
-      // labelObj.rotation.y = vinylObj.rotation.y = value;
-    });
-
-    rotateZController.onChange(function(value) {
-      // labelObj.rotation.z = vinylObj.rotation.z = value;
-    });
-
-    sleeveXController.onChange(function(value) {
-      // sleeve.position.x = value;
+    zoomController.onChange(function(value) {
+      self.zoom(value);
     });
 
     bumpScaleController.onChange(function(value) {
@@ -376,10 +255,6 @@
       }
 
       self._vinyl.setBumpScale(value);
-    });
-
-    fovController.onChange(function(value) {
-      self._camera.setLens(value);
     });
   };
 
@@ -424,56 +299,28 @@
     });
   };
 
-  World.prototype.setSleevePosition = function(x, y, z, opts, callback) {
-    if (!callback) {
-      callback = null;
-    }
-
-    if (!this._sleeve) {
-      return;
-    }
-
-    opts = opts || {
-      durarion: 1000
-    };
-
-    var self = this;
-
-    // self.startRender();
-
-    new TWEEN.Tween(this._sleeve.position)
-      .to({ x: x, y: y, z: z }, opts.duration)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .onComplete(function() {
-        // self.stopRender();
-        if (callback) callback();
-      })
-      .start();
-  };
-
-  World.prototype.setVinylSize = function(size) {
-    console.log('World::setVinylSize');
-    // TODO: process
-  };
-
   World.prototype.lookReverse = function(value) {
     console.log('World::lookReverse', value);
+
+    this._orbitControls.rotateLeft(Math.PI);
   };
 
-  World.prototype.lookAround = function(value) {
-    console.log('World::lookAround', value);
+  World.prototype.lookAround = function(step) {
+    console.log('World::lookAround', step);
+
+    this._orbitControls.rotateLeft(Math.PI / 12);
   };
 
   World.prototype.cover = function(value) {
-    console.log('World::cover', value);
+    this._sleeve.setCoveredRatio(value);
   };
 
-  World.prototype.zoom = function(value) {
-    console.log('World::lookAround', value);
+  World.prototype.zoomIn = function(step) {
+    this._orbitControls.dollyIn(1.02 * (step || 1));
   };
 
-  World.prototype.rotate = function() {
-
+  World.prototype.zoomOut = function(step) {
+    this._orbitControls.dollyOut(1.02 * (step || 1));
   };
 
   World.prototype.capture = function(opts, callback) {
@@ -533,12 +380,9 @@
         break;
       case 5:
         this.setCameraPosition(0, 386.4, -3.5, opts, callback);
-        /**var offset = '7' === self._sleeve._size ? -120 : -160;
-        self.setSleevePosition(offset, 0, 0); */
         break;
       case 6:
         this.setCameraPosition(0, 346.3, -100, opts, callback);
-        /**self.setSleevePosition(0, 0, 0);*/
         break;
       case 7:
         this.setCameraPosition(0, 282.6, -182.9, opts, callback);
@@ -606,11 +450,12 @@
       if (this.enableRotate) {
         this._label.rotation.y -= amount;
       }
-      this._label.position.x += (this._label.targetPosition.x - this._label.position.x) / 8;
       this._label.update();
     }
 
     TWEEN.update();
+
+    this._orbitControls.update();
   };
 
   /**
@@ -688,9 +533,6 @@
     } else if (3 == value) {
       size = 12;
     }
-
-    var offset = 0 !== this._sleeve.position.x ? (7 === size ? -120 : -160) : 0;
-    this.setSleevePosition(offset, 0, 0);
 
     this._sleeve.setSize(size);
     this._vinyl.setSize(size);

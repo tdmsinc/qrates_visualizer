@@ -66,7 +66,6 @@
 
       if ('obj' === ext) loader = new THREE.OBJLoader(manager);
       if ('png' === ext) loader = new THREE.ImageLoader(manager);
-      if ('vert' === ext || 'frag' === ext) loader = new ShaderLoader(manager);
 
       loader.load(path, function(obj) {
         assets[key] = obj;

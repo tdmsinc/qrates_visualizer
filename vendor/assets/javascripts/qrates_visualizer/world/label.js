@@ -92,10 +92,13 @@
           color: 0xFFFFFF,
           map: tex,
           shininess: 5,
+          side: THREE.DoubleSide,
           specular: 0x363636,
           shading: THREE.SmoothShading,
           vertexColor: THREE.VertexColors
         });
+
+        
       }
     });
 

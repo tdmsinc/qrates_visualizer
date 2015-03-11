@@ -168,6 +168,7 @@
    * @return {VinylVisualizer}
    * @api public
    */
+
   VinylVisualizer.prototype.startRender = function() {
     if (!this.world) return this;
     this.world.startRender();
@@ -178,9 +179,73 @@
    * @return {VinylVisualizer}
    * @api public
    */
+
   VinylVisualizer.prototype.stopRender = function() {
     if (!this.world) return this;
     this.world.stopRender();
+    return this;
+  };
+
+  /**
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.flip = function() {
+    if (!this.world) return this;
+    this.world.lookReverse();
+    return this;
+  };
+
+  /**
+   * @param {Number} degree
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.lookAround = function(degree) {
+    if (!this.world) return this;
+    this.world.lookAround(degree);
+    return this;
+  };
+
+  /**
+   * @param {Number} value
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.cover = function(value) {
+    if (!this.world) return this;
+    this.world.lookAround(value);
+    return this;
+  };
+
+  /**
+   * @param {Number} step
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.zoom = function(step) {
+    if (!this.world) return this;
+    if (step < 0) {
+      this.world.zoomOut(Math.abs(step));
+    } else {
+      this.world.zoomIn(step);
+    }
+    return this;
+  };
+
+  /**
+   * @param {Boolean} value
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.sleeveVisibility = function(value) {
+    if (!this.world) return this;
+    this.world.setSleeveVisibility(value);
     return this;
   };
 
