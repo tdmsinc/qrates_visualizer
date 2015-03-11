@@ -127,15 +127,15 @@ THREE.OrbitControls = function ( object, domElement ) {
 			angle = getAutoRotationAngle();
 
 		}
+console.log(this.thetaDelta, angle);
+		// var to = this.thetaDelta - angle;
 
-		var to = this.thetaDelta - angle;
+		// new TWEEN.Tween(this)
+		// 	.to({ thetaDelta: to }, 500)
+		// 	.easing(TWEEN.Easing.Quadratic.Out)
+		// 	.start();
 
-		new TWEEN.Tween(this)
-			.to({ thetaDelta: to }, 500)
-			.easing(TWEEN.Easing.Quadratic.Out)
-			.start();
-
-		// this.thetaDelta -= angle;
+		this.thetaDelta -= angle;
 
 	};
 
