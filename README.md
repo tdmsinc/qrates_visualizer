@@ -41,6 +41,17 @@ VinylVisualizer のコンストラクタ。
 
 - `el:HTMLDivElement`: コンテナ要素。
 - `opts:Object`
+  - `opts.width:Number`: 描画領域の幅。
+  - `opts.height:Number`: 描画領域の高さ。
+  - `opts.renderer:Object`: レンダラの初期値。
+    - `opts.renderer.antialias:Boolean`: アンチエイリアス有効化。
+    - `opts.renderer.alpha:Boolean`: アルファブレンディング有効化。
+    - `opts.renderer.preserveDrawingBuffer:Boolean`: (?) キャプチャを利用する場合 `true` を指定してください。
+  - `opts.camera:Object`: カメラの設定値。
+    - `opts.camera.fov:Number`: 視野角。
+    - `opts.camera.aspect:Number`: アスペクト比。
+    - `opts.camera.near:Number`: 近接オブジェクト描画閾値。
+    - `opts.camera.far:Number`: 遠隔オブジェクト描画閾値。
   - `opts.defaults.vinyl:Object`: Vinyl の初期値。
   - `opts.defaults.label:Object`: Label の初期値。
   - `opts.defaults.sleeve:Object`: Sleeve の初期値。
@@ -115,7 +126,7 @@ WebGL のレンダリングを一時停止します。
 
 Vinyl が Sleeve に収納されている状況を指定します。
 
-- `value:Number`: 収納状態を値で指定します。0 が完全に Sleeve に収まっている状態、1 が完全に Sleeve から出ている状態。
+- `value:Number`: 収納状態を値で指定します。`0` が完全に Sleeve に収まっている状態、`1` が完全に Sleeve から出ている状態。
 
 #### VinylVisualizer#zoom(step:Number):VinylVisualizer
 
@@ -307,3 +318,33 @@ B 面用のレーベルのテクスチャを指定します。引数を省略す
 背表紙のテクスチャを指定します。引数を省略すると現在値を返します。
 
 - `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+
+### World
+
+WebGL 描画クラスです。
+
+#### World(vv:VinylVisualizer, opts:Object):World
+
+World を生成します。
+
+- `vv:VinylVisualizer`: VinylVisualizer への参照。イベントデリゲート用に使用します。
+- `opts:Object`
+  - `opts.width:Number`: 横幅の初期値。
+  - `opts.height:Number` 高さの初期値。
+  - `opts.renderer:Object`: レンダラ用オプション。
+    - `opts.renderer.antialias:Boolean`
+    - `opts.renderer.alpha:Boolean`
+    - `opts.renderer.preserveDrawingBuffer:Boolean`
+  - `opts.camera:Object:` カメラ用オプション。
+    - `opts.fov:Number`
+    - `opts.aspect:Number`
+    - `opts.near:Number`
+    - `opts.far:Number`
+
+#### World.camera:THREE.Camera
+
+`THREE.Camera` の参照。マニュアル運転用。
+
+#### World.renderer:THREE.Renderer
+
+`THREE.Renderer` の参照。マニュアル運転用。 `renderer.domElement` で `HTMLCanvasElement` を取得可能。
