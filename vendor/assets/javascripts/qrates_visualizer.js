@@ -191,7 +191,7 @@
    * @api public
    */
 
-  VinylVisualizer.prototype.lookReverse = function() {
+  VinylVisualizer.prototype.flip = function() {
     if (!this.world) return this;
     this.world.lookReverse();
     return this;
