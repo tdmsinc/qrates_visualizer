@@ -91,6 +91,8 @@
           shininess: 35,
           side: THREE.DoubleSide,
           specular: 0x363636,
+          shading: THREE.SmoothShading,
+          vertexColor: THREE.VertexColors
         });
 
         // child.geometry.computeVertexNormals();
