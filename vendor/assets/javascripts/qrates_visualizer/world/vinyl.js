@@ -12,11 +12,14 @@
   }
 
   Vinyl.prototype.setup = function(scene, assets, opts) {
-    this._opts = opts || {
+    opts = opts || {
       bumpScale: 0.36,
       color: 0x000000,
-      size: 7
+      size: 1,
+      speed: 45
     };
+
+    var sizes = ['7', '10', '12'];
 
     // color modes a.k.a. vinyl types
     this.COLOR_MODE_BLACK    = 'black';
@@ -24,10 +27,14 @@
     this.COLOR_MODE_SPLATTER = 'splatter';
 
     this._scene = scene;
-    this._size = this._opts.size.toString();
+    this._size = sizes[opts.size - 1];
     this._colorMode = this.COLOR_MODE_BLACK;
     this._defaultColor = this._color = 0x000000;
     this._opacity = 1.0;
+    this._rpm = opts.speed;
+    this._enableRotation = false;
+    this._rotationAmount = 0;
+    this._clock = new THREE.Clock();
 
     this._front = {
       '7' : assets['assetsModelVinyl-7'],
@@ -223,6 +230,14 @@
     });
   };
 
+  Vinyl.prototype.setEnableRotation = function(yn) {
+    this._enableRotation = yn;
+  };
+
+  Vinyl.prototype.setRPM = function(rpm) {
+    this._rpm = rpm;
+  };
+
   Vinyl.prototype.setVisible = function(value) {
     this._front[this._size].visible = value;
   };
@@ -232,8 +247,19 @@
       return;
     }
 
-    this._front[this._size].position.set(this._position.x, this._position.y, this._position.z);
-    this._front[this._size].rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
+    var amount = this._enableRotation ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
+    this._rotation.y -= amount;
+
+    var self = this;
+
+    Object.keys(this._front).forEach(function(key) {
+      if (!self._front[key]) {
+        return;
+      }
+
+      self._front[key].position.set(self._position.x, self._position.y, self._position.z);
+      self._front[key].rotation.set(self._rotation.x, self._rotation.y, self._rotation.z);
+    });
   };
 
 })(this, (this.qvv = (this.qvv || {})));

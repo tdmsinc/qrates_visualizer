@@ -17,14 +17,19 @@
       size: 7
     };
 
+    var sizes = ['7', '10', '12'];
+
     this.TYPE_WHITE            = 1;
     this.TYPE_PRINT_MONOCHROME = 2;
     this.TYPE_PRINT_COLOR      = 3;
 
     this._scene = scene;
-    this._size = this._opts.size.toString();
+    this._size = sizes[opts.size - 1];
     this._largeHole = false;
     this._type = this.TYPE_WHITE;
+    this._rpm = opts.speed;
+    this._enableRotation = false;
+    this._clock = new THREE.Clock();
 
     this._smallHoleFront = assets['assetsModelLabelFrontSmall-7'];
     this._smallHoleBack = assets['assetsModelLabelBackSmall-7'];
@@ -190,6 +195,14 @@
     });
   };
 
+  Label.prototype.setEnableRotation = function(yn) {
+    this._enableRotation = yn;
+  };
+
+  Label.prototype.setRPM = function(rpm) {
+    this._rpm = rpm;
+  };
+
   Label.prototype.setVisible = function(value) {
     this._front[this._size].visible = this._back[this._size].visible = value;
   };
@@ -198,6 +211,10 @@
     if (!(this._front && this._back)) {
       return;
     }
+
+    var amount = this._enableRotation ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
+
+    this.rotation.y -= amount;
 
     this._front.current.position.set(this.position.x, this.position.y, this.position.z);
     this._back.current.position.set(this.position.x, this.position.y, this.position.z);

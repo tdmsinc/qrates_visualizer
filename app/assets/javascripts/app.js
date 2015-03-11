@@ -21,9 +21,12 @@ var defaults = {
     speed: 45,
   },
   label: {
-    type: 1
+    size: 1,
+    type: 1,
+    speed: 45
   },
   sleeve: {
+    size: 1,
     type: 1,
     hole: false,
     glossFinish: false

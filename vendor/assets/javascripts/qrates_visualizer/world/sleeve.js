@@ -18,13 +18,15 @@
       glossFinish: false
     };
 
+    var sizes = ['7', '10', '12'];
+
     this.TYPE_BLACK       = 1;
     this.TYPE_WHITE       = 2;
     this.TYPE_PRINT       = 3;
     this.TYPE_PRINT_SPINE = 4;
 
     this._scene = scene;
-    this._size = '7';
+    this._size = sizes[opts.size - 1];
     this._holed = opts.hole;
     this._type = this.TYPE_BLACK;
     this._opacity = 1.0;

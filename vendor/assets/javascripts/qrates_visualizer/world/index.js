@@ -72,7 +72,6 @@
       renderer: {
         antialias: true,
         preserveDrawingBuffer: true,
-        rpm: 45
       }
     };
 
@@ -116,12 +115,10 @@
     this._sleeve.setCoveredRatio(0.8);
 
     this._vinyl = new Vinyl();
-    this._vinyl.setup(this._scene, assets, { size: size, color: 0xFFFFFF });
+    this._vinyl.setup(this._scene, assets, opts.defaults.vinyl);
 
     this._label = new Label();
-    this._label.setup(this._scene, assets, { size: size });
-
-    this._rpm = opts.defaults.vinyl.speed;
+    this._label.setup(this._scene, assets, opts.defaults.label);
 
     this._clock = new THREE.Clock();
 
@@ -233,6 +230,8 @@
 
     rotationController.onChange(function(value) {
       self.enableRotate = value;
+      self._vinyl.setEnableRotation(value);
+      self._label.setEnableRotation(value);
     });
 
     outFromSleeveController.onChange(function(value) {
@@ -347,6 +346,8 @@
   World.prototype.play = function() {
     console.log('World::play');
     this.enableRotate = true;
+    this._vinyl.setEnableRotation(true);
+    this._label.setEnableRotation(true);
   };
 
   /**
@@ -355,6 +356,8 @@
   World.prototype.pause = function() {
     console.log('World::pause');
     this.enableRotate = false;
+    this._vinyl.setEnableRotation(false);
+    this._label.setEnableRotation(false);
   };
 
   /**
@@ -426,30 +429,15 @@
    *
    */
   World.prototype.update = function() {
-    var amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
-
-    if (this.enableRotate) {
-      this.rotationAmount = Math.min(this.rotationAmount + 0.001, 0.07);
-    } else {
-      this.rotationAmount = Math.max(this.rotationAmount - 0.001, 0);
-    }
-
     if (this._sleeve) {
       this._sleeve.update();
     }
 
     if (this._vinyl) {
-      if (this.enableRotate) {
-        this._vinyl._rotation.y -= amount;
-      }
-
       this._vinyl.update();
     }
 
     if (this._label) {
-      if (this.enableRotate) {
-        this._label.rotation.y -= amount;
-      }
       this._label.update();
     }
 
@@ -564,7 +552,8 @@
   World.prototype.onVinylSpeedChanged = function(value) {
     console.log('World::onVinylSpeedChanged', value);
 
-    this._rpm = value;
+    this._vinyl.setRPM(value);
+    this._label.setRPM(value);
   };
 
   World.prototype.onVinylSideATextureChanged = function(value) {
