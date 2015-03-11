@@ -112,7 +112,7 @@
     this.rotationAmount = 0;
 
     this._sleeve = new Sleeve();
-    this._sleeve.setup(this._scene, assets, { size: size });
+    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve);
     this._sleeve.setCoveredRatio(0.8);
 
     this._vinyl = new Vinyl();
@@ -631,6 +631,8 @@
 
   World.prototype.onSleeveGlossFinishChanged = function(value) {
     console.log(value);
+
+    this._sleeve.setGlossFinish(value);
   };
 
   World.prototype.onSleeveFrontTextureChanged = function(value) {

@@ -12,22 +12,24 @@
   }
 
   Sleeve.prototype.setup = function(scene, assets, opts) {
-    this._opts = opts || {
-      size: 7
+    opts = opts || {
+      type: 1,
+      hole: false,
+      glossFinish: false
     };
 
-    this.TYPE_BLACK       = 'black';
-    this.TYPE_WHITE       = 'white';
-    this.TYPE_PRINT       = 'print';
-    this.TYPE_PRINT_SPINE = 'spine';
+    this.TYPE_BLACK       = 1;
+    this.TYPE_WHITE       = 2;
+    this.TYPE_PRINT       = 3;
+    this.TYPE_PRINT_SPINE = 4;
 
     this._scene = scene;
-    // this._size = this._opts.size.toString();
     this._size = '7';
-    this._holed = false;
+    this._holed = opts.hole;
     this._type = this.TYPE_BLACK;
     this._opacity = 1.0;
     this._coveredRatio = 0.0;
+    this._shininess = opts.glossFinish ? 100 : 5;
 
     this._front = {
       current   : null,
@@ -69,14 +71,17 @@
 
     Object.keys(this._front).forEach(function(key){
       self.initMaterial(self._front[key], self._textures.front);
+      if (self._front[key]) self._front[key].name = key;
     });
 
     Object.keys(this._back).forEach(function(key) {
       self.initMaterial(self._back[key], self._textures.back);
+      if (self._back[key]) self._back[key].name = key;
     });
 
     Object.keys(this._spine).forEach(function(key) {
       self.initMaterial(self._spine[key], self._textures.spine);
+      if (self._spine[key]) self._spine[key].name = key;
     });
 
     this.position = new THREE.Vector3(0, 0, 0);
@@ -85,8 +90,10 @@
     this._opacityTween = new TWEEN.Tween(this);
     this._positionTween = new TWEEN.Tween(this.position);
 
-    this._front.current = this._front[this._size];
-    this._back.current = this._back[this._size];
+    this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
+    this._back.current = this._holed ? this._back['holed-' + this._size] : this._back[this._size];
+
+    this.setType(opts.type);
 
     this._scene.add(this._front.current);
     this._scene.add(this._back.current);
@@ -106,7 +113,7 @@
           map: tex,
           ambient: 0xFFFFFF,
           color: self.TYPE_BLACK === self._type ? 0x000000 : 0xFFFFFF,
-          shininess: 35,
+          shininess: self._shininess,
           side: THREE.DoubleSide,
           specular: 0x363636,
           shading: THREE.SmoothShading,
@@ -203,7 +210,31 @@
   };
 
   Sleeve.prototype.setGlossFinish = function(value) {
+    var self = this;
 
+    Object.keys(self._front).forEach(function(key){
+      self._front[key].traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.shininess = value ? 100 : 5;
+        }
+      });
+    });
+
+    Object.keys(self._back).forEach(function(key) {
+      self._back[key].traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.shininess = value ? 100 : 5;
+        }
+      });
+    });
+
+    Object.keys(self._spine).forEach(function(key) {
+      self._back[key].traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.shininess = value ? 100 : 5;
+        }
+      });
+    });
   };
 
   Sleeve.prototype.setCoveredRatio = function(ratio) {
