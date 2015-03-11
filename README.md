@@ -115,7 +115,7 @@ WebGL のレンダリングを一時停止します。
 
 Vinyl が Sleeve に収納されている状況を指定します。
 
-- `value:Number`: 収納状態を値で指定します。0 が完全に Sleeve に収まっている状態、1 が完全に Sleeve から出ている状態。
+- `value:Number`: 収納状態を値で指定します。`0` が完全に Sleeve に収まっている状態、`1` が完全に Sleeve から出ている状態。
 
 #### VinylVisualizer#zoom(step:Number):VinylVisualizer
 
