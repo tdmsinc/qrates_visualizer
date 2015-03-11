@@ -313,17 +313,15 @@ B 面用のレーベルのテクスチャを指定します。引数を省略す
 
 - `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
 
-### World
-
-WebGL 描画クラスです。
-
 #### Sleeve#spineTexture([value:Image]):Sleeve
 
 背表紙のテクスチャを指定します。引数を省略すると現在値を返します。
 
 - `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
 
-便宜上 Three.js 用のクラスを `World` と名付けてインタフェースを設計する。
+### World
+
+WebGL 描画クラスです。
 
 #### World(vv:VinylVisualizer, opts:Object):World
 
