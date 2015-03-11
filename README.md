@@ -101,7 +101,7 @@ WebGL のレンダリングを開始します。
 
 WebGL のレンダリングを一時停止します。
 
-#### VinylVisualizer#lookReverse():VinylVisualizer
+#### VinylVisualizer#flip():VinylVisualizer
 
 オブジェクトの裏側にカメラを移動します。
 
