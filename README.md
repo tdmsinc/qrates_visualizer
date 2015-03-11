@@ -41,6 +41,17 @@ VinylVisualizer のコンストラクタ。
 
 - `el:HTMLDivElement`: コンテナ要素。
 - `opts:Object`
+  - `opts.width:Number`: 描画領域の幅。
+  - `opts.height:Number`: 描画領域の高さ。
+  - `opts.renderer:Object`: レンダラの初期値。
+    - `opts.renderer.antialias:Boolean`: アンチエイリアス有効化。
+    - `opts.renderer.alpha:Boolean`: アルファブレンディング有効化。
+    - `opts.renderer.preserveDrawingBuffer:Boolean`: (?) キャプチャを利用する場合 `true` を指定してください。
+  - `opts.camera:Object`: カメラの設定値。
+    - `opts.camera.fov:Number`: 視野角。
+    - `opts.camera.aspect:Number`: アスペクト比。
+    - `opts.camera.near:Number`: 近接オブジェクト描画閾値。
+    - `opts.camera.far:Number`: 遠隔オブジェクト描画閾値。
   - `opts.defaults.vinyl:Object`: Vinyl の初期値。
   - `opts.defaults.label:Object`: Label の初期値。
   - `opts.defaults.sleeve:Object`: Sleeve の初期値。
