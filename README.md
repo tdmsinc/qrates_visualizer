@@ -313,8 +313,40 @@ B 面用のレーベルのテクスチャを指定します。引数を省略す
 
 - `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
 
+### World
+
+WebGL 描画クラスです。
+
 #### Sleeve#spineTexture([value:Image]):Sleeve
 
 背表紙のテクスチャを指定します。引数を省略すると現在値を返します。
 
 - `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+
+便宜上 Three.js 用のクラスを `World` と名付けてインタフェースを設計する。
+
+#### World(vv:VinylVisualizer, opts:Object):World
+
+World を生成します。
+
+- `vv:VinylVisualizer`: VinylVisualizer への参照。イベントデリゲート用に使用します。
+- `opts:Object`
+  - `opts.width:Number`: 横幅の初期値。
+  - `opts.height:Number` 高さの初期値。
+  - `opts.renderer:Object`: レンダラ用オプション。
+    - `opts.renderer.antialias:Boolean`
+    - `opts.renderer.alpha:Boolean`
+    - `opts.renderer.preserveDrawingBuffer:Boolean`
+  - `opts.camera:Object:` カメラ用オプション。
+    - `opts.fov:Number`
+    - `opts.aspect:Number`
+    - `opts.near:Number`
+    - `opts.far:Number`
+
+#### World.camera:THREE.Camera
+
+`THREE.Camera` の参照。マニュアル運転用。
+
+#### World.renderer:THREE.Renderer
+
+`THREE.Renderer` の参照。マニュアル運転用。 `renderer.domElement` で `HTMLCanvasElement` を取得可能。
