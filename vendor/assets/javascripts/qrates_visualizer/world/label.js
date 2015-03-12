@@ -28,7 +28,7 @@
     this._largeHole = false;
     this._type = this.TYPE_WHITE;
     this._rpm = opts.speed;
-    this._enableRotation = false;
+    this._enableRotate = false;
     this._clock = new THREE.Clock();
 
     this._smallHoleFront = assets['assetsModelLabelFrontSmall-7'];
@@ -195,8 +195,8 @@
     });
   };
 
-  Label.prototype.setEnableRotation = function(yn) {
-    this._enableRotation = yn;
+  Label.prototype.setEnableRotate = function(yn) {
+    this._enableRotate = yn;
   };
 
   Label.prototype.setRPM = function(rpm) {
@@ -212,7 +212,7 @@
       return;
     }
 
-    var amount = this._enableRotation ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
+    var amount = this._enableRotate ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
 
     this.rotation.y -= amount;
 

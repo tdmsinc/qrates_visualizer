@@ -89,6 +89,7 @@
     this._orbitControls = new THREE.OrbitControls(this._camera);
     this._orbitControls.target = new THREE.Vector3(0, 0, 0);
     this._orbitControls.update();
+    // this._orbitControls.autoRotate = true;
 
     this.initGui();
     this._lights = this.createLights();
@@ -107,8 +108,8 @@
 
     var size = 7;
 
-    this.enableRotate = false;
-    this.rotationAmount = 0;
+    this._enableRotate = false;
+    this._flip = false;
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, opts.defaults.sleeve);
@@ -214,7 +215,7 @@
     var cameraZController = gui.add(cameraProps, 'z', -1000, 1000);
     var bumpScaleController = gui.add(props, 'bumpScale', 0, 1.0);
 
-    gui.add(this, 'lookReverse').name('flip');
+    gui.add(this, 'flip');
 
     gui.add(temp, 'zoom in');
     gui.add(temp, 'zoom out');
@@ -230,8 +231,8 @@
 
     rotationController.onChange(function(value) {
       self.enableRotate = value;
-      self._vinyl.setEnableRotation(value);
-      self._label.setEnableRotation(value);
+      self._vinyl.setEnableRotate(value);
+      self._label.setEnableRotate(value);
     });
 
     outFromSleeveController.onChange(function(value) {
@@ -298,10 +299,27 @@
     });
   };
 
-  World.prototype.lookReverse = function(value) {
-    console.log('World::lookReverse', value);
+  World.prototype.flip = function(value) {
+    console.log('World::flip', value);
 
-    this._orbitControls.rotateLeft(Math.PI);
+    this._flip = !this._flip;
+
+    // this._orbitControls.rotateUp(this._flip ? -Math.PI : Math.PI);
+    new TWEEN.Tween(this._vinyl.rotation)
+      .to({ x: this._flip ? Math.PI : 0 }, 1000)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .start();
+
+    new TWEEN.Tween(this._label.rotation)
+      .to({ x: this._flip ? Math.PI : 0 }, 1000)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .start();
+
+    new TWEEN.Tween(this._sleeve.rotation)
+      .to({ x: this._flip ? Math.PI : 0 }, 1000)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .start();
+    // this._vinyl._rotation.x = this._flip ? -Math.PI / 2 : Math.PI / 2;
   };
 
   World.prototype.lookAround = function(step) {
@@ -345,9 +363,9 @@
    */
   World.prototype.play = function() {
     console.log('World::play');
-    this.enableRotate = true;
-    this._vinyl.setEnableRotation(true);
-    this._label.setEnableRotation(true);
+    this._enableRotate = true;
+    this._vinyl.setEnableRotate(true);
+    this._label.setEnableRotate(true);
   };
 
   /**
@@ -355,9 +373,9 @@
    */
   World.prototype.pause = function() {
     console.log('World::pause');
-    this.enableRotate = false;
-    this._vinyl.setEnableRotation(false);
-    this._label.setEnableRotation(false);
+    this._enableRotate = false;
+    this._vinyl.setEnableRotate(false);
+    this._label.setEnableRotate(false);
   };
 
   /**

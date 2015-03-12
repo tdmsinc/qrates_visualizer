@@ -31,7 +31,7 @@
     this._type = this.TYPE_BLACK;
     this._opacity = 1.0;
     this._coveredRatio = 0.0;
-    this._shininess = opts.glossFinish ? 100 : 5;
+    this._glossFinish = opts.glossFinish;
 
     this._front = {
       current   : null,
@@ -115,7 +115,7 @@
           map: tex,
           ambient: 0xFFFFFF,
           color: self.TYPE_BLACK === self._type ? 0x000000 : 0xFFFFFF,
-          shininess: self._shininess,
+          shininess: self._glossFinish ? 100 : 5,
           side: THREE.DoubleSide,
           specular: 0x363636,
           shading: THREE.SmoothShading,
@@ -211,13 +211,17 @@
     this.setSize(this._size);
   };
 
-  Sleeve.prototype.setGlossFinish = function(value) {
+  Sleeve.prototype.setGlossFinish = function(yn) {
     var self = this;
+
+    self._glossFinish = yn;
+
+    var shininess = self._glossFinish ? 100 : 5;
 
     Object.keys(self._front).forEach(function(key){
       self._front[key].traverse(function(child) {
         if (child instanceof THREE.Mesh) {
-          child.material.shininess = value ? 100 : 5;
+          child.material.shininess = shininess;
         }
       });
     });
@@ -225,7 +229,7 @@
     Object.keys(self._back).forEach(function(key) {
       self._back[key].traverse(function(child) {
         if (child instanceof THREE.Mesh) {
-          child.material.shininess = value ? 100 : 5;
+          child.material.shininess = shininess;
         }
       });
     });
@@ -233,7 +237,7 @@
     Object.keys(self._spine).forEach(function(key) {
       self._back[key].traverse(function(child) {
         if (child instanceof THREE.Mesh) {
-          child.material.shininess = value ? 100 : 5;
+          child.material.shininess = shininess;
         }
       });
     });

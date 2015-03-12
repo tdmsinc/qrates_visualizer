@@ -193,7 +193,7 @@
 
   VinylVisualizer.prototype.flip = function() {
     if (!this.world) return this;
-    this.world.lookReverse();
+    this.world.flip();
     return this;
   };
 

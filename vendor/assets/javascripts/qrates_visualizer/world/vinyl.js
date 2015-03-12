@@ -32,8 +32,8 @@
     this._defaultColor = this._color = 0x000000;
     this._opacity = 1.0;
     this._rpm = opts.speed;
-    this._enableRotation = false;
-    this._rotationAmount = 0;
+    this._enableRotate = false;
+    this.rotationAmount = 0;
     this._clock = new THREE.Clock();
 
     this._front = {
@@ -74,7 +74,7 @@
     });
 
     this._position = new THREE.Vector3(0, 0, 0);
-    this._rotation = new THREE.Vector3(0, 0, 0);
+    this.rotation = new THREE.Vector3(0, 0, 0);
 
     this._scene.add(this._front[this._size]);
   };
@@ -230,8 +230,8 @@
     });
   };
 
-  Vinyl.prototype.setEnableRotation = function(yn) {
-    this._enableRotation = yn;
+  Vinyl.prototype.setEnableRotate = function(yn) {
+    this._enableRotate = yn;
   };
 
   Vinyl.prototype.setRPM = function(rpm) {
@@ -247,8 +247,8 @@
       return;
     }
 
-    var amount = this._enableRotation ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
-    this._rotation.y -= amount;
+    var amount = this._enableRotate ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
+    this.rotation.y -= amount;
 
     var self = this;
 
@@ -258,7 +258,7 @@
       }
 
       self._front[key].position.set(self._position.x, self._position.y, self._position.z);
-      self._front[key].rotation.set(self._rotation.x, self._rotation.y, self._rotation.z);
+      self._front[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
     });
   };
 

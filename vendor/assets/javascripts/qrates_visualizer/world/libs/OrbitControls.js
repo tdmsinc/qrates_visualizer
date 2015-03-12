@@ -150,7 +150,7 @@ console.log(this.thetaDelta, angle);
 		var to = this.phiDelta - angle;
 
 		new TWEEN.Tween(this)
-			.to({ phiDelta: to }, 500)
+			.to({ phiDelta: to }, 2000)
 			.easing(TWEEN.Easing.Quadratic.Out)
 			.start();
 		
