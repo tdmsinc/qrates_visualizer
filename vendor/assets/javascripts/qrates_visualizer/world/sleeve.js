@@ -93,7 +93,7 @@
     this._positionTween = new TWEEN.Tween(this.position);
 
     this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
-    this._back.current = this._holed ? this._back['holed-' + this._size] : this._back[this._size];
+    this._back.current  = this._holed ? this._back['holed-' + this._size]  : this._back[this._size];
 
     this.setType(opts.type);
 

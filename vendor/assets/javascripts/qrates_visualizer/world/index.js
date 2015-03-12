@@ -121,7 +121,8 @@
     this._label = new Label();
     this._label.setup(this._scene, assets, opts.defaults.label);
 
-    this._clock = new THREE.Clock();
+    this._flipRotation = 0;
+    this._flipTween = new TWEEN.Tween(this);
 
     this.setCameraPosition(0, 409, 106);
   }
@@ -304,22 +305,18 @@
 
     this._flip = !this._flip;
 
-    // this._orbitControls.rotateUp(this._flip ? -Math.PI : Math.PI);
-    new TWEEN.Tween(this._vinyl.rotation)
-      .to({ x: this._flip ? Math.PI : 0 }, 1000)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .start();
+    var self = this;
 
-    new TWEEN.Tween(this._label.rotation)
-      .to({ x: this._flip ? Math.PI : 0 }, 1000)
+    this._flipTween
+      .stop()
+      .to({ _flipRotation: this._flip ? Math.PI : 0 })
       .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function() {
+        self._vinyl.rotation.x = self._flipRotation;
+        self._label.rotation.x = self._flipRotation;
+        self._sleeve.rotation.x = self._flipRotation;
+      })
       .start();
-
-    new TWEEN.Tween(this._sleeve.rotation)
-      .to({ x: this._flip ? Math.PI : 0 }, 1000)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .start();
-    // this._vinyl._rotation.x = this._flip ? -Math.PI / 2 : Math.PI / 2;
   };
 
   World.prototype.lookAround = function(step) {
