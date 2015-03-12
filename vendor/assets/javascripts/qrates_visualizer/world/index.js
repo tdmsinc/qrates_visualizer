@@ -111,6 +111,10 @@
     this._enableRotate = false;
     this._flip = false;
 
+    // copy sizes
+    opts.defaults.sleeve.size = opts.defaults.vinyl.size;
+    opts.defaults.label.size = opts.defaults.vinyl.size;
+
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, opts.defaults.sleeve);
     this._sleeve.setCoveredRatio(0.8);
@@ -436,7 +440,7 @@
       this._isRendering = false;
       this._request = cancelAnimationFrame(this._request);
     }
-    
+
     return this;
   };
 

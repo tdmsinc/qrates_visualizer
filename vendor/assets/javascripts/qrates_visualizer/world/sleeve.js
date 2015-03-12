@@ -69,6 +69,9 @@
     this.updateTexture(this._textures.back, assets['assetsTextureSleeveDefault']);
     this.updateTexture(this._textures.spine, assets['assetsTextureSleeveDefault']);
 
+    this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
+    this._back.current  = this._holed ? this._back['holed-' + this._size]  : this._back[this._size];
+
     var self = this;
 
     Object.keys(this._front).forEach(function(key){
@@ -91,9 +94,6 @@
 
     this._opacityTween = new TWEEN.Tween(this);
     this._positionTween = new TWEEN.Tween(this.position);
-
-    this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
-    this._back.current  = this._holed ? this._back['holed-' + this._size]  : this._back[this._size];
 
     this.setType(opts.type);
 
