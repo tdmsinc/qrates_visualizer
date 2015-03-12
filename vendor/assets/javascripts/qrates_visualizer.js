@@ -203,9 +203,22 @@
    * @api public
    */
 
+  VinylVisualizer.prototype.rotateHorizontal =
   VinylVisualizer.prototype.lookAround = function(degree) {
     if (!this.world) return this;
     this.world.lookAround(degree);
+    return this;
+  };
+
+  /**
+   * @param {Number} degree
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.rotateVertical = function(degree) {
+    if (!this.world) return this;
+    // TODO:
     return this;
   };
 

@@ -116,11 +116,21 @@ WebGL のレンダリングを一時停止します。
 
 オブジェクトの裏側にカメラを移動します。
 
+#### VinylVisualizer#rotateHorizontal(degree:Number):VinylVisualizer
+
+オブジェクトを水平方向にインクリメンタルに回転させます。
+
+- `degree:Number`: 回転量を角度で指定。負数で逆回転します。
+
+#### VinylVisualizer#rotateVertical(degree:Number):VinylVisualizer
+
+オブジェクトを垂直方向にインクリメンタルに回転させます。
+
+- `degree:Number`: 回転量を角度で指定。負数で逆回転します。
+
 #### VinylVisualizer#lookAround(degree:Number):VinylVisualizer
 
-オブジェクトに対するカメラの位置をインクリメンタルに変更します。
-
-- `degree:Number`: カメラの移動量を角度で指定。負数で逆回転します。
+`VinylVisualizer#rotateHorizontal` のエイリアス。
 
 #### VinylVisualizer#cover(value:Number):VinylVisualizer
 
