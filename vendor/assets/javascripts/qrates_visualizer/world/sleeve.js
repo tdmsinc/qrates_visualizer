@@ -93,7 +93,7 @@
     this._positionTween = new TWEEN.Tween(this.position);
 
     this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
-    this._back.current = this._holed ? this._back['holed-' + this._size] : this._back[this._size];
+    this._back.current  = this._holed ? this._back['holed-' + this._size]  : this._back[this._size];
 
     this.setType(opts.type);
 
@@ -115,7 +115,7 @@
           map: tex,
           ambient: 0xFFFFFF,
           color: self.TYPE_BLACK === self._type ? 0x000000 : 0xFFFFFF,
-          shininess: self._glossFinish ? 100 : 5,
+          shininess: self._glossFinish ? 45 : 15,
           side: THREE.DoubleSide,
           specular: 0x363636,
           shading: THREE.SmoothShading,

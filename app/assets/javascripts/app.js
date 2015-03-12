@@ -55,7 +55,8 @@ var vv = new qvv.VinylVisualizer(el, {
   defaults: {
     vinyl: defaults.vinyl,
     label: defaults.label,
-    sleeve: defaults.sleeve
+    sleeve: defaults.sleeve,
+    size: 1
   }
 });
 

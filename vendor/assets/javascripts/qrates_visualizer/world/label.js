@@ -1,5 +1,6 @@
 
 //= require tdmsinc-three.js
+//= require deepmerge
 //= require_self
 
 (function(global, exports) {
