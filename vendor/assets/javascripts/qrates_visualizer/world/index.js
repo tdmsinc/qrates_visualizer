@@ -111,8 +111,9 @@
     this._enableRotate = false;
     this._flip = false;
 
-    // copy sleeve size from vinyl size
+    // copy sizes
     opts.defaults.sleeve.size = opts.defaults.vinyl.size;
+    opts.defaults.label.size = opts.defaults.vinyl.size;
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, opts.defaults.sleeve);
