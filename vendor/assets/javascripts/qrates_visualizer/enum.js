@@ -15,9 +15,9 @@
    */
 
   exports.VINYL_SIZE = {};
-  exports.VINYL_SIZE.SEVEN = 7;
-  exports.VINYL_SIZE.TEN = 10;
-  exports.VINYL_SIZE.TWELVE = 12;
+  exports.VINYL_SIZE.INCH_7 = 1;
+  exports.VINYL_SIZE.INCH_10 = 2;
+  exports.VINYL_SIZE.INCH_12 = 3;
 
   /**
    * Expose `VINYL_COLOR`

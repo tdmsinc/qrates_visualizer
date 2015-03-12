@@ -67,6 +67,8 @@
       if ('obj' === ext) loader = new THREE.OBJLoader(manager);
       if ('png' === ext) loader = new THREE.ImageLoader(manager);
 
+      if (!loader) return;
+
       loader.load(path, function(obj) {
         assets[key] = obj;
       });
