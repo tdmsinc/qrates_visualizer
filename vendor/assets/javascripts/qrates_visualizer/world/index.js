@@ -538,8 +538,7 @@
     }
 
     if (!sizes[value - 1]) {
-      console.error('[World::onVinylSizeChanged] value is out of range: ' + value);
-      return;
+      throw new TypeError('Unknown vinyl size error. Size ' + value + ' is not expected.');
     }
 
     var size = sizes[value - 1];
