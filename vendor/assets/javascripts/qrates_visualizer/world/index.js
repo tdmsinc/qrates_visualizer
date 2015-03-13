@@ -106,8 +106,6 @@
     // ground.receiveShadow = true;
     // this._scene.add(ground);
 
-    var size = 7;
-
     this._enableRotate = false;
     this._flip = false;
 

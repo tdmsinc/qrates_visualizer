@@ -21,12 +21,10 @@ var defaults = {
     speed: 45,
   },
   label: {
-    size: 1,
     type: 1,
     speed: 45
   },
   sleeve: {
-    size: 1,
     type: 1,
     hole: false,
     glossFinish: false
@@ -55,8 +53,7 @@ var vv = new qvv.VinylVisualizer(el, {
   defaults: {
     vinyl: defaults.vinyl,
     label: defaults.label,
-    sleeve: defaults.sleeve,
-    size: 1
+    sleeve: defaults.sleeve
   }
 });
 
