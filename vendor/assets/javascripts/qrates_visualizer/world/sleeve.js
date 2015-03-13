@@ -182,6 +182,7 @@
 
   Sleeve.prototype.setSize = function(size) {
     if (!size) {
+      console.error('[Sleeve::setSize] no size specified');
       return;
     }
 
@@ -189,7 +190,7 @@
     this._scene.remove(this._back.current);
     this._scene.remove(this._spine[this._size]);
 
-    this._size = size.toString();
+    this._size = size;
 
     if (this._holed) {
       this._front.current = this._front['holed-' + this._size];

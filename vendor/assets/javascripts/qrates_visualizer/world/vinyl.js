@@ -183,12 +183,13 @@
 
   Vinyl.prototype.setSize = function(size) {
     if (!size) {
+      console.error('[Vinyl::setSize] no size specified');
       return;
     }
 
     this._scene.remove(this._front[this._size]);
 
-    this._size = size.toString();
+    this._size = size;
     this._scene.add(this._front[this._size]);
   };
 

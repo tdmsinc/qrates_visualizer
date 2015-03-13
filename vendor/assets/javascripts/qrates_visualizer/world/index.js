@@ -529,15 +529,20 @@
 
   World.prototype.onVinylSizeChanged = function(value) {
     console.log('World::onVinylSizeChanged', value);
-    var size;
 
-    if (1 == value) {
-      size = 7;
-    } else if (2 == value) {
-      size = 10;
-    } else if (3 == value) {
-      size = 12;
+    var sizes = ['7', '10', '12'];
+
+    if (!value) {
+      console.error('[World::onVinylSizeChanged] value is undefined');
+      return;
     }
+
+    if (!sizes[value - 1]) {
+      console.error('[World::onVinylSizeChanged] value is out of range: ' + value);
+      return;
+    }
+
+    var size = sizes[value - 1];
 
     this._sleeve.setSize(size);
     this._vinyl.setSize(size);

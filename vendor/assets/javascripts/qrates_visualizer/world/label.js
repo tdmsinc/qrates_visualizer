@@ -121,13 +121,14 @@
 
   Label.prototype.setSize = function(size) {
     if (!size) {
+      console.error('[Label::setSize] no size specified');
       return;
     }
 
     this._scene.remove(this._front.current);
     this._scene.remove(this._back.current);
 
-    this._size = size.toString();
+    this._size = size;
 
     this._front.current = this._front[this._size];
     this._back.current = this._back[this._size];
