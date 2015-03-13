@@ -62,17 +62,20 @@
     this._textures = {
       front: new THREE.Texture(),
       back : new THREE.Texture(),
-      spine: new THREE.Texture()
+      spine: new THREE.Texture(),
+      default: new THREE.Texture()
     };
 
-    this.updateTexture(this._textures.front, assets['assetsTextureSleeveDefault']);
-    this.updateTexture(this._textures.back, assets['assetsTextureSleeveDefault']);
-    this.updateTexture(this._textures.spine, assets['assetsTextureSleeveDefault']);
+    var self = this;
+
+    Object.keys(this._textures).forEach(function(key) {
+      self.updateTexture(self._textures[key], assets['assetsTextureSleeveDefault']);
+    });
 
     this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
     this._back.current  = this._holed ? this._back['holed-' + this._size]  : this._back[this._size];
 
-    var self = this;
+    
 
     Object.keys(this._front).forEach(function(key){
       self.initMaterial(self._front[key], self._textures.front);
@@ -136,6 +139,8 @@
     }
 
     tex.image = img;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
     tex.needsUpdate = true;
   };
 
@@ -164,17 +169,17 @@
     var self = this;
 
     Object.keys(this._front).forEach(function(key) {
-      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.front;
+      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? self._textures.default : self._textures.front;
       self.initMaterial(self._front[key], tex);
     });
 
     Object.keys(this._back).forEach(function(key) {
-      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.back;
+      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? self._textures.default : self._textures.back;
       self.initMaterial(self._back[key], tex);
     });
 
     Object.keys(this._spine).forEach(function(key) {
-      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? null : self._textures.spine;
+      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? self._textures.default : self._textures.spine;
       self.initMaterial(self._spine[key], tex);
     });
 
