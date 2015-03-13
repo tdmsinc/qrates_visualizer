@@ -64,7 +64,9 @@
       world.delegateEvents();
       world.startRender();
       el.appendChild(world.getRenderer().domElement);
-      self.emit('ready');
+      setTimeout(function() {
+        self.emit('ready');
+      }, 0);
     });
   };
 
