@@ -539,6 +539,8 @@
       size = 10;
     } else if (3 == value) {
       size = 12;
+    } else {
+      throw new TypeError('Unknown vinyl size error. Size ' + value + ' is not expected.');
     }
 
     this._sleeve.setSize(size);
