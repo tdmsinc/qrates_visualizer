@@ -127,15 +127,21 @@ THREE.OrbitControls = function ( object, domElement ) {
 			angle = getAutoRotationAngle();
 
 		}
-console.log(this.thetaDelta, angle);
-		// var to = this.thetaDelta - angle;
 
-		// new TWEEN.Tween(this)
-		// 	.to({ thetaDelta: to }, 500)
-		// 	.easing(TWEEN.Easing.Quadratic.Out)
-		// 	.start();
+		var self = this;
+		var angleObj = { target: angle, old: 0, angle: 0 };
 
-		this.thetaDelta -= angle;
+		new TWEEN.Tween(angleObj)
+			.to({ angle: angle }, 500)
+			.onUpdate(function(progress) {
+				this.angle = (this.target * progress) - this.old;
+				this.old = (this.target * progress);
+
+				self.thetaDelta -= this.angle;
+			})
+			.start();
+
+		// this.thetaDelta -= angle;
 
 	};
 
@@ -147,11 +153,17 @@ console.log(this.thetaDelta, angle);
 
 		}
 
-		var to = this.phiDelta - angle;
+		var self = this;
+		var angleObj = { target: angle, old: 0, angle: 0 };
 
-		new TWEEN.Tween(this)
-			.to({ phiDelta: to }, 2000)
-			.easing(TWEEN.Easing.Quadratic.Out)
+		new TWEEN.Tween(angleObj)
+			.to({ angle: angle }, 500)
+			.onUpdate(function(progress) {
+				this.angle = (this.target * progress) - this.old;
+				this.old = (this.target * progress);
+
+				self.phiDelta -= this.angle;
+			})
 			.start();
 		
 		// this.phiDelta -= angle;

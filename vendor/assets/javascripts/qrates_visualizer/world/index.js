@@ -203,8 +203,11 @@
       'zoom out': function() {
         self.zoomOut(1);
       },
-      'look around': function() {
-        self.lookAround(1);
+      'rotate horizontal': function() {
+        self.rotateHorizontal(30);
+      },
+      'rotate vertical': function() {
+        self.rotateVertical(30);
       }
     };
 
@@ -224,7 +227,8 @@
 
     gui.add(temp, 'zoom in');
     gui.add(temp, 'zoom out');
-    gui.add(temp, 'look around');
+    gui.add(temp, 'rotate horizontal');
+    gui.add(temp, 'rotate vertical');
 
     renderController.onChange(function(value) {
       if (value) {
@@ -323,10 +327,16 @@
       .start();
   };
 
-  World.prototype.lookAround = function(step) {
-    console.log('World::lookAround', step);
+  World.prototype.rotateHorizontal = function(degrees) {
+    console.log('World::rotateHorizontal', degrees);
 
-    this._orbitControls.rotateLeft(Math.PI / 12);
+    this._orbitControls.rotateLeft(degrees * (Math.PI / 180));
+  };
+
+  World.prototype.rotateVertical = function(degrees) {
+    console.log('World::rotateVertical', degrees);
+
+    this._orbitControls.rotateUp(degrees * (Math.PI / 180));
   };
 
   World.prototype.cover = function(value) {
