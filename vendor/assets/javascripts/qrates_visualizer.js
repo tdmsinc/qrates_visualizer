@@ -232,7 +232,7 @@
 
   VinylVisualizer.prototype.cover = function(value) {
     if (!this.world) return this;
-    this.world.lookAround(value);
+    this.world.cover(value);
     return this;
   };
 
