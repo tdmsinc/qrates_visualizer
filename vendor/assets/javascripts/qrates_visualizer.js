@@ -208,7 +208,7 @@
   VinylVisualizer.prototype.rotateHorizontal =
   VinylVisualizer.prototype.lookAround = function(degree) {
     if (!this.world) return this;
-    this.world.lookAround(degree);
+    this.world.rotateHorizontal(degree);
     return this;
   };
 
@@ -220,7 +220,7 @@
 
   VinylVisualizer.prototype.rotateVertical = function(degree) {
     if (!this.world) return this;
-    // TODO:
+    this.world.rotateVertical(degree);
     return this;
   };
 
