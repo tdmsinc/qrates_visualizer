@@ -14,6 +14,7 @@
 
   Label.prototype.setup = function(scene, assets, opts) {
     this._opts = opts || {
+      holeSize: 0,
       type: 1,
       size: 1,
       speed: 45
@@ -27,7 +28,7 @@
 
     this._scene = scene;
     this._size = sizes[opts.size - 1];
-    this._largeHole = false;
+    this._largeHole = opts.holeSize;
     this._type = opts.type;
     this._rpm = opts.speed;
     this._enableRotate = false;
@@ -39,14 +40,14 @@
     this._largeHoleBack = assets['assetsModelLabelBackLarge-7'];
 
     this._front = {
-      '7' : this._smallHoleFront,
+      '7' : this._largeHole ? this._largetHoleFront : this._smallHoleFront,
       '10': assets['assetsModelLabelFront-10'],
       '12': assets['assetsModelLabelFront-12'],
       current: null
     };
 
     this._back = {
-      '7' : this._smallHoleBack,
+      '7' : this._largeHole ? this._largeHoleBack : this._smallHoleBack,
       '10': assets['assetsModelLabelBack-10'],
       '12': assets['assetsModelLabelBack-12'],
       current: null
@@ -54,8 +55,8 @@
 
     this._textures = {
       default: new THREE.Texture(),
-      front: new THREE.Texture(),
-      back : new THREE.Texture()
+      front: opts.sideATexture || new THREE.Texture(),
+      back : opts.sideBTexture || new THREE.Texture()
     };
 
     this._shaders = {
@@ -104,8 +105,6 @@
           shading: THREE.SmoothShading,
           vertexColor: THREE.VertexColors
         });
-
-        
       }
     });
 
@@ -142,7 +141,7 @@
     this._scene.add(this._back.current);
   };
 
-  Label.prototype.setLargeHole = function(value) {
+  Label.prototype.setLargeHole = function(yn) {
     if ('7' !== this._size) {
       return;
     }
@@ -150,7 +149,7 @@
     this._scene.remove(this._front.current);
     this._scene.remove(this._back.current);
 
-    this._largeHole = value;
+    this._largeHole = yn;
 
     this._front['7'] = this._largeHole ? this._largeHoleFront : this._smallHoleFront;
     this._back['7'] = this._largeHole ? this._largeHoleBack : this._smallHoleBack;

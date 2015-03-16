@@ -25,24 +25,6 @@
     x:0.0, y: 17.0, z: 30.0,
   };
 
-  var colors = [
-    { color: 0x000000, opacity: 1.0 },
-    { color: 0xFFFFFF, opacity: 1.0 },
-    { color: 0xF3EA5D, opacity: 1.0 },
-    { color: 0xDA291C, opacity: 1.0 },
-    { color: 0xFF8F1C, opacity: 1.0 },
-    { color: 0x0085CA, opacity: 1.0 },
-    { color: 0x7A3E3A, opacity: 1.0 },
-    { color: 0xA4D65E, opacity: 1.0 },
-    { color: 0x9EA2A2, opacity: 1.0 },
-    { color: 0x00AF66, opacity: 0.85 },
-    { color: 0xEFDF00, opacity: 0.85 },
-    { color: 0xDA291C, opacity: 0.85 },
-    { color: 0x833177, opacity: 0.85 },
-    { color: 0x0085CA, opacity: 0.85 },
-    { color: 0xFFFFFF, opacity: 0.85 }
-  ];
-
   /**
    * Module dependencies.
    */
@@ -112,6 +94,7 @@
     // copy sizes
     opts.defaults.sleeve.size = opts.defaults.vinyl.size;
     opts.defaults.label.size = opts.defaults.vinyl.size;
+    opts.defaults.label.holeSize = opts.defaults.vinyl.holeSize;
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, opts.defaults.sleeve);

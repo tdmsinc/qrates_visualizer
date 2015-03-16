@@ -72,11 +72,24 @@
     };
 
     this._textures = {
-      front: opts.front_texture || new THREE.Texture(),
-      back: opts.front_back || new THREE.Texture(),
+      front: opts.sideATexture || new THREE.Texture(),
+      back: opts.sideBTexture || new THREE.Texture(),
       splatter: opts.front_splatter || new THREE.Texture(),
       bumpMap: {
         '7' : new THREE.Texture(),
+        '10': new THREE.Texture(),
+        '12': new THREE.Texture()
+      }
+    };
+
+    this._bumpMaps = {
+      front: {
+        '7': new THREE.Texture(),
+        '10': new THREE.Texture(),
+        '12': new THREE.Texture()
+      },
+      back: {
+        '7': new THREE.Texture(),
         '10': new THREE.Texture(),
         '12': new THREE.Texture()
       }
