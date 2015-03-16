@@ -42,7 +42,6 @@
 
     var sizes = ['7', '10', '12'];
 
-    // color modes a.k.a. vinyl types
     this.TYPE_BLACK    = 1;
     this.TYPE_COLOR    = 2;
     this.TYPE_SPLATTER = 3;
@@ -72,41 +71,28 @@
     };
 
     this._textures = {
-      front: opts.sideATexture || new THREE.Texture(),
-      back: opts.sideBTexture || new THREE.Texture(),
-      splatter: opts.front_splatter || new THREE.Texture(),
+      front: new THREE.Texture(),
+      back: new THREE.Texture(),
+      splatter: new THREE.Texture(),
       bumpMap: {
-        '7' : new THREE.Texture(),
-        '10': new THREE.Texture(),
-        '12': new THREE.Texture()
+        front: new THREE.Texture(),
+        back: new THREE.Texture()
       }
     };
 
-    this._bumpMaps = {
-      front: {
-        '7': new THREE.Texture(),
-        '10': new THREE.Texture(),
-        '12': new THREE.Texture()
-      },
-      back: {
-        '7': new THREE.Texture(),
-        '10': new THREE.Texture(),
-        '12': new THREE.Texture()
-      }
-    };
+    this.updateTexture(this._textures.front, opts.sideATexture);
+    this.updateTexture(this._textures.back, opts.sideBTexture);
+    this.updateTexture(this._textures.bumpMap.front, opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-' + this._size]);
+    this.updateTexture(this._textures.bumpMap.back,  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-' + this._size]);
 
     var self = this;
 
-    Object.keys(self._textures.bumpMap).forEach(function(key) {
-      self.updateTexture(self._textures.bumpMap[key], assets['assetsTextureVinylBumpmap-' + key]);
-    });
-
     Object.keys(self._front).forEach(function(key) {
-      self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap[key]);
+      self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap.front);
     });
 
     Object.keys(self._back).forEach(function(key) {
-      self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap[key]);
+      self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap.back);
     });
 
     this._position = new THREE.Vector3(0, 0, 0);
@@ -166,7 +152,7 @@
 
       Object.keys(self._front).forEach(function(key) {
         var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
-        self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
+        self.initMaterial(self._front[key], tex, self._textures.bumpMap.front);
       });
     }
 
@@ -175,26 +161,17 @@
 
       Object.keys(self._back).forEach(function(key) {
         var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
-        self.initMaterial(self._back[key], tex, self._textures.bumpMap[key]);
+        self.initMaterial(self._back[key], tex, self._textures.bumpMap.back);
       });
     }
   };
 
-  Vinyl.prototype.setBumpMapTexture = function(texture) {
-    var self = this;
-
-    Object.keys(self._textures.bumpMap).forEach(function(key) {
-      self.updateTexture(self._textures.bumpMap[key], texture);
-    });
+  Vinyl.prototype.setSideABumpMapTexture = function(image) {
+    this.updateTexture(this._textures.bumpMap.front, image);
   };
 
-  Vinyl.prototype.setSideABumpMapTexture = function(texture) {
-    this.setBumpMapTexture(texture);
-  };
-
-  Vinyl.prototype.setSideBBumpMapTexture = function(texture) {
-    // TODO: A / B 面を分ける
-    this.setBumpMapTexture(texture);
+  Vinyl.prototype.setSideBBumpMapTexture = function(image) {
+    this.updateTexture(this._textures.bumpMap.back, image);
   };
 
   Vinyl.prototype.setBumpScale = function(value) {
@@ -241,12 +218,12 @@
 
     Object.keys(self._front).forEach(function(key) {
       var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap.front);
     });
 
     Object.keys(self._back).forEach(function(key) {
       var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
-      self.initMaterial(self._back[key], tex, self._textures.bumpMap[key]);
+      self.initMaterial(self._back[key], tex, self._textures.bumpMap.back);
     });
   };
 
@@ -258,12 +235,12 @@
 
     Object.keys(self._front).forEach(function(key) {
       var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap.front);
     });
 
     Object.keys(self._back).forEach(function(key) {
       var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap.back);
     });
   };
 

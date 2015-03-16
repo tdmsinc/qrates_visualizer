@@ -95,6 +95,7 @@
     opts.defaults.sleeve.size = opts.defaults.vinyl.size;
     opts.defaults.label.size = opts.defaults.vinyl.size;
     opts.defaults.label.holeSize = opts.defaults.vinyl.holeSize;
+    opts.defaults.label.speed = opts.defaults.vinyl.speed;
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, opts.defaults.sleeve);
@@ -484,7 +485,6 @@
     parent.vinyl.on('speed', this.onVinylSpeedChanged.bind(this));
     parent.vinyl.on('sideATexture', this.onVinylSideATextureChanged.bind(this));
     parent.vinyl.on('sideBTexture', this.onVinylSideBTextureChanged.bind(this));
-    parent.vinyl.on('bumpMapTexture', this.onVinylBumpMapTextureChanged.bind(this));
     parent.vinyl.on('sideABumpMapTexture', this.onVinylSideABumpMapTextureChanged.bind(this));
     parent.vinyl.on('sideBBumpMapTexture', this.onVinylSideBBumpMapTextureChanged.bind(this));
 
@@ -580,12 +580,6 @@
     console.log('World::onVinylSideBTextureChanged', value);
 
     this._vinyl.setTexture(null, value);
-  };
-
-  World.prototype.onVinylBumpMapTextureChanged = function(value) {
-    console.log('World::onVinylBumpMapTextureChanged');
-
-    this._vinyl.setBumpMapTexture(value);
   };
 
   World.prototype.onVinylSideABumpMapTextureChanged = function(value) {

@@ -40,7 +40,7 @@
     this._largeHoleBack = assets['assetsModelLabelBackLarge-7'];
 
     this._front = {
-      '7' : this._largeHole ? this._largetHoleFront : this._smallHoleFront,
+      '7' : this._largeHole ? this._largeHoleFront : this._smallHoleFront,
       '10': assets['assetsModelLabelFront-10'],
       '12': assets['assetsModelLabelFront-12'],
       current: null
@@ -55,24 +55,19 @@
 
     this._textures = {
       default: new THREE.Texture(),
-      front: opts.sideATexture || new THREE.Texture(),
-      back : opts.sideBTexture || new THREE.Texture()
-    };
-
-    this._shaders = {
-      vertexShader  : assets['assetsVertexShaderLabelColor'],
-      fragmentShader: assets['assetsFragmentShaderLabelColor']
+      front: new THREE.Texture(),
+      back : new THREE.Texture()
     };
 
     this._front.current = this._front[this._size];
     this._back.current = this._back[this._size];
 
     this.updateTexture(this._textures.default, assets['assetsTextureLabelDefault']);
-    this.updateTexture(this._textures.front, assets['assetsTextureLabelDefault']);
-    this.updateTexture(this._textures.back, assets['assetsTextureLabelDefault']);
+    this.updateTexture(this._textures.front, this.TYPE_WHITE === this._type ? assets['assetsTextureLabelDefault'] : opts.sideATexture);
+    this.updateTexture(this._textures.back,  this.TYPE_WHITE === this._type ? assets['assetsTextureLabelDefault'] : opts.sideBTexture);
 
-    this.initMaterial(this._front.current, this._textures.default);
-    this.initMaterial(this._back.current, this._textures.default);
+    this.initMaterial(this._front.current, this._textures.front);
+    this.initMaterial(this._back.current, this._textures.back);
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
@@ -86,7 +81,7 @@
     });
   };
 
-  Label.prototype.initMaterial = function(obj, tex, vertexShader, fragmentShader) {
+  Label.prototype.initMaterial = function(obj, tex) {
     if (!obj) {
       return;
     }

@@ -12,9 +12,9 @@ var defaults = {
     height: window.innerHeight
   },
   vinyl: {
-    type: 2,
+    type: 1,
     size: 1,
-    color: 2,
+    color: 0,
     splatterColor: 0,
     holeSize: 0,
     heavy: false,
@@ -22,7 +22,6 @@ var defaults = {
   },
   label: {
     type: 1,
-    speed: 45
   },
   sleeve: {
     type: 1,

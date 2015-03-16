@@ -73,6 +73,16 @@
       self.updateTexture(self._textures[key], assets['assetsTextureSleeveDefault']);
     });
 
+    if (this.TYPE_PRINT === this._type || this.TYPE_PRINT_SPINE === this._type) {
+      this.updateTexture(this._textures.front, opts.frontTexture);
+      this.updateTexture(this._textures.back,  opts.backTexture);
+      this.updateTexture(this._textures.spine, opts.spineTexture);
+    } else {
+      this.updateTexture(this._textures.front, assets['assetsTextureSleeveDefault']);
+      this.updateTexture(this._textures.back,  assets['assetsTextureSleeveDefault']);
+      this.updateTexture(this._textures.spine, assets['assetsTextureSleeveDefault']);
+    }
+
     this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
     this._back.current  = this._holed ? this._back['holed-' + this._size]  : this._back[this._size];
 
