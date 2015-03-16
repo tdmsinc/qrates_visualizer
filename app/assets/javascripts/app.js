@@ -12,9 +12,9 @@ var defaults = {
     height: window.innerHeight
   },
   vinyl: {
-    type: 1,
+    type: 2,
     size: 1,
-    color: 0,
+    color: 0xff0000,
     splatterColor: 0,
     holeSize: 0,
     heavy: false,

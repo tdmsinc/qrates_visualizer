@@ -529,11 +529,11 @@
     console.log('World::onVinylTypeChanged', value);
 
     if (1 === value) {
-      this._vinyl.setColorMode(this._vinyl.COLOR_MODE_BLACK);
+      this._vinyl.setColorMode(this._vinyl.TYPE_BLACK);
     } else if (2 === value) {
-      this._vinyl.setColorMode(this._vinyl.COLOR_MODE_COLOR);
+      this._vinyl.setColorMode(this._vinyl.TYPE_COLOR);
     } else if (3 === value) {
-      this._vinyl.setColorMode(this._vinyl.COLOR_MODE_SPLATTER);
+      this._vinyl.setColorMode(this._vinyl.TYPE_SPLATTER);
     }
   };
 

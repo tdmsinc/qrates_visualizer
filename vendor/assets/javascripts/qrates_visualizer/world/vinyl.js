@@ -25,14 +25,15 @@
     var sizes = ['7', '10', '12'];
 
     // color modes a.k.a. vinyl types
-    this.COLOR_MODE_BLACK    = 1;
-    this.COLOR_MODE_COLOR    = 2;
-    this.COLOR_MODE_SPLATTER = 3;
+    this.TYPE_BLACK    = 1;
+    this.TYPE_COLOR    = 2;
+    this.TYPE_SPLATTER = 3;
 
     this._scene = scene;
     this._size = sizes[opts.size - 1];
     this._type = opts.type;
-    this._defaultColor = this._color = 0x000000;
+    this._defaultColor = 0x000000;
+    this._color = opts.color;
     this._opacity = 1.0;
     this._rpm = opts.speed;
     this._heavy = opts.heavy;
@@ -53,9 +54,9 @@
     };
 
     this._textures = {
-      front: new THREE.Texture(),
-      back: new THREE.Texture(),
-      splatter: new THREE.Texture(),
+      front: opts.front_texture || new THREE.Texture(),
+      back: opts.front_back || new THREE.Texture(),
+      splatter: opts.front_spine || new THREE.Texture(),
       bumpMap: {
         '7' : new THREE.Texture(),
         '10': new THREE.Texture(),
@@ -93,11 +94,11 @@
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material = new THREE.MeshPhongMaterial({
-          ambient: 0xFFFFFF,
+          ambient: 0xffffff,
           bumpMap: bumpMapTex,
           bumpScale: 0.36,
           color: self._color,
-          map: tex,
+          map: self.TYPE_SPLATTER === self._type ? tex : null,
           opacity: self._opacity,
           shininess: 35,
           side: THREE.DoubleSide,
@@ -123,7 +124,7 @@
   };
 
   Vinyl.prototype.setTexture = function(sideA, sideB) {
-    if (this.COLOR_MODE_SPLATTER !== this._type) {
+    if (this.TYPE_SPLATTER !== this._type) {
       return false;
     }
 
@@ -133,7 +134,7 @@
       this.updateTexture(this._textures.front, sideA);
 
       Object.keys(self._front).forEach(function(key) {
-        var tex = self.COLOR_MODE_SPLATTER === self._type ? self._textures.front : null;
+        var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
         self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
       });
     }
@@ -142,7 +143,7 @@
       this.updateTexture(this._textures.back, sideB);
 
       Object.keys(self._back).forEach(function(key) {
-        var tex = self.COLOR_MODE_SPLATTER === self._type ? self._textures.back : null;
+        var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
         self.initMaterial(self._back[key], tex, self._textures.bumpMap[key]);
       });
     }
@@ -203,34 +204,34 @@
     }
 
     this._type = mode;
-    this._color = this.COLOR_MODE_SPLATTER === mode ? 0xFFFFFF : this._defaultColor;
+    this._color = this.TYPE_SPLATTER === mode ? 0xFFFFFF : this._defaultColor;
 
     var self = this;
 
     Object.keys(self._front).forEach(function(key) {
-      var tex = self.COLOR_MODE_SPLATTER === self._type ? self._textures.front : null;
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
       self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
     });
 
     Object.keys(self._back).forEach(function(key) {
-      var tex = self.COLOR_MODE_SPLATTER === self._type ? self._textures.back : null;
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
       self.initMaterial(self._back[key], tex, self._textures.bumpMap[key]);
     });
   };
 
   Vinyl.prototype.setColor = function(hexColor) {
-    this._color = this.COLOR_MODE_SPLATTER === this._type ? 0xFFFFFF : hexColor;
-    this._opacity = this.COLOR_MODE_SPLATTER === this._type ? 0.8 : 1.0;
+    this._color = this.TYPE_SPLATTER === this._type ? 0xFFFFFF : hexColor;
+    this._opacity = this.TYPE_SPLATTER === this._type ? 0.8 : 1.0;
 
     var self = this;
 
     Object.keys(self._front).forEach(function(key) {
-      var tex = self.COLOR_MODE_SPLATTER === self._type ? self._textures.front : null;
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
       self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
     });
 
     Object.keys(self._back).forEach(function(key) {
-      var tex = self.COLOR_MODE_SPLATTER === self._type ? self._textures.back : null;
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
       self.initMaterial(self._front[key], tex, self._textures.bumpMap[key]);
     });
   };
