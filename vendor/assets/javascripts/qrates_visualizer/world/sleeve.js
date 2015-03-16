@@ -76,8 +76,6 @@
     this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
     this._back.current  = this._holed ? this._back['holed-' + this._size]  : this._back[this._size];
 
-    
-
     Object.keys(this._front).forEach(function(key){
       self.initMaterial(self._front[key], self._textures.front);
       if (self._front[key]) self._front[key].name = key;

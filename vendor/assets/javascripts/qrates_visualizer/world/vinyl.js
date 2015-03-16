@@ -22,6 +22,24 @@
       speed: 45,
     };
 
+    this._colorPresets = [
+      { color: 0x000000, opacity: 1.0 },
+      { color: 0xFFFFFF, opacity: 1.0 },
+      { color: 0xF3EA5D, opacity: 1.0 },
+      { color: 0xDA291C, opacity: 1.0 },
+      { color: 0xFF8F1C, opacity: 1.0 },
+      { color: 0x0085CA, opacity: 1.0 },
+      { color: 0x7A3E3A, opacity: 1.0 },
+      { color: 0xA4D65E, opacity: 1.0 },
+      { color: 0x9EA2A2, opacity: 1.0 },
+      { color: 0x00AF66, opacity: 0.85 },
+      { color: 0xEFDF00, opacity: 0.85 },
+      { color: 0xDA291C, opacity: 0.85 },
+      { color: 0x833177, opacity: 0.85 },
+      { color: 0x0085CA, opacity: 0.85 },
+      { color: 0xFFFFFF, opacity: 0.85 }
+    ];
+
     var sizes = ['7', '10', '12'];
 
     // color modes a.k.a. vinyl types
@@ -33,7 +51,7 @@
     this._size = sizes[opts.size - 1];
     this._type = opts.type;
     this._defaultColor = 0x000000;
-    this._color = opts.color;
+    this._color = this._colorPresets[opts.color].color;
     this._opacity = 1.0;
     this._rpm = opts.speed;
     this._heavy = opts.heavy;
@@ -56,7 +74,7 @@
     this._textures = {
       front: opts.front_texture || new THREE.Texture(),
       back: opts.front_back || new THREE.Texture(),
-      splatter: opts.front_spine || new THREE.Texture(),
+      splatter: opts.front_splatter || new THREE.Texture(),
       bumpMap: {
         '7' : new THREE.Texture(),
         '10': new THREE.Texture(),
@@ -219,8 +237,8 @@
     });
   };
 
-  Vinyl.prototype.setColor = function(hexColor) {
-    this._color = this.TYPE_SPLATTER === this._type ? 0xFFFFFF : hexColor;
+  Vinyl.prototype.setColor = function(index) {
+    this._color = this.TYPE_SPLATTER === this._type ? 0xFFFFFF : this._colorPresets[index].color;
     this._opacity = this.TYPE_SPLATTER === this._type ? 0.8 : 1.0;
 
     var self = this;

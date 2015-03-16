@@ -14,7 +14,7 @@ var defaults = {
   vinyl: {
     type: 2,
     size: 1,
-    color: 0xff0000,
+    color: 2,
     splatterColor: 0,
     holeSize: 0,
     heavy: false,
