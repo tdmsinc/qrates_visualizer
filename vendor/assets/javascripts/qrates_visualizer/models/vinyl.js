@@ -42,7 +42,12 @@
 
   function Vinyl(opts) {
     opts = opts || {};
-    if (opts.defaults) this.set(opts.defaults);
+    var self = this;
+    if (opts.defaults) {
+      setTimeout(function() {
+        self.set(opts.defaults);
+      }, 0);
+    }
   }
 
   /**
