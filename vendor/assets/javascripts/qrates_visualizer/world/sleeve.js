@@ -13,9 +13,10 @@
 
   Sleeve.prototype.setup = function(scene, assets, opts) {
     opts = opts || {
-      type: 1,
+      glossFinish: false,
       hole: false,
-      glossFinish: false
+      size: 1,
+      type: 1,
     };
 
     var sizes = ['7', '10', '12'];
@@ -28,7 +29,7 @@
     this._scene = scene;
     this._size = sizes[opts.size - 1];
     this._holed = opts.hole;
-    this._type = this.TYPE_BLACK;
+    this._type = opts.type;
     this._opacity = 1.0;
     this._coveredRatio = 0.0;
     this._glossFinish = opts.glossFinish;

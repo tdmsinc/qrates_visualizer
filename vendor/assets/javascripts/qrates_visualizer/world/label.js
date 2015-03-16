@@ -14,7 +14,9 @@
 
   Label.prototype.setup = function(scene, assets, opts) {
     this._opts = opts || {
-      size: 7
+      type: 1,
+      size: 1,
+      speed: 45
     };
 
     var sizes = ['7', '10', '12'];
@@ -26,7 +28,7 @@
     this._scene = scene;
     this._size = sizes[opts.size - 1];
     this._largeHole = false;
-    this._type = this.TYPE_WHITE;
+    this._type = opts.type;
     this._rpm = opts.speed;
     this._enableRotate = false;
     this._clock = new THREE.Clock();
