@@ -119,6 +119,9 @@
 
     this._scene.add(this._object);
 
+    this._presets = {};
+    this.registerPresets();
+
     // this.setCameraPosition(0, 409, 106);
     this.setCameraPosition(0, 409, 1);
   }
@@ -169,6 +172,26 @@
     lights.add(ambientLight);
 
     return lights;
+  };
+
+  World.prototype.registerPresets = function() {
+    // TODO: register preset parameters
+
+    this.registerPreset(1, function() {
+      return {
+        camera: null,
+        lights: null,
+        objects: null
+      };
+    });
+
+    this.registerPreset(2, function() {
+      return {
+        camera: null,
+        lights: null,
+        objects: null
+      };
+    });
   };
 
   /**
@@ -397,6 +420,20 @@
   World.prototype.updateView = function(type, opts, callback) {
     console.log('World::updateView', type);
 
+    // call preset
+
+    if (!this._presets[type]) {
+      console.warn('Preset %s is not registered.', type);
+      // return this;
+    }
+    if (this._presets[type]) {
+      var preset = this._presets[type].call(this);
+      console.log(preset);
+    }
+
+    // TODO: rewrite for presets.
+    // TODO: clear all tween.
+
     var self = this;
 
     switch (Number(type)) {
@@ -488,6 +525,20 @@
     this.update();
     this._renderer.render(this._scene, this._camera);
     this._request = requestAnimationFrame(this.draw.bind(this));
+  };
+
+  /**
+   * @param {String|Mixed} type
+   * @param {Function} fn
+   * @return {World}
+   */
+
+  World.prototype.registerPreset = function(type, fn) {
+    if (this._presets[type]) {
+      console.warn('Preset %s is already registered. Overwritten.', type);
+    }
+    this._presets[type] = fn;
+    return this;
   };
 
   /**
