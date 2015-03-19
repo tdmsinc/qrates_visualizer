@@ -75,24 +75,32 @@
       back: new THREE.Texture(),
       splatter: new THREE.Texture(),
       bumpMap: {
-        front: new THREE.Texture(),
-        back: new THREE.Texture()
+        'front-7' : new THREE.Texture(),
+        'front-10': new THREE.Texture(),
+        'front-12': new THREE.Texture(),
+        'back-7'  : new THREE.Texture(),
+        'back-10' : new THREE.Texture(),
+        'back-12' : new THREE.Texture()
       }
     };
 
     this.updateTexture(this._textures.front, opts.sideATexture);
     this.updateTexture(this._textures.back, opts.sideBTexture);
-    this.updateTexture(this._textures.bumpMap.front, opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-' + this._size]);
-    this.updateTexture(this._textures.bumpMap.back,  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-' + this._size]);
+    this.updateTexture(this._textures.bumpMap['front-7'], opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-7']);
+    this.updateTexture(this._textures.bumpMap['front-10'], opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-10']);
+    this.updateTexture(this._textures.bumpMap['front-12'], opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-12']);
+    this.updateTexture(this._textures.bumpMap['back-7'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-7']);
+    this.updateTexture(this._textures.bumpMap['back-10'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-10']);
+    this.updateTexture(this._textures.bumpMap['back-12'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-12']);
 
     var self = this;
 
     Object.keys(self._front).forEach(function(key) {
-      self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap.front);
+      self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap['front-' + key]);
     });
 
     Object.keys(self._back).forEach(function(key) {
-      self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap.back);
+      self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap['back-' + key]);
     });
 
     this._position = new THREE.Vector3(0, 0, 0);
