@@ -181,7 +181,7 @@
       return {
         camera: null,
         lights: null,
-        objects: null
+        object: null
       };
     });
 
@@ -189,7 +189,7 @@
       return {
         camera: null,
         lights: null,
-        objects: null
+        object: null
       };
     });
   };
