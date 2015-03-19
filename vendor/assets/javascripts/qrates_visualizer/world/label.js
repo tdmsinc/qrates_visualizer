@@ -12,7 +12,7 @@
 
   }
 
-  Label.prototype.setup = function(scene, assets, opts) {
+  Label.prototype.setup = function(scene, assets, opts, container) {
     this._opts = opts || {
       holeSize: 0,
       type: 1,
@@ -26,6 +26,7 @@
     this.TYPE_PRINT_MONOCHROME = 2;
     this.TYPE_PRINT_COLOR      = 3;
 
+    this._container = container;
     this._scene = scene;
     this._size = sizes[opts.size - 1];
     this._largeHole = opts.holeSize;
@@ -76,8 +77,8 @@
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this._scene.add(this._front.current);
-    this._scene.add(this._back.current);
+    this._container.add(this._front.current);
+    this._container.add(this._back.current);
 
     var self = this;
     Object.keys(this._back).forEach(function(key) {
@@ -125,8 +126,8 @@
       return;
     }
 
-    this._scene.remove(this._front.current);
-    this._scene.remove(this._back.current);
+    this._container.remove(this._front.current);
+    this._container.remove(this._back.current);
 
     this._size = size;
 
@@ -136,8 +137,8 @@
     this.initMaterial(this._front.current, this._textures.front);
     this.initMaterial(this._back.current, this._textures.back);
 
-    this._scene.add(this._front.current);
-    this._scene.add(this._back.current);
+    this._container.add(this._front.current);
+    this._container.add(this._back.current);
   };
 
   Label.prototype.setLargeHole = function(yn) {
@@ -145,8 +146,8 @@
       return;
     }
 
-    this._scene.remove(this._front.current);
-    this._scene.remove(this._back.current);
+    this._container.remove(this._front.current);
+    this._container.remove(this._back.current);
 
     this._largeHole = yn;
 
@@ -158,8 +159,8 @@
     this.initMaterial(this._front.current, this._textures.front);
     this.initMaterial(this._back.current, this._textures.back);
 
-    this._scene.add(this._front.current);
-    this._scene.add(this._back.current);
+    this._container.add(this._front.current);
+    this._container.add(this._back.current);
   };
 
   Label.prototype.setTexture = function(sideA, sideB) {

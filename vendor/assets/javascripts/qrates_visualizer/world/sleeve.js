@@ -11,7 +11,7 @@
   function Sleeve() {
   }
 
-  Sleeve.prototype.setup = function(scene, assets, opts) {
+  Sleeve.prototype.setup = function(scene, assets, opts, container) {
     opts = opts || {
       glossFinish: false,
       hole: false,
@@ -26,6 +26,7 @@
     this.TYPE_PRINT       = 3;
     this.TYPE_PRINT_SPINE = 4;
 
+    this._container = container;
     this._scene = scene;
     this._size = sizes[opts.size - 1];
     this._holed = opts.hole;
@@ -182,7 +183,7 @@
 
     this.setType(opts.type);
 
-    this._scene.add(this._currentObject);
+    this._container.add(this._currentObject);
   };
 
   Sleeve.prototype.initMaterial = function(obj, tex) {
@@ -265,7 +266,7 @@
     });
 
     if (lastType !== this.TYPE_PRINT_SPINE && this._type === this.TYPE_PRINT_SPINE) {
-      this._scene.remove(this._currentObject);
+      this._container.remove(this._currentObject);
 
       if (this._holed) {
         console.log('here');
@@ -274,9 +275,9 @@
         this._currentObject = this._object['spine-' + this._size];
       }
 
-      this._scene.add(this._currentObject);
+      this._container.add(this._currentObject);
     } else if (lastType === this.TYPE_PRINT_SPINE && this._type !== this.TYPE_PRINT_SPINE) {
-      this._scene.remove(this._currentObject);
+      this._container.remove(this._currentObject);
 
       if (this._holed) {
         this._currentObject = this._object['holed-' + this._size];
@@ -284,7 +285,7 @@
         this._currentObject = this._object[this._size];
       }
 
-      this._scene.add(this._currentObject);
+      this._container.add(this._currentObject);
     }
   };
 
@@ -294,7 +295,7 @@
       return;
     }
 
-    this._scene.remove(this._currentObject);
+    this._container.remove(this._currentObject);
 
     this._size = size;
 
@@ -312,7 +313,7 @@
       }
     }
 
-    this._scene.add(this._currentObject);
+    this._container.add(this._currentObject);
 
     this.setCoveredRatio(this._coveredRatio);
   };
@@ -390,8 +391,8 @@
   Sleeve.prototype.update = function() {
     var self = this;
 
-    this._currentObject.position.copy(this.position);
-    this._currentObject.rotation.copy(this.rotation);
+    this._currentObject.position.set(this.position.x, this.position.y, this.position.z);
+    this._currentObject.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
     // Object.keys(self._front).forEach(function(key) {
     //   self._front[key].position.set(self.position.x, self.position.y, self.position.z);

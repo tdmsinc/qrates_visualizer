@@ -11,7 +11,7 @@
   function Vinyl() {
   }
 
-  Vinyl.prototype.setup = function(scene, assets, opts) {
+  Vinyl.prototype.setup = function(scene, assets, opts, container) {
     opts = opts || {
       type: 1,
       size: 1,
@@ -46,6 +46,7 @@
     this.TYPE_COLOR    = 2;
     this.TYPE_SPLATTER = 3;
 
+    this._container = container;
     this._scene = scene;
     this._size = sizes[opts.size - 1];
     this._type = opts.type;
@@ -106,7 +107,7 @@
     this._position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this._scene.add(this._front[this._size]);
+    this._container.add(this._front[this._size]);
   };
 
   Vinyl.prototype.initMaterial = function(obj, tex, bumpMapTex) {
@@ -208,10 +209,10 @@
       return;
     }
 
-    this._scene.remove(this._front[this._size]);
+    this._container.remove(this._front[this._size]);
 
     this._size = size;
-    this._scene.add(this._front[this._size]);
+    this._container.add(this._front[this._size]);
   };
 
   Vinyl.prototype.setColorMode = function(mode) {

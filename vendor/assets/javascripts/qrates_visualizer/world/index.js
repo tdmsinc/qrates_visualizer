@@ -97,18 +97,22 @@
     opts.defaults.label.holeSize = opts.defaults.vinyl.holeSize;
     opts.defaults.label.speed = opts.defaults.vinyl.speed;
 
+    this._object = new THREE.Object3D();
+
     this._sleeve = new Sleeve();
-    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve);
+    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._object);
     this._sleeve.setCoveredRatio(0.8);
 
     this._vinyl = new Vinyl();
-    this._vinyl.setup(this._scene, assets, opts.defaults.vinyl);
+    this._vinyl.setup(this._scene, assets, opts.defaults.vinyl, this._object);
 
     this._label = new Label();
-    this._label.setup(this._scene, assets, opts.defaults.label);
+    this._label.setup(this._scene, assets, opts.defaults.label, this._object);
 
     this._flipRotation = 0;
     this._flipTween = new TWEEN.Tween(this);
+
+    this._scene.add(this._object);
 
     this.setCameraPosition(0, 409, 106);
   }
@@ -299,12 +303,10 @@
 
     this._flipTween
       .stop()
-      .to({ _flipRotation: this._flip ? Math.PI : 0 })
+      .to({ _flipRotation: this._flip ? -Math.PI : 0 })
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
-        self._vinyl.rotation.x = self._flipRotation;
-        self._label.rotation.x = self._flipRotation;
-        self._sleeve.rotation.x = self._flipRotation;
+        self._object.rotation.z = self._flipRotation;
       })
       .start();
   };
