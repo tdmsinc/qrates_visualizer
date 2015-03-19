@@ -68,10 +68,15 @@
     this._renderer.setSize(this._opts.width, this._opts.height);
     this._renderer.setClearColor(0, 0.0);
 
-    this._orbitControls = new THREE.OrbitControls(this._camera);
-    this._orbitControls.target = new THREE.Vector3(0, 0, 0);
-    this._orbitControls.update();
-    // this._orbitControls.autoRotate = true;
+    this._controls = new THREE.TrackballControls(this._camera, null, {
+      left: 0,
+      top: 0,
+      width: opts.width,
+      height: opts.height
+    });
+    this._controls.target = new THREE.Vector3(0, 0, 0);
+    this._controls.update();
+    // this._controls.autoRotate = true;
 
     this.initGui();
     this._lights = this.createLights();
@@ -114,7 +119,8 @@
 
     this._scene.add(this._object);
 
-    this.setCameraPosition(0, 409, 106);
+    // this.setCameraPosition(0, 409, 106);
+    this.setCameraPosition(0, 409, 1);
   }
 
   /**
@@ -314,13 +320,13 @@
   World.prototype.rotateHorizontal = function(degrees) {
     console.log('World::rotateHorizontal', degrees);
 
-    this._orbitControls.rotateLeft(degrees * (Math.PI / 180));
+    this._controls.rotateLeft(degrees * (Math.PI / 180));
   };
 
   World.prototype.rotateVertical = function(degrees) {
     console.log('World::rotateVertical', degrees);
 
-    this._orbitControls.rotateUp(degrees * (Math.PI / 180));
+    this._controls.rotateUp(degrees * (Math.PI / 180));
   };
 
   World.prototype.cover = function(value) {
@@ -328,11 +334,15 @@
   };
 
   World.prototype.zoomIn = function(step) {
-    this._orbitControls.dollyIn(1.02 * (step || 1));
+    this._controls.zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
+    this._controls.zoomEnd.copy(this._controls.getMouseOnScreen(0, -20 * (step || 1)));
+    this._controls.zoomCamera();
   };
 
   World.prototype.zoomOut = function(step) {
-    this._orbitControls.dollyOut(1.02 * (step || 1));
+    this._controls.zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
+    this._controls.zoomEnd.copy(this._controls.getMouseOnScreen(0, 20 * (step || 1)));
+    this._controls.zoomCamera();
   };
 
   World.prototype.capture = function(opts, callback) {
@@ -350,6 +360,14 @@
     this._camera.aspect = width / height;
     this._camera.updateProjectionMatrix();
     this._renderer.setSize(width, height);
+
+    this._controls.handleResize({
+      left: 0,
+      top: 0,
+      width: width,
+      height: height
+    });
+
     this.draw();
   };
 
@@ -456,7 +474,7 @@
 
     TWEEN.update();
 
-    this._orbitControls.update();
+    this._controls.update();
   };
 
   /**
