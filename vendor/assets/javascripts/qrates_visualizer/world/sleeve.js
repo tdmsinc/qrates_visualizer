@@ -43,7 +43,9 @@
       'holed-10': assets['assetsModelSleeveFrontHoled-10'],
       'holed-12': assets['assetsModelSleeveFrontHoled-12'],
       'spine-7' : assets['assetsModelSleeveFrontSpine-7'],
-      'spine-holed-7': assets['assetsModelSleeveFrontSpineHoled-7'],
+      'spine-12': assets['assetsModelSleeveFrontSpine-12'],
+      'spine-holed-7' : assets['assetsModelSleeveFrontSpineHoled-7'],
+      'spine-holed-12': assets['assetsModelSleeveFrontSpineHoled-12']
     };
 
     this._back = {
@@ -55,7 +57,9 @@
       'holed-10': assets['assetsModelSleeveBackHoled-10'],
       'holed-12': assets['assetsModelSleeveBackHoled-12'],
       'spine-7' : assets['assetsModelSleeveBackSpine-7'],
+      'spine-12': assets['assetsModelSleeveBackSpine-12'],
       'spine-holed-7' : assets['assetsModelSleeveBackSpineHoled-7'],
+      'spine-holed-12': assets['assetsModelSleeveBackSpineHoled-12']
     };
 
     this._spine = {
@@ -114,7 +118,7 @@
       'spine-12': new THREE.Object3D(),
       'spine-holed-7' : new THREE.Object3D(),
       'spine-holed-10': new THREE.Object3D(),
-      'spine.holed-12': new THREE.Object3D()
+      'spine-holed-12': new THREE.Object3D()
     };
 
     this._object['7'].add(this._front['7']);
@@ -139,13 +143,25 @@
     this._object['spine-7'].add(this._back['spine-7']);
     this._object['spine-7'].add(assets['assetsModelSleeveTopSpine-7']);
     this._object['spine-7'].add(assets['assetsModelSleeveBottomSpine-7']);
-    this._object['spine-7'].add(assets['assetsModelSleeveSpine-7']);
+    this._object['spine-7'].add(this._spine['7']);
+
+    this._object['spine-12'].add(this._front['spine-12']);
+    this._object['spine-12'].add(this._back['spine-12']);
+    this._object['spine-12'].add(assets['assetsModelSleeveTopSpine-12']);
+    this._object['spine-12'].add(assets['assetsModelSleeveBottomSpine-12']);
+    this._object['spine-12'].add(this._spine['12']);
 
     this._object['spine-holed-7'].add(this._front['spine-holed-7']);
     this._object['spine-holed-7'].add(this._back['spine-holed-7']);
     this._object['spine-holed-7'].add(assets['assetsModelSleeveTopSpine-7'].clone());
     this._object['spine-holed-7'].add(assets['assetsModelSleeveBottomSpine-7'].clone());
-    this._object['spine-holed-7'].add(assets['assetsModelSleeveSpine-7'].clone());
+    this._object['spine-holed-7'].add(this._spine['7'].clone());
+
+    this._object['spine-holed-12'].add(this._front['spine-holed-12']);
+    this._object['spine-holed-12'].add(this._back['spine-holed-12']);
+    this._object['spine-holed-12'].add(assets['assetsModelSleeveTopSpine-12'].clone());
+    this._object['spine-holed-12'].add(assets['assetsModelSleeveBottomSpine-12'].clone());
+    this._object['spine-holed-12'].add(this._spine['12'].clone());
 
 
     if (this._holed) {
@@ -339,7 +355,7 @@
   };
 
   Sleeve.prototype.setCoveredRatio = function(ratio) {
-    var offset = new THREE.Box3().setFromObject(this._front.current).size().x;
+    var offset = new THREE.Box3().setFromObject(this._currentObject).size().x;
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
 

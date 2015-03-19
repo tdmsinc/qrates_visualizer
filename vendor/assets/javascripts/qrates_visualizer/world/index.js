@@ -646,5 +646,7 @@
 
   World.prototype.onSleeveSpineTextureChanged = function(value) {
     console.log('World::onSleeveSpineTextureChanged');
+
+    this._sleeve.setTexture(null, null, value);
   };
 })(this, (this.qvv = (this.qvv || {})));
