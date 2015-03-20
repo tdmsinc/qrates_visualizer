@@ -47,8 +47,8 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 
 	var _eye = new THREE.Vector3();
 
-	var _rotateStart = new THREE.Vector3();
-	var _rotateEnd = new THREE.Vector3();
+	this.rotateStart = new THREE.Vector3();
+	this.rotateEnd = new THREE.Vector3();
 
 	this.zoomStart = new THREE.Vector2();
 	this.zoomEnd = new THREE.Vector2();
@@ -125,7 +125,7 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 
 	}() );
 
-	var getMouseProjectionOnBall = ( function () {
+	this.getMouseProjectionOnBall = ( function () {
 
 		var vector = new THREE.Vector3();
 		var objectUp = new THREE.Vector3();
@@ -183,11 +183,11 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 
 		return function () {
 
-			var angle = Math.acos( _rotateStart.dot( _rotateEnd ) / _rotateStart.length() / _rotateEnd.length() );
+			var angle = Math.acos( this.rotateStart.dot( this.rotateEnd ) / this.rotateStart.length() / this.rotateEnd.length() );
 
 			if ( angle ) {
 
-				axis.crossVectors( _rotateStart, _rotateEnd ).normalize();
+				axis.crossVectors( this.rotateStart, this.rotateEnd ).normalize();
 
 				angle *= _this.rotateSpeed;
 
@@ -196,16 +196,16 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 				_eye.applyQuaternion( quaternion );
 				_this.object.up.applyQuaternion( quaternion );
 
-				_rotateEnd.applyQuaternion( quaternion );
+				this.rotateEnd.applyQuaternion( quaternion );
 
 				if ( _this.staticMoving ) {
 
-					_rotateStart.copy( _rotateEnd );
+					this.rotateStart.copy( this.rotateEnd );
 
 				} else {
 
 					quaternion.setFromAxisAngle( axis, angle * ( _this.dynamicDampingFactor - 1.0 ) );
-					_rotateStart.applyQuaternion( quaternion );
+					this.rotateStart.applyQuaternion( quaternion );
 
 				}
 
@@ -413,8 +413,8 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 
 		if ( _state === STATE.ROTATE && !_this.noRotate ) {
 
-			_rotateStart.copy( getMouseProjectionOnBall( event.pageX, event.pageY ) );
-			_rotateEnd.copy( _rotateStart );
+			this.rotateStart.copy( this.getMouseProjectionOnBall( event.pageX, event.pageY ) );
+			this.rotateEnd.copy( this.rotateStart );
 
 		} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
 
@@ -444,7 +444,7 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 
 		if ( _state === STATE.ROTATE && !_this.noRotate ) {
 
-			_rotateEnd.copy( getMouseProjectionOnBall( event.pageX, event.pageY ) );
+			this.rotateEnd.copy( this.getMouseProjectionOnBall( event.pageX, event.pageY ) );
 
 		} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
 
@@ -506,8 +506,8 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 
 			case 1:
 				_state = STATE.TOUCH_ROTATE;
-				_rotateStart.copy( getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
-				_rotateEnd.copy( _rotateStart );
+				this.rotateStart.copy( this.getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
+				this.rotateEnd.copy( this.rotateStart );
 				break;
 
 			case 2:
@@ -541,7 +541,7 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 		switch ( event.touches.length ) {
 
 			case 1:
-				_rotateEnd.copy( getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
+				this.rotateEnd.copy( this.getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
 				break;
 
 			case 2:
@@ -568,8 +568,8 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 		switch ( event.touches.length ) {
 
 			case 1:
-				_rotateEnd.copy( getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
-				_rotateStart.copy( _rotateEnd );
+				this.rotateEnd.copy( this.getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
+				this.rotateStart.copy( this.rotateEnd );
 				break;
 
 			case 2:
@@ -603,7 +603,7 @@ THREE.TrackballControls = function ( object, domElement, bounds ) {
 	// window.addEventListener( 'keyup', keyup, false );
 
 	this.handleResize();
-	
+
 	// force an update at start
 	this.update();
 

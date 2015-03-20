@@ -57,6 +57,9 @@
       }
     };
 
+    this._width = opts.width;
+    this._height = opts.height;
+
     this._isRendering = false;
 
     this._scene = new THREE.Scene();
@@ -80,7 +83,6 @@
 
     this.initGui();
     this._lights = this.createLights();
-    this._scene.add(this._lights);
 
     var shadowTexture = this.shadowTexture = new THREE.Texture();
     shadowTexture.image = assets['assetsTextureShadow'];
@@ -117,6 +119,7 @@
     this._flipRotation = 0;
     this._flipTween = new TWEEN.Tween(this);
 
+    this._scene.add(this._lights);
     this._scene.add(this._object);
 
     // this.setCameraPosition(0, 409, 106);
@@ -320,13 +323,18 @@
   World.prototype.rotateHorizontal = function(degrees) {
     console.log('World::rotateHorizontal', degrees);
 
-    this._controls.rotateLeft(degrees * (Math.PI / 180));
+    // this._controls.rotateLeft(degrees * (Math.PI / 180));
+    var ratio = (213.85 / 90.0) * 45.0;
+    this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2));
+    this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2 + 213.85, this._height / 2));
   };
 
   World.prototype.rotateVertical = function(degrees) {
     console.log('World::rotateVertical', degrees);
 
-    this._controls.rotateUp(degrees * (Math.PI / 180));
+    // this._controls.rotateUp(degrees * (Math.PI / 180));
+    this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2));
+    this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2 + 50));
   };
 
   World.prototype.cover = function(value) {
@@ -357,6 +365,8 @@
 
   World.prototype.resize = function(width, height) {
     console.log('World::resize');
+    this._width = width;
+    this._height = height;
     this._camera.aspect = width / height;
     this._camera.updateProjectionMatrix();
     this._renderer.setSize(width, height);
