@@ -174,7 +174,7 @@
       this.updateTexture(this._textures.front, sideA);
 
       Object.keys(this._front).forEach(function(key) {
-        var tex = self.TYPE_WHITE === type ? self._textures.default : self._textures.front;
+        var tex = self.TYPE_WHITE === self._type ? self._textures.default : self._textures.front;
         self.initMaterial(self._front[key], tex);
       });
     }
@@ -183,7 +183,7 @@
       this.updateTexture(this._textures.back, sideB);
 
       Object.keys(this._back).forEach(function(key) {
-        var tex = self.TYPE_WHITE === type ? self._textures.default : self._textures.back;
+        var tex = self.TYPE_WHITE === self._type ? self._textures.default : self._textures.back;
         self.initMaterial(self._back[key], tex);
       });
     }
