@@ -160,8 +160,8 @@
       this.updateTexture(this._textures.front, sideA);
 
       Object.keys(self._front).forEach(function(key) {
-        var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
-        self.initMaterial(self._front[key], tex, self._textures.bumpMap.front);
+        var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : new THREE.Texture();
+        self.initMaterial(self._front[key], tex, self._textures['front-' + self._size]);
       });
     }
 
@@ -169,18 +169,18 @@
       this.updateTexture(this._textures.back, sideB);
 
       Object.keys(self._back).forEach(function(key) {
-        var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
-        self.initMaterial(self._back[key], tex, self._textures.bumpMap.back);
+        var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : new THREE.Texture();
+        self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
       });
     }
   };
 
   Vinyl.prototype.setSideABumpMapTexture = function(image) {
-    this.updateTexture(this._textures.bumpMap.front, image);
+    this.updateTexture(this._textures.bumpMap['front-' + self._size], image);
   };
 
   Vinyl.prototype.setSideBBumpMapTexture = function(image) {
-    this.updateTexture(this._textures.bumpMap.back, image);
+    this.updateTexture(this._textures.bumpMap['back-' + self._size], image);
   };
 
   Vinyl.prototype.setBumpScale = function(value) {
@@ -215,24 +215,24 @@
     this._container.add(this._front[this._size]);
   };
 
-  Vinyl.prototype.setColorMode = function(mode) {
-    if (!mode) {
+  Vinyl.prototype.setType = function(type) {
+    if (!type) {
       return;
     }
 
-    this._type = mode;
-    this._color = this.TYPE_SPLATTER === mode ? 0xFFFFFF : this._defaultColor;
+    this._type = type;
+    this._color = this.TYPE_SPLATTER === type ? 0xFFFFFF : this._defaultColor;
 
     var self = this;
 
     Object.keys(self._front).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap.front);
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : new THREE.Texture();
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
     });
 
     Object.keys(self._back).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
-      self.initMaterial(self._back[key], tex, self._textures.bumpMap.back);
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : new THREE.Texture();
+      self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
     });
   };
 
@@ -244,12 +244,12 @@
 
     Object.keys(self._front).forEach(function(key) {
       var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap.front);
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
     });
 
     Object.keys(self._back).forEach(function(key) {
       var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap.back);
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap['back-' + self._size]);
     });
   };
 
