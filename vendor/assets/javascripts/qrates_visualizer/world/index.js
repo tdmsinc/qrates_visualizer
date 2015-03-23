@@ -125,8 +125,7 @@
     this._presets = {};
     this.registerPresets();
 
-    // this.setCameraPosition(0, 409, 106);
-    this.setCameraPosition(0, 409, 1);
+    this.updateView(1);
   }
 
   /**
@@ -226,6 +225,9 @@
       },
       'rotate vertical': function() {
         self.rotateVertical(30);
+      },
+      'reset': function() {
+        self._controls.reset();
       }
     };
 
@@ -247,6 +249,7 @@
     gui.add(temp, 'zoom out');
     gui.add(temp, 'rotate horizontal');
     gui.add(temp, 'rotate vertical');
+    gui.add(temp, 'reset');
 
     renderController.onChange(function(value) {
       if (value) {
@@ -347,9 +350,8 @@
     console.log('World::rotateHorizontal', degrees);
 
     // this._controls.rotateLeft(degrees * (Math.PI / 180));
-    var ratio = (213.85 / 90.0) * 45.0;
-    this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2));
-    this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2 + 213.85, this._height / 2));
+    this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(0, 0));
+    this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(30, 0));
   };
 
   World.prototype.rotateVertical = function(degrees) {
@@ -357,7 +359,7 @@
 
     // this._controls.rotateUp(degrees * (Math.PI / 180));
     this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2));
-    this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2 + 50));
+    this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2 + 6 * degrees));
   };
 
   World.prototype.cover = function(value) {

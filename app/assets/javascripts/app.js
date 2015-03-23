@@ -5,7 +5,6 @@
 //
 // defaults
 //
-
 var defaults = {
   visualizer: {
     width: window.innerWidth,
@@ -21,7 +20,7 @@ var defaults = {
     speed: 45,
   },
   label: {
-    type: 1,
+    type: 1
   },
   sleeve: {
     type: 1,
