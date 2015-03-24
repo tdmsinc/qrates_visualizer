@@ -169,6 +169,14 @@ Sleeve の可視状態を変更します。
   - `duration:Number`: トランジションにかかる時間をミリ秒で指定。デフォルト値 1000。
 - `callback:Function.&lt;Error&gt;`: トランジション終了時に呼び出されるコールバック関数。
 
+#### ViinylVisualizer#setOrthographic():VinylVisualizer
+
+視点を平行投影 (パースなし) に切り替えます。
+
+#### ViinylVisualizer#setPerspective():VinylVisualizer
+
+視点を透視投影 (パースあり) に切り替えます。
+
 #### VinylVisualizer.vinyl:Vinyl
 
 Vinyl モデルのハンドラ。
