@@ -6,11 +6,6 @@
 // defaults
 //
 var defaults = {
-  visualizer: {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    projection: 'orthographic' // or 'perspective'
-  },
   vinyl: {
     type: 1,
     size: 1,
