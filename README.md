@@ -52,6 +52,9 @@ VinylVisualizer のコンストラクタ。
     - `opts.camera.aspect:Number`: アスペクト比。
     - `opts.camera.near:Number`: 近接オブジェクト描画閾値。
     - `opts.camera.far:Number`: 遠隔オブジェクト描画閾値。
+    - `opts.camera.type:String`: カメラの投影法の初期値。省略時は `perspective` 扱いになります。
+      - `perspective`: 透視投影法 (パースあり) でレンダリング。
+      - `orthographic`: 平行投影法 (パースなし) でレンダリング。
   - `opts.defaults.vinyl:Object`: Vinyl の初期値。
   - `opts.defaults.label:Object`: Label の初期値。
   - `opts.defaults.sleeve:Object`: Sleeve の初期値。
@@ -144,13 +147,35 @@ Vinyl が Sleeve に収納されている状況を指定します。
 
 - `step:Number`: ズームレベルを指定。
 
-#### VinylVisualizer#sleeveVisibility(value:Boolean):VinylVisualizer
+#### VinylVisualizer#vinylVisibility(value:Boolean, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
+
+Vinyl の可視状態を変更します。
+
+- `value:Boolean`
+  - `true`: Vinyl を可視状態に変更
+  - `false`: Vinyl を不可視状態に変更
+- `opts:Object`
+  - `duration:Number`: トランジションにかかる時間をミリ秒で指定。デフォルト値 1000。
+- `callback:Function.&lt;Error&gt;`: トランジション終了時に呼び出されるコールバック関数。
+
+#### VinylVisualizer#sleeveVisibility(value:Boolean, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
 
 Sleeve の可視状態を変更します。
 
 - `value:Boolean`
   - `true`: Sleeve を可視状態に変更
   - `false`: Sleeve を不可視状態に変更
+- `opts:Object`
+  - `duration:Number`: トランジションにかかる時間をミリ秒で指定。デフォルト値 1000。
+- `callback:Function.&lt;Error&gt;`: トランジション終了時に呼び出されるコールバック関数。
+
+#### ViinylVisualizer#setOrthographic():VinylVisualizer
+
+視点を平行投影 (パースなし) に切り替えます。
+
+#### ViinylVisualizer#setPerspective():VinylVisualizer
+
+視点を透視投影 (パースあり) に切り替えます。
 
 #### VinylVisualizer.vinyl:Vinyl
 
