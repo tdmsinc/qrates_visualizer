@@ -253,14 +253,52 @@
   };
 
   /**
-   * @param {Boolean} value
    * @return {VinylVisualizer}
    * @api public
    */
 
-  VinylVisualizer.prototype.sleeveVisibility = function(value) {
+  VinylVisualizer.prototype.setOrthographic = function() {
     if (!this.world) return this;
-    this.world.setSleeveVisibility(value);
+    this.world.setOrthographic();
+    return this;
+  };
+
+  /**
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.setPerspective = function() {
+    if (!this.world) return this;
+    this.world.setPerspective();
+    return this;
+  };
+
+  /**
+   * @param {Boolean} value
+   * @param {Object} opts
+   * @param {Function} callback
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.vinylVisibility = function(value, opts, callback) {
+    if (!this.world) return this;
+    this.world.setVinylVisibility(value, opts, callback);
+    return this;
+  };
+
+  /**
+   * @param {Boolean} value
+   * @param {Object} opts
+   * @param {Function} callback
+   * @return {VinylVisualizer}
+   * @api public
+   */
+
+  VinylVisualizer.prototype.sleeveVisibility = function(value, opts, callback) {
+    if (!this.world) return this;
+    this.world.setSleeveVisibility(value, opts, callback);
     return this;
   };
 
