@@ -46,15 +46,14 @@
 
     this._scene = new THREE.Scene();
 
-    // this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._width, this._height);
     this._renderer.setClearColor(0, 0.0);
-
-    this._controls = new THREE.TrackballControls(this._camera, null, {
+console.log(document.querySelector('.vinyl-visualizer-container'));
+    this._controls = new THREE.TrackballControls(this._camera, document.querySelector('.vinyl-visualizer-container'), {
       left: 0,
       top: 0,
       width: opts.width,
@@ -370,16 +369,16 @@
     console.log('World::rotateHorizontal', degrees);
 
     // this._controls.rotateLeft(degrees * (Math.PI / 180));
-    this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(0, 0));
-    this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(30, 0));
+    // this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(0, 0));
+    // this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(30, 0));
   };
 
   World.prototype.rotateVertical = function(degrees) {
     console.log('World::rotateVertical', degrees);
 
     // this._controls.rotateUp(degrees * (Math.PI / 180));
-    this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2));
-    this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2 + 6 * degrees));
+    // this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2));
+    // this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2 + 6 * degrees));
   };
 
   World.prototype.cover = function(value) {
@@ -387,15 +386,15 @@
   };
 
   World.prototype.zoomIn = function(step) {
-    this._controls.zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
-    this._controls.zoomEnd.copy(this._controls.getMouseOnScreen(0, -20 * (step || 1)));
-    this._controls.zoomCamera();
+    // this._controls.zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
+    // this._controls.zoomEnd.copy(this._controls.getMouseOnScreen(0, -20 * (step || 1)));
+    // this._controls.zoomCamera();
   };
 
   World.prototype.zoomOut = function(step) {
-    this._controls.zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
-    this._controls.zoomEnd.copy(this._controls.getMouseOnScreen(0, 20 * (step || 1)));
-    this._controls.zoomCamera();
+    // this._controls.zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
+    // this._controls.zoomEnd.copy(this._controls.getMouseOnScreen(0, 20 * (step || 1)));
+    // this._controls.zoomCamera();
   };
 
   World.prototype.capture = function(opts, callback) {
