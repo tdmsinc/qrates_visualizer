@@ -147,13 +147,16 @@ Vinyl が Sleeve に収納されている状況を指定します。
 
 - `step:Number`: ズームレベルを指定。
 
-#### VinylVisualizer#sleeveVisibility(value:Boolean):VinylVisualizer
+#### VinylVisualizer#sleeveVisibility(value:Boolean, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
 
 Sleeve の可視状態を変更します。
 
 - `value:Boolean`
   - `true`: Sleeve を可視状態に変更
   - `false`: Sleeve を不可視状態に変更
+- `opts:Object`
+  - `duration:Number`: トランジションにかかる時間をミリ秒で指定。デフォルト値 1000。
+- `callback:Function.&lt;Error&gt;`: トランジション終了時に呼び出されるコールバック関数。
 
 #### VinylVisualizer.vinyl:Vinyl
 
