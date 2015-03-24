@@ -48,13 +48,15 @@
 
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
+    this._camera.position.set(0, 400, 100);
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._width, this._height);
     this._renderer.setClearColor(0, 0.0);
 
-    this._controls = new THREE.TrackballControls(this._camera);
+    this._controls = new THREE.TrackballControls(this._camera, document.querySelector('.vinyl-visualizer-container'));
     this._controls.target = new THREE.Vector3(0, 0, 0);
+    this._controls.handleResize({ left: 0, top: 0, width: opts.width, height: opts.height });
     this._controls.update();
     // this._controls.autoRotate = true;
 
@@ -85,7 +87,7 @@
 
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._object);
-    this._sleeve.setCoveredRatio(0.8);
+    this._sleeve.setCoveredRatio(0.8, 1);
 
     this._vinyl = new Vinyl();
     this._vinyl.setup(this._scene, assets, opts.defaults.vinyl, this._object);
@@ -101,8 +103,6 @@
 
     this._presets = {};
     this.registerPresets();
-
-    this.updateView(1);
   }
 
   /**
@@ -223,7 +223,7 @@
         self.rotateVertical(30);
       },
       'reset': function() {
-        self._controls.reset();
+        self.resetCamera();
       },
       'toggle camera': function() {
         if (self._camera.getType() === self._camera.TYPE_PERSPECTIVE) {
@@ -306,22 +306,36 @@
       durarion: 1000
     };
 
+    opts.duration = undefined === opts.duration ? 1000 : opts.duration;
+
     var self = this;
 
     // self.startRender();
 
+    this.resetCamera();
+
     new TWEEN.Tween(this._camera.position)
-      .to({ x: tx, y: ty, z: tz }, opts.duration || 1000)
+      .to({ x: tx, y: ty, z: tz }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         self._camera.lookAt(new THREE.Vector3(0, 0, 0));
         self._vinyl.setBumpScale(Math.max(self._camera.position.z / 500, 0.1));
       })
       .onComplete(function() {
-        // self.stopRender();
         if (callback) callback();
       })
       .start();
+  };
+
+  World.prototype.resetCamera = function() {
+    this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
+    this._camera.position.set(0, 400, 100);
+    this._camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    this._controls = new THREE.TrackballControls(this._camera, document.querySelector('.vinyl-visualizer-container'));
+    this._controls.target = new THREE.Vector3(0, 0, 0);
+    this._controls.handleResize({ left: 0, top: 0, width: this._width, height: this._height });
+    this._controls.update();
   };
 
   World.prototype.setPerspective = function() {

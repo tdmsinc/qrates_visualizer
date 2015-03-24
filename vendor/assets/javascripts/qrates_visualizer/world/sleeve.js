@@ -354,14 +354,14 @@
     });
   };
 
-  Sleeve.prototype.setCoveredRatio = function(ratio) {
+  Sleeve.prototype.setCoveredRatio = function(ratio, duration) {
     var offset = new THREE.Box3().setFromObject(this._currentObject).size().x;
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
 
     this._positionTween
       .stop()
-      .to({ x: this._coveredRatio * -offset }, 500)
+      .to({ x: this._coveredRatio * -offset }, duration || 500)
       .easing(TWEEN.Easing.Quartic.Out)
       .start();
   };

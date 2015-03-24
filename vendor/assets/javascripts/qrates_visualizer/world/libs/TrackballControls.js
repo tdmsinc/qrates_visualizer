@@ -74,27 +74,28 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	// methods
 
-	this.handleResize = function () {
+	this.handleResize = function (bounds) {
 
-		if ( this.domElement === document ) {
+		// if ( this.domElement === document ) {
 
-			this.screen.left = 0;
-			this.screen.top = 0;
-			this.screen.width = window.innerWidth;
-			this.screen.height = window.innerHeight;
+		// 	this.screen.left = 0;
+		// 	this.screen.top = 0;
+		// 	this.screen.width = window.innerWidth;
+		// 	this.screen.height = window.innerHeight;
 
-		} else {
+		// } else {
 
-			var box = this.domElement.getBoundingClientRect();
-			// adjustments come from similar code in the jquery offset() function
-			var d = this.domElement.ownerDocument.documentElement;
-			this.screen.left = box.left + window.pageXOffset - d.clientLeft;
-			this.screen.top = box.top + window.pageYOffset - d.clientTop;
-			this.screen.width = box.width;
-			this.screen.height = box.height;
+		// 	var box = this.domElement.getBoundingClientRect();
+		// 	// adjustments come from similar code in the jquery offset() function
+		// 	var d = this.domElement.ownerDocument.documentElement;
+		// 	this.screen.left = box.left + window.pageXOffset - d.clientLeft;
+		// 	this.screen.top = box.top + window.pageYOffset - d.clientTop;
+		// 	this.screen.width = box.width;
+		// 	this.screen.height = box.height = 700;
 
-		}
+		// }
 
+		this.screen = bounds;
 	};
 
 	this.handleEvent = function ( event ) {
