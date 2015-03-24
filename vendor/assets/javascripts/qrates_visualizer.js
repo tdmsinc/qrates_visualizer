@@ -62,9 +62,6 @@
     loader.load(function(err, assets) {
       var world = self.world = new World(self, assets, self.opts);
       world.delegateEvents();
-      if ('orthographic' == self.opts.visualizer) {
-        world.setOrthographic();
-      }
       world.startRender();
       el.appendChild(world.getRenderer().domElement);
       setTimeout(function() {
