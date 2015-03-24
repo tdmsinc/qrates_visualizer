@@ -52,6 +52,9 @@ VinylVisualizer のコンストラクタ。
     - `opts.camera.aspect:Number`: アスペクト比。
     - `opts.camera.near:Number`: 近接オブジェクト描画閾値。
     - `opts.camera.far:Number`: 遠隔オブジェクト描画閾値。
+    - `opts.camera.type:String`: カメラの投影法の初期値。省略時は `perspective` 扱いになります。
+      - `perspective`: 透視投影法 (パースあり) でレンダリング。
+      - `orthographic`: 平行投影法 (パースなし) でレンダリング。
   - `opts.defaults.vinyl:Object`: Vinyl の初期値。
   - `opts.defaults.label:Object`: Label の初期値。
   - `opts.defaults.sleeve:Object`: Sleeve の初期値。
