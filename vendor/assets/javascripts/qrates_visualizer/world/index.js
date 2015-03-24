@@ -233,9 +233,9 @@
       },
       'toggle camera': function() {
         if (self._camera.getType() === self._camera.TYPE_PERSPECTIVE) {
-          self._camera.toOrthographic();
+          self.setOrthographic();
         } else {
-          self._camera.toPerspective();
+          self.setPerspective();
         }
       }
     };
@@ -331,11 +331,13 @@
   };
 
   World.prototype.setPerspective = function() {
-
+    this._camera.toPerspective();
+    this._camera.setZoom(1);
   };
 
   World.prototype.setOrthographic = function() {
-
+    this._camera.toOrthographic();
+    this._camera.setZoom(170);
   };
 
   World.prototype.setVinylVisibility = function(yn, opts, callback) {
