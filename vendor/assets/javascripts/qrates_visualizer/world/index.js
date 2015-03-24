@@ -52,13 +52,8 @@
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._width, this._height);
     this._renderer.setClearColor(0, 0.0);
-console.log(document.querySelector('.vinyl-visualizer-container'));
-    this._controls = new THREE.TrackballControls(this._camera, document.querySelector('.vinyl-visualizer-container'), {
-      left: 0,
-      top: 0,
-      width: opts.width,
-      height: opts.height
-    });
+
+    this._controls = new THREE.TrackballControls(this._camera);
     this._controls.target = new THREE.Vector3(0, 0, 0);
     this._controls.update();
     // this._controls.autoRotate = true;
