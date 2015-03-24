@@ -7,24 +7,6 @@
 (function(global, exports) {
   var gui, axes;
 
-  var props = {
-    color: 0xFFFFFF,
-    size: 12,
-    label: null,
-    render: true,
-    rotate: false,
-    sleeve: true,
-    out: false,
-    zoom: 1.0,
-    'covered ratio': 0.8,
-    bumpScale: 0.282,
-    sleeveX: -15
-  };
-
-  var cameraProps = {
-    x:0.0, y: 17.0, z: 30.0,
-  };
-
   /**
    * Module dependencies.
    */
@@ -64,11 +46,12 @@
 
     this._scene = new THREE.Scene();
 
-    this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
+    // this._camera = new THREE.PerspectiveCamera(this._opts.camera.fov, this._opts.camera.aspect, this._opts.camera.near, this._opts.camera.far);
+    this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
-    this._renderer.setSize(this._opts.width, this._opts.height);
+    this._renderer.setSize(this._width, this._height);
     this._renderer.setClearColor(0, 0.0);
 
     this._controls = new THREE.TrackballControls(this._camera, null, {
@@ -206,6 +189,25 @@
       return false;
     }
 
+    var props = {
+      color: 0xFFFFFF,
+      size: 12,
+      label: null,
+      render: true,
+      rotate: false,
+      'sleeve visibility': true,
+      'vinyl visibility': true,
+      out: false,
+      zoom: 1.0,
+      'covered ratio': 0.8,
+      bumpScale: 0.282,
+      sleeveX: -15
+    };
+
+    var cameraProps = {
+      x:0.0, y: 17.0, z: 30.0,
+    };
+
     var self = this;
     var axes = this.axes;
     var camera = this._camera;
@@ -228,6 +230,13 @@
       },
       'reset': function() {
         self._controls.reset();
+      },
+      'toggle camera': function() {
+        if (self._camera.getType() === self._camera.TYPE_PERSPECTIVE) {
+          self._camera.toOrthographic();
+        } else {
+          self._camera.toPerspective();
+        }
       }
     };
 
@@ -235,7 +244,8 @@
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
     var outFromSleeveController = gui.add(props, 'covered ratio', 0.0, 1.0);
-    var sleeveVisibilityController = gui.add(props, 'sleeve');
+    var sleeveVisibilityController = gui.add(props, 'sleeve visibility');
+    var vinylVisibilityController = gui.add(props, 'vinyl visibility');
     var captureController = gui.add(temp, 'capture');
     var zoomController = gui.add(props, 'zoom', 0, 400);
     var cameraXController = gui.add(cameraProps, 'x', -1000, 1000);
@@ -250,6 +260,7 @@
     gui.add(temp, 'rotate horizontal');
     gui.add(temp, 'rotate vertical');
     gui.add(temp, 'reset');
+    gui.add(temp, 'toggle camera');
 
     renderController.onChange(function(value) {
       if (value) {
@@ -271,7 +282,11 @@
 
     sleeveVisibilityController.onChange(function(value) {
       self.setSleeveVisibility(value, null, function() {
-        console.log('sleeve visibility is changed');
+      });
+    });
+
+    vinylVisibilityController.onChange(function(value) {
+      self.setVinylVisibility(value, null, function() {
       });
     });
 
@@ -315,20 +330,21 @@
       .start();
   };
 
-  World.prototype.setVinylVisibility = function(yn, opts, callback) {
-    opts = opts || {
-      durarion: 1000
-    };
+  World.prototype.setPerspective = function() {
 
-    this._vinyl.setVisibility(yn, opts, callback);
+  };
+
+  World.prototype.setOrthographic = function() {
+
+  };
+
+  World.prototype.setVinylVisibility = function(yn, opts, callback) {
+    this._vinyl.setVisibility(yn);
+    this._label.setVisibility(yn);
   };
 
   World.prototype.setSleeveVisibility = function(yn, opts, callback) {
-    opts = opts || {
-      durarion: 1000
-    };
-
-    this._sleeve.setVisibility(yn, opts, callback);
+    this._sleeve.setVisibility(yn);
   };
 
   World.prototype.flip = function(value) {
@@ -394,15 +410,16 @@
     console.log('World::resize');
     this._width = width;
     this._height = height;
-    this._camera.aspect = width / height;
+    // this._camera.aspect = width / height;
+    this._camera.setSize(this._width, this._height);
     this._camera.updateProjectionMatrix();
     this._renderer.setSize(width, height);
 
     this._controls.handleResize({
       left: 0,
       top: 0,
-      width: width,
-      height: height
+      width: this._width,
+      height: this._height
     });
 
     this.draw();

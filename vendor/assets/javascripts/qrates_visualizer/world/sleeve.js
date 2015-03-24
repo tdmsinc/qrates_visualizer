@@ -178,7 +178,6 @@
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
-    this._opacityTween = new TWEEN.Tween(this);
     this._positionTween = new TWEEN.Tween(this.position);
 
     this.setType(opts.type);
@@ -368,24 +367,7 @@
   };
 
   Sleeve.prototype.setVisibility = function(yn, opts, callback) {
-    if (TWEEN) {
-      var to = yn ? 1.0 : 0.0;
-      var dur = opts ? opts.duration || 500 : 500;
-      var count = 0;
-
-      var self = this;
-
-      this._opacityTween
-        .stop()
-        .to({ _opacity: to }, dur)
-        .easing(TWEEN.Easing.Quartic.Out)
-        .onComplete(function() {
-          if (1 === ++count && callback) callback();
-        });
-
-      this._opacityTween.start();
-    }
-    // this._front.current.visible = this._back.current.visible = this._spine[this._size].visible = value;
+    this._currentObject.visible = yn;
   };
 
   Sleeve.prototype.update = function() {
