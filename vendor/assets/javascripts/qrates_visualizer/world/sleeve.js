@@ -367,9 +367,9 @@
       .start();
   };
 
-  Sleeve.prototype.setVisible = function(yn, opts, callback) {
+  Sleeve.prototype.setVisibility = function(yn, opts, callback) {
     if (TWEEN) {
-      var to = yn ? 1 : 0;
+      var to = yn ? 1.0 : 0.0;
       var dur = opts ? opts.duration || 500 : 500;
       var count = 0;
 

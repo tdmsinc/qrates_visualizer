@@ -56,7 +56,7 @@
     this._rpm = opts.speed;
     this._heavy = opts.heavy;
     this._enableRotate = false;
-    this.rotationAmount = 0;
+    this._opacity = 1.0;
     this._clock = new THREE.Clock();
 
     this._front = {
@@ -106,6 +106,8 @@
 
     this._position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
+
+    this._opacityTween = new TWEEN.Tween(this);
 
     this._container.add(this._front[this._size]);
   };
@@ -261,8 +263,26 @@
     this._rpm = rpm;
   };
 
-  Vinyl.prototype.setVisible = function(value) {
+  Vinyl.prototype.setVisibility = function(yn, opts, callback) {
     this._front[this._size].visible = value;
+
+    if (TWEEN) {
+      var to = yn ? 1.0 : 0.0;
+      var dur = opts ? opts.duration || 500 : 500;
+      var count = 0;
+
+      var self = this;
+
+      this._opacityTween
+        .stop()
+        .to({ _opacity: to }, dur)
+        .easing(TWEEN.Easing.Quartic.Out)
+        .onComplete(function() {
+          if (1 === ++count && callback) callback();
+        });
+
+      this._opacityTween.start();
+    }
   };
 
   Vinyl.prototype.update = function() {

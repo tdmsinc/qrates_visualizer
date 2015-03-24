@@ -315,18 +315,20 @@
       .start();
   };
 
+  World.prototype.setVinylVisibility = function(yn, opts, callback) {
+    opts = opts || {
+      durarion: 1000
+    };
+
+    this._vinyl.setVisibility(yn, opts, callback);
+  };
+
   World.prototype.setSleeveVisibility = function(yn, opts, callback) {
     opts = opts || {
       durarion: 1000
     };
 
-    var self = this;
-
-    // self.startRender();
-
-    this._sleeve.setVisible(yn, opts, function() {
-      // self.stopRender();
-    });
+    this._sleeve.setVisibility(yn, opts, callback);
   };
 
   World.prototype.flip = function(value) {

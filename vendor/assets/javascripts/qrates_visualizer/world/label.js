@@ -66,7 +66,7 @@
     // this._currentObject = new THREE.Object3D();
     // this._currentObject.add(this._front[this._size]);
     // this._currentObject.add(this._back[this._size]);
-    
+
     this.updateTexture(this._textures.default, assets['assetsTextureLabelDefault']);
     this.updateTexture(this._textures.front, this.TYPE_WHITE === this._type ? assets['assetsTextureLabelDefault'] : opts.sideATexture);
     this.updateTexture(this._textures.back,  this.TYPE_WHITE === this._type ? assets['assetsTextureLabelDefault'] : opts.sideBTexture);
@@ -217,7 +217,7 @@
     this._rpm = rpm;
   };
 
-  Label.prototype.setVisible = function(value) {
+  Label.prototype.setVisibility = function(value) {
     this._front[this._size].visible = this._back[this._size].visible = value;
   };
 
