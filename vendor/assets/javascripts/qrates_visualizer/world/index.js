@@ -332,7 +332,7 @@
     this._camera.position.set(0, 400, 100);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    this._controls = new THREE.TrackballControls(this._camera, document.querySelector('.vinyl-visualizer-container'));
+    this._controls = new THREE.TrackballControls(this._camera, this._parent.el);
     this._controls.target = new THREE.Vector3(0, 0, 0);
     this._controls.handleResize({ left: 0, top: 0, width: this._width, height: this._height });
     this._controls.update();
