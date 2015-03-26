@@ -44,7 +44,15 @@
 
     this._isRendering = false;
 
-    this._scene = new THREE.Scene();
+    this._alphaMap = new THREE.Texture();
+    this._alphaMap.image = assets['assetsTextureVinylAlphamap'];
+    this._alphaMap.minFilter = THREE.LinearFilter;
+    this._alphaMap.magFilter = THREE.LinearFilter;
+    this._alphaMap.needsUpdate = true;
+    console.log(this._alphaMap);
+
+    this._scene1 = new THREE.Scene();
+    this._scene2 = new THREE.Scene();
 
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -52,6 +60,7 @@
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._width, this._height);
+    this._renderer.autoClear = false;
     this._renderer.setClearColor(0, 0.0);
 
     this._controls = new THREE.TrackballControls(this._camera, this._parent.el);
@@ -72,7 +81,7 @@
     ground.position.set(0, -80, 0);
     ground.rotation.x = 90 * Math.PI / 180;
     // ground.receiveShadow = true;
-    // this._scene.add(ground);
+    // this._scene1.add(ground);
 
     this._enableRotate = false;
     this._flip = false;
@@ -84,22 +93,56 @@
     opts.defaults.label.speed = opts.defaults.vinyl.speed;
 
     this._object = new THREE.Object3D();
+    this._object.name = 'container';
 
     this._sleeve = new Sleeve();
-    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._object);
-    this._sleeve.setCoveredRatio(0.8, 1);
+    this._sleeve.setup(this._scene1, assets, opts.defaults.sleeve, this._object);
 
     this._vinyl = new Vinyl();
-    this._vinyl.setup(this._scene, assets, opts.defaults.vinyl, this._object);
+    this._vinyl.setup(this._scene1, assets, opts.defaults.vinyl, this._object);
 
     this._label = new Label();
-    this._label.setup(this._scene, assets, opts.defaults.label, this._object);
+    this._label.setup(this._scene1, assets, opts.defaults.label, this._object);
 
     this._flipRotation = 0;
     this._flipTween = new TWEEN.Tween(this);
 
-    this._scene.add(this._lights);
-    this._scene.add(this._object);
+    this._scene1.add(this._lights);
+    this._scene1.add(this._object);
+
+    var self = this;
+
+    this._scene2 = this._scene1.clone();
+    this._scene2.children.forEach(function(child) {
+      if ('container' === child.name) {
+        child.children.forEach(function(_child) {
+          if ('vinyl' === _child.name) {
+            _child.children[0].material = new THREE.MeshPhongMaterial({
+              alphaMap: self._alphaMap,
+              color: _child.children[0].material.color,
+              metal: true,
+              needsUpdate: true,
+              // opacity: _child.children[0].material.opacity,
+              shininess: 100,
+              transparent: true
+            });
+          }
+        });
+      }
+    });
+
+
+    this._sleeve.setCoveredRatio(0.8, 1, function() {
+      self._scene2.children.forEach(function(child) {
+        if ('container' === child.name) {
+          child.children.forEach(function(_child) {
+            if ('sleeve' === _child.name) {
+              _child.position.copy(self._sleeve.position);
+            }
+          });
+        }
+      });
+    });
 
     this._presets = {};
     this.registerPresets();
@@ -121,6 +164,7 @@
 
   World.prototype.createLights = function() {
     var lights = new THREE.Object3D();
+    lights.name = 'lights';
 
     var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
     spotLight1.position.set(335, 1955, 475);
@@ -370,6 +414,12 @@
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         self._object.rotation.z = self._flipRotation;
+
+        self._scene2.children.forEach(function(child) {
+          if ('container' === child.name) {
+            child.rotation.z = self._flipRotation;
+          }
+        });
       })
       .start();
   };
@@ -391,7 +441,19 @@
   };
 
   World.prototype.cover = function(value) {
-    this._sleeve.setCoveredRatio(value);
+    var self = this;
+
+    this._sleeve.setCoveredRatio(value, 200, function() {
+      self._scene2.children.forEach(function(child) {
+        if ('container' === child.name) {
+          child.children.forEach(function(_child) {
+            if ('sleeve' === _child.name) {
+              _child.position.copy(self._sleeve.position);
+            }
+          });
+        }
+      });
+    });
   };
 
   World.prototype.zoomIn = function(step) {
@@ -564,7 +626,12 @@
     }
 
     this.update();
-    this._renderer.render(this._scene, this._camera);
+    
+    this._renderer.clear();
+    this._renderer.render(this._scene1, this._camera);
+    this._renderer.clearDepth();
+    this._renderer.render(this._scene2, this._camera);
+
     this._request = requestAnimationFrame(this.draw.bind(this));
   };
 

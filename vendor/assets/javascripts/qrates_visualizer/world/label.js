@@ -91,6 +91,8 @@
       return;
     }
 
+    obj.name = 'label';
+
     var self = this;
 
     obj.traverse(function(child) {
@@ -105,6 +107,8 @@
           shading: THREE.SmoothShading,
           vertexColor: THREE.VertexColors
         });
+
+        child.geometry.computeVertexNormals();
       }
     });
 

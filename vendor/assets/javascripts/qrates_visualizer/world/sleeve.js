@@ -182,6 +182,7 @@
 
     this.setType(opts.type);
 
+    this._currentObject.name = 'sleeve';
     this._container.add(this._currentObject);
   };
 
@@ -189,6 +190,8 @@
     if (!obj) {
       return;
     }
+
+    obj.name = 'sleeve';
 
     var self = this;
 
@@ -284,6 +287,7 @@
         this._currentObject = this._object[this._size];
       }
 
+      this._currentObject.name = 'sleeve';
       this._container.add(this._currentObject);
     }
   };
@@ -312,6 +316,7 @@
       }
     }
 
+    this._currentObject.name = 'sleeve';
     this._container.add(this._currentObject);
 
     this.setCoveredRatio(this._coveredRatio);
@@ -354,7 +359,7 @@
     });
   };
 
-  Sleeve.prototype.setCoveredRatio = function(ratio, duration) {
+  Sleeve.prototype.setCoveredRatio = function(ratio, duration, updateCallback) {
     var offset = new THREE.Box3().setFromObject(this._currentObject).size().x;
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
@@ -363,6 +368,9 @@
       .stop()
       .to({ x: this._coveredRatio * -offset }, duration || 500)
       .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function() {
+        if (updateCallback) updateCallback();
+      })
       .start();
   };
 

@@ -16,7 +16,6 @@
       type: 1,
       size: 1,
       color: 0,
-      splatterColor: 0,
       holeSize: 0,
       heavy: false,
       speed: 45,
@@ -42,6 +41,15 @@
 
     var sizes = ['7', '10', '12'];
 
+    var images = [];
+    var cubeTexture = new THREE.CubeTexture(images);
+    cubeTexture.flipY = false;
+
+    for (var i = 0; i < 6; ++i) {
+      cubeTexture.images[i] = assets['assetsTextureVinylEnvmap'];
+    }
+    cubeTexture.needsUpdate = true;
+
     this.TYPE_BLACK    = 1;
     this.TYPE_COLOR    = 2;
     this.TYPE_SPLATTER = 3;
@@ -51,12 +59,11 @@
     this._size = sizes[opts.size - 1];
     this._type = opts.type;
     this._defaultColor = 0x000000;
-    this._color = this._colorPresets[opts.color].color;
+    this._color = this._type === this.TYPE_SPLATTER ? 0xffffff : this._colorPresets[opts.color].color;
     this._opacity = 1.0;
     this._rpm = opts.speed;
     this._heavy = opts.heavy;
     this._enableRotate = false;
-    this._opacity = 1.0;
     this._clock = new THREE.Clock();
 
     this._front = {
@@ -70,7 +77,7 @@
       '10': assets['assetsModelVinyl-10'],
       '12': assets['assetsModelVinyl-12'],
     };
-
+console.log('cubeTexture', cubeTexture);
     this._textures = {
       front: new THREE.Texture(),
       back: new THREE.Texture(),
@@ -82,7 +89,9 @@
         'back-7'  : new THREE.Texture(),
         'back-10' : new THREE.Texture(),
         'back-12' : new THREE.Texture()
-      }
+      },
+      envMap: cubeTexture,
+      bumpTest: new THREE.Texture()
     };
 
     this.updateTexture(this._textures.front, opts.sideATexture);
@@ -93,6 +102,11 @@
     this.updateTexture(this._textures.bumpMap['back-7'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-7']);
     this.updateTexture(this._textures.bumpMap['back-10'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-10']);
     this.updateTexture(this._textures.bumpMap['back-12'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-12']);
+    this.updateTexture(this._textures.bumpTest,  assets['assetsTextureVinylBumpmapTest']);
+
+    this._textures.bumpTest.wrapS = this._textures.bumpTest.wrapT = THREE.RepeatWrapping;
+    this._textures.bumpTest.repeat.set( 3.1415, 3.1415 );
+    this._textures.bumpTest.offset.x = this._textures.bumpTest.offset.y = 0;
 
     var self = this;
 
@@ -115,25 +129,32 @@
       return false;
     }
 
+    obj.name = 'vinyl';
+
     var self = this;
 
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material = new THREE.MeshPhongMaterial({
-          ambient: 0xffffff,
+          ambient: new THREE.Color(1, 1, 1),
           bumpMap: bumpMapTex,
-          bumpScale: 0.36,
+          // bumpMap: self._textures.bumpTest,
+          bumpScale: 0.02,
           color: self._color,
+          combine: THREE.Multiply,
+          envMap: self._textures.envMap,
           map: self.TYPE_SPLATTER === self._type ? tex : null,
+          needsUpdate: true,
           opacity: self._opacity,
-          shininess: 35,
+          reflectivity: 1.0,
+          shininess: 10,
           side: THREE.DoubleSide,
           specular: 0x363636,
+          transparent: false,
           shading: THREE.SmoothShading,
-          vertexColor: THREE.VertexColors
         });
 
-        // child.geometry.computeVertexNormals();
+        child.geometry.computeVertexNormals();
       }
     });
 
@@ -146,6 +167,8 @@
     }
 
     tex.image = img;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
     tex.needsUpdate = true;
   };
 

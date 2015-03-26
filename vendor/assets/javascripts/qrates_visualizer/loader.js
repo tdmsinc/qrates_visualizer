@@ -65,7 +65,7 @@
       var ext = path.split('.')[1];
 
       if ('obj' === ext) loader = new THREE.OBJLoader(manager);
-      if ('png' === ext) loader = new THREE.ImageLoader(manager);
+      if ('png' === ext || 'jpg' === ext) loader = new THREE.ImageLoader(manager);
 
       if (!loader) return;
 
