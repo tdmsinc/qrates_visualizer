@@ -38,6 +38,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	this.target = new THREE.Vector3();
 
+	this._zoomStart = new THREE.Vector2();
+	this._zoomEnd = new THREE.Vector2();
+
 	var EPS = 0.000001;
 
 	var lastPosition = new THREE.Vector3();
@@ -49,9 +52,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	_rotateStart = new THREE.Vector3(),
 	_rotateEnd = new THREE.Vector3(),
-
-	_zoomStart = new THREE.Vector2(),
-	_zoomEnd = new THREE.Vector2(),
 
 	_touchZoomDistanceStart = 0,
 	_touchZoomDistanceEnd = 0,
@@ -175,6 +175,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	}() );
 
+	this.getMouseOnScreen = getMouseOnScreen;
+	this.getMouseProjectionOnBall = getMouseProjectionOnBall;
+
 	this.rotateCamera = (function(){
 
 		var axis = new THREE.Vector3(),
@@ -223,7 +226,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		} else {
 
-			var factor = 1.0 + ( _zoomEnd.y - _zoomStart.y ) * _this.zoomSpeed;
+			var factor = 1.0 + ( this._zoomEnd.y - this._zoomStart.y ) * _this.zoomSpeed;
 
 			if ( factor !== 1.0 && factor > 0.0 ) {
 
@@ -231,11 +234,11 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 				if ( _this.staticMoving ) {
 
-					_zoomStart.copy( _zoomEnd );
+					this._zoomStart.copy( this._zoomEnd );
 
 				} else {
 
-					_zoomStart.y += ( _zoomEnd.y - _zoomStart.y ) * this.dynamicDampingFactor;
+					this._zoomStart.y += ( this._zoomEnd.y - this._zoomStart.y ) * this.dynamicDampingFactor;
 
 				}
 
@@ -416,8 +419,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
 
-			_zoomStart.copy( getMouseOnScreen( event.pageX, event.pageY ) );
-			_zoomEnd.copy(_zoomStart);
+			_this._zoomStart.copy( getMouseOnScreen( event.pageX, event.pageY ) );
+			_this._zoomEnd.copy(_this._zoomStart);
 
 		} else if ( _state === STATE.PAN && !_this.noPan ) {
 
@@ -446,7 +449,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
 
-			_zoomEnd.copy( getMouseOnScreen( event.pageX, event.pageY ) );
+			_this._zoomEnd.copy( getMouseOnScreen( event.pageX, event.pageY ) );
 
 		} else if ( _state === STATE.PAN && !_this.noPan ) {
 
@@ -490,7 +493,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		}
 
-		_zoomStart.y += delta * 0.01;
+		_this._zoomStart.y += delta * 0.01;
 		_this.dispatchEvent( startEvent );
 		_this.dispatchEvent( endEvent );
 

@@ -395,15 +395,15 @@
   };
 
   World.prototype.zoomIn = function(step) {
-    // this._controls.zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
-    // this._controls.zoomEnd.copy(this._controls.getMouseOnScreen(0, -20 * (step || 1)));
-    // this._controls.zoomCamera();
+    this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
+    this._controls._zoomEnd.copy(this._controls.getMouseOnScreen(0, -20 * (step || 1)));
+    this._controls.zoomCamera();
   };
 
   World.prototype.zoomOut = function(step) {
-    // this._controls.zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
-    // this._controls.zoomEnd.copy(this._controls.getMouseOnScreen(0, 20 * (step || 1)));
-    // this._controls.zoomCamera();
+    this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
+    this._controls._zoomEnd.copy(this._controls.getMouseOnScreen(0, 20 * (step || 1)));
+    this._controls.zoomCamera();
   };
 
   World.prototype.capture = function(opts, callback) {
