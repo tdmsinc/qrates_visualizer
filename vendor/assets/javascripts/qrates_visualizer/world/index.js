@@ -56,7 +56,7 @@
 
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
-    this._camera.position.set(0, 400, 100);
+    this._camera.position.set(212, 288, 251);
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._width, this._height);
@@ -165,19 +165,19 @@
     var lights = new THREE.Object3D();
     lights.name = 'lights';
 
-    var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
+    var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
     spotLight1.position.set(335, 1955, 475);
     lights.add(spotLight1);
 
-    var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.4, 0, 0.314, 10);
-    spotLight2.position.set(-980, 1900, -880);
+    var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
+    spotLight2.position.set(-980, -1900, -880);
     lights.add(spotLight2);
 
-    var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
+    var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
     pointLight1.position.set(25, 10, -2300);
     lights.add(pointLight1);
 
-    var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.4, 0);
+    var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
     pointLight2.position.set(-2, -160, 1480);
     lights.add(pointLight2);
 
@@ -355,14 +355,14 @@
 
     // self.startRender();
 
-    this.resetCamera();
+    // this.resetCamera();
 
     new TWEEN.Tween(this._camera.position)
       .to({ x: tx, y: ty, z: tz }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         self._camera.lookAt(new THREE.Vector3(0, 0, 0));
-        self._vinyl.setBumpScale(Math.max(self._camera.position.z / 500, 0.1));
+        self._vinyl.setBumpScale(Math.max(self._camera.position.z / 10000, 0.1));
       })
       .onComplete(function() {
         if (callback) callback();
@@ -372,7 +372,7 @@
 
   World.prototype.resetCamera = function() {
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
-    this._camera.position.set(0, 400, 100);
+    this._camera.position.set(212, 288, 251);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     this._controls = new THREE.TrackballControls(this._camera, this._parent.el);
@@ -540,28 +540,28 @@
 
     switch (Number(type)) {
       case 1:
-        this.setCameraPosition(0, 400, 100, opts, callback);
+        this.setCameraPosition(212, 288, 251, opts, callback);
         break;
       case 2:
-        this.setCameraPosition(0, 180, 1, opts, callback);
+        this.setCameraPosition( 62,  94, 105, opts, callback);
         break;
       case 3:
-        this.setCameraPosition(0, 0, 180, opts, callback);
+        this.setCameraPosition(-54, 139, 100, opts, callback);
         break;
       case 4:
-        this.setCameraPosition(127, 192, 214, opts, callback);
+        this.setCameraPosition(222, 222, -28, opts, callback);
         break;
       case 5:
-        this.setCameraPosition(0, 386.4, -3.5, opts, callback);
+        this.setCameraPosition(  9, 170,  40, opts, callback);
         break;
       case 6:
-        this.setCameraPosition(0, 346.3, -100, opts, callback);
+        this.setCameraPosition(136,  91, -28, opts, callback);
         break;
       case 7:
-        this.setCameraPosition(0, 282.6, -182.9, opts, callback);
+        this.setCameraPosition(-628, 203, 25, opts, callback);
         break;
       case 8:
-        this.setCameraPosition(0, 199.8, -246.4, opts, callback);
+        this.setCameraPosition(242, 202, -28, opts, callback);
         break;
       default:
         break;
@@ -632,7 +632,9 @@
     this._renderer.clear();
     this._renderer.render(this._scene1, this._camera);
     // this._renderer.clearDepth();
-    // this._renderer.render(this._scene2, this._camera);
+    // this._renderer.render(this._scene2, this._camera);\
+
+    console.log(this._camera.position);
 
     this._request = requestAnimationFrame(this.draw.bind(this));
   };
