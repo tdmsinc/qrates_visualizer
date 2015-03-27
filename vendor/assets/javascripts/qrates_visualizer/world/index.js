@@ -113,16 +113,15 @@
     var self = this;
 
     this._scene2 = this._scene1.clone();
+
     this._scene2.children.forEach(function(child) {
       if ('container' === child.name) {
         child.children.forEach(function(_child) {
           if ('vinyl' === _child.name) {
             _child.children[0].material = new THREE.MeshPhongMaterial({
               alphaMap: self._alphaMap,
-              color: _child.children[0].material.color,
               metal: true,
               needsUpdate: true,
-              // opacity: _child.children[0].material.opacity,
               shininess: 100,
               transparent: true
             });
@@ -626,11 +625,11 @@
     }
 
     this.update();
-    
+
     this._renderer.clear();
     this._renderer.render(this._scene1, this._camera);
-    this._renderer.clearDepth();
-    this._renderer.render(this._scene2, this._camera);
+    // this._renderer.clearDepth();
+    // this._renderer.render(this._scene2, this._camera);
 
     this._request = requestAnimationFrame(this.draw.bind(this));
   };
