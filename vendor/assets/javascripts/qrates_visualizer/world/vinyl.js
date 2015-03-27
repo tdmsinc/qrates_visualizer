@@ -151,7 +151,7 @@ console.log('bumpMapTex', bumpMapTex);
           map: self.TYPE_SPLATTER === self._type ? tex : null,
           needsUpdate: true,
           opacity: self._opacity,
-          reflectivity: 0.1,
+          reflectivity: 1.0,
           shininess: 25,
           side: THREE.DoubleSide,
           specular: 0x363636,
