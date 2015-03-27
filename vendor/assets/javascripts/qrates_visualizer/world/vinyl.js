@@ -60,10 +60,11 @@
     this._type = opts.type;
     this._defaultColor = 0x000000;
     this._color = this._type === this.TYPE_SPLATTER ? 0xffffff : this._colorPresets[opts.color].color;
-    this._opacity = 1.0;
+    this._opacity = 0;
     this._rpm = opts.speed;
     this._heavy = opts.heavy;
     this._enableRotate = false;
+    this._opacityTweenDuration = 300;
     this._clock = new THREE.Clock();
 
     this._front = {
@@ -121,7 +122,11 @@ console.log('cubeTexture', cubeTexture);
     this._position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
+    this._opacityTween = new TWEEN.Tween(this);
+
     this._container.add(this._front[this._size]);
+
+    this.setOpacity(1.0);
   };
 
   Vinyl.prototype.initMaterial = function(obj, tex, bumpMapTex) {
@@ -141,7 +146,7 @@ console.log('cubeTexture', cubeTexture);
           // bumpMap: self._textures.bumpTest,
           bumpScale: 0.02,
           color: self._color,
-          combine: THREE.Multiply,
+          // combine: THREE.Multiply,
           envMap: self._textures.envMap,
           map: self.TYPE_SPLATTER === self._type ? tex : null,
           needsUpdate: true,
@@ -235,7 +240,11 @@ console.log('cubeTexture', cubeTexture);
     this._container.remove(this._front[this._size]);
 
     this._size = size;
+
     this._container.add(this._front[this._size]);
+
+    this._opacity = 0;
+    this.setOpacity(1.0);
   };
 
   Vinyl.prototype.setType = function(type) {
@@ -257,6 +266,9 @@ console.log('cubeTexture', cubeTexture);
       var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : new THREE.Texture();
       self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
     });
+
+    this._opacity = 0;
+    this.setOpacity(1.0);
   };
 
   Vinyl.prototype.setColor = function(index) {
@@ -274,6 +286,32 @@ console.log('cubeTexture', cubeTexture);
       var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
       self.initMaterial(self._front[key], tex, self._textures.bumpMap['back-' + self._size]);
     });
+  };
+
+  Vinyl.prototype.setOpacity = function(to, duration) {
+    var self = this;
+
+    duration = undefined !== duration ? duration : 300;
+
+    this._opacityTween
+      .stop()
+      .to({ _opacity: to }, duration)
+      .onUpdate(function() {
+        self._front[self._size].traverse(function(child) {
+          if (child instanceof THREE.Mesh) {
+            child.material.opacity = self._opacity;
+          }
+
+          if (child instanceof THREE.Object3D) {
+            child.traverse(function(nextChild) {
+              if (nextChild instanceof THREE.Mesh) {
+                nextChild.material.opacity = self._opacity;
+              }
+            });
+          }
+        });
+      })
+      .start();
   };
 
   Vinyl.prototype.setEnableRotate = function(yn) {

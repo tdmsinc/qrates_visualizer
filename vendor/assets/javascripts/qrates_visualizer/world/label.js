@@ -32,6 +32,7 @@
     this._largeHole = opts.holeSize;
     this._type = opts.type;
     this._rpm = opts.speed;
+    this._opacity = 0;
     this._enableRotate = false;
     this._clock = new THREE.Clock();
 
@@ -77,8 +78,15 @@
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
+    this._opacityTween = new TWEEN.Tween(this);
+
+    this.setOpacity(0, 1);
+
     this._container.add(this._front.current);
     this._container.add(this._back.current);
+
+    this.setOpacity(1.0);
+
 
     var self = this;
     Object.keys(this._back).forEach(function(key) {
@@ -101,6 +109,7 @@
           ambient: 0xFFFFFF,
           color: 0xFFFFFF,
           map: tex,
+          opacity: self._opacity,
           shininess: 5,
           side: THREE.DoubleSide,
           specular: 0x363636,
@@ -143,6 +152,9 @@
 
     this._container.add(this._front.current);
     this._container.add(this._back.current);
+
+    this._opacity = 0;
+    this.setOpacity(1.0);
   };
 
   Label.prototype.setLargeHole = function(yn) {
@@ -165,6 +177,9 @@
 
     this._container.add(this._front.current);
     this._container.add(this._back.current);
+
+    this._opacity = 0;
+    this.setOpacity(1.0);
   };
 
   Label.prototype.setTexture = function(sideA, sideB) {
@@ -211,6 +226,50 @@
       var tex = self.TYPE_WHITE === type ? self._textures.default : self._textures.back;
       self.initMaterial(self._back[key], tex);
     });
+
+    this._opacity = 0;
+    this.setOpacity(1.0);
+  };
+
+  Label.prototype.setOpacity = function(to, duration) {
+    var self = this;
+
+    duration = undefined !== duration ? duration : 300;
+
+    this._opacityTween
+      .stop()
+      .to({ _opacity: to }, duration)
+      .onUpdate(function() {
+        console.log(self._opacity);
+        self._front.current.traverse(function(child) {
+          if (child instanceof THREE.Mesh) {
+            child.material.opacity = self._opacity;
+          }
+
+          if (child instanceof THREE.Object3D) {
+            child.traverse(function(nextChild) {
+              if (nextChild instanceof THREE.Mesh) {
+                nextChild.material.opacity = self._opacity;
+              }
+            });
+          }
+        });
+
+        self._back.current.traverse(function(child) {
+          if (child instanceof THREE.Mesh) {
+            child.material.opacity = self._opacity;
+          }
+
+          if (child instanceof THREE.Object3D) {
+            child.traverse(function(nextChild) {
+              if (nextChild instanceof THREE.Mesh) {
+                nextChild.material.opacity = self._opacity;
+              }
+            });
+          }
+        });
+      })
+      .start();
   };
 
   Label.prototype.setEnableRotate = function(yn) {

@@ -31,9 +31,10 @@
     this._size = sizes[opts.size - 1];
     this._holed = opts.hole;
     this._type = opts.type;
-    this._opacity = 1.0;
+    this._opacity = 0.0;
     this._coveredRatio = 0.0;
     this._glossFinish = opts.glossFinish;
+    this._opacityTweenDuration = 300;
 
     this._front = {
       current   : null,
@@ -179,19 +180,22 @@
     this.rotation = new THREE.Vector3(0, 0, 0);
 
     this._positionTween = new TWEEN.Tween(this.position);
+    this._opacityTween = new TWEEN.Tween(this);
 
     this.setType(opts.type);
 
     this._currentObject.name = 'sleeve';
+
     this._container.add(this._currentObject);
+
+    this._opacity = 0;
+    this.setOpacity(1);
   };
 
   Sleeve.prototype.initMaterial = function(obj, tex) {
     if (!obj) {
       return;
     }
-
-    obj.name = 'sleeve';
 
     var self = this;
 
@@ -201,6 +205,7 @@
           map: tex,
           ambient: 0xFFFFFF,
           color: self.TYPE_BLACK === self._type ? 0x000000 : 0xFFFFFF,
+          opacity: 0,
           shininess: self._glossFinish ? 45 : 15,
           side: THREE.DoubleSide,
           specular: 0x363636,
@@ -267,29 +272,27 @@
       self.initMaterial(self._spine[key], tex);
     });
 
-    if (lastType !== this.TYPE_PRINT_SPINE && this._type === this.TYPE_PRINT_SPINE) {
-      this._container.remove(this._currentObject);
+    this._container.remove(this._currentObject);
 
+    if (lastType !== this.TYPE_PRINT_SPINE && this._type === this.TYPE_PRINT_SPINE) {
       if (this._holed) {
-        console.log('here');
         this._currentObject = this._object['spine-holed-' + this._size];
       } else {
         this._currentObject = this._object['spine-' + this._size];
       }
 
-      this._container.add(this._currentObject);
     } else if (lastType === this.TYPE_PRINT_SPINE && this._type !== this.TYPE_PRINT_SPINE) {
-      this._container.remove(this._currentObject);
-
       if (this._holed) {
         this._currentObject = this._object['holed-' + this._size];
       } else {
         this._currentObject = this._object[this._size];
       }
-
-      this._currentObject.name = 'sleeve';
-      this._container.add(this._currentObject);
     }
+
+    this._container.add(this._currentObject);
+
+    this._opacity = 0;
+    this.setOpacity(1.0);
   };
 
   Sleeve.prototype.setSize = function(size) {
@@ -317,9 +320,41 @@
     }
 
     this._currentObject.name = 'sleeve';
-    this._container.add(this._currentObject);
 
-    this.setCoveredRatio(this._coveredRatio);
+    var self = this;
+
+    this.setCoveredRatio(this._coveredRatio, 1, null, function() {
+      self._container.add(self._currentObject);
+
+      self._opacity = 0;
+      self.setOpacity(1.0);
+    });
+  };
+
+  Sleeve.prototype.setOpacity = function(to, duration) {
+    var self = this;
+
+    duration = undefined !== duration ? duration : 300;
+
+    this._opacityTween
+      .stop()
+      .to({ _opacity: to }, duration)
+      .onUpdate(function() {
+        self._currentObject.traverse(function(child) {
+          if (child instanceof THREE.Mesh) {
+            child.material.opacity = self._opacity;
+          }
+
+          if (child instanceof THREE.Object3D) {
+            child.traverse(function(nextChild) {
+              if (nextChild instanceof THREE.Mesh) {
+                nextChild.material.opacity = self._opacity;
+              }
+            });
+          }
+        });
+      })
+      .start();
   };
 
   Sleeve.prototype.setHole = function(value) {
@@ -359,7 +394,7 @@
     });
   };
 
-  Sleeve.prototype.setCoveredRatio = function(ratio, duration, updateCallback) {
+  Sleeve.prototype.setCoveredRatio = function(ratio, duration, updateCallback, completeCallback) {
     var offset = new THREE.Box3().setFromObject(this._currentObject).size().x;
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
@@ -370,6 +405,9 @@
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         if (updateCallback) updateCallback();
+      })
+      .onComplete(function() {
+        if (completeCallback) completeCallback();
       })
       .start();
   };

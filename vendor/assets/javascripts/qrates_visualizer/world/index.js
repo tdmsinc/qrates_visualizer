@@ -717,6 +717,18 @@
 
     var size = sizes[value - 1];
 
+    switch (size) {
+      case '7':
+        this._object.scale.set(1, 1, 1);
+        break;
+      case '10':
+        this._object.scale.set(0.6890566038, 0.6890566038, 0.6890566038);
+        break;
+      case '12':
+        this._object.scale.set(0.5833865815, 0.5833865815, 0.5833865815);
+        break;
+    }
+
     this._sleeve.setSize(size);
     this._vinyl.setSize(size);
     this._label.setSize(size);
