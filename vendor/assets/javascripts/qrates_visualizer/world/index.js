@@ -614,6 +614,9 @@
     TWEEN.update();
 
     this._controls.update();
+
+    this._lights.position.copy(this._camera.position);
+    this._lights.lookAt(new THREE.Vector3(0, 0, 0));
   };
 
   /**
