@@ -442,7 +442,7 @@
   World.prototype.cover = function(value) {
     var self = this;
 
-    this._sleeve.setCoveredRatio(value, 200, function() {
+    this._sleeve.setCoveredRatio(value, 500, function() {
       self._scene2.children.forEach(function(child) {
         if ('container' === child.name) {
           child.children.forEach(function(_child) {

@@ -21,6 +21,8 @@
       speed: 45,
     };
 
+    opts.color = opts.color || 0;
+    
     this._colorPresets = [
       { color: 0x000000, opacity: 1.0 },
       { color: 0xFFFFFF, opacity: 1.0 },
@@ -137,7 +139,7 @@ console.log('cubeTexture', cubeTexture);
     obj.name = 'vinyl';
 
     var self = this;
-console.log('bumpMapTex', bumpMapTex);
+
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material = new THREE.MeshPhongMaterial({
@@ -151,11 +153,11 @@ console.log('bumpMapTex', bumpMapTex);
           map: self.TYPE_SPLATTER === self._type ? tex : null,
           needsUpdate: true,
           opacity: self._opacity,
-          reflectivity: 1.0,
+          reflectivity: 0.2,
           shininess: 10,
           side: THREE.DoubleSide,
           specular: 0x363636,
-          transparent: true,
+          transparent: false,
           shading: THREE.SmoothShading,
         });
 
@@ -253,7 +255,7 @@ console.log('bumpMapTex', bumpMapTex);
     }
 
     this._type = type;
-    this._color = this.TYPE_SPLATTER === type ? 0xFFFFFF : this._defaultColor;
+    this._color = this.TYPE_SPLATTER === type ? 0xffffff : this._defaultColor;
 
     var self = this;
 
