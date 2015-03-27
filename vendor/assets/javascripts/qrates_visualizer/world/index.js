@@ -370,6 +370,34 @@
       .start();
   };
 
+  World.prototype.setCameraRotation = function(tx, ty, tz, opts, callback) {
+    if (!callback) {
+      callback = null;
+    }
+
+    opts = opts || {
+      durarion: 1001
+    };
+
+    opts.duration = undefined === opts.duration ? 1001 : opts.duration;
+
+    var self = this;
+
+    // self.startRender();
+
+    // this.resetCamera();
+
+    new TWEEN.Tween(this._camera.rotation)
+      .to({ x: tx, y: ty, z: tz }, opts.duration)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .onComplete(function() {
+        console.log(self._camera);
+        console.log(self._controls);
+        if (callback) callback();
+      })
+      .start();
+  };
+
   World.prototype.resetCamera = function() {
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.position.set(212, 288, 251);
@@ -546,7 +574,8 @@
         this.setCameraPosition( 62,  94, 105, opts, callback);
         break;
       case 3:
-        this.setCameraPosition(-54, 139, 100, opts, callback);
+        this.setCameraPosition( 1.5, 436, 17, opts, callback);
+        this.setCameraRotation(   0,  0,   0, opts, callback);
         break;
       case 4:
         this.setCameraPosition(222, 222, -28, opts, callback);
@@ -633,9 +662,6 @@
     this._renderer.render(this._scene1, this._camera);
     // this._renderer.clearDepth();
     // this._renderer.render(this._scene2, this._camera);\
-
-    console.log(this._camera.position);
-    console.log(this._camera.rotation);
 
     this._request = requestAnimationFrame(this.draw.bind(this));
   };
