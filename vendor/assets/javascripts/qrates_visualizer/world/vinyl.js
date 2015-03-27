@@ -23,7 +23,7 @@
 
     opts.color = opts.color || 0;
     
-    this._colorPresets = [
+    this._materialPresets = [
       { color: 0x000000, opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true },
       { color: 0xFFFFFF, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
       { color: 0xF3EA5D, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
@@ -61,7 +61,8 @@
     this._size = sizes[opts.size - 1];
     this._type = opts.type;
     this._defaultColor = 0x000000;
-    this._color = this._type === this.TYPE_SPLATTER ? 0xffffff : this._colorPresets[opts.color].color;
+    this._materialParams = this._materialPresets[opts.color];
+    this._color = this._type === this.TYPE_SPLATTER ? 0xffffff : this._materialParams.color;
     this._opacity = 0;
     this._rpm = opts.speed;
     this._heavy = opts.heavy;
@@ -128,7 +129,7 @@ console.log('cubeTexture', cubeTexture);
 
     this._container.add(this._front[this._size]);
 
-    this.setOpacity(1.0);
+    this.setOpacity(this._materialParams.opacity);
   };
 
   Vinyl.prototype.initMaterial = function(obj, tex, bumpMapTex) {
@@ -145,7 +146,6 @@ console.log('cubeTexture', cubeTexture);
         child.material = new THREE.MeshPhongMaterial({
           ambient: new THREE.Color(1, 1, 1),
           bumpMap: bumpMapTex,
-          // bumpMap: self._textures.bumpTest,
           bumpScale: 0.02,
           color: self._color,
           combine: THREE.Multiply,
@@ -153,13 +153,13 @@ console.log('cubeTexture', cubeTexture);
           map: self.TYPE_SPLATTER === self._type ? tex : null,
           needsUpdate: true,
           opacity: self._opacity,
-          reflectivity: 1.0,
-          refractionRatio: 0.0,
-          shininess: 25,
-          side: THREE.DoubleSide,
+          reflectivity: self._materialParams.reflectivity,
+          refractionRatio: self._materialParams.refractionRatio,
+          shininess: self._materialParams.shininess,
+          // side: THREE.DoubleSide,
           specular: 0x363636,
           transparent: true,
-          metal: true,
+          metal: self._materialParams.metal,
           shading: THREE.SmoothShading,
         });
 
@@ -248,7 +248,7 @@ console.log('cubeTexture', cubeTexture);
     this._container.add(this._front[this._size]);
 
     this._opacity = 0;
-    this.setOpacity(1.0);
+    this.setOpacity(this._materialParams.opacity);
   };
 
   Vinyl.prototype.setType = function(type) {
@@ -272,11 +272,12 @@ console.log('cubeTexture', cubeTexture);
     });
 
     this._opacity = 0;
-    this.setOpacity(1.0);
+    this.setOpacity(this._materialParams.opacity);
   };
 
   Vinyl.prototype.setColor = function(index) {
-    this._color = this.TYPE_SPLATTER === this._type ? 0xFFFFFF : this._colorPresets[index].color;
+    this._materialParams = this._materialPresets[index];
+    this._color = this.TYPE_SPLATTER === this._type ? 0xFFFFFF : this._materialParams.color;
     this._opacity = this.TYPE_SPLATTER === this._type ? 0.8 : 1.0;
 
     var self = this;
