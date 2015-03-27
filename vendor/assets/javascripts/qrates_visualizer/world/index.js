@@ -635,6 +635,7 @@
     // this._renderer.render(this._scene2, this._camera);\
 
     console.log(this._camera.position);
+    console.log(this._camera.rotation);
 
     this._request = requestAnimationFrame(this.draw.bind(this));
   };
