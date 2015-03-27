@@ -152,11 +152,11 @@ console.log('cubeTexture', cubeTexture);
           envMap: self._textures.envMap,
           map: self.TYPE_SPLATTER === self._type ? tex : null,
           needsUpdate: true,
-          opacity: self._opacity,
+          opacity: self._materialParams.opacity,
           reflectivity: self._materialParams.reflectivity,
           refractionRatio: self._materialParams.refractionRatio,
           shininess: self._materialParams.shininess,
-          // side: THREE.DoubleSide,
+          side: THREE.DoubleSide,
           specular: 0x363636,
           transparent: true,
           metal: self._materialParams.metal,
@@ -257,7 +257,20 @@ console.log('cubeTexture', cubeTexture);
     }
 
     this._type = type;
-    this._color = this.TYPE_SPLATTER === type ? 0xffffff : this._defaultColor;
+
+    if (this.TYPE_SPLATTER === type) {
+      this._materialParams = this._materialPresets[1];
+    } else if (this.TYPE_COLOR === type) {
+      this._materialPresets.forEach(function(item) {
+        if (item.color === this._color) {
+          this._materialParams = item;
+        }
+      });
+    } else {
+      this._materialParams = this._materialPresets[0];
+    }
+
+    this._color = this._materialParams.color;
 
     var self = this;
 
