@@ -137,7 +137,7 @@ console.log('cubeTexture', cubeTexture);
     obj.name = 'vinyl';
 
     var self = this;
-
+console.log('bumpMapTex', bumpMapTex);
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material = new THREE.MeshPhongMaterial({
@@ -155,7 +155,7 @@ console.log('cubeTexture', cubeTexture);
           shininess: 10,
           side: THREE.DoubleSide,
           specular: 0x363636,
-          transparent: false,
+          transparent: true,
           shading: THREE.SmoothShading,
         });
 
@@ -189,7 +189,7 @@ console.log('cubeTexture', cubeTexture);
 
       Object.keys(self._front).forEach(function(key) {
         var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : new THREE.Texture();
-        self.initMaterial(self._front[key], tex, self._textures['front-' + self._size]);
+        self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
       });
     }
 
