@@ -189,6 +189,7 @@
   };
 
   /**
+   * @param {Object} opts
    * @return {VinylVisualizer}
    * @api public
    */
@@ -201,6 +202,7 @@
 
   /**
    * @param {Number} degree
+   * @param {Object} opts
    * @return {VinylVisualizer}
    * @api public
    */
@@ -214,6 +216,7 @@
 
   /**
    * @param {Number} degree
+   * @param {Object} opts
    * @return {VinylVisualizer}
    * @api public
    */
@@ -226,6 +229,7 @@
 
   /**
    * @param {Number} value
+   * @param {Object} opts
    * @return {VinylVisualizer}
    * @api public
    */
@@ -238,6 +242,7 @@
 
   /**
    * @param {Number} step
+   * @param {Object} opts
    * @return {VinylVisualizer}
    * @api public
    */
