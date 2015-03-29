@@ -568,50 +568,50 @@
 
     switch (Number(type)) {
       case 0:
-        this.setCameraPosition(212, 288, 251, opts, callback); // default
+        this.setCameraPosition( 212, 288, 251, opts, callback); // default
         break;
       case 1:
-        this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation
+        this.setCameraPosition(  62,  94, 105, opts, callback); // item detail rotation 1
         break;
       case 2:
-        this.setCameraPosition( 62,  94, 105, opts, callback); // item detail rotation
+        this.setCameraPosition( 1.5, 436,  17, opts, callback); // item detail rotation 2
         break;
       case 3:
-        this.setCameraPosition( 1.5, 436, 17, opts, callback); // item detail rotation
-        this.setCameraRotation(   0,  0,   0, opts, callback);
+        this.setCameraPosition(  10, 170,  10, opts, callback); // item detail rotation 3
+        this.setCameraRotation(   0,   0,   0, opts, callback);
         break;
       case 4:
-        this.setCameraPosition(222, 222, -28, opts, callback); // item detail rotation
+        this.setCameraPosition( 222, 222, -28, opts, callback); // item detail rotation 4
         break;
       case 5:
-        this.setCameraPosition(  9, 170,  40, opts, callback); // item detail rotation
+        this.setCameraPosition(   9, 170,  40, opts, callback); // item detail rotation 5
         break;
       case 6:
-        this.setCameraPosition(136,  91, -28, opts, callback); // item detail rotation
+        this.setCameraPosition( 136,  91, -28, opts, callback); // item detail rotation 6
         break;
       case 7:
-        this.setCameraPosition(-628, 203, 25, opts, callback); // item detail rotation
+        this.setCameraPosition(-628, 203,  25, opts, callback); // item detail rotation 7
         break;
       case 8:
-        this.setCameraPosition(242, 202, -28, opts, callback); // item detail rotation
+        this.setCameraPosition( 242, 202, -28, opts, callback); // item detail rotation 8
         break;
       case 9:
-        this.setCameraPosition(242, 202, -28, opts, callback); // item detail rotation
+        this.setCameraPosition( 242, 202, -28, opts, callback); // item detail rotation 9
         break;
       case 10:
-        this.setCameraPosition(242, 202, -28, opts, callback); // vinyl Side A
+        this.setCameraPosition( 1.5, 436,  17, opts, callback); // vinyl Side A
         break;
       case 11:
-        this.setCameraPosition(242, 202, -28, opts, callback); // label Side A
+        this.setCameraPosition(  10, 170,  10, opts, callback); // label Side A
         break;
       case 12:
-        this.setCameraPosition(242, 202, -28, opts, callback); // label Side B
+        this.setCameraPosition( -10,-170, -10, opts, callback); // label Side B
         break;
       case 13:
-        this.setCameraPosition(242, 202, -28, opts, callback); // sleeve Front
+        this.setCameraPosition(  10, 400,  10, opts, callback); // sleeve Front
         break;
       case 14:
-        this.setCameraPosition(242, 202, -28, opts, callback); // sleeve Back
+        this.setCameraPosition( -10,-400, -10, opts, callback); // sleeve Back
         break;
       default:
         break;
