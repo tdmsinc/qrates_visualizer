@@ -85,7 +85,7 @@
     var interval = opts.interval || 4000;
     this.timer = setTimeout(function() {
       var callee = arguments.callee;
-      var type = (count++ % 5) + 1;
+      var type = count++ % 4;
       self.view(type, { duration: duration }, function() {
         self.timer = setTimeout(callee, interval);
       });
