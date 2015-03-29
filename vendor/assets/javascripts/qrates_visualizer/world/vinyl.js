@@ -22,23 +22,23 @@
     };
 
     opts.color = opts.color || 0;
-    
+
     this._materialPresets = [
-      { color: 0x000000, opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true },
+      { color: 0x000000, opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true  },
       { color: 0xFFFFFF, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0xF3EA5D, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0xa60b00, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0xFF6600, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0x0085CA, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
+      { color: 0xfffd4d, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
+      { color: 0xcc0e00, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
+      { color: 0xff8c1a, opacity: 1.0, reflectivity:0.05, refractionRatio: 0.98, shininess:  10, metal: true  },
+      { color: 0x00b1dd, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
       { color: 0x593320, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0xA4D65E, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
+      { color: 0x41ff9f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
       { color: 0x9EA2A2, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0x3a886b, opacity: 0.5, reflectivity: 0.8, refractionRatio: 1.98, shininess: 100, metal: true  },
-      { color: 0xefe453, opacity: 0.5, reflectivity: 0.8, refractionRatio: 1.98, shininess: 100, metal: true  },
-      { color: 0xDA291C, opacity: 0.5, reflectivity: 0.8, refractionRatio: 1.98, shininess: 100, metal: true  },
-      { color: 0x7a3570, opacity: 0.5, reflectivity: 0.8, refractionRatio: 1.98, shininess: 100, metal: true  },
-      { color: 0x3059a5, opacity: 0.5, reflectivity: 0.8, refractionRatio: 1.98, shininess: 100, metal: true  },
-      { color: 0xFFFFFF, opacity: 0.5, reflectivity: 0.8, refractionRatio: 1.98, shininess: 100, metal: true  }
+      { color: 0x00b94e, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true  },
+      { color: 0xffed00, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true  },
+      { color: 0xc8000e, opacity: 0.8, reflectivity: 0.2, refractionRatio: 1.98, shininess:  60, metal: true  },
+      { color: 0x9a004c, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true  },
+      { color: 0x0040b6, opacity: 0.8, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true  },
+      { color: 0xFFFFFF, opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true  }
     ];
 
     var sizes = ['7', '10', '12'];
@@ -156,7 +156,7 @@ console.log('cubeTexture', cubeTexture);
           reflectivity: self._materialParams.reflectivity,
           refractionRatio: self._materialParams.refractionRatio,
           shininess: self._materialParams.shininess,
-          side: THREE.DoubleSide,
+          //side: THREE.DoubleSide,
           specular: 0x363636,
           transparent: true,
           metal: self._materialParams.metal,

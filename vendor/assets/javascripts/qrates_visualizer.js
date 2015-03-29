@@ -81,11 +81,11 @@
     opts = opts || {};
     var count = 0;
     var self = this;
-    var duration = opts.duration || 1000;
-    var interval = opts.interval || 4000;
+    var duration = opts.duration || 2000;
+    var interval = opts.interval || 3000;
     this.timer = setTimeout(function() {
       var callee = arguments.callee;
-      var type = (count++ % 5) + 1;
+      var type = count++ % 5;
       self.view(type, { duration: duration }, function() {
         self.timer = setTimeout(callee, interval);
       });

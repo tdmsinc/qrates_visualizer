@@ -115,37 +115,48 @@ WebGL のレンダリングを開始します。
 
 WebGL のレンダリングを一時停止します。
 
-#### VinylVisualizer#flip():VinylVisualizer
+#### VinylVisualizer#flip(opts:Object):VinylVisualizer
 
 オブジェクトの裏側にカメラを移動します。
 
-#### VinylVisualizer#rotateHorizontal(degree:Number):VinylVisualizer
+- `opts:Object`
+  - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
+
+#### VinylVisualizer#rotateHorizontal(degree:Number, opts:Object):VinylVisualizer
 
 オブジェクトを水平方向にインクリメンタルに回転させます。
 
 - `degree:Number`: 回転量を角度で指定。負数で逆回転します。
+- `opts:Object`
+  - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
 
-#### VinylVisualizer#rotateVertical(degree:Number):VinylVisualizer
+#### VinylVisualizer#rotateVertical(degree:Number, opts:Object):VinylVisualizer
 
 オブジェクトを垂直方向にインクリメンタルに回転させます。
 
 - `degree:Number`: 回転量を角度で指定。負数で逆回転します。
+- `opts:Object`
+  - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
 
-#### VinylVisualizer#lookAround(degree:Number):VinylVisualizer
+#### VinylVisualizer#lookAround(degree:Number, opts:Object):VinylVisualizer
 
 `VinylVisualizer#rotateHorizontal` のエイリアス。
 
-#### VinylVisualizer#cover(value:Number):VinylVisualizer
+#### VinylVisualizer#cover(value:Number, opts:Object):VinylVisualizer
 
 Vinyl が Sleeve に収納されている状況を指定します。
 
 - `value:Number`: 収納状態を値で指定します。`0` が完全に Sleeve に収まっている状態、`1` が完全に Sleeve から出ている状態。
+- `opts:Object`
+  - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
 
-#### VinylVisualizer#zoom(step:Number):VinylVisualizer
+#### VinylVisualizer#zoom(step:Number, opts:Object):VinylVisualizer
 
 ズームレベルをインクリメンタルに変更します。値は正数指定で寄り、負数指定で引きです。
 
 - `step:Number`: ズームレベルを指定。
+- `opts:Object`
+  - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
 
 #### VinylVisualizer#vinylVisibility(value:Boolean, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
 
