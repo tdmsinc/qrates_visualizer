@@ -57,6 +57,7 @@
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
     this._camera.position.set(212, 288, 251);
+    this._orthographicZoom = 170;
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._width, this._height);
@@ -416,7 +417,7 @@
 
   World.prototype.setOrthographic = function() {
     this._camera.toOrthographic();
-    this._camera.setZoom(170);
+    this._camera.setZoom(this._orthographicZoom);
   };
 
   World.prototype.setVinylVisibility = function(yn, opts, callback) {
@@ -484,15 +485,25 @@
   };
 
   World.prototype.zoomIn = function(step) {
-    this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
-    this._controls._zoomEnd.copy(this._controls.getMouseOnScreen(0, -20 * (step || 1)));
-    this._controls.zoomCamera();
+    if (this._camera.type === this._camera.TYPE_PERSPECTIVE) {
+      this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
+      this._controls._zoomEnd.copy(this._controls.getMouseOnScreen(0, -20 * (step || 1)));
+      this._controls.zoomCamera();
+    } else {
+      this._orthographicZoom += step * 15;
+      this._camera.setZoom(this._orthographicZoom);
+    }
   };
 
   World.prototype.zoomOut = function(step) {
-    this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
-    this._controls._zoomEnd.copy(this._controls.getMouseOnScreen(0, 20 * (step || 1)));
-    this._controls.zoomCamera();
+    if (this._camera.type === this._camera.TYPE_PERSPECTIVE) {
+      this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
+      this._controls._zoomEnd.copy(this._controls.getMouseOnScreen(0, 20 * (step || 1)));
+      this._controls.zoomCamera();
+    } else {
+      this._orthographicZoom -= step * 15;
+      this._camera.setZoom(this._orthographicZoom);
+    }
   };
 
   World.prototype.capture = function(opts, callback) {
