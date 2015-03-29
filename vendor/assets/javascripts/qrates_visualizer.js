@@ -193,9 +193,9 @@
    * @api public
    */
 
-  VinylVisualizer.prototype.flip = function() {
+  VinylVisualizer.prototype.flip = function(opts) {
     if (!this.world) return this;
-    this.world.flip();
+    this.world.flip(opts);
     return this;
   };
 
@@ -206,9 +206,9 @@
    */
 
   VinylVisualizer.prototype.rotateHorizontal =
-  VinylVisualizer.prototype.lookAround = function(degree) {
+  VinylVisualizer.prototype.lookAround = function(degree, opts) {
     if (!this.world) return this;
-    this.world.rotateHorizontal(degree);
+    this.world.rotateHorizontal(degree, opts);
     return this;
   };
 
@@ -218,9 +218,9 @@
    * @api public
    */
 
-  VinylVisualizer.prototype.rotateVertical = function(degree) {
+  VinylVisualizer.prototype.rotateVertical = function(degree, opts) {
     if (!this.world) return this;
-    this.world.rotateVertical(degree);
+    this.world.rotateVertical(degree, opts);
     return this;
   };
 
@@ -230,9 +230,9 @@
    * @api public
    */
 
-  VinylVisualizer.prototype.cover = function(value) {
+  VinylVisualizer.prototype.cover = function(value, opts) {
     if (!this.world) return this;
-    this.world.cover(value);
+    this.world.cover(value, opts);
     return this;
   };
 
@@ -242,12 +242,12 @@
    * @api public
    */
 
-  VinylVisualizer.prototype.zoom = function(step) {
+  VinylVisualizer.prototype.zoom = function(step, opts) {
     if (!this.world) return this;
     if (step < 0) {
-      this.world.zoomOut(Math.abs(step));
+      this.world.zoomOut(Math.abs(step), opts);
     } else {
-      this.world.zoomIn(step);
+      this.world.zoomIn(step, opts);
     }
     return this;
   };
