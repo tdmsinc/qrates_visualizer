@@ -569,30 +569,108 @@
     switch (Number(type)) {
       case 0:
         this.setCameraPosition( 212, 288, 251, opts, callback); // default
+        this._flip = true;
+        this.flip();
+        this._sleeve.setCoveredRatio(0.8, 2000, function() {
+          self._scene2.children.forEach(function(child) {
+            if ('container' === child.name) {
+              child.children.forEach(function(_child) {
+                if ('sleeve' === _child.name) {
+                  _child.position.copy(self._sleeve.position);
+                }
+              });
+            }
+          });
+        });
         self._controls.reset();
         break;
       case 1:
         this.setCameraPosition(  62,  94, 105, opts, callback); // item detail rotation 1
+        this._flip = true;
+        this.flip();
+        this._sleeve.setCoveredRatio(0.8, 2000, function() {
+          self._scene2.children.forEach(function(child) {
+            if ('container' === child.name) {
+              child.children.forEach(function(_child) {
+                if ('sleeve' === _child.name) {
+                  _child.position.copy(self._sleeve.position);
+                }
+              });
+            }
+          });
+        });
         self._controls.reset();
         break;
       case 2:
-        this.setCameraPosition(   0, 436,   1, opts, callback); // item detail rotation 2
+        this.setCameraPosition( 0.01, 365, 10, opts, callback); // item detail rotation 2
+        this._flip = true;
+        this.flip();
+        this._sleeve.setCoveredRatio(0.8, 2000, function() {
+          self._scene2.children.forEach(function(child) {
+            if ('container' === child.name) {
+              child.children.forEach(function(_child) {
+                if ('sleeve' === _child.name) {
+                  _child.position.copy(self._sleeve.position);
+                }
+              });
+            }
+          });
+        });
         self._controls.reset();
         break;
       case 3:
-        this.setCameraPosition(  10, 170,  10, opts, callback); // item detail rotation 3
+        this.setCameraPosition( 0.01, 365, 50, opts, callback); // item detail rotation 3
+        this._flip = false;
+        this.flip();
+        this._sleeve.setCoveredRatio(0.8, 2000, function() {
+          self._scene2.children.forEach(function(child) {
+            if ('container' === child.name) {
+              child.children.forEach(function(_child) {
+                if ('sleeve' === _child.name) {
+                  _child.position.copy(self._sleeve.position);
+                }
+              });
+            }
+          });
+        });
         self._controls.reset();
         break;
       case 4:
-        this.setCameraPosition( 222, 222, -28, opts, callback); // item detail rotation 4
+        this.setCameraPosition( 0.01, 345, 400, opts, callback); // item detail rotation 4
+        this._flip = false;
+        this.flip();
+        this._sleeve.setCoveredRatio(0.0, 2000, function() {
+          self._scene2.children.forEach(function(child) {
+            if ('container' === child.name) {
+              child.children.forEach(function(_child) {
+                if ('sleeve' === _child.name) {
+                  _child.position.copy(self._sleeve.position);
+                }
+              });
+            }
+          });
+        });
         self._controls.reset();
         break;
       case 5:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 5
+        this.setCameraPosition( 0.01, 345, 400, opts, callback); // item detail rotation 5
+        this._flip = true;
+        this.flip();
+        this._sleeve.setCoveredRatio(0.0, 2000, function() {
+          self._scene2.children.forEach(function(child) {
+            if ('container' === child.name) {
+              child.children.forEach(function(_child) {
+                if ('sleeve' === _child.name) {
+                  _child.position.copy(self._sleeve.position);
+                }
+              });
+            }
+          });
+        });
         self._controls.reset();
         break;
       case 6:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 6
+        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 7
         self._controls.reset();
         break;
       case 7:
@@ -692,6 +770,8 @@
     }
 
     this.update();
+
+    console.log(this._camera.position);
 
     this._renderer.clear();
     this._renderer.render(this._scene1, this._camera);
