@@ -771,8 +771,6 @@
 
     this.update();
 
-    console.log(this._camera.position);
-
     this._renderer.clear();
     this._renderer.render(this._scene1, this._camera);
     // this._renderer.clearDepth();
