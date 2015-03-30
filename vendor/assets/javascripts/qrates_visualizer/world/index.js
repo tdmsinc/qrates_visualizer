@@ -558,6 +558,10 @@
   World.prototype.updateView = function(type, opts, callback) {
     console.log('World::updateView', type);
 
+    opts = opts || {
+      duration: 2000,
+    };
+
     // call preset
 
     if (!this._presets[type]) {
