@@ -635,22 +635,27 @@
         break;
       case 10:
         this.setCameraPosition(   0, 436,   1, opts, callback); // vinyl Side A
+        this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 11:
         this.setCameraPosition(   0, 170,   1, opts, callback); // label Side A
+        this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 12:
         this.setCameraPosition(   0,-170,  -1, opts, callback); // label Side B
+        this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 13:
         this.setCameraPosition(   0, 400,   1, opts, callback); // sleeve Front
+        this.cover(0.0, { duration: opts.duration });
         this._controls.reset();
         break;
       case 14:
         this.setCameraPosition(   0,-400,  -1, opts, callback); // sleeve Back
+        this.cover(0.0, { duration: opts.duration });
         this._controls.reset();
         break;
       default:
