@@ -124,7 +124,6 @@
 
     this._presets = {};
     this.registerPresets();
-    this.updateView(5);
 
     this._scene1.add(this._lights);
     this._scene1.add(this._object);
@@ -154,8 +153,6 @@
     //   delay: 1000,
     //   duration: 2000
     // });
-
-    this.cover(0.8, { duration: 2000, delay: 1000 });
   }
 
   /**
