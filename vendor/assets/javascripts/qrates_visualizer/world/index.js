@@ -39,6 +39,12 @@
       }
     };
 
+    this._objectScales = {
+      '7' : 1,
+      '10': 0.6890566038,
+      '12': 0.5833865815
+    };
+
     this._width = opts.width;
     this._height = opts.height;
 
@@ -49,7 +55,6 @@
     this._alphaMap.minFilter = THREE.LinearFilter;
     this._alphaMap.magFilter = THREE.LinearFilter;
     this._alphaMap.needsUpdate = true;
-    console.log(this._alphaMap);
 
     this._scene1 = new THREE.Scene();
     this._scene2 = new THREE.Scene();
@@ -58,6 +63,10 @@
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
     this._camera.position.set(212, 288, 251);
     this._orthographicZoom = 170;
+
+    if ('orthographic' === this._opts.camera.type) {
+      this.setOrthographic();
+    }
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
     this._renderer.setSize(this._width, this._height);
@@ -104,6 +113,9 @@
 
     this._label = new Label();
     this._label.setup(this._scene1, assets, opts.defaults.label, this._object);
+
+    var scale = this._objectScales[this._vinyl._size];
+    this._object.scale.set(scale, scale, scale);
 
     this._flipRotation = 0;
     this._flipTween = new TWEEN.Tween(this);
