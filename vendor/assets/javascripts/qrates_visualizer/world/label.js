@@ -239,7 +239,6 @@
       .stop()
       .to({ _opacity: to }, duration)
       .onUpdate(function() {
-        console.log(self._opacity);
         self._front.current.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
             child.material.opacity = self._opacity;

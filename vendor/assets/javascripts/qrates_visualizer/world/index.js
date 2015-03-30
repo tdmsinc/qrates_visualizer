@@ -74,6 +74,8 @@
     this._renderer.setClearColor(0, 0.0);
 
     this._controls = new THREE.TrackballControls(this._camera, this._parent.el);
+    this._controls.minDistance = 100;
+    this._controls.maxDistance = 700;
     this._controls.target = new THREE.Vector3(0, 0, 0);
     this._controls.handleResize({ left: 0, top: 0, width: opts.width, height: opts.height });
     this._controls.update();
