@@ -122,6 +122,10 @@
     this._flipRotation = 0;
     this._flipTween = new TWEEN.Tween(this);
 
+    this._presets = {};
+    this.registerPresets();
+    this.updateView(5);
+
     this._scene1.add(this._lights);
     this._scene1.add(this._object);
 
@@ -146,13 +150,12 @@
     });
 
 
-    this.cover(0.8, {
-      delay: 1000,
-      duration: 2000
-    });
+    // this.cover(0.8, {
+    //   delay: 1000,
+    //   duration: 2000
+    // });
 
-    this._presets = {};
-    this.registerPresets();
+    this.cover(0.8, { duration: 2000, delay: 1000 });
   }
 
   /**
@@ -605,14 +608,14 @@
         this.setCameraPosition( 0.01, 345, 400, opts, callback); // item detail rotation 4
         this._flip = false;
         this.flip();
-        this.cover(0.8, { duration: 2000 });
+        this.cover(0.0, { duration: 2000 });
         this._controls.reset();
         break;
       case 5:
         this.setCameraPosition( 0.01, 345, 400, opts, callback); // item detail rotation 5
         this._flip = true;
         this.flip();
-        this.cover(0.8, { duration: 2000 });
+        this.cover(0.0, { duration: 2000 });
         this._controls.reset();
         break;
       case 6:
@@ -734,7 +737,7 @@
   World.prototype.registerPreset = function(type, fn) {
     if (this._presets[type]) {
       console.warn('Preset %s is already registered. Overwritten.', type);
-    }
+    }console.log('registerPreset');
     this._presets[type] = fn;
     return this;
   };
