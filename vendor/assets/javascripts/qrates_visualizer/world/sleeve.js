@@ -399,7 +399,7 @@
 
     var tempObj = this._currentObject.clone();
     tempObj.scale = 1.0;
-    
+
     var offset = new THREE.Box3().setFromObject(tempObj).size().x;
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
@@ -413,6 +413,9 @@
         if (updateCallback) updateCallback();
       })
       .onComplete(function() {
+        if (completeCallback) completeCallback();
+      })
+      .onStop(function() {
         if (completeCallback) completeCallback();
       })
       .start();
