@@ -24,21 +24,21 @@
     opts.color = opts.color || 0;
 
     this._materialPresets = [
-      { color: 0x000000, opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true  },
-      { color: 0xFFFFFF, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0xfffd4d, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0xcc0e00, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0xff8c1a, opacity: 1.0, reflectivity:0.05, refractionRatio: 0.98, shininess:  10, metal: true  },
-      { color: 0x00b1dd, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0x593320, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0x41ff9f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0x9EA2A2, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true  },
-      { color: 0x00b94e, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true  },
-      { color: 0xffed00, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true  },
-      { color: 0xc8000e, opacity: 0.8, reflectivity: 0.2, refractionRatio: 1.98, shininess:  60, metal: true  },
-      { color: 0x9a004c, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true  },
-      { color: 0x0040b6, opacity: 0.8, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true  },
-      { color: 0xFFFFFF, opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true  }
+      { color: 0x000000, opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true, bumpScale: 0.02  },
+      { color: 0xFFFFFF, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: 0.02  },
+      { color: 0xfffd4d, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: 0.02  },
+      { color: 0xcc0e00, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: 0.02  },
+      { color: 0xff8c1a, opacity: 1.0, reflectivity:0.05, refractionRatio: 0.98, shininess:  10, metal: true, bumpScale: 0.02  },
+      { color: 0x00b1dd, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: 0.02  },
+      { color: 0x593320, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: 0.02  },
+      { color: 0x41ff9f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: 0.02  },
+      { color: 0x9EA2A2, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: 0.02  },
+      { color: 0x00b94e, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true, bumpScale: 0.02  },
+      { color: 0xffed00, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true, bumpScale: 0.02  },
+      { color: 0xc8000e, opacity: 0.8, reflectivity: 0.2, refractionRatio: 1.98, shininess:  60, metal: true, bumpScale: 0.02  },
+      { color: 0x9a004c, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true, bumpScale: 0.02  },
+      { color: 0x0040b6, opacity: 0.8, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true, bumpScale: 0.02  },
+      { color: 0xFFFFFF, opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true, bumpScale: 0.02  }
     ];
 
     var sizes = ['7', '10', '12'];
@@ -57,7 +57,6 @@
     this.TYPE_SPLATTER = 3;
 
     this._container = container;
-    this._scene = scene;
     this._size = sizes[opts.size - 1];
     this._type = opts.type;
     this._defaultColor = 0x000000;
@@ -81,7 +80,7 @@
       '10': assets['assetsModelVinyl-10'],
       '12': assets['assetsModelVinyl-12'],
     };
-console.log('cubeTexture', cubeTexture);
+
     this._textures = {
       front: new THREE.Texture(),
       back: new THREE.Texture(),
@@ -94,23 +93,17 @@ console.log('cubeTexture', cubeTexture);
         'back-10' : new THREE.Texture(),
         'back-12' : new THREE.Texture()
       },
-      envMap: cubeTexture,
-      bumpTest: new THREE.Texture()
+      envMap: cubeTexture
     };
 
     this.updateTexture(this._textures.front, opts.sideATexture);
-    this.updateTexture(this._textures.back, opts.sideBTexture);
-    this.updateTexture(this._textures.bumpMap['front-7'], opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-7']);
+    this.updateTexture(this._textures.back,  opts.sideBTexture);
+    this.updateTexture(this._textures.bumpMap['front-7'],  opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-7']);
     this.updateTexture(this._textures.bumpMap['front-10'], opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-10']);
     this.updateTexture(this._textures.bumpMap['front-12'], opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-12']);
-    this.updateTexture(this._textures.bumpMap['back-7'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-7']);
+    this.updateTexture(this._textures.bumpMap['back-7'],   opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-7']);
     this.updateTexture(this._textures.bumpMap['back-10'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-10']);
     this.updateTexture(this._textures.bumpMap['back-12'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-12']);
-    this.updateTexture(this._textures.bumpTest,  assets['assetsTextureVinylBumpmapTest']);
-
-    this._textures.bumpTest.wrapS = this._textures.bumpTest.wrapT = THREE.RepeatWrapping;
-    this._textures.bumpTest.repeat.set( 3.1415, 3.1415 );
-    this._textures.bumpTest.offset.x = this._textures.bumpTest.offset.y = 0;
 
     var self = this;
 
@@ -129,6 +122,8 @@ console.log('cubeTexture', cubeTexture);
 
     this._container.add(this._front[this._size]);
 
+    this.setType(this._type);
+
     this.setOpacity(this._materialParams.opacity);
   };
 
@@ -146,7 +141,7 @@ console.log('cubeTexture', cubeTexture);
         child.material = new THREE.MeshPhongMaterial({
           ambient: new THREE.Color(1, 1, 1),
           bumpMap: bumpMapTex,
-          bumpScale: 0.02,
+          bumpScale: self.TYPE_SPLATTER === self._type ? 0.28 : 0.02,
           color: self._color,
           combine: THREE.Multiply,
           envMap: self._textures.envMap,
@@ -244,6 +239,18 @@ console.log('cubeTexture', cubeTexture);
     this._container.remove(this._front[this._size]);
 
     this._size = size;
+
+    var self = this;
+
+    Object.keys(self._front).forEach(function(key) {
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : new THREE.Texture();
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
+    });
+
+    Object.keys(self._back).forEach(function(key) {
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : new THREE.Texture();
+      self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
+    });
 
     this._container.add(this._front[this._size]);
 

@@ -27,7 +27,6 @@
     this.TYPE_PRINT_SPINE = 4;
 
     this._container = container;
-    this._scene = scene;
     this._size = sizes[opts.size - 1];
     this._holed = opts.hole;
     this._type = opts.type;

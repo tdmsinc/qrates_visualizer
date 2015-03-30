@@ -27,7 +27,6 @@
     this.TYPE_PRINT_COLOR      = 3;
 
     this._container = container;
-    this._scene = scene;
     this._size = sizes[opts.size - 1];
     this._largeHole = opts.holeSize;
     this._type = opts.type;
