@@ -23,6 +23,12 @@
   exports.VinylVisualizer = VinylVisualizer;
 
   /**
+   * noop.
+   */
+
+  var noop = function() {};
+
+  /**
    * Constructor.
    *
    * @api public
@@ -189,20 +195,21 @@
   };
 
   /**
-   * @param {Object} opts
+   * @param {Object} opts [optional]
    * @return {VinylVisualizer}
    * @api public
    */
 
   VinylVisualizer.prototype.flip = function(opts) {
     if (!this.world) return this;
+    opts = opts || {};
     this.world.flip(opts);
     return this;
   };
 
   /**
    * @param {Number} degree
-   * @param {Object} opts
+   * @param {Object} opts [optional]
    * @return {VinylVisualizer}
    * @api public
    */
@@ -210,45 +217,49 @@
   VinylVisualizer.prototype.rotateHorizontal =
   VinylVisualizer.prototype.lookAround = function(degree, opts) {
     if (!this.world) return this;
+    opts = opts || {};
     this.world.rotateHorizontal(degree, opts);
     return this;
   };
 
   /**
    * @param {Number} degree
-   * @param {Object} opts
+   * @param {Object} opts [optional]
    * @return {VinylVisualizer}
    * @api public
    */
 
   VinylVisualizer.prototype.rotateVertical = function(degree, opts) {
     if (!this.world) return this;
+    opts = opts || {};
     this.world.rotateVertical(degree, opts);
     return this;
   };
 
   /**
    * @param {Number} value
-   * @param {Object} opts
+   * @param {Object} opts [optional]
    * @return {VinylVisualizer}
    * @api public
    */
 
   VinylVisualizer.prototype.cover = function(value, opts) {
     if (!this.world) return this;
+    opts = opts || {};
     this.world.cover(value, opts);
     return this;
   };
 
   /**
    * @param {Number} step
-   * @param {Object} opts
+   * @param {Object} opts [optional]
    * @return {VinylVisualizer}
    * @api public
    */
 
   VinylVisualizer.prototype.zoom = function(step, opts) {
     if (!this.world) return this;
+    opts = opts || {};
     if (step < 0) {
       this.world.zoomOut(Math.abs(step), opts);
     } else {
@@ -281,7 +292,7 @@
 
   /**
    * @param {Boolean} value
-   * @param {Object} opts
+   * @param {Object} opts [optional]
    * @param {Function} callback
    * @return {VinylVisualizer}
    * @api public
@@ -289,13 +300,15 @@
 
   VinylVisualizer.prototype.vinylVisibility = function(value, opts, callback) {
     if (!this.world) return this;
+    opts = opts || {};
+    callback = callback || noop;
     this.world.setVinylVisibility(value, opts, callback);
     return this;
   };
 
   /**
    * @param {Boolean} value
-   * @param {Object} opts
+   * @param {Object} opts [optional]
    * @param {Function} callback
    * @return {VinylVisualizer}
    * @api public
@@ -303,6 +316,8 @@
 
   VinylVisualizer.prototype.sleeveVisibility = function(value, opts, callback) {
     if (!this.world) return this;
+    opts = opts || {};
+    callback = callback || noop;
     this.world.setSleeveVisibility(value, opts, callback);
     return this;
   };
