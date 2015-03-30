@@ -144,16 +144,9 @@
     });
 
 
-    this._sleeve.setCoveredRatio(0.8, 1, function() {
-      self._scene2.children.forEach(function(child) {
-        if ('container' === child.name) {
-          child.children.forEach(function(_child) {
-            if ('sleeve' === _child.name) {
-              _child.position.copy(self._sleeve.position);
-            }
-          });
-        }
-      });
+    this.cover(0.8, {
+      delay: 1000,
+      duration: 2000
     });
 
     this._presets = {};
@@ -293,7 +286,7 @@
     var gui = this.gui = new window.dat.GUI();
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
-    var outFromSleeveController = gui.add(props, 'covered ratio', 0.0, 1.0);
+    var coveredRatioController = gui.add(props, 'covered ratio', 0.0, 1.0);
     var sleeveVisibilityController = gui.add(props, 'sleeve visibility');
     var vinylVisibilityController = gui.add(props, 'vinyl visibility');
     var captureController = gui.add(temp, 'capture');
@@ -326,8 +319,8 @@
       self._label.setEnableRotate(value);
     });
 
-    outFromSleeveController.onChange(function(value) {
-      self.cover(value);
+    coveredRatioController.onChange(function(value) {
+      self.cover(value, { duration: 2000 });
     });
 
     sleeveVisibilityController.onChange(function(value) {
@@ -480,20 +473,10 @@
     // this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2 + 6 * degrees));
   };
 
-  World.prototype.cover = function(value) {
+  World.prototype.cover = function(value, opts) {
     var self = this;
 
-    this._sleeve.setCoveredRatio(value, 500, function() {
-      self._scene2.children.forEach(function(child) {
-        if ('container' === child.name) {
-          child.children.forEach(function(_child) {
-            if ('sleeve' === _child.name) {
-              _child.position.copy(self._sleeve.position);
-            }
-          });
-        }
-      });
-    });
+    this._sleeve.setCoveredRatio(value, opts);
   };
 
   World.prototype.zoomIn = function(step) {
@@ -587,146 +570,84 @@
     // TODO: rewrite for presets.
     // TODO: clear all tween.
 
-    var self = this;
-
     switch (Number(type)) {
       case 0:
         this.setCameraPosition( 212, 288, 251, opts, callback); // default
         this._flip = true;
         this.flip();
-        this._sleeve.setCoveredRatio(0.8, 2000, function() {
-          self._scene2.children.forEach(function(child) {
-            if ('container' === child.name) {
-              child.children.forEach(function(_child) {
-                if ('sleeve' === _child.name) {
-                  _child.position.copy(self._sleeve.position);
-                }
-              });
-            }
-          });
-        });
-        self._controls.reset();
+        this.cover(0.8, { duration: 2000 });
+        this._controls.reset();
         break;
       case 1:
         this.setCameraPosition(  62,  94, 105, opts, callback); // item detail rotation 1
         this._flip = true;
         this.flip();
-        this._sleeve.setCoveredRatio(0.8, 2000, function() {
-          self._scene2.children.forEach(function(child) {
-            if ('container' === child.name) {
-              child.children.forEach(function(_child) {
-                if ('sleeve' === _child.name) {
-                  _child.position.copy(self._sleeve.position);
-                }
-              });
-            }
-          });
-        });
-        self._controls.reset();
+        this.cover(0.8, { duration: 2000 });
+        this._controls.reset();
         break;
       case 2:
         this.setCameraPosition( 0.01, 365, 10, opts, callback); // item detail rotation 2
         this._flip = true;
         this.flip();
-        this._sleeve.setCoveredRatio(0.8, 2000, function() {
-          self._scene2.children.forEach(function(child) {
-            if ('container' === child.name) {
-              child.children.forEach(function(_child) {
-                if ('sleeve' === _child.name) {
-                  _child.position.copy(self._sleeve.position);
-                }
-              });
-            }
-          });
-        });
-        self._controls.reset();
+        this.cover(0.8, { duration: 2000 });
+        this._controls.reset();
         break;
       case 3:
         this.setCameraPosition( 0.01, 365, 50, opts, callback); // item detail rotation 3
         this._flip = false;
         this.flip();
-        this._sleeve.setCoveredRatio(0.8, 2000, function() {
-          self._scene2.children.forEach(function(child) {
-            if ('container' === child.name) {
-              child.children.forEach(function(_child) {
-                if ('sleeve' === _child.name) {
-                  _child.position.copy(self._sleeve.position);
-                }
-              });
-            }
-          });
-        });
-        self._controls.reset();
+        this.cover(0.8, { duration: 2000 });
+        this._controls.reset();
         break;
       case 4:
         this.setCameraPosition( 0.01, 345, 400, opts, callback); // item detail rotation 4
         this._flip = false;
         this.flip();
-        this._sleeve.setCoveredRatio(0.0, 2000, function() {
-          self._scene2.children.forEach(function(child) {
-            if ('container' === child.name) {
-              child.children.forEach(function(_child) {
-                if ('sleeve' === _child.name) {
-                  _child.position.copy(self._sleeve.position);
-                }
-              });
-            }
-          });
-        });
-        self._controls.reset();
+        this.cover(0.8, { duration: 2000 });
+        this._controls.reset();
         break;
       case 5:
         this.setCameraPosition( 0.01, 345, 400, opts, callback); // item detail rotation 5
         this._flip = true;
         this.flip();
-        this._sleeve.setCoveredRatio(0.0, 2000, function() {
-          self._scene2.children.forEach(function(child) {
-            if ('container' === child.name) {
-              child.children.forEach(function(_child) {
-                if ('sleeve' === _child.name) {
-                  _child.position.copy(self._sleeve.position);
-                }
-              });
-            }
-          });
-        });
-        self._controls.reset();
+        this.cover(0.8, { duration: 2000 });
+        this._controls.reset();
         break;
       case 6:
         this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 7
-        self._controls.reset();
+        this._controls.reset();
         break;
       case 7:
         this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 7
-        self._controls.reset();
+        this._controls.reset();
         break;
       case 8:
         this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 8
-        self._controls.reset();
+        this._controls.reset();
         break;
       case 9:
         this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 9
-        self._controls.reset();
+        this._controls.reset();
         break;
       case 10:
         this.setCameraPosition(   0, 436,   1, opts, callback); // vinyl Side A
-        self._controls.reset();
+        this._controls.reset();
         break;
       case 11:
         this.setCameraPosition(   0, 170,   1, opts, callback); // label Side A
-        self._controls.reset();
+        this._controls.reset();
         break;
       case 12:
         this.setCameraPosition(   0,-170,  -1, opts, callback); // label Side B
-        self._controls.reset();
+        this._controls.reset();
         break;
       case 13:
         this.setCameraPosition(   0, 400,   1, opts, callback); // sleeve Front
-        self._controls.reset();
+        this._controls.reset();
         break;
       case 14:
         this.setCameraPosition(   0,-400,  -1, opts, callback); // sleeve Back
-        self._controls.reset();
+        this._controls.reset();
         break;
       default:
         break;

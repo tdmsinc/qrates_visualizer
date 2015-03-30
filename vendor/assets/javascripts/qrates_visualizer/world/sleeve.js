@@ -322,7 +322,7 @@
 
     var self = this;
 
-    this.setCoveredRatio(this._coveredRatio, 1, null, function() {
+    this.setCoveredRatio(this._coveredRatio, { duration: 1 }, null, function() {
       self._container.add(self._currentObject);
 
       self._opacity = 0;
@@ -393,14 +393,21 @@
     });
   };
 
-  Sleeve.prototype.setCoveredRatio = function(ratio, duration, updateCallback, completeCallback) {
-    var offset = new THREE.Box3().setFromObject(this._currentObject).size().x;
+  Sleeve.prototype.setCoveredRatio = function(ratio, opts, updateCallback, completeCallback) {
+    opts.duration = undefined !== opts.duration ? opts.duration : 500;
+    opts.delay    = undefined !== opts.delay    ? opts.delay    : 0;
+
+    var tempObj = this._currentObject.clone();
+    tempObj.scale = 1.0;
+    
+    var offset = new THREE.Box3().setFromObject(tempObj).size().x;
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
 
     this._positionTween
       .stop()
-      .to({ x: this._coveredRatio * -offset }, duration || 500)
+      .delay(opts.delay)
+      .to({ x: this._coveredRatio * -offset }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         if (updateCallback) updateCallback();
@@ -409,6 +416,8 @@
         if (completeCallback) completeCallback();
       })
       .start();
+
+    tempObj = null;
   };
 
   Sleeve.prototype.setVisibility = function(yn, opts, callback) {
