@@ -22,24 +22,23 @@
     };
 
     opts.color = opts.color || 0;
-    opts.bumpScale = opts.bumpScale || 0.15;
-console.log('opts.bumpScale', opts.bumpScale);
+
     this._materialPresets = [
-      { color: 0x000000, opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0xFFFFFF, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0xfffd4d, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0xcc0e00, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0xff8c1a, opacity: 1.0, reflectivity:0.05, refractionRatio: 0.98, shininess:  10, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0x00b1dd, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0x593320, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0x41ff9f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0x9EA2A2, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0x00b94e, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0xffed00, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0xc8000e, opacity: 0.8, reflectivity: 0.2, refractionRatio: 1.98, shininess:  60, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0x9a004c, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0x0040b6, opacity: 0.8, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true, bumpScale: opts.bumpScale  },
-      { color: 0xFFFFFF, opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true, bumpScale: opts.bumpScale  }
+      { color: 0x000000, opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true },
+      { color: 0xFFFFFF, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+      { color: 0xfffd4d, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+      { color: 0xcc0e00, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+      { color: 0xff8c1a, opacity: 1.0, reflectivity:0.05, refractionRatio: 0.98, shininess:  10, metal: true },
+      { color: 0x00b1dd, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+      { color: 0x593320, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+      { color: 0x41ff9f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+      { color: 0x9EA2A2, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+      { color: 0x00b94e, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
+      { color: 0xffed00, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true },
+      { color: 0xc8000e, opacity: 0.8, reflectivity: 0.2, refractionRatio: 1.98, shininess:  60, metal: true },
+      { color: 0x9a004c, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true },
+      { color: 0x0040b6, opacity: 0.8, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
+      { color: 0xFFFFFF, opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true }
     ];
 
     var sizes = ['7', '10', '12'];
@@ -139,10 +138,18 @@ console.log('opts.bumpScale', opts.bumpScale);
 
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
+        var bumpScale = 0.02;
+
+        if (self.TYPE_COLOR === self._type) {
+          bumpScale = 0.04;
+        } else if (self.TYPE_SPLATTER === self._type) {
+          bumpScale = 0.28;
+        }
+
         child.material = new THREE.MeshPhongMaterial({
           ambient: new THREE.Color(1, 1, 1),
           bumpMap: bumpMapTex,
-          bumpScale: self.TYPE_SPLATTER === self._type ? 0.28 : self._materialParams.bumpScale,
+          bumpScale: bumpScale,
           color: self._color,
           combine: THREE.Multiply,
           envMap: self._textures.envMap,
