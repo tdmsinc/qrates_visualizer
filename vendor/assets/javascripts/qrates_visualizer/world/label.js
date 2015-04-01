@@ -128,7 +128,6 @@
       return;
     }
 
-    tex.anisotropy = 4;
     tex.minFilter = THREE.LinearFilter;
     tex.magFilter = THREE.LinearMipMapLinearFilter;
     tex.image = img;
