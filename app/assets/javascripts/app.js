@@ -43,7 +43,7 @@ var vv = new qvv.VinylVisualizer(el, {
     aspect: window.innerWidth / window.innerHeight,
     near: 1,
     far: 10000,
-    type: 'perspective' // or orthographic
+    type: 'perspective', // or orthographic
   },
   defaults: {
     vinyl: defaults.vinyl,
