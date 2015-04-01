@@ -370,7 +370,7 @@
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         self._camera.lookAt(new THREE.Vector3(0, 0, 0));
-        self._vinyl.setBumpScale(Math.max(Math.abs(self._camera.position.z) / 4000, 0.02));
+        self._vinyl.setBumpScale(Math.max(Math.abs(self._camera.position.z) / 4000, this._vinyl.getBumpScale()));
       })
       .onComplete(function() {
         if (callback) callback();

@@ -145,7 +145,7 @@
         } else if (self.TYPE_SPLATTER === self._type) {
           bumpScale = 0.28;
         }
-
+console.log('bumpScale', bumpScale);
         child.material = new THREE.MeshPhongMaterial({
           ambient: new THREE.Color(1, 1, 1),
           bumpMap: bumpMapTex,
@@ -236,6 +236,10 @@
         }
       });
     });
+  };
+
+  Vinyl.prototype.getBumpScale = function() {
+    return this._front[this._size].children[0].material.bumpScale;
   };
 
   Vinyl.prototype.setSize = function(size) {
