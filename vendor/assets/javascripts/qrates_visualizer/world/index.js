@@ -79,7 +79,6 @@
     this._controls.target = new THREE.Vector3(0, 0, 0);
     this._controls.handleResize({ left: 0, top: 0, width: opts.width, height: opts.height });
     this._controls.update();
-    // this._controls.autoRotate = true;
 
     this.initGui();
     this._lights = this.createLights();
