@@ -29,7 +29,6 @@
 
   function Loader() {
     this.targets = {};
-    THREE.ImageUtils.crossOrigin = '';  // to load texture from cross origin.
   }
 
   /**
@@ -75,6 +74,8 @@
       if ('.png' === ext || '.jpg' === ext) loader = new THREE.ImageLoader(manager);
 
       if (!loader) return;
+
+      loader.crossOrigin = ''; // to load texture from cross origin.
 
       loader.load(path, function(obj) {
         assets[key] = obj;
