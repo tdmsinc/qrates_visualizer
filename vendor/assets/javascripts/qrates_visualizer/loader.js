@@ -29,6 +29,7 @@
 
   function Loader() {
     this.targets = {};
+    THREE.ImageUtils.crossOrigin = '';  // to load texture from cross origin.
   }
 
   /**
