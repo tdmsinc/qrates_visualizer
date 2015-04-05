@@ -44,8 +44,10 @@
       'holed-10': assets['assetsModelSleeveFrontHoled-10'],
       'holed-12': assets['assetsModelSleeveFrontHoled-12'],
       'spine-7' : assets['assetsModelSleeveFrontSpine-7'],
+      'spine-10': assets['assetsModelSleeveFrontSpine-10'],
       'spine-12': assets['assetsModelSleeveFrontSpine-12'],
       'spine-holed-7' : assets['assetsModelSleeveFrontSpineHoled-7'],
+      'spine-holed-10': assets['assetsModelSleeveFrontSpineHoled-10'],
       'spine-holed-12': assets['assetsModelSleeveFrontSpineHoled-12']
     };
 
@@ -58,8 +60,10 @@
       'holed-10': assets['assetsModelSleeveBackHoled-10'],
       'holed-12': assets['assetsModelSleeveBackHoled-12'],
       'spine-7' : assets['assetsModelSleeveBackSpine-7'],
+      'spine-10': assets['assetsModelSleeveBackSpine-10'],
       'spine-12': assets['assetsModelSleeveBackSpine-12'],
       'spine-holed-7' : assets['assetsModelSleeveBackSpineHoled-7'],
+      'spine-holed-10': assets['assetsModelSleeveBackSpineHoled-10'],
       'spine-holed-12': assets['assetsModelSleeveBackSpineHoled-12']
     };
 
@@ -67,6 +71,18 @@
       '7' : assets['assetsModelSleeveSpine-7']  || new THREE.Object3D(),
       '10': assets['assetsModelSleeveSpine-10'] || new THREE.Object3D(),
       '12': assets['assetsModelSleeveSpine-12'] || new THREE.Object3D()
+    };
+
+    this._top = {
+      '7' : assets['assetsModelSleeveTopSpine-7'],
+      '10': assets['assetsModelSleeveTopSpine-10'],
+      '12': assets['assetsModelSleeveTopSpine-12']
+    };
+
+    this._bottom = {
+      '7' : assets['assetsModelSleeveBottomSpine-7'],
+      '10': assets['assetsModelSleeveBottomSpine-10'],
+      '12': assets['assetsModelSleeveBottomSpine-12']
     };
 
     this._textures = {
@@ -106,6 +122,16 @@
       if (self._spine[key]) self._spine[key].name = key;
     });
 
+    Object.keys(this._top).forEach(function(key) {
+      self.initMaterial(self._top[key], null);
+      if (self._top[key]) self._top[key].name = key;
+    });
+
+    Object.keys(this._bottom).forEach(function(key) {
+      self.initMaterial(self._bottom[key], null);
+      if (self._bottom[key]) self._bottom[key].name = key;
+    });
+
 
     this._object = {
       '7'       : new THREE.Object3D(),
@@ -142,26 +168,38 @@
 
     this._object['spine-7'].add(this._front['spine-7']);
     this._object['spine-7'].add(this._back['spine-7']);
-    this._object['spine-7'].add(assets['assetsModelSleeveTopSpine-7']);
-    this._object['spine-7'].add(assets['assetsModelSleeveBottomSpine-7']);
+    this._object['spine-7'].add(this._top['7'].clone());
+    this._object['spine-7'].add(this._bottom['7']);
     this._object['spine-7'].add(this._spine['7']);
+
+    this._object['spine-10'].add(this._front['spine-10']);
+    this._object['spine-10'].add(this._back['spine-10']);
+    this._object['spine-10'].add(this._top['10']);
+    this._object['spine-10'].add(this._bottom['10']);
+    this._object['spine-10'].add(this._spine['10']);
 
     this._object['spine-12'].add(this._front['spine-12']);
     this._object['spine-12'].add(this._back['spine-12']);
-    this._object['spine-12'].add(assets['assetsModelSleeveTopSpine-12']);
-    this._object['spine-12'].add(assets['assetsModelSleeveBottomSpine-12']);
+    this._object['spine-12'].add(this._top['12']);
+    this._object['spine-12'].add(this._bottom['12']);
     this._object['spine-12'].add(this._spine['12']);
 
     this._object['spine-holed-7'].add(this._front['spine-holed-7']);
     this._object['spine-holed-7'].add(this._back['spine-holed-7']);
-    this._object['spine-holed-7'].add(assets['assetsModelSleeveTopSpine-7'].clone());
-    this._object['spine-holed-7'].add(assets['assetsModelSleeveBottomSpine-7'].clone());
+    this._object['spine-holed-7'].add(this._top['7'].clone());
+    this._object['spine-holed-7'].add(this._bottom['7'].clone());
     this._object['spine-holed-7'].add(this._spine['7'].clone());
+
+    this._object['spine-holed-10'].add(this._front['spine-holed-10']);
+    this._object['spine-holed-10'].add(this._back['spine-holed-10']);
+    this._object['spine-holed-10'].add(this._top['10'].clone());
+    this._object['spine-holed-10'].add(this._bottom['10'].clone());
+    this._object['spine-holed-10'].add(this._spine['10'].clone());
 
     this._object['spine-holed-12'].add(this._front['spine-holed-12']);
     this._object['spine-holed-12'].add(this._back['spine-holed-12']);
-    this._object['spine-holed-12'].add(assets['assetsModelSleeveTopSpine-12'].clone());
-    this._object['spine-holed-12'].add(assets['assetsModelSleeveBottomSpine-12'].clone());
+    this._object['spine-holed-12'].add(this._top['12'].clone());
+    this._object['spine-holed-12'].add(this._bottom['10'].clone());
     this._object['spine-holed-12'].add(this._spine['12'].clone());
 
 
@@ -269,6 +307,14 @@
     Object.keys(this._spine).forEach(function(key) {
       var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? self._textures.default : self._textures.spine;
       self.initMaterial(self._spine[key], tex);
+    });
+
+    Object.keys(this._top).forEach(function(key) {
+      self.initMaterial(self._top[key], null);
+    });
+
+    Object.keys(this._bottom).forEach(function(key) {
+      self.initMaterial(self._bottom[key], null);
     });
 
     this._container.remove(this._currentObject);
@@ -385,6 +431,22 @@
     });
 
     Object.keys(self._spine).forEach(function(key) {
+      self._back[key].traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.shininess = shininess;
+        }
+      });
+    });
+
+    Object.keys(self._top).forEach(function(key) {
+      self._back[key].traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.shininess = shininess;
+        }
+      });
+    });
+
+    Object.keys(self._bottom).forEach(function(key) {
       self._back[key].traverse(function(child) {
         if (child instanceof THREE.Mesh) {
           child.material.shininess = shininess;
