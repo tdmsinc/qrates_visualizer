@@ -17,6 +17,12 @@
   exports.Loader = Loader;
 
   /**
+   * Regex for path.
+   */
+
+  var pathRegex = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+
+  /**
    * @param {Object} obj
    * @api public
    */
@@ -62,12 +68,14 @@
     Object.keys(this.targets).forEach(function(key) {
       var loader;
       var path = this.targets[key];
-      var ext = path.split('.')[1];
+      var ext = extname(path);
 
-      if ('obj' === ext) loader = new THREE.OBJLoader(manager);
-      if ('png' === ext || 'jpg' === ext) loader = new THREE.ImageLoader(manager);
+      if ('.obj' === ext) loader = new THREE.OBJLoader(manager);
+      if ('.png' === ext || '.jpg' === ext) loader = new THREE.ImageLoader(manager);
 
       if (!loader) return;
+
+      loader.crossOrigin = ''; // to load texture from cross origin.
 
       loader.load(path, function(obj) {
         assets[key] = obj;
@@ -76,5 +84,14 @@
 
     return this;
   };
+
+  /**
+   * @param {String} path
+   * @return {String}
+   */
+
+  function extname(path) {
+    return pathRegex.exec(path).pop();
+  }
 
 })(this, (this.qvv = (this.qvv || {})));
