@@ -636,8 +636,11 @@
         this._controls.reset();
         break;
       case 9:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 9
-        this._controls.reset();
+        this.setCameraPosition( 148, 201, 175, opts, callback); // for capture rendered image
+        this._flip = true;
+        this.flip();
+        this.cover(0.8, { duration: opts.duration });
+        this._controls.reset(); 
         break;
       case 10:
         this.setCameraPosition(   0, 436,   1, opts, callback); // vinyl Side A
