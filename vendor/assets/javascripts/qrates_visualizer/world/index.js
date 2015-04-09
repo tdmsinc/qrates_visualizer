@@ -582,10 +582,11 @@
 
     switch (Number(type)) {
       case 0:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // default
+        var rate = 0.9;
+        this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, opts, callback); // for capture rendered image
         this._flip = true;
         this.flip();
-        this.cover(0.8, { duration: opts.duration });
+        this.cover(0.5, { duration: opts.duration });
         this._controls.reset();
         break;
       case 1:
