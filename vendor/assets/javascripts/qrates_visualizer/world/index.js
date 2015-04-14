@@ -184,7 +184,7 @@
     lights.add(spotLight2);
 
     var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
-    pointLight1.position.set(25, 10, -2300);
+    pointLight1.position.set(-1000, 1200, -2300);
     lights.add(pointLight1);
 
     var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
@@ -641,7 +641,7 @@
         this._flip = true;
         this.flip();
         this.cover(0.8, { duration: opts.duration });
-        this._controls.reset(); 
+        this._controls.reset();
         break;
       case 10:
         this.setCameraPosition(   0, 436,   1, opts, callback); // vinyl Side A
