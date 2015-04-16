@@ -69,6 +69,7 @@
     }
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
+    this._renderer.setPixelRatio(this._opts.pixelRatio || window.devicePixelRatio || 1);
     this._renderer.setSize(this._width, this._height);
     this._renderer.autoClear = false;
     this._renderer.setClearColor(0, 0.0);
