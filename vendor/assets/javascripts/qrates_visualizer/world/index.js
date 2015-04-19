@@ -69,6 +69,7 @@
     }
 
     this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
+    this._renderer.setPixelRatio(this._opts.pixelRatio || window.devicePixelRatio || 1);
     this._renderer.setSize(this._width, this._height);
     this._renderer.autoClear = false;
     this._renderer.setClearColor(0, 0.0);
@@ -185,7 +186,7 @@
     lights.add(spotLight2);
 
     var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
-    pointLight1.position.set(25, 10, -2300);
+    pointLight1.position.set(-1000, 1200, -2300);
     lights.add(pointLight1);
 
     var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
@@ -584,10 +585,11 @@
 
     switch (Number(type)) {
       case 0:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // default
+        var rate = 0.9;
+        this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, opts, callback); // for capture rendered image
         this._flip = true;
         this.flip();
-        this.cover(0.8, { duration: opts.duration });
+        this.cover(0.5, { duration: opts.duration });
         this._controls.reset();
         break;
       case 1:
@@ -638,7 +640,10 @@
         this._controls.reset();
         break;
       case 9:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 9
+        this.setCameraPosition( 148, 201, 175, opts, callback); // for capture rendered image
+        this._flip = true;
+        this.flip();
+        this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 10:

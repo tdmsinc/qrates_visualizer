@@ -243,7 +243,7 @@
           ambient: 0xFFFFFF,
           color: self.TYPE_BLACK === self._type ? 0x000000 : 0xFFFFFF,
           opacity: 0,
-          shininess: self._glossFinish ? 45 : 15,
+          shininess: self._glossFinish ? 15 : 5,
           side: THREE.DoubleSide,
           specular: 0x363636,
           shading: THREE.SmoothShading,
@@ -412,7 +412,7 @@
 
     self._glossFinish = yn;
 
-    var shininess = self._glossFinish ? 100 : 5;
+    var shininess = self._glossFinish ? 15 : 5;
 
     Object.keys(self._front).forEach(function(key){
       self._front[key].traverse(function(child) {

@@ -33,6 +33,7 @@ var el = document.querySelector('.vinyl-visualizer-container');
 var vv = new qvv.VinylVisualizer(el, {
   width: window.innerWidth,
   height: window.innerHeight,
+  pixelRatio: window.devicePixelRatio || 1,
   renderer: {
     antialias: true,
     alpha: true,

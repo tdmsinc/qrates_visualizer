@@ -43,6 +43,7 @@ VinylVisualizer のコンストラクタ。
 - `opts:Object`
   - `opts.width:Number`: 描画領域の幅。
   - `opts.height:Number`: 描画領域の高さ。
+  - `opts.pixelRatio:Number`: ピクセル比率。省略時は `window.devicePixelRatio` を利用します。
   - `opts.renderer:Object`: レンダラの初期値。
     - `opts.renderer.antialias:Boolean`: アンチエイリアス有効化。
     - `opts.renderer.alpha:Boolean`: アルファブレンディング有効化。
