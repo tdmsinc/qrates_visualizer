@@ -64,21 +64,28 @@
     this._color = this._type === this.TYPE_SPLATTER ? 0xffffff : this._materialParams.color;
     this._opacity = 0;
     this._rpm = opts.speed;
-    this._heavy = opts.heavy;
+    // this._heavy = opts.heavy;
+    this._heavy = true;
     this._enableRotate = false;
     this._opacityTweenDuration = 300;
     this._clock = new THREE.Clock();
 
     this._front = {
-      '7' : assets['assetsModelVinyl-7'],
-      '10': assets['assetsModelVinyl-10'],
-      '12': assets['assetsModelVinyl-12'],
+      '7'       : assets['assetsModelVinyl-7'],
+      '10'      : assets['assetsModelVinyl-10'],
+      '12'      : assets['assetsModelVinyl-12'],
+      'heavy-7' : assets['assetsModelVinylHeavy-7'],
+      'heavy-10': assets['assetsModelVinylHeavy-10'],
+      'heavy-12': assets['assetsModelVinylHeavy-12']
     };
 
     this._back = {
-      '7' : assets['assetsModelVinyl-7'],
-      '10': assets['assetsModelVinyl-10'],
-      '12': assets['assetsModelVinyl-12'],
+      '7'       : assets['assetsModelVinyl-7'],
+      '10'      : assets['assetsModelVinyl-10'],
+      '12'      : assets['assetsModelVinyl-12'],
+      'heavy-7' : assets['assetsModelVinylHeavy-7'],
+      'heavy-10': assets['assetsModelVinylHeavy-10'],
+      'heavy-12': assets['assetsModelVinylHeavy-12']
     };
 
     this._textures = {
@@ -120,7 +127,13 @@
 
     this._opacityTween = new TWEEN.Tween(this);
 
-    this._container.add(this._front[this._size]);
+    if (this._heavy) {
+      this._container.add(this._front['heavy-' + this._size]);
+      console.log('heavy');
+    } else {
+      this._container.add(this._front[this._size]);
+    }
+    
 
     this.setType(this._type);
 
@@ -145,13 +158,13 @@
         } else if (self.TYPE_SPLATTER === self._type) {
           bumpScale = 0.28;
         }
-console.log('bumpScale', bumpScale);
+
         child.material = new THREE.MeshPhongMaterial({
           ambient: new THREE.Color(1, 1, 1),
           bumpMap: bumpMapTex,
           bumpScale: bumpScale,
           color: self._color,
-          combine: THREE.Multiply,
+          // combine: THREE.Multiply,
           envMap: self._textures.envMap,
           map: self.TYPE_SPLATTER === self._type ? tex : null,
           needsUpdate: true,
@@ -249,6 +262,7 @@ console.log('bumpScale', bumpScale);
     }
 
     this._container.remove(this._front[this._size]);
+    this._container.remove(this._front['heavy-' + this._size]);
 
     this._size = size;
 
@@ -264,7 +278,11 @@ console.log('bumpScale', bumpScale);
       self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
     });
 
-    this._container.add(this._front[this._size]);
+    if (this._heavy) {
+      this._container.add(this._front['heavy-' + this._size]);
+    } else {
+      this._container.add(this._front[this._size]);
+    }
 
     this._opacity = 0;
     this.setOpacity(this._materialParams.opacity);
@@ -280,9 +298,9 @@ console.log('bumpScale', bumpScale);
     if (this.TYPE_SPLATTER === type) {
       this._materialParams = this._materialPresets[1];
     } else if (this.TYPE_COLOR === type) {
-      this._materialPresets.forEach(function(item) {
-        if (item.color === this._color) {
-          this._materialParams = item;
+      this._materialPresets.forEach(function(params) {
+        if (params.color === this._color) {
+          this._materialParams = params;
         }
       });
     } else {
@@ -357,6 +375,36 @@ console.log('bumpScale', bumpScale);
 
   Vinyl.prototype.setRPM = function(rpm) {
     this._rpm = rpm;
+  };
+
+  Vinyl.prototype.setHeavy = function(yn) {
+    if (this._heavy === yn) {
+      return;
+    }
+
+    this._heavy = yn;
+
+    var self = this;
+
+    Object.keys(self._front).forEach(function(key) {
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : new THREE.Texture();
+      self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
+    });
+
+    Object.keys(self._back).forEach(function(key) {
+      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : new THREE.Texture();
+      self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
+    });
+
+    if (this._heavy) {
+      console.log('heavy');
+      this._container.remove(this._front[this._size]);
+      this._container.add(this._front['heavy-' + this._size]);
+    } else {
+      console.log('not heavy');
+      this._container.remove(this._front['heavy-' + this._size]);
+      this._container.add(this._front[this._size]);
+    }
   };
 
   Vinyl.prototype.setVisibility = function(yn, opts, callback) {

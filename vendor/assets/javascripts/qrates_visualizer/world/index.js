@@ -83,7 +83,6 @@
     this._controls.update();
     this._controls.enabled = this._opts.camera.control;
 
-    this.initGui();
     this._lights = this.createLights();
 
     var shadowTexture = this.shadowTexture = new THREE.Texture();
@@ -149,6 +148,8 @@
         });
       }
     });
+
+    this.initGui();
 
 
     // this.cover(0.8, {
@@ -233,6 +234,7 @@
   World.prototype.initGui = function() {
     if (!window.dat) {
       console.warn('dat.GUI is not loaded');
+      this._sleeve.setCoveredRatio(0.8, { duration: 1 });
       return false;
     }
 
@@ -855,6 +857,7 @@
 
   World.prototype.onVinylHeavyChanged = function(value) {
     console.log('World::onVinylHeavyChanged', value);
+    this._vinyl.setHeavy(value);
   };
 
   World.prototype.onVinylSpeedChanged = function(value) {
