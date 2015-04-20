@@ -419,10 +419,9 @@
       return;
     }
 
+    this._glossFinish = '0' === yn ? false : true;
+
     var self = this;
-
-    self._glossFinish = yn;
-
     var shininess = self._glossFinish ? 15 : 5;
 
     Object.keys(self._front).forEach(function(key){
