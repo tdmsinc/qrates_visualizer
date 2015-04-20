@@ -343,8 +343,7 @@
 
     this._container.add(this._currentObject);
 
-    this._opacity = 0;
-    this.setOpacity(1.0);
+    this.setOpacity(1.0, 0);
   };
 
   Sleeve.prototype.setSize = function(size) {
@@ -378,8 +377,7 @@
     this.setCoveredRatio(this._coveredRatio, { duration: 1 }, null, function() {
       self._container.add(self._currentObject);
 
-      self._opacity = 0;
-      self.setOpacity(1.0);
+      self.setOpacity(1.0, 0);
     });
   };
 
