@@ -261,10 +261,6 @@
       return;
     }
 
-    if (size === this._size) {
-      return;
-    }
-
     this._container.remove(this._front[this._size]);
     this._container.remove(this._front['heavy-' + this._size]);
 

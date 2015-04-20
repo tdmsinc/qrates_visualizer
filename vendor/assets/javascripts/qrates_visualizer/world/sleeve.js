@@ -293,6 +293,7 @@
       return;
     }
 
+    var lastType = this._type;
     this._type = type;
 
     if (this.TYPE_BLACK === this._type || this.TYPE_WHITE === this._type) {
@@ -350,10 +351,6 @@
   Sleeve.prototype.setSize = function(size) {
     if (!size) {
       console.error('[Sleeve::setSize] no size specified');
-      return;
-    }
-
-    if (size === this._size) {
       return;
     }
 

@@ -140,10 +140,6 @@
       return;
     }
 
-    if (size === this._size) {
-      return;
-    }
-
     this._container.remove(this._front.current);
     this._container.remove(this._back.current);
 
