@@ -292,24 +292,27 @@
     var lastType = this._type;
     this._type = type;
 
+    var isOpaque = false;
+
     if (this.TYPE_BLACK === this._type || this.TYPE_WHITE === this._type) {
       this._glossFinish = false;
+      isOpaque = true;
     }
 
     var self = this;
 
     Object.keys(this._front).forEach(function(key) {
-      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? self._textures.default : self._textures.front;
+      var tex = isOpaque ? self._textures.default : self._textures.front;
       self.initMaterial(self._front[key], tex);
     });
 
     Object.keys(this._back).forEach(function(key) {
-      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? self._textures.default : self._textures.back;
+      var tex = isOpaque ? self._textures.default : self._textures.back;
       self.initMaterial(self._back[key], tex);
     });
 
     Object.keys(this._spine).forEach(function(key) {
-      var tex = self.TYPE_BLACK === self._type || self.TYPE_WHITE === type ? self._textures.default : self._textures.spine;
+      var tex = isOpaque ? self._textures.default : self._textures.spine;
       self.initMaterial(self._spine[key], tex);
     });
 
@@ -412,6 +415,10 @@
   };
 
   Sleeve.prototype.setGlossFinish = function(yn) {
+    if (this.TYPE_BLACK === this._type || this.TYPE_WHITE === this._type) {
+      return;
+    }
+
     var self = this;
 
     self._glossFinish = yn;
