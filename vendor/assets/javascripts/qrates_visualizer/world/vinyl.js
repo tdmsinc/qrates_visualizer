@@ -293,10 +293,6 @@
       return;
     }
 
-    if (type === this._type) {
-      return;
-    }
-
     this._type = type;
 
     if (this.TYPE_SPLATTER === type) {

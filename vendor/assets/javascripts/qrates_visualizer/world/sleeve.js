@@ -289,10 +289,6 @@
       return;
     }
 
-    if (type === this._type) {
-      return;
-    }
-
     var lastType = this._type;
     this._type = type;
 
