@@ -140,6 +140,10 @@
       return;
     }
 
+    if (size === this._size) {
+      return;
+    }
+
     this._container.remove(this._front.current);
     this._container.remove(this._back.current);
 
@@ -211,6 +215,10 @@
 
   Label.prototype.setType = function(type) {
     if (-1 === [this.TYPE_WHITE, this.TYPE_PRINT_MONOCHROME, this.TYPE_PRINT_COLOR].indexOf(type)) {
+      return;
+    }
+
+    if (type === this._type) {
       return;
     }
 

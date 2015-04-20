@@ -261,6 +261,10 @@
       return;
     }
 
+    if (size === this._size) {
+      return;
+    }
+
     this._container.remove(this._front[this._size]);
     this._container.remove(this._front['heavy-' + this._size]);
 
@@ -290,6 +294,10 @@
 
   Vinyl.prototype.setType = function(type) {
     if (!type) {
+      return;
+    }
+
+    if (type === this._type) {
       return;
     }
 
