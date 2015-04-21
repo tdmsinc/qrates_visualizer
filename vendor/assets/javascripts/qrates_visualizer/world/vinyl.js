@@ -64,8 +64,7 @@
     this._color = this._type === this.TYPE_SPLATTER ? 0xffffff : this._materialParams.color;
     this._opacity = 0;
     this._rpm = opts.speed;
-    // this._heavy = opts.heavy;
-    this._heavy = true;
+    this._heavy = opts.heavy;
     this._enableRotate = false;
     this._opacityTweenDuration = 300;
     this._clock = new THREE.Clock();
@@ -129,7 +128,6 @@
 
     if (this._heavy) {
       this._container.add(this._front['heavy-' + this._size]);
-      console.log('heavy');
     } else {
       this._container.add(this._front[this._size]);
     }
