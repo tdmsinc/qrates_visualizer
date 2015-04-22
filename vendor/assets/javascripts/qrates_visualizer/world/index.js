@@ -520,6 +520,8 @@
 
   World.prototype.resize = function(width, height) {
     console.log('World::resize');
+    this.stopRender();
+
     this._width = width;
     this._height = height;
     // this._camera.aspect = width / height;
@@ -534,7 +536,7 @@
       height: this._height
     });
 
-    this.draw();
+    this.startRender();
   };
 
   /**
