@@ -295,12 +295,6 @@
 
     if (this.TYPE_SPLATTER === type) {
       this._materialParams = this._materialPresets[1];
-    } else if (this.TYPE_COLOR === type) {
-      this._materialPresets.forEach(function(params) {
-        if (params.color === this._color) {
-          this._materialParams = params;
-        }
-      });
     } else {
       this._materialParams = this._materialPresets[0];
     }
