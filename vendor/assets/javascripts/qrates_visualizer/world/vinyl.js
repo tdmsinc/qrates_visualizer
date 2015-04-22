@@ -320,7 +320,7 @@
   Vinyl.prototype.setColor = function(index) {
     this._materialParams = this._materialPresets[index];
     this._color = this.TYPE_SPLATTER === this._type ? 0xFFFFFF : this._materialParams.color;
-    this._opacity = this.TYPE_SPLATTER === this._type ? 0.8 : 1.0;
+    this._opacity = this.TYPE_SPLATTER === this._type ? 0.8 : this._materialParams.opacity;
 
     var self = this;
 
