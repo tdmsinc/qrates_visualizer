@@ -19,7 +19,7 @@
       size: 1,
       speed: 45
     };
-
+opts.type = 3;
     var sizes = ['7', '10', '12'];
 
     this.TYPE_WHITE            = 1;
@@ -68,8 +68,8 @@
     // this._currentObject.add(this._back[this._size]);
 
     this.updateTexture(this._textures.default, assets['assetsTextureLabelDefault']);
-    this.updateTexture(this._textures.front, this.TYPE_WHITE === this._type ? assets['assetsTextureLabelDefault'] : opts.sideATexture);
-    this.updateTexture(this._textures.back,  this.TYPE_WHITE === this._type ? assets['assetsTextureLabelDefault'] : opts.sideBTexture);
+    this.updateTexture(this._textures.front, this.TYPE_WHITE === this._type ? assets['assetsTextureLabelDefault'] : opts.sideATexture || assets['assetsTextureLabelDefault']);
+    this.updateTexture(this._textures.back,  this.TYPE_WHITE === this._type ? assets['assetsTextureLabelDefault'] : opts.sideBTexture || assets['assetsTextureLabelDefault']);
 
     this.initMaterial(this._front.current, this._textures.front);
     this.initMaterial(this._back.current, this._textures.back);
