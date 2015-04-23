@@ -95,9 +95,9 @@
     var self = this;
 
     if (this.TYPE_PRINT === this._type || this.TYPE_PRINT_SPINE === this._type) {
-      this.updateTexture(this._textures.front, opts.frontTexture);
-      this.updateTexture(this._textures.back,  opts.backTexture);
-      this.updateTexture(this._textures.spine, opts.spineTexture);
+      this.updateTexture(this._textures.front, opts.frontTexture || assets['assetsTextureSleeveDefault']);
+      this.updateTexture(this._textures.back,  opts.backTexture  || assets['assetsTextureSleeveDefault']);
+      this.updateTexture(this._textures.spine, opts.spineTexture || assets['assetsTextureSleeveDefault']);
     } else {
       Object.keys(this._textures).forEach(function(key) {
         self.updateTexture(self._textures[key], assets['assetsTextureSleeveDefault']);
@@ -241,7 +241,7 @@
         child.material = new THREE.MeshPhongMaterial({
           map: tex,
           ambient: 0xFFFFFF,
-          color: self.TYPE_BLACK === self._type ? 0x000000 : 0xFFFFFF,
+          color: self.TYPE_BLACK === self._type ? 0 : 0xffffff,
           opacity: 0,
           shininess: self._glossFinish ? 15 : 5,
           side: THREE.DoubleSide,
