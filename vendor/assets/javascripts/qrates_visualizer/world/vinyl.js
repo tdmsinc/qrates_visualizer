@@ -60,14 +60,23 @@
     this._size = sizes[opts.size - 1];
     this._type = opts.type;
     this._defaultColor = 0x000000;
-    this._materialParams = this._materialPresets[opts.color];
-    this._color = this._type === this.TYPE_SPLATTER ? 0xffffff : this._materialParams.color;
     this._opacity = 0;
     this._rpm = opts.speed;
     this._heavy = opts.heavy;
     this._enableRotate = false;
     this._opacityTweenDuration = 300;
     this._clock = new THREE.Clock();
+
+    if (this._type === this.TYPE_SPLATTER) {
+      this._materialParams = this._materialPresets[1];
+      this._color = 0xffffff;
+    } else if (this._type === this.TYPE_COLOR) {
+      this._materialParams = this._materialPresets[opts.color];
+      this._color = this._materialParams.color;
+    } else {
+      this._materialParams = this._materialPresets[0];
+      this._color = 0;
+    }
 
     this._front = {
       '7'       : assets['assetsModelVinyl-7'],
@@ -111,16 +120,6 @@
     this.updateTexture(this._textures.bumpMap['back-10'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-10']);
     this.updateTexture(this._textures.bumpMap['back-12'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-12']);
 
-    var self = this;
-
-    Object.keys(self._front).forEach(function(key) {
-      self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap['front-' + key]);
-    });
-
-    Object.keys(self._back).forEach(function(key) {
-      self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap['back-' + key]);
-    });
-
     this._position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
 
@@ -131,9 +130,16 @@
     } else {
       this._container.add(this._front[this._size]);
     }
-    
 
-    this.setType(this._type);
+    var self = this;
+
+    Object.keys(self._front).forEach(function(key) {
+      self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap['front-' + key]);
+    });
+
+    Object.keys(self._back).forEach(function(key) {
+      self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap['back-' + key]);
+    });
 
     this.setOpacity(this._materialParams.opacity);
   };
@@ -162,7 +168,7 @@
           bumpMap: bumpMapTex,
           bumpScale: bumpScale,
           color: self._color,
-          // combine: THREE.Multiply,
+          combine: THREE.Multiply,
           envMap: self._textures.envMap,
           map: self.TYPE_SPLATTER === self._type ? tex : null,
           needsUpdate: true,
