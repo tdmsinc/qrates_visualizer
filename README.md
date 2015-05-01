@@ -1,5 +1,6 @@
 # QratesVisualizer
 
+
 The vinyl visualizer for QRATES.
 
 ## Installation
