@@ -152,6 +152,9 @@
 
     this.initGui();
 
+    if (opts.defaults.hasOwnProperty('view')) {
+      this.updateView(opts.defaults.view);
+    }
 
     // this.cover(0.8, {
     //   delay: 1000,
