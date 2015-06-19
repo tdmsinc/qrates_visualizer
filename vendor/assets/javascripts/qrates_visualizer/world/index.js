@@ -153,7 +153,7 @@
     this.initGui();
 
     if (opts.defaults.hasOwnProperty('view')) {
-      this.updateView(opts.defaults.view);
+      this.updateView(opts.defaults.view, {duration:0});
     }
 
     // this.cover(0.8, {
