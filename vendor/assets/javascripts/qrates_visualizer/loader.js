@@ -77,9 +77,12 @@
 
       loader.crossOrigin = ''; // to load texture from cross origin.
 
-      loader.load(path, function(obj) {
+      var obj = loader.load(path, function(obj) {
         assets[key] = obj;
       });
+      if (obj !== undefined) {
+        assets[key] = obj;
+      }
     }, this);
 
     return this;
