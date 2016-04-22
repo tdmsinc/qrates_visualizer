@@ -18,6 +18,11 @@ body {
   cursor: pointer;
 }
 
+canvas {
+  border: 1px solid red;
+  margin-left: 200px;
+}
+
 form {
   padding: 1em;
   width: 18em;

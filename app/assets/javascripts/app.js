@@ -1,7 +1,7 @@
 
 //= require qrates_visualizer
 //= require_self
-
+var canvas_width = window.innerWidth, canvas_height = window.innerHeight;
 //
 // defaults
 //
@@ -31,8 +31,8 @@ var defaults = {
 
 var el = document.querySelector('.vinyl-visualizer-container');
 var vv = new qvv.VinylVisualizer(el, {
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: canvas_width,
+  height: canvas_height,
   pixelRatio: window.devicePixelRatio || 1,
   renderer: {
     antialias: true,
@@ -41,7 +41,7 @@ var vv = new qvv.VinylVisualizer(el, {
   },
   camera: {
     fov: 35,
-    aspect: window.innerWidth / window.innerHeight,
+    aspect: canvas_width / canvas_height,
     near: 1,
     far: 10000,
     type: 'perspective', // or orthographic
@@ -87,6 +87,17 @@ vv.on('ready', function() {
   });
   vm.$watch('visualizer.view', function(value) {
     vv.view(value, { transition: vm.$get('visualizer.transition') });
+  });
+  vm.$watch('visualizer.capture', function(value) {
+    var opts = {
+      canvas_width: 1280,
+      canvas_height: 794,
+      duration: 0
+    };
+    vv.captureByType(value, opts, function(error, image){
+      var bannerImg = document.getElementById('tableBanner');
+      bannerImg.src = image.src;
+    });
   });
 
   vm.$watch('vinyl.type', function(value) { vv.vinyl.type(value); });

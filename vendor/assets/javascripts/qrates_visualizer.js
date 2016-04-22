@@ -125,15 +125,14 @@
   };
 
   /**
-   * @param {Object} opts
    * @param {Function} callback
    * @return {VinylVisualizer}
    * @api public
    */
 
-  VinylVisualizer.prototype.capture = function(opts, callback) {
+  VinylVisualizer.prototype.capture = function(callback) {
     if (!this.world) return this;
-    this.world.capture(opts, callback);
+    this.world.capture(callback);
     return this;
   };
 
@@ -319,6 +318,21 @@
     opts = opts || {};
     callback = callback || noop;
     this.world.setSleeveVisibility(value, opts, callback);
+    return this;
+  };
+
+  /**
+   * @param type
+   * @param opts
+   * @param callback
+   * @returns {VinylVisualizer}
+   */
+  
+  VinylVisualizer.prototype.captureByType = function(type, opts, callback) {
+    if (!this.world) return this;
+    opts = opts || {};
+    callback = callback || noop;
+    this.world.captureByType(type, opts, callback);
     return this;
   };
 

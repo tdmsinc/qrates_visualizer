@@ -1,3 +1,4 @@
+img src="" id="tableBanner"
 .vinyl-visualizer-container(
   data-assets-texture-shadow=asset_path('qrates_visualizer/shadow.png')
 
@@ -75,6 +76,14 @@
 form.show
 
   p.action-show toggle
+  h2 Capture types
+  p
+    select number="" v-model="visualizer.capture"
+      option disabled="" ▾ view
+      option value="0" type 1
+      option value="1" type 2
+      option value="2" type 3
+      option value="3" type 4
 
   h1 Visualizer options
   p

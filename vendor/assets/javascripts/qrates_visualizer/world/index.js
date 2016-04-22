@@ -301,9 +301,9 @@
     var vinylVisibilityController = gui.add(props, 'vinyl visibility');
     var captureController = gui.add(temp, 'capture');
     var zoomController = gui.add(props, 'zoom', 0, 400);
-    var cameraXController = gui.add(cameraProps, 'x', -1000, 1000);
-    var cameraYController = gui.add(cameraProps, 'y', -1000, 1000);
-    var cameraZController = gui.add(cameraProps, 'z', -1000, 1000);
+    var cameraXController = gui.add(cameraProps, 'x', -1000.0, 1000.0);
+    var cameraYController = gui.add(cameraProps, 'y', -1000.0, 1000.0);
+    var cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
     var bumpScaleController = gui.add(props, 'bumpScale', 0, 1.0);
 
     gui.add(this, 'flip');
@@ -511,9 +511,8 @@
     }
   };
 
-  World.prototype.capture = function(opts, callback) {
+  World.prototype.capture = function(callback) {
     console.log('World::capture');
-
     var image = new Image();
     image.src = this._renderer.domElement.toDataURL('image/png');
     image.onload = function() {
@@ -569,19 +568,8 @@
     console.log('World::updateView', type);
 
     opts = opts || {
-      duration: 2000,
+      duration: 2000
     };
-
-    // call preset
-
-    if (!this._presets[type]) {
-      console.warn('Preset %s is not registered.', type);
-      // return this;
-    }
-    if (this._presets[type]) {
-      var preset = this._presets[type].call(this);
-      console.log(preset);
-    }
 
     // TODO: rewrite for presets.
     // TODO: clear all tween.
@@ -955,5 +943,77 @@
     console.log('World::onSleeveSpineTextureChanged');
 
     this._sleeve.setTexture(null, null, value);
+  };
+
+  /**
+   *
+   * @param type
+   * @param opts
+   * @param callback
+   */
+  World.prototype.captureByType = function(type, opts, callback) {
+    console.log('World::captureByType');
+    this.resize(opts.canvas_width, opts.canvas_height);
+    this._sleeve.setHole(true);
+    var scope = this;
+    switch (type) {
+      case 0:
+        var rate = 0.9;
+        this.setPerspective();
+        this.setSleeveVisibility(true);
+        this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, {duration:opts.duration});
+        this.cover(0.5, { duration: opts.duration });
+        this._controls.target = new THREE.Vector3(-30, 0, 24);
+        this._controls.update();
+        setTimeout(function() {
+          scope.capture(function(error, image){
+            callback(error, image);
+          });
+        }, 1000);
+        break;
+      case 1:
+        var x = -75;
+        this.setOrthographic();
+        this.setSleeveVisibility(true);
+        this._flip = true;
+        this.cover(0.8, { duration: opts.duration });
+        this._camera.position.set(x, 365, 10);
+        this._controls.target = new THREE.Vector3(x, 0, 0);
+        this._controls.update();
+        setTimeout(function() {
+          scope.capture(function(error, image){
+            callback(error, image);
+          });
+        }, 1000);
+        break;
+      case 2:
+        this.setOrthographic();
+        this.setSleeveVisibility(true);
+        this._flip = true;
+        this.cover(0, { duration: opts.duration });
+        this._camera.position.set(0, 365, 10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._controls.update();
+        setTimeout(function() {
+          scope.capture(function(error, image){
+            callback(error, image);
+          });
+        }, 1000);
+        break;
+      case 3:
+        this.setOrthographic();
+        this.setSleeveVisibility(false);
+        this._flip = true;
+        this.cover(0, { duration: opts.duration });
+        this._camera.position.set(0, 365, 10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this.zoomIn(10);
+        this._controls.update();
+        setTimeout(function() {
+          scope.capture(function(error, image){
+            callback(error, image);
+          });
+        }, 1000);
+    }
   };
 })(this, (this.qvv = (this.qvv || {})));
