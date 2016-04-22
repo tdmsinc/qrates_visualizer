@@ -664,6 +664,44 @@
         this.cover(0.0, { duration: opts.duration });
         this._controls.reset();
         break;
+      case 15:
+        var rate = 0.9;
+        this.setPerspective();
+        this.setSleeveVisibility(true);
+        this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, {duration:opts.duration});
+        this.cover(0.5, { duration: opts.duration });
+        this._controls.target = new THREE.Vector3(-30, 0, 24);
+        this._controls.update();
+        break;
+      case 16:
+        var x = -75;
+        this.setOrthographic();
+        this.setSleeveVisibility(true);
+        this._flip = true;
+        this.cover(0.8, { duration: opts.duration });
+        this._camera.position.set(x, 365, 10);
+        this._controls.target = new THREE.Vector3(x, 0, 0);
+        this._controls.update();
+        break;
+      case 17:
+        this.setOrthographic();
+        this.setSleeveVisibility(true);
+        this._flip = true;
+        this.cover(0, { duration: opts.duration });
+        this._camera.position.set(0, 365, 10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._controls.update();
+        break;
+      case 18:
+        this.setOrthographic();
+        this.setSleeveVisibility(false);
+        this._flip = true;
+        this.cover(0, { duration: opts.duration});
+        this._camera.position.set(0, 365, 10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this.zoomIn(10);
+        this._controls.update();
+        break;
       default:
         break;
     }
@@ -941,79 +979,6 @@
 
   World.prototype.onSleeveSpineTextureChanged = function(value) {
     console.log('World::onSleeveSpineTextureChanged');
-
     this._sleeve.setTexture(null, null, value);
-  };
-
-  /**
-   *
-   * @param type
-   * @param opts
-   * @param callback
-   */
-  World.prototype.captureByType = function(type, opts, callback) {
-    console.log('World::captureByType');
-    this.resize(opts.canvas_width, opts.canvas_height);
-    this._sleeve.setHole(true);
-    var scope = this;
-    switch (type) {
-      case 0:
-        var rate = 0.9;
-        this.setPerspective();
-        this.setSleeveVisibility(true);
-        this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, {duration:opts.duration});
-        this.cover(0.5, { duration: opts.duration });
-        this._controls.target = new THREE.Vector3(-30, 0, 24);
-        this._controls.update();
-        setTimeout(function() {
-          scope.capture(function(error, image){
-            callback(error, image);
-          });
-        }, 1000);
-        break;
-      case 1:
-        var x = -75;
-        this.setOrthographic();
-        this.setSleeveVisibility(true);
-        this._flip = true;
-        this.cover(0.8, { duration: opts.duration });
-        this._camera.position.set(x, 365, 10);
-        this._controls.target = new THREE.Vector3(x, 0, 0);
-        this._controls.update();
-        setTimeout(function() {
-          scope.capture(function(error, image){
-            callback(error, image);
-          });
-        }, 1000);
-        break;
-      case 2:
-        this.setOrthographic();
-        this.setSleeveVisibility(true);
-        this._flip = true;
-        this.cover(0, { duration: opts.duration });
-        this._camera.position.set(0, 365, 10);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._controls.update();
-        setTimeout(function() {
-          scope.capture(function(error, image){
-            callback(error, image);
-          });
-        }, 1000);
-        break;
-      case 3:
-        this.setOrthographic();
-        this.setSleeveVisibility(false);
-        this._flip = true;
-        this.cover(0, { duration: opts.duration });
-        this._camera.position.set(0, 365, 10);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
-        this.zoomIn(10);
-        this._controls.update();
-        setTimeout(function() {
-          scope.capture(function(error, image){
-            callback(error, image);
-          });
-        }, 1000);
-    }
   };
 })(this, (this.qvv = (this.qvv || {})));

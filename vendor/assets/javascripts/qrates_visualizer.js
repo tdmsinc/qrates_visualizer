@@ -321,19 +321,4 @@
     return this;
   };
 
-  /**
-   * @param type
-   * @param opts
-   * @param callback
-   * @returns {VinylVisualizer}
-   */
-  
-  VinylVisualizer.prototype.captureByType = function(type, opts, callback) {
-    if (!this.world) return this;
-    opts = opts || {};
-    callback = callback || noop;
-    this.world.captureByType(type, opts, callback);
-    return this;
-  };
-
 })(this, (this.qvv = (this.qvv || {})));
