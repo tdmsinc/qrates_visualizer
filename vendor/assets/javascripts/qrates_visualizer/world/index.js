@@ -339,8 +339,15 @@
     });
 
     vinylVisibilityController.onChange(function(value) {
-      self.setVinylVisibility(value, null, function() {
-      });
+      // self.setVinylVisibility(value, null, function() {
+      // });
+      var rate = 0.9;
+      self.setPerspective();
+      self.setSleeveVisibility(true);
+      self.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, {duration:0});
+      self.cover(0.5, { duration: 0 });
+      self._controls.target = new THREE.Vector3(value, 0, self._controls.target.z);
+      self._controls.update();
     });
 
     zoomController.onChange(function(value) {
@@ -699,7 +706,7 @@
         this.cover(0, { duration: opts.duration});
         this._camera.position.set(0, 365, 10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
-        this.zoomIn(10);
+        this._camera.setZoom(320);
         this._controls.update();
         break;
       default:
