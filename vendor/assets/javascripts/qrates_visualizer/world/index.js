@@ -339,15 +339,8 @@
     });
 
     vinylVisibilityController.onChange(function(value) {
-      // self.setVinylVisibility(value, null, function() {
-      // });
-      var rate = 0.9;
-      self.setPerspective();
-      self.setSleeveVisibility(true);
-      self.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, {duration:0});
-      self.cover(0.5, { duration: 0 });
-      self._controls.target = new THREE.Vector3(value, 0, self._controls.target.z);
-      self._controls.update();
+      self.setVinylVisibility(value, null, function() {
+      });
     });
 
     zoomController.onChange(function(value) {
