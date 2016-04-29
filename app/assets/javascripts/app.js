@@ -94,10 +94,7 @@ vv.on('ready', function() {
       canvas_height: 794,
       duration: 0
     };
-    vv.captureByType(value, opts, function(error, image){
-      var bannerImg = document.getElementById('tableBanner');
-      bannerImg.src = image.src;
-    });
+    vv.view(value, {duration:0});
   });
 
   vm.$watch('vinyl.type', function(value) { vv.vinyl.type(value); });
