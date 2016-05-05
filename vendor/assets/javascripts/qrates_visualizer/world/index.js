@@ -612,7 +612,7 @@
         this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, opts, callback);
         this._flip = true;
         this.flip();
-        this.cover(0.5, { duration: opts.duration });
+        this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 1:
