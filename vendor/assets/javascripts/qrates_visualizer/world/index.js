@@ -732,7 +732,7 @@
         this.setOrthographic();
         this.setSleeveVisibility(true);
         this.cover(0, { duration: opts.duration });
-        this._camera.position.set(0, 365, 10);
+        this._camera.position.set(0, 400, 10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._controls.update();
         break;
@@ -740,7 +740,7 @@
         this.setOrthographic();
         this.setSleeveVisibility(true);
         this.cover(0, { duration: opts.duration });
-        this._camera.position.set(0, -365, -10);
+        this._camera.position.set(0, -328, -10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._controls.update();
         break;
@@ -748,7 +748,7 @@
         this.setOrthographic();
         this.setSleeveVisibility(false);
         this.cover(0, { duration: opts.duration});
-        this._camera.position.set(0, 365, 10);
+        this._camera.position.set(0, 400, 10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
         this._controls.update();
@@ -757,7 +757,7 @@
         this.setOrthographic();
         this.setSleeveVisibility(false);
         this.cover(0, { duration: opts.duration});
-        this._camera.position.set(0, -365, -10);
+        this._camera.position.set(0, -328, -10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
         this._controls.update();
