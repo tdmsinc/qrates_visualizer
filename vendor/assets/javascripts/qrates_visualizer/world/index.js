@@ -253,7 +253,8 @@
       out: false,
       zoom: 1.0,
       'covered ratio': 0.8,
-      bumpScale: 0.282,
+      //bumpScale: 0.282,
+      bumpScale: 0.3,
       sleeveX: -15
     };
 
@@ -697,42 +698,34 @@
       case 21:
         this.setPerspective();
         this.setSleeveVisibility(true);
-        this.setCameraPosition( 190, 259, 226, {duration:opts.duration});
+        this.setCameraPosition( 190 * 0.8, 259 * 0.8, 226 * 0.8, {duration:opts.duration});
         this.cover(0.5, { duration: opts.duration });
         this._controls.target = new THREE.Vector3(-30, 0, 24);
-        this._object.rotation.z = 0;
-        this._flip = false;
         this._controls.update();
         break;
       case 22:
         var rate = 0.9;
         this.setPerspective();
         this.setSleeveVisibility(true);
-        this.setCameraPosition( -458, 647, 647, {duration:opts.duration});
+        this.setCameraPosition( -458 * 0.7, 647 * 0.7, 647 * 0.7, {duration:opts.duration});
         this.cover(0.8, { duration: opts.duration });
         this._controls.target = new THREE.Vector3(-3, -198, -155);
-        this._object.rotation.z = 0;
-        this._flip = false;
         this._controls.update();
         break;
       case 23:
         this.setOrthographic();
         this.setSleeveVisibility(true);
         this.cover(0.8, { duration: opts.duration });
-        this._camera.position.set(-75, 365, 10);
+        this._camera.position.set(-75, 400, 10);
         this._controls.target = new THREE.Vector3(-75, 0, 0);
-        this._object.rotation.z = 0;
-        this._flip = false;
         this._controls.update();
         break;
       case 24:
         this.setOrthographic();
         this.setSleeveVisibility(true);
         this.cover(0.8, { duration: opts.duration });
-        this._camera.position.set(75, 365, 10);
-        this._controls.target = new THREE.Vector3(75, 0, 0);
-        this._object.rotation.z = Math.PI;
-        this._flip = true;
+        this._camera.position.set(-75, -328, -10);
+        this._controls.target = new THREE.Vector3(-75, 0, 0);
         this._controls.update();
         break;
       case 25:
@@ -741,18 +734,14 @@
         this.cover(0, { duration: opts.duration });
         this._camera.position.set(0, 365, 10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._object.rotation.z = 0;
-        this._flip = false;
         this._controls.update();
         break;
       case 26:
         this.setOrthographic();
         this.setSleeveVisibility(true);
         this.cover(0, { duration: opts.duration });
-        this._camera.position.set(0, 365, 10);
+        this._camera.position.set(0, -365, -10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._object.rotation.z = Math.PI;
-        this._flip = true;
         this._controls.update();
         break;
       case 27:
@@ -762,19 +751,15 @@
         this._camera.position.set(0, 365, 10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
-        this._object.rotation.z = 0;
-        this._flip = false;
         this._controls.update();
         break;
       case 28:
         this.setOrthographic();
         this.setSleeveVisibility(false);
         this.cover(0, { duration: opts.duration});
-        this._camera.position.set(0, 365, 10);
+        this._camera.position.set(0, -365, -10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
-        this._object.rotation.z = Math.PI;
-        this._flip = true;
         this._controls.update();
         break;
       default:
