@@ -704,12 +704,11 @@
         this._controls.update();
         break;
       case 22:
-        var rate = 0.9;
         this.setPerspective();
         this.setSleeveVisibility(true);
-        this.setCameraPosition( -458 * 0.7, 647 * 0.7, 647 * 0.7, {duration:opts.duration});
+        this.setCameraPosition( -458 * 0.5, 647 * 0.5, 647 * 0.5, {duration:opts.duration});
         this.cover(0.8, { duration: opts.duration });
-        this._controls.target = new THREE.Vector3(-3, -198, -155);
+        this._controls.target = new THREE.Vector3(-30, -210, -140);
         this._controls.update();
         break;
       case 23:
