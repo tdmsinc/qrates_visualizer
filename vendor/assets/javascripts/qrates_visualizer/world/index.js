@@ -698,7 +698,7 @@
       case 21:
         this.setPerspective();
         this.setSleeveVisibility(true);
-        this.setCameraPosition( 190 * 0.9, 259 * 0.9, 226 * 0.9, {duration:opts.duration});
+        this.setCameraPosition( 190 * 0.8, 259 * 0.8, 226 * 0.8, {duration:opts.duration});
         this.cover(0.5, { duration: opts.duration });
         this._controls.target = new THREE.Vector3(-30, 0, 24);
         this._controls.update();
@@ -706,7 +706,7 @@
       case 22:
         this.setPerspective();
         this.setSleeveVisibility(true);
-        this.setCameraPosition( -458 * 0.5, 647 * 0.5, 647 * 0.5, {duration:opts.duration});
+        this.setCameraPosition( -458 * 0.4, 647 * 0.4, 647 * 0.4, {duration:opts.duration});
         this.cover(0.8, { duration: opts.duration });
         this._controls.target = new THREE.Vector3(-30, -210, -140);
         this._controls.update();
