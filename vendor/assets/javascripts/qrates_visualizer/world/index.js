@@ -706,7 +706,7 @@
       case 22:
         this.setPerspective();
         this.setSleeveVisibility(true);
-        this.setCameraPosition( -458 * 0.4, 647 * 0.4, 647 * 0.4, {duration:opts.duration});
+        this.setCameraPosition( -250, 260, 260, {duration:opts.duration});
         this.cover(0.8, { duration: opts.duration });
         this._controls.target = new THREE.Vector3(-30, -210, -140);
         this._controls.update();
@@ -723,7 +723,7 @@
         this.setOrthographic();
         this.setSleeveVisibility(true);
         this.cover(0.8, { duration: opts.duration });
-        this._camera.position.set(-75, -328, -10);
+        this._camera.position.set(-75, -240, -10);
         this._controls.target = new THREE.Vector3(-75, 0, 0);
         this._controls.update();
         break;

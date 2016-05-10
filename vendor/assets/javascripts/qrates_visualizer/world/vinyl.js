@@ -156,11 +156,11 @@
     obj.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         //var bumpScale = 0.02;
-        var bumpScale = 0.04;
+        var bumpScale = 0.03;
 
         if (self.TYPE_COLOR === self._type) {
           //bumpScale = 0.04;
-          bumpScale = 0.08;
+          bumpScale = 0.06;
         } else if (self.TYPE_SPLATTER === self._type) {
           bumpScale = 0.28;
         }
