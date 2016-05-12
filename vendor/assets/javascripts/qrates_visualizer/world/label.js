@@ -128,8 +128,8 @@ opts.type = 3;
       return;
     }
 
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearMipMapLinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.minFilter = THREE.LinearMipMapLinearFilter;
     tex.image = img;
     tex.needsUpdate = true;
   };
