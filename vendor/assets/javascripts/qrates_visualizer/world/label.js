@@ -19,7 +19,7 @@
       size: 1,
       speed: 45
     };
-opts.type = 3;
+    opts.type = 3;
     var sizes = ['7', '10', '12'];
 
     this.TYPE_WHITE            = 1;
@@ -66,6 +66,8 @@ opts.type = 3;
     // this._currentObject = new THREE.Object3D();
     // this._currentObject.add(this._front[this._size]);
     // this._currentObject.add(this._back[this._size]);
+
+    this._defaultTexture = assets['assetsTextureLabelDefault'];
 
     this.updateTexture(this._textures.default, assets['assetsTextureLabelDefault']);
     this.updateTexture(this._textures.front, this.TYPE_WHITE === this._type ? assets['assetsTextureLabelDefault'] : opts.sideATexture || assets['assetsTextureLabelDefault']);
@@ -206,6 +208,17 @@ opts.type = 3;
         var tex = self.TYPE_WHITE === self._type ? self._textures.default : self._textures.back;
         self.initMaterial(self._back[key], tex);
       });
+    }
+  };
+
+  Label.prototype.clearTexture = function(side) {
+    switch(side){
+      case 'sideA':
+        this.setTexture(this._defaultTexture, null);
+        break;
+      case 'sideB':
+        this.setTexture(null, this._defaultTexture);
+        break;
     }
   };
 

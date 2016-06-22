@@ -936,14 +936,20 @@
 
   World.prototype.onLabelSideATextureChanged = function(value) {
     console.log('World::onLabelSideATextureChanged');
-
-    this._label.setTexture(value, null);
+    if (value == null) {
+      this._label.clearTexture('sideA');
+    } else {
+      this._label.setTexture(value, null);
+    }
   };
 
   World.prototype.onLabelSideBTextureChanged = function(value) {
     console.log('World::onLabelSideBTextureChanged', value);
-
-    this._label.setTexture(null, value);
+    if (value == null) {
+      this._label.clearTexture('sideB');
+    } else {
+      this._label.setTexture(null, value);
+    }
   };
 
   World.prototype.onSleeveTypeChanged = function(value) {
@@ -967,14 +973,20 @@
 
   World.prototype.onSleeveFrontTextureChanged = function(value) {
     console.log('World::onSleeveFrontTextureChanged');
-
-    this._sleeve.setTexture(value, null);
+    if (value == null) {
+      this._sleeve.clearTexture('sideA');
+    } else {
+      this._sleeve.setTexture(value, null);
+    }
   };
 
   World.prototype.onSleeveBackTextureChanged = function(value) {
     console.log('World::onSleeveBackTextureChanged');
-
-    this._sleeve.setTexture(null, value);
+    if (value == null) {
+      this._sleeve.clearTexture('sideB');
+    } else {
+      this._sleeve.setTexture(null, value);
+    }
   };
 
   World.prototype.onSleeveSpineTextureChanged = function(value) {

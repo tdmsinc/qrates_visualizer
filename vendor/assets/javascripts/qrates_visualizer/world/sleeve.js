@@ -16,7 +16,7 @@
       glossFinish: false,
       hole: false,
       size: 1,
-      type: 1,
+      type: 1
     };
 
     var sizes = ['7', '10', '12'];
@@ -91,6 +91,8 @@
       spine: new THREE.Texture(),
       default: new THREE.Texture()
     };
+
+    this._defaultTexture = assets['assetsTextureSleeveDefault'];
 
     var self = this;
 
@@ -262,7 +264,6 @@
     if (!tex || !img) {
       return;
     }
-
     tex.image = img;
     tex.minFilter = THREE.LinearFilter;
     tex.magFilter = THREE.LinearFilter;
@@ -273,13 +274,22 @@
     if (sideA) {
       this.updateTexture(this._textures.front, sideA);
     }
-
     if (sideB) {
       this.updateTexture(this._textures.back, sideB);
     }
-
     if (spine) {
       this.updateTexture(this._textures.spine, spine);
+    }
+  };
+
+  Sleeve.prototype.clearTexture = function(side) {
+    switch(side){
+      case 'sideA':
+        this.updateTexture(this._textures.front, this._defaultTexture);
+        break;
+      case 'sideB':
+        this.updateTexture(this._textures.back, this._defaultTexture);
+        break;
     }
   };
 
