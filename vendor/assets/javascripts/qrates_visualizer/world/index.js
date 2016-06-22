@@ -38,7 +38,6 @@
         preserveDrawingBuffer: true,
       }
     };
-
     this._objectScales = {
       '7' : 1,
       '10': 0.6890566038,
@@ -253,12 +252,17 @@
       out: false,
       zoom: 1.0,
       'covered ratio': 0.8,
-      bumpScale: 0.282,
+      //bumpScale: 0.282,
+      bumpScale: 0.3,
       sleeveX: -15
     };
 
     var cameraProps = {
       x:0.0, y: 17.0, z: 30.0,
+    };
+
+    var objPosProps = {
+      posX:0.0, posY: 0.0, posZ: 0.0,
     };
 
     var self = this;
@@ -301,6 +305,9 @@
     var vinylVisibilityController = gui.add(props, 'vinyl visibility');
     var captureController = gui.add(temp, 'capture');
     var zoomController = gui.add(props, 'zoom', 0, 400);
+    var objXController = gui.add(objPosProps, 'posX', -1000.0, 1000.0);
+    var objYController = gui.add(objPosProps, 'posY', -1000.0, 1000.0);
+    var objZController = gui.add(objPosProps, 'posZ', -1000.0, 1000.0);
     var cameraXController = gui.add(cameraProps, 'x', -1000.0, 1000.0);
     var cameraYController = gui.add(cameraProps, 'y', -1000.0, 1000.0);
     var cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
@@ -345,6 +352,29 @@
 
     zoomController.onChange(function(value) {
       self.zoom(value);
+    });
+
+    objXController.onChange(function(value) {
+      self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
+      self._controls.update();
+    });
+    objYController.onChange(function(value) {
+      self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
+      self._controls.update();
+    });
+    objZController.onChange(function(value) {
+      self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
+      self._controls.update();
+    });
+
+    cameraXController.onChange(function(value) {
+      self.setCameraPosition( cameraProps.x, cameraProps.y, cameraProps.z, {duration:0});
+    });
+    cameraYController.onChange(function(value) {
+      self.setCameraPosition( cameraProps.x, cameraProps.y, cameraProps.z, {duration:0});
+    });
+    cameraZController.onChange(function(value) {
+      self.setCameraPosition( cameraProps.x, cameraProps.y, cameraProps.z, {duration:0});
     });
 
     bumpScaleController.onChange(function(value) {
@@ -577,9 +607,9 @@
     opts.duration = undefined !== opts.duration ? opts.duration : 2000;
 
     switch (Number(type)) {
-      case 0:
+      case 0:  // for capture rendered image
         var rate = 0.9;
-        this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, opts, callback); // for capture rendered image
+        this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, opts, callback);
         this._flip = true;
         this.flip();
         this.cover(0.5, { duration: opts.duration });
@@ -621,7 +651,7 @@
         this._controls.reset();
         break;
       case 6:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 7
+        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 6
         this._controls.reset();
         break;
       case 7:
@@ -633,7 +663,7 @@
         this._controls.reset();
         break;
       case 9:
-        this.setCameraPosition( 148, 201, 175, opts, callback); // for capture rendered image
+        this.setCameraPosition( 148, 201, 175, opts, callback); // item detail rotation 9
         this._flip = true;
         this.flip();
         this.cover(0.8, { duration: opts.duration });
@@ -664,40 +694,68 @@
         this.cover(0.0, { duration: opts.duration });
         this._controls.reset();
         break;
-      case 15:
-        var rate = 0.9;
+      case 21:
         this.setPerspective();
         this.setSleeveVisibility(true);
-        this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, {duration:opts.duration});
+        this.setCameraPosition( 190 * 0.8, 259 * 0.8, 226 * 0.8, {duration:opts.duration});
         this.cover(0.5, { duration: opts.duration });
         this._controls.target = new THREE.Vector3(-30, 0, 24);
         this._controls.update();
         break;
-      case 16:
-        var x = -75;
-        this.setOrthographic();
+      case 22:
+        this.setPerspective();
         this.setSleeveVisibility(true);
-        this._flip = true;
+        this.setCameraPosition( -250, 260, 260, {duration:opts.duration});
         this.cover(0.8, { duration: opts.duration });
-        this._camera.position.set(x, 365, 10);
-        this._controls.target = new THREE.Vector3(x, 0, 0);
+        this._controls.target = new THREE.Vector3(-30, -210, -140);
         this._controls.update();
         break;
-      case 17:
+      case 23:
         this.setOrthographic();
         this.setSleeveVisibility(true);
-        this._flip = true;
+        this.cover(0.8, { duration: opts.duration });
+        this._camera.position.set(-75, 500, 10);
+        this._controls.target = new THREE.Vector3(-75, 0, 0);
+        this._controls.update();
+        break;
+      case 24:
+        this.setOrthographic();
+        this.setSleeveVisibility(true);
+        this.cover(0.8, { duration: opts.duration });
+        this._camera.position.set(-75, -500, -10);
+        this._controls.target = new THREE.Vector3(-75, 0, 0);
+        this._controls.update();
+        break;
+      case 25:
+        this.setOrthographic();
+        this.setSleeveVisibility(true);
         this.cover(0, { duration: opts.duration });
-        this._camera.position.set(0, 365, 10);
+        this._camera.position.set(0, 500, 10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._controls.update();
         break;
-      case 18:
+      case 26:
+        this.setOrthographic();
+        this.setSleeveVisibility(true);
+        this.cover(0, { duration: opts.duration });
+        this._camera.position.set(0, -500, -10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._controls.update();
+        break;
+      case 27:
         this.setOrthographic();
         this.setSleeveVisibility(false);
-        this._flip = true;
         this.cover(0, { duration: opts.duration});
-        this._camera.position.set(0, 365, 10);
+        this._camera.position.set(0, 400, 10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._camera.setZoom(320);
+        this._controls.update();
+        break;
+      case 28:
+        this.setOrthographic();
+        this.setSleeveVisibility(false);
+        this.cover(0, { duration: opts.duration});
+        this._camera.position.set(0, -328, -10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
         this._controls.update();
@@ -755,7 +813,8 @@
     this._controls.update();
 
     this._lights.position.copy(this._camera.position);
-    this._lights.lookAt(new THREE.Vector3(0, 0, 0));
+    //this._lights.lookAt(new THREE.Vector3(0, 0, 0));
+    this._lights.lookAt(this._controls.target);
   };
 
   /**
