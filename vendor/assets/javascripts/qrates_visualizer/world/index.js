@@ -760,6 +760,14 @@
         this._camera.setZoom(320);
         this._controls.update();
         break;
+      case 29:
+        this.setOrthographic();
+        this.setSleeveVisibility(false);
+        this.cover(0, { duration: opts.duration});
+        this._camera.position.set(0, 400, 10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._controls.update();
+        break;
       default:
         break;
     }
