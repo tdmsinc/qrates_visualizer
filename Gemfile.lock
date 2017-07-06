@@ -59,8 +59,9 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.7)
   qrates_visualizer!
+  rack
   rake (~> 10.0)
-  sinatra (~> 1.4.5)
+  sinatra
   sinatra-asset-pipeline (~> 0.6.0)
   slim (~> 3.0.2)
 
