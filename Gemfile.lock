@@ -62,8 +62,8 @@ DEPENDENCIES
   rack
   rake (~> 10.0)
   sinatra
-  sinatra-asset-pipeline (~> 0.6.0)
-  slim (~> 3.0.2)
+  sinatra-asset-pipeline
+  slim
 
 BUNDLED WITH
    1.15.1
