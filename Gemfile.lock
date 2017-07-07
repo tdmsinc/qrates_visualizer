@@ -60,6 +60,9 @@ DEPENDENCIES
   bundler (~> 1.7)
   qrates_visualizer!
   rack
+  rails-assets-tdmsinc-three.js
+  rails-assets-tdmsinc-tween.js
+  rails-assets-tiny-emitter
   rake (~> 10.0)
   sinatra
   sinatra-asset-pipeline
