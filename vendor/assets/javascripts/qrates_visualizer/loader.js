@@ -79,10 +79,8 @@
       loader.crossOrigin = ''; // to load texture from cross origin.
 
       var obj = loader.load(path, function(obj) {
-        if ('.dae' === extname(path)) {
-          console.log('collada loaded', obj);
-        }
         assets[key] = obj;
+        assets[key].extname = extname(path);
       });
       if (obj !== undefined) {
         assets[key] = obj;

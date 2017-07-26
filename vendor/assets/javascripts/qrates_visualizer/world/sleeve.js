@@ -113,8 +113,7 @@
 
     Object.keys(this._front).forEach(function(key) {
 
-      if (self._front[key].dae) {
-        console.log('collada', self._front[key]);
+      if ('.dae' === self._front[key].extname) {
         return;
       }
       
@@ -215,7 +214,6 @@
 
     // collada models
     this._object['gatefold-12'] = this._front['gatefold-12'];
-
 
     if (this._holed) {
       if (this._type === this.TYPE_PRINT_SPINE) {
@@ -343,7 +341,7 @@
 
     Object.keys(this._front).forEach(function(key) {
 
-      if (self._front[key].dae) {
+      if ('.dae' === self._front[key].extname) {
 
         return;
 
@@ -410,8 +408,6 @@
 
       var scale = 5.5;
       this._object['gatefold-12'].scene.scale.set(scale, scale, scale);
-
-      console.log(this._object['gatefold-12']);
 
       if (this._holed) {
 
@@ -509,7 +505,7 @@
 
     Object.keys(self._front).forEach(function(key){
 
-      if (self._front[key].dae) {
+      if ('.dae' === self._front[key].extname) {
 
         return;
       }
