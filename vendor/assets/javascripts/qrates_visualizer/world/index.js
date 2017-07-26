@@ -1022,7 +1022,13 @@
   World.prototype.onSleeveTypeChanged = function(value) {
     console.log('World::onSleeveTypeChanged', value);
 
-    var types = [this._sleeve.TYPE_BLACK, this._sleeve.TYPE_WHITE, this._sleeve.TYPE_PRINT, this._sleeve.TYPE_PRINT_SPINE];
+    var types = [
+      this._sleeve.TYPE_BLACK,
+      this._sleeve.TYPE_WHITE,
+      this._sleeve.TYPE_PRINT,
+      this._sleeve.TYPE_PRINT_SPINE,
+      this._sleeve.TYPE_GATEFOLD,
+    ];
     this._sleeve.setType(types[value - 1]);
   };
 

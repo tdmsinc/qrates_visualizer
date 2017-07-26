@@ -9,7 +9,7 @@ Bundler.require(:default, ENV['RACK_ENV'])
 
 class App < Sinatra::Base
   configure do
-    set :assets_precompile, %w(app.js app.scss *.png *.jpg *.svg *.eot *.ttf *.woff *.obj *.vert *.frag)
+    set :assets_precompile, %w(app.js app.scss *.png *.jpg *.svg *.eot *.ttf *.woff *.obj *dae *.vert *.frag)
     set :assets_prefix, %w(app/assets vendor/assets)
     set :assets_css_compressor, :sass
     register Sinatra::AssetPipeline

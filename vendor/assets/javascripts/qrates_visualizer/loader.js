@@ -71,6 +71,7 @@
       var ext = extname(path);
 
       if ('.obj' === ext) loader = new THREE.OBJLoader(manager);
+      if ('.dae' === ext) loader = new THREE.ColladaLoader(manager);
       if ('.png' === ext || '.jpg' === ext) loader = new THREE.ImageLoader(manager);
 
       if (!loader) return;
@@ -78,6 +79,9 @@
       loader.crossOrigin = ''; // to load texture from cross origin.
 
       var obj = loader.load(path, function(obj) {
+        if ('.dae' === extname(path)) {
+          console.log('collada loaded', obj);
+        }
         assets[key] = obj;
       });
       if (obj !== undefined) {

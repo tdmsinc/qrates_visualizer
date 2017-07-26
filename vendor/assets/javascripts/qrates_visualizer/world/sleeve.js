@@ -25,6 +25,7 @@
     this.TYPE_WHITE       = 2;
     this.TYPE_PRINT       = 3;
     this.TYPE_PRINT_SPINE = 4;
+    this.TYPE_GATEFOLD    = 5;
 
     this._container = container;
     this._size = sizes[opts.size - 1];
@@ -48,7 +49,8 @@
       'spine-12': assets['assetsModelSleeveFrontSpine-12'],
       'spine-holed-7' : assets['assetsModelSleeveFrontSpineHoled-7'],
       'spine-holed-10': assets['assetsModelSleeveFrontSpineHoled-10'],
-      'spine-holed-12': assets['assetsModelSleeveFrontSpineHoled-12']
+      'spine-holed-12': assets['assetsModelSleeveFrontSpineHoled-12'],
+      'gatefold-12': assets['assetsModelSleeveGatefold-12']
     };
 
     this._back = {
@@ -109,7 +111,13 @@
     this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
     this._back.current  = this._holed ? this._back['holed-' + this._size]  : this._back[this._size];
 
-    Object.keys(this._front).forEach(function(key){
+    Object.keys(this._front).forEach(function(key) {
+
+      if (self._front[key].dae) {
+        console.log('collada', self._front[key]);
+        return;
+      }
+      
       self.initMaterial(self._front[key], self._textures.front);
       if (self._front[key]) self._front[key].name = key;
     });
@@ -147,7 +155,8 @@
       'spine-12': new THREE.Object3D(),
       'spine-holed-7' : new THREE.Object3D(),
       'spine-holed-10': new THREE.Object3D(),
-      'spine-holed-12': new THREE.Object3D()
+      'spine-holed-12': new THREE.Object3D(),
+      'gatefold-12': null
     };
 
     this._object['7'].add(this._front['7']);
@@ -203,6 +212,9 @@
     this._object['spine-holed-12'].add(this._top['12'].clone());
     this._object['spine-holed-12'].add(this._bottom['10'].clone());
     this._object['spine-holed-12'].add(this._spine['12'].clone());
+
+    // collada models
+    this._object['gatefold-12'] = this._front['gatefold-12'];
 
 
     if (this._holed) {
@@ -295,8 +307,24 @@
 
   Sleeve.prototype.setType = function(type) {
 
-    if (-1 === [this.TYPE_BLACK, this.TYPE_WHITE, this.TYPE_PRINT, this.TYPE_PRINT_SPINE].indexOf(type)) {
+    var idx = [
+      this.TYPE_BLACK, 
+      this.TYPE_WHITE, 
+      this.TYPE_PRINT, 
+      this.TYPE_PRINT_SPINE,
+      this.TYPE_GATEFOLD
+    ].indexOf(type);
+
+    if (-1 === idx) {
+
       return;
+
+    }
+
+    if (this._type === type) {
+
+      return;
+
     }
 
     var lastType = this._type;
@@ -305,55 +333,102 @@
     var isOpaque = false;
 
     if (this.TYPE_BLACK === this._type || this.TYPE_WHITE === this._type) {
+
       this._glossFinish = false;
       isOpaque = true;
+
     }
 
     var self = this;
 
     Object.keys(this._front).forEach(function(key) {
+
+      if (self._front[key].dae) {
+
+        return;
+
+      }
+
       var tex = isOpaque ? self._textures.default : self._textures.front;
       self.initMaterial(self._front[key], tex);
+
     });
 
     Object.keys(this._back).forEach(function(key) {
+
       var tex = isOpaque ? self._textures.default : self._textures.back;
       self.initMaterial(self._back[key], tex);
+
     });
 
     Object.keys(this._spine).forEach(function(key) {
+      
       var tex = isOpaque ? self._textures.default : self._textures.spine;
       self.initMaterial(self._spine[key], tex);
+
     });
 
     Object.keys(this._top).forEach(function(key) {
+
       self.initMaterial(self._top[key], null);
+
     });
 
     Object.keys(this._bottom).forEach(function(key) {
+
       self.initMaterial(self._bottom[key], null);
+
     });
 
     this._container.remove(this._currentObject);
 
-    if (lastType !== this.TYPE_PRINT_SPINE && this._type === this.TYPE_PRINT_SPINE) {
+    if (this._type === this.TYPE_PRINT_SPINE) {
+
       if (this._holed) {
+
         this._currentObject = this._object['spine-holed-' + this._size];
+
       } else {
+
         this._currentObject = this._object['spine-' + this._size];
+
       }
 
-    } else if (lastType === this.TYPE_PRINT_SPINE && this._type !== this.TYPE_PRINT_SPINE) {
+    } else if (this._type === this.TYPE_BLACK || this._type === this.TYPE_WHITE || this._type === this.TYPE_PRINT) {
+
       if (this._holed) {
+
         this._currentObject = this._object['holed-' + this._size];
+
       } else {
+
         this._currentObject = this._object[this._size];
+
       }
+
+    } else if (this._type === this.TYPE_GATEFOLD) {
+
+      var scale = 5.5;
+      this._object['gatefold-12'].scene.scale.set(scale, scale, scale);
+
+      console.log(this._object['gatefold-12']);
+
+      if (this._holed) {
+
+        this._currentObject = this._object['gatefold-12'].scene;
+
+      } else {
+
+        this._currentObject = this._object['gatefold-12'].scene;
+
+      }
+
     }
 
     this._container.add(this._currentObject);
 
     this.setOpacity(1.0, 0);
+
   };
 
   Sleeve.prototype.setSize = function(size) {
@@ -433,6 +508,12 @@
     var shininess = self._glossFinish ? 15 : 5;
 
     Object.keys(self._front).forEach(function(key){
+
+      if (self._front[key].dae) {
+
+        return;
+      }
+
       self._front[key].traverse(function(child) {
         if (child instanceof THREE.Mesh) {
           child.material.shininess = shininess;
