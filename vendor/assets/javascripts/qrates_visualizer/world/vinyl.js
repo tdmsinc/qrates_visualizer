@@ -61,8 +61,6 @@
       { color: 0xfed76f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P20 MUSTARD
     ];
 
-    var sizes = ['7', '10', '12'];
-
     var images = [];
     var cubeTexture = new THREE.CubeTexture(images);
     cubeTexture.flipY = false;
@@ -71,6 +69,16 @@
       cubeTexture.images[i] = assets['assetsTextureVinylEnvmap'];
     }
     cubeTexture.needsUpdate = true;
+
+    this.SIZE_7 = '7';
+    this.SIZE_10 = '10';
+    this.SIZE_12 = '12';
+
+    var sizes = [
+      this.SIZE_7,
+      this.SIZE_10,
+      this.SIZE_12
+    ];
 
     this.TYPE_BLACK    = 1;
     this.TYPE_COLOR    = 2;
@@ -98,23 +106,23 @@
       this._color = 0;
     }
 
-    this._front = {
-      '7'       : assets['assetsModelVinyl-7'],
-      '10'      : assets['assetsModelVinyl-10'],
-      '12'      : assets['assetsModelVinyl-12'],
-      'heavy-7' : assets['assetsModelVinylHeavy-7'],
-      'heavy-10': assets['assetsModelVinylHeavy-10'],
-      'heavy-12': assets['assetsModelVinylHeavy-12']
+    // アセットをもとにモデルを定義
+    this._models = {
+      '7': {
+        
+      },
+      '10': {
+
+      },
+      '12': {
+        'default': assets['assetsModelVinyl-12'],
+        'with-label': assets['assetsModelVinylWithLabel-12'],
+        'heavy': assets['assetsModelVinylHeavy-12'],
+        'heavy-with-label': assets['assetsModelVinylHeavyWithLabel-12']
+      }
     };
 
-    this._back = {
-      '7'       : assets['assetsModelVinyl-7'],
-      '10'      : assets['assetsModelVinyl-10'],
-      '12'      : assets['assetsModelVinyl-12'],
-      'heavy-7' : assets['assetsModelVinylHeavy-7'],
-      'heavy-10': assets['assetsModelVinylHeavy-10'],
-      'heavy-12': assets['assetsModelVinylHeavy-12']
-    };
+    console.log('model', this._models[this.SIZE_12]['default']);
 
     this._textures = {
       front: new THREE.Texture(),
