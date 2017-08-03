@@ -70,7 +70,6 @@
       var path = this.targets[key];
       var ext = extname(path);
 
-      if ('.obj' === ext) loader = new THREE.OBJLoader(manager);
       if ('.dae' === ext) loader = new THREE.ColladaLoader(manager);
       if ('.png' === ext || '.jpg' === ext) loader = new THREE.ImageLoader(manager);
 

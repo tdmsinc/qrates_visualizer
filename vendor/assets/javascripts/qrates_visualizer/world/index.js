@@ -13,7 +13,6 @@
 
   var Emitter = exports.Emitter;
   var Vinyl   = exports.world.Vinyl;
-  var Label   = exports.world.Label;
   var Sleeve  = exports.world.Sleeve;
 
   /**
@@ -113,9 +112,6 @@
 
     this._vinyl = new Vinyl();
     this._vinyl.setup(this._scene1, assets, opts.defaults.vinyl, this._object);
-
-    this._label = new Label();
-    this._label.setup(this._scene1, assets, opts.defaults.label, this._object);
 
     var scale = this._objectScales[this._vinyl._size];
     this._object.scale.set(scale, scale, scale);
@@ -244,7 +240,6 @@
     var props = {
       color: 0xFFFFFF,
       size: 12,
-      label: null,
       render: true,
       rotate: false,
       'sleeve visibility': true,
@@ -333,7 +328,6 @@
     rotationController.onChange(function(value) {
       self.enableRotate = value;
       self._vinyl.setEnableRotate(value);
-      self._label.setEnableRotate(value);
     });
 
     coveredRatioController.onChange(function(value) {
@@ -467,7 +461,6 @@
 
   World.prototype.setVinylVisibility = function(yn, opts, callback) {
     this._vinyl.setVisibility(yn);
-    this._label.setVisibility(yn);
   };
 
   World.prototype.setSleeveVisibility = function(yn, opts, callback) {
@@ -578,7 +571,6 @@
     console.log('World::play');
     this._enableRotate = true;
     this._vinyl.setEnableRotate(true);
-    this._label.setEnableRotate(true);
   };
 
   /**
@@ -588,7 +580,6 @@
     console.log('World::pause');
     this._enableRotate = false;
     this._vinyl.setEnableRotate(false);
-    this._label.setEnableRotate(false);
   };
 
   /**
@@ -812,10 +803,6 @@
       this._vinyl.update();
     }
 
-    if (this._label) {
-      this._label.update();
-    }
-
     TWEEN.update();
 
     this._controls.update();
@@ -937,7 +924,6 @@
 
     this._sleeve.setSize(size);
     this._vinyl.setSize(size);
-    this._label.setSize(size);
   };
 
   World.prototype.onVinylColorChanged = function(value) {
@@ -955,7 +941,6 @@
   World.prototype.onVinylHoleSizeChanged = function(value) {
     console.log('World::onVinylHoleSizeChanged', value);
 
-    this._label.setLargeHole(0 === value ? false : true);
   };
 
   World.prototype.onVinylHeavyChanged = function(value) {
@@ -967,7 +952,6 @@
     console.log('World::onVinylSpeedChanged', value);
 
     this._vinyl.setRPM(value);
-    this._label.setRPM(value);
   };
 
   World.prototype.onVinylSideATextureChanged = function(value) {
@@ -997,26 +981,26 @@
   World.prototype.onLabelTypeChanged = function(value) {
     console.log('World::onLabelTypeChanged', value);
 
-    var types = [this._label.TYPE_WHITE, this._label.TYPE_PRINT_MONOCHROME, this._label.TYPE_PRINT_COLOR];
-    this._label.setType(types[value - 1]);
+    // var types = [this._label.TYPE_WHITE, this._label.TYPE_PRINT_MONOCHROME, this._label.TYPE_PRINT_COLOR];
+    // this._label.setType(types[value - 1]);
   };
 
   World.prototype.onLabelSideATextureChanged = function(value) {
     console.log('World::onLabelSideATextureChanged');
-    if (value == null) {
-      this._label.clearTexture('sideA');
-    } else {
-      this._label.setTexture(value, null);
-    }
+    // if (value == null) {
+    //   this._label.clearTexture('sideA');
+    // } else {
+    //   this._label.setTexture(value, null);
+    // }
   };
 
   World.prototype.onLabelSideBTextureChanged = function(value) {
     console.log('World::onLabelSideBTextureChanged', value);
-    if (value == null) {
-      this._label.clearTexture('sideB');
-    } else {
-      this._label.setTexture(null, value);
-    }
+    // if (value == null) {
+    //   this._label.clearTexture('sideB');
+    // } else {
+    //   this._label.setTexture(null, value);
+    // }
   };
 
   World.prototype.onSleeveTypeChanged = function(value) {

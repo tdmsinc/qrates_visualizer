@@ -50,6 +50,43 @@
 
   Emitter(VinylVisualizer.prototype);
 
+  // vinyl, sleeve 共通の定数 -----------------------
+  VinylVisualizer.SIZE = {
+    SIZE_7_SMALL_HALL: '7S',
+    SIZE_7_LARGE_HALL: '7L',
+    SIZE_10: '10',
+    SIZE_12: '12'
+  };
+
+  // vinyl のタイプ -----------------------
+  VinylVisualizer.VINYL_TYPE = {
+    NORMAL: 'normal',
+    HEAVY: 'heavy',
+    WITH_LABEL: 'with-label',
+    HEAVY_WITH_LABEL: 'heavy-with-label'
+  };
+
+  // vinyl のカラータイプ -----------------------
+  VinylVisualizer.VINYL_COLOR_TYPE = {
+    BLACK: 'black',
+    COLOR: 'color',
+    SPLATTER: 'splatter'
+  };
+
+  // sleeve のタイプ -----------------------
+  VinylVisualizer.SLEEVE_TYPE = {
+    SINGLE_NO_SPINE: 'no-spine',
+    SINGLE: 'single',
+    DOUBLE: 'double',
+    GATEFOLD: 'gatefold'
+  };
+
+  // sleeve のホールオプション -----------------------
+  VinylVisualizer.HOLE = {
+    NO_HOLE: 'default',
+    HOLED: 'holed'
+  };
+
   /**
    * Setup visualizer.
    *

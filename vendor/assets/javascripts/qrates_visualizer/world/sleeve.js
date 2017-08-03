@@ -12,26 +12,39 @@
   }
 
   Sleeve.prototype.setup = function(scene, assets, opts, container) {
+
+    // サイズ
+    this.SIZE_7 = '7';
+    this.SIZE_10 = '10';
+    this.SIZE_12 = '12';
+
+    // スリーブのタイプ
+    this.TYPE_SINGLE_NO_SPINE = 'no-spine';
+    this.TYPE_SINGLE = 'single';
+    this.TYPE_DOUBLE = 'double';
+    this.TYPE_GATEFOLD = 'gatefold';
+    
+    // ホールオプション用の定数
+    this.NO_HOLED = 'default';
+    this.HOLED = 'holed';
+
     opts = opts || {
       glossFinish: false,
       hole: false,
-      size: 1,
-      type: 1
+      size: this.SIZE_7,
+      type: this.TYPE_SINGLE_NO_SPINE,
+      textures: {
+
+      }
     };
 
-    var sizes = ['7', '10', '12'];
-
-    // スリーブのタイプ
-    this.TYPE_BLACK       = 1;
-    this.TYPE_WHITE       = 2;
-    this.TYPE_PRINT       = 3;
-    this.TYPE_PRINT_SPINE = 4;
-    this.TYPE_GATEFOLD    = 5;
+    console.log('opts', opts);
 
     this._container = container;
-    this._size = sizes[opts.size - 1];
+    this._size = opts.size;
     this._holed = opts.hole;
     this._type = opts.type;
+    this._currentTextures = opts.textures;
     this._opacity = 0.0;
     this._coveredRatio = 0.0;
     this._glossFinish = opts.glossFinish;
@@ -190,7 +203,6 @@
               'color': assets['assetsTextureSleeveGatefoldSpineColor-10']
             }
           },
-          'holed': null
         }
       },
 
@@ -239,8 +251,7 @@
               'bumpmap': assets['assetsTextureSleeveGatefoldSpineBumpmap-12'],
               'color': assets['assetsTextureSleeveGatefoldSpineColor-12']
             }
-          },
-          'holed': null
+          }
         }
       }
     };
@@ -249,66 +260,51 @@
 
     var self = this;
 
-    if (this.TYPE_PRINT === this._type || this.TYPE_PRINT_SPINE === this._type) {
-      this.updateTexture(this._textures.front, opts.frontTexture || assets['assetsTextureSleeveDefault']);
-      this.updateTexture(this._textures.back,  opts.backTexture  || assets['assetsTextureSleeveDefault']);
-      this.updateTexture(this._textures.spine, opts.spineTexture || assets['assetsTextureSleeveDefault']);
-    } else {
-      Object.keys(this._textures).forEach(function(key) {
-        self.updateTexture(self._textures[key], assets['assetsTextureSleeveDefault']);
-      });
+    // プリントスリーブとしてテクスチャーが渡された場合
+    if (opts.textures) {
+      if (this._holed) {
+        this.updateTexture(this._textures[this._size][this._type][this.HOLED], opts.textures);
+      } else {
+        this.updateTexture(this._textures[this._size][this._type][this.NO_HOLED], opts.textures);
+      }
     }
 
-    this.updateTexture(this._textures.bumpMap['gatefold-12'], assets['assetsTextureSleeveBumpmapGatefold-12']);
+    // モデルのマテリアルを初期化
+    Object.keys(self._models).forEach(function(size) {
+      Object.keys(self._models[size]).forEach(function(type) {
+        Object.keys(self._models[size][type]).forEach(function(opt) {
+          if (!self._models[size][type][opt]) {
+            console.warn('model is ' + self._models[size][type][opt]);
+            return;
+          }
 
-    Object.keys(this._front).forEach(function(key) {
-      console.log('key', key, 'object', self._front[key]);
+          if (!self._textures[size][type][opt]) {
+            console.warn('textures are ' + self._textures[size][type][opt]);
+          }
 
-      if (!self._front[key]) {
-        return;
-      }
+          var assetName = size + '-' + type + '-' + opt;
 
-      self.initMaterial(self._front[key].scene, self._textures.front);
-      if (self._front[key].scene) self._front[key].name = key;
-    });
+          self._models[size][type][opt].assetName = assetName;
 
-    Object.keys(this._back).forEach(function(key) {
-      self.initMaterial(self._back[key], self._textures.back);
-      if (self._back[key]) self._back[key].name = key;
-    });
+          if (self._textures[size][type][opt]) { 
+            self._textures[size][type][opt].assetName = assetName;
+          }
 
-    Object.keys(this._spine).forEach(function(key) {
-      self.initMaterial(self._spine[key], self._textures.spine);
-      if (self._spine[key]) self._spine[key].name = key;
-    });
+          console.log('------------------' + assetName + '-------------------');
+          console.log('model', self._models[size][type][opt]);
+          console.log('textures', self._textures[size][type][opt]);
 
-    Object.keys(this._top).forEach(function(key) {
-      self.initMaterial(self._top[key], null);
-      if (self._top[key]) self._top[key].name = key;
-    });
-
-    Object.keys(this._bottom).forEach(function(key) {
-      self.initMaterial(self._bottom[key], null);
-      if (self._bottom[key]) self._bottom[key].name = key;
+          self.initMaterial(self._models[size][type][opt], self._textures[size][type][opt]);
+        });
+      });
     });
 
 
-    this._object = {
-      'gatefold-12': null
-    };
-
-    // collada models
-    this._object['gatefold-12'] = this._front['gatefold-12'];
-
-    // hole オプションが有効な場合
+    // currentObject = ステージに配置されるオブジェクト
     if (this._holed) {
-      if (this._type === this.TYPE_PRINT_SPINE) {
-        // this._currentObject = this._object['spine-holed-' + this._size];
-      } else {
-        // this._currentObject = this._object['holed-' + this._size];
-      }
+      this._currentObject = this._models[this._size][this._type][this.HOLED];
     } else {
-      this._currentObject = this._object['gatefold-12'];
+      this._currentObject = this._models[this._size][this._type][this.NO_HOLED];
     }
 
     this.position = new THREE.Vector3(0, 0, 0);
@@ -328,13 +324,14 @@
   };
 
   Sleeve.prototype.initMaterial = function(obj, tex, bumpMapTex) {
+
     if (!obj) {
       return;
     }
 
     var self = this;
 
-    obj.traverse(function(child) {
+    obj.scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material = new THREE.MeshPhongMaterial({
           map: tex,
@@ -452,7 +449,7 @@
       self.initMaterial(self._bottom[key], null);
     });
 
-    this._container.remove(this._currentObject);
+    this._container.remove(this._currentObject.scene);
 
     if (this._type === this.TYPE_PRINT_SPINE) {
 
@@ -495,7 +492,7 @@
 
     }
 
-    this._container.add(this._currentObject);
+    this._container.add(this._currentObject.scene);
 
     this.setOpacity(1.0, 0);
 
@@ -507,7 +504,7 @@
       return;
     }
 
-    this._container.remove(this._currentObject);
+    this._container.remove(this._currentObject.scene);
 
     this._size = size;
 
@@ -530,7 +527,7 @@
     var self = this;
 
     this.setCoveredRatio(this._coveredRatio, { duration: 1 }, null, function() {
-      self._container.add(self._currentObject);
+      self._container.add(self._currentObject.scene);
 
       self.setOpacity(1.0, 0);
     });
@@ -545,7 +542,7 @@
       .stop()
       .to({ _opacity: to }, duration)
       .onUpdate(function() {
-        self._currentObject.traverse(function(child) {
+        self._currentObject.scene.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
             child.material.opacity = self._opacity;
           }
@@ -622,7 +619,7 @@
     opts.duration = undefined !== opts.duration ? opts.duration : 500;
     opts.delay    = undefined !== opts.delay    ? opts.delay    : 0;
 
-    var tempObj = this._currentObject.clone();
+    var tempObj = this._currentObject.scene.clone();
     tempObj.scale = 1.0;
 
     var offset = new THREE.Box3().setFromObject(tempObj).size().x;
@@ -649,14 +646,14 @@
   };
 
   Sleeve.prototype.setVisibility = function(yn, opts, callback) {
-    this._currentObject.visible = yn;
+    this._currentObject.scene.visible = yn;
   };
 
   Sleeve.prototype.update = function() {
     var self = this;
 
-    this._currentObject.position.set(this.position.x, this.position.y, this.position.z);
-    this._currentObject.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._currentObject.scene.position.set(this.position.x, this.position.y, this.position.z);
+    this._currentObject.scene.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
 
     // Object.keys(self._front).forEach(function(key) {
     //   self._front[key].position.set(self.position.x, self.position.y, self.position.z);
