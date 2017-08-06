@@ -286,6 +286,10 @@
 
           self._models[size][type][opt].assetName = assetName;
 
+          if (self._models[size][type][opt]) {
+            self._models[size][type][opt].scene.scale.set(5.5, 5.5, 5.5);
+          }
+
           if (self._textures[size][type][opt]) { 
             self._textures[size][type][opt].assetName = assetName;
           }
@@ -323,38 +327,39 @@
     this.setOpacity(1);
   };
 
-  Sleeve.prototype.initMaterial = function(obj, tex, bumpMapTex) {
+  Sleeve.prototype.initMaterial = function(model, textures) {
 
-    if (!obj) {
+    if (!model || !textures) {
       return;
     }
 
     var self = this;
+    
+    if (-1 < model.assetName.toLowerCase().indexOf('gatefold')) {
+      // TODO: ゲートフォールドの面ごとにマテリアルを設定する処理
+    } else {
+      model.scene.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material = new THREE.MeshPhongMaterial({
+            alphaMap: textures['alpha'] || null,
+            aoMap: textures['ao'] || null,
+            bumpMap: textures['bumpmap'] || null,
+            map: textures['color'] || null,
+            color: self.TYPE_BLACK === self._type ? 0 : 0xffffff,
+            opacity: 0,
+            shininess: self._glossFinish ? 15 : 5,
+            side: THREE.DoubleSide,
+            specular: 0x363636,
+            shading: THREE.SmoothShading,
+            transparent: true
+          });
 
-    obj.scene.traverse(function(child) {
-      if (child instanceof THREE.Mesh) {
-        child.material = new THREE.MeshPhongMaterial({
-          map: tex,
-          ambient: 0xFFFFFF,
-          color: self.TYPE_BLACK === self._type ? 0 : 0xffffff,
-          opacity: 0,
-          shininess: self._glossFinish ? 15 : 5,
-          side: THREE.DoubleSide,
-          specular: 0x363636,
-          shading: THREE.SmoothShading,
-          transparent: true,
-          vertexColor: THREE.VertexColors
-        });
-
-        if (bumpMapTex) {
-          child.material.bumpMap = bumpMapTex;
+          child.geometry.computeVertexNormals();
         }
+      });
+    }
 
-        child.geometry.computeVertexNormals();
-      }
-    });
-
-    return obj;
+    return model;
   };
 
   Sleeve.prototype.updateTexture = function(tex, img) {
@@ -622,7 +627,7 @@
     var tempObj = this._currentObject.scene.clone();
     tempObj.scale = 1.0;
 
-    var offset = new THREE.Box3().setFromObject(tempObj).size().x;
+    var offset = new THREE.Box3().setFromObject(tempObj).getSize().x;
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
 

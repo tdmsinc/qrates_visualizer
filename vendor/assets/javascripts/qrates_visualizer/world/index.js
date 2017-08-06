@@ -55,7 +55,6 @@
     this._alphaMap.needsUpdate = true;
 
     this._scene1 = new THREE.Scene();
-    this._scene2 = new THREE.Scene();
 
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -126,24 +125,6 @@
     this._scene1.add(this._object);
 
     var self = this;
-
-    this._scene2 = this._scene1.clone();
-
-    this._scene2.children.forEach(function(child) {
-      if ('container' === child.name) {
-        child.children.forEach(function(_child) {
-          if ('vinyl' === _child.name) {
-            _child.children[0].material = new THREE.MeshPhongMaterial({
-              alphaMap: self._alphaMap,
-              metal: true,
-              needsUpdate: true,
-              shininess: 100,
-              transparent: true
-            });
-          }
-        });
-      }
-    });
 
     this.initGui();
 
@@ -480,12 +461,6 @@
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         self._object.rotation.z = self._flipRotation;
-
-        self._scene2.children.forEach(function(child) {
-          if ('container' === child.name) {
-            child.rotation.z = self._flipRotation;
-          }
-        });
       })
       .start();
   };
@@ -824,8 +799,6 @@
 
     this._renderer.clear();
     this._renderer.render(this._scene1, this._camera);
-    // this._renderer.clearDepth();
-    // this._renderer.render(this._scene2, this._camera);\
 
     this._request = requestAnimationFrame(this.draw.bind(this));
   };

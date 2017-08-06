@@ -301,33 +301,50 @@
     this.rotation = new THREE.Vector3(0, 0, 0);
 
     this._opacityTween = new TWEEN.Tween(this);
-    console.log('vinyl size', this._size);
+
     if (this._heavy) {
-      this._container.add(this._models[this._size]['heavy'].scene);
+      // this._container.add(this._models[this._size]['heavy'].scene);
     } else {
-      this._container.add(this._models[this._size]['normal'].scene);
+      // this._container.add(this._models[this._size]['normal'].scene);
     }
 
     var self = this;
 
+    // マテリアルを初期化
     Object.keys(self._models).forEach(function(size) {
       Object.keys(self._models[size]).forEach(function(type) {
+
+        var name = 'vinyl-' + size + '-' + type;
+
+        if (!self._models[size][type]) {
+          console.warn('vinyl ' + name + ' is ' + self._models[size][type]);
+          return;
+        }
+        
+        self._models[size][type].name = name;
+        self._textures[size][type].name = name;
+
         self.initMaterial(self._models[size][type], self._textures[size][type]);
       });
     });
 
     this.setOpacity(this._materialParams.opacity);
+
+    // this._container.add(this._models['12']['normal'].scene);
   };
 
-  Vinyl.prototype.initMaterial = function(model, tex, bumpMapTex) {
+  // モデルのマテリアルを初期化する
+  Vinyl.prototype.initMaterial = function(model, textures) {
     
     if (!model) {
       return false;
     }
 
-    model.name = 'vinyl';
-
     var self = this;
+
+    if (-1 < model.name.indexOf('with-label')) {
+      console.log('with label', model);
+    }
 
     model.scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
@@ -342,13 +359,14 @@
         }
 
         child.material = new THREE.MeshPhongMaterial({
-          ambient: new THREE.Color(1, 1, 1),
-          bumpMap: bumpMapTex,
+          alphaMap: textures['alpha'] || new THREE.Texture(),
+          aoMap: textures['ao'] || new THREE.Texture(),
+          bumpMap: textures['bumpmap'] || new THREE.Texture(),
           bumpScale: bumpScale,
           color: self._color,
-          combine: THREE.Multiply,
+          // combine: THREE.Multiply,
           envMap: self._textures.envMap,
-          map: self.TYPE_SPLATTER === self._type ? tex : null,
+          map: self.TYPE_SPLATTER === self._type ? textures['color'] : new THREE.Texture(),
           needsUpdate: true,
           opacity: self.TYPE_SPLATTER === self._type ? 0.7 : self._materialParams.opacity,
           reflectivity: self.TYPE_SPLATTER === self._type ? 0.1 : self._materialParams.reflectivity,
@@ -357,7 +375,7 @@
           //side: THREE.DoubleSide,
           specular: 0x363636,
           transparent: true,
-          metal: self._materialParams.metal,
+          // metal: self._materialParams.metal,
           shading: THREE.SmoothShading,
         });
 

@@ -4,8 +4,8 @@
         <contributor>
             <authoring_tool>CINEMA4D 16.011 COLLADA Exporter</authoring_tool>
         </contributor>
-        <created>2017-07-30T11:48:24Z</created>
-        <modified>2017-07-30T11:48:24Z</modified>
+        <created>2017-08-04T08:48:32Z</created>
+        <modified>2017-08-04T08:48:32Z</modified>
         <unit meter="0.01" name="centimeter"/>
         <up_axis>Y_UP</up_axis>
     </asset>
@@ -195,7 +195,7 @@
     </library_geometries>
     <library_visual_scenes>
         <visual_scene id="ID13">
-            <node id="ID14" name="VINYL_Normal_edge_thick_unify_&#x713C;&#x6210;&#x5F8C;&#x78BA;&#x8A8D;&#x7528;">
+            <node id="ID14" name="vinyl">
                 <translate sid="translate">0 0 -0</translate>
                 <rotate sid="rotateY">0 1 0 -0</rotate>
                 <rotate sid="rotateX">1 0 0 0</rotate>
@@ -211,7 +211,7 @@
                     </bind_material>
                 </instance_geometry>
             </node>
-            <node id="ID23" name="LABEL_normal_hekomi_ari_sideAB_unify_&#x713C;&#x6210;&#x5F8C;&#x78BA;&#x8A8D;&#x7528;">
+            <node id="ID23" name="label">
                 <translate sid="translate">7.50737e-10 0.01 -1.05166e-18</translate>
                 <rotate sid="rotateY">0 1 0 180</rotate>
                 <rotate sid="rotateX">1 0 0 -7.01671e-15</rotate>
