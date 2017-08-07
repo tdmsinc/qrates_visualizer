@@ -11,30 +11,35 @@
   function Sleeve() {
   }
 
+  /**
+   * Constants
+   */
+  
+  Sleeve.Size = {
+    SIZE_7: '7',
+    SIZE_10: '10',
+    SIZE_12: '12'
+  };
+
+  Sleeve.Format = {
+    SINGLE_NO_SPINE: 'no-spine',
+    SINGLE: 'single',
+    DOUBLE: 'double',
+    GATEFOLD: 'gatefold'
+  };
+
+  Sleeve.Hole = {
+    NO_HOLE: 'normal',
+    HOLED: 'holed'
+  };
+
+  //--------------------------------------------------------------
   Sleeve.prototype.setup = function(scene, assets, opts, container) {
-
-    // サイズ
-    this.SIZE_7 = '7';
-    this.SIZE_10 = '10';
-    this.SIZE_12 = '12';
-
-    // スリーブのタイプ
-    this.SleeveFormat = {
-      SINGLE_NO_SPINE: 'no-spine',
-      SINGLE: 'single',
-      DOUBLE: 'double',
-      GATEFOLD: 'gatefold'
-    };
-    
-    // ホールオプション用の定数
-    this.NO_HOLED = 'normal';
-    this.HOLED = 'holed';
-
     opts = opts || {
       glossFinish: false,
-      hole: this.NO_HOLED,
-      size: this.SIZE_7,
-      format: this.SleeveFormat.SINGLE_NO_SPINE,
+      hole: Sleeve.Hole.NO_HOLED,
+      size: Sleeve.Size.SIZE_7,
+      format: Sleeve.Format.SINGLE_NO_SPINE,
       textures: {
 
       }
@@ -282,9 +287,9 @@
     // プリントスリーブとしてテクスチャーが渡された場合
     if (opts.textures) {
       if (this._holed) {
-        this.updateTexture(this._textures[this._size][this._format][this.HOLED], opts.textures);
+        this.updateTexture(this._textures[this._size][this._format][Sleev.Hole.HOLED], opts.textures);
       } else {
-        this.updateTexture(this._textures[this._size][this._format][this.NO_HOLED], opts.textures);
+        this.updateTexture(this._textures[this._size][this._format][Sleev.Hole.NO_HOLED], opts.textures);
       }
     }
 
@@ -327,9 +332,9 @@
 
     // currentObject = ステージに配置されるオブジェクト
     if (this._holed) {
-      this._currentObject = this._models[this._size][this._format][this.HOLED];
+      this._currentObject = this._models[this._size][this._format][Sleeve.Hole.HOLED];
     } else {
-      this._currentObject = this._models[this._size][this._format][this.NO_HOLED];
+      this._currentObject = this._models[this._size][this._format][Sleeve.Hole.NO_HOLED];
     }
 
     this.position = new THREE.Vector3(0, 0, 0);
@@ -338,7 +343,7 @@
     this._positionTween = new TWEEN.Tween(this.position);
     this._opacityTween = new TWEEN.Tween(this);
 
-    this.setType(this._format);
+    this.setFormat(this._format);
 
     this._currentObject.name = 'sleeve';
 
@@ -349,6 +354,7 @@
     this.setOpacity(1);
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.initMaterial = function(model, textures) {
 
     if (!model || !textures) {
@@ -386,6 +392,7 @@
     return model;
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.updateTexture = function(tex, img) {
     if (!tex || !img) {
       return;
@@ -396,6 +403,7 @@
     tex.needsUpdate = true;
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.setTexture = function(sideA, sideB, spine) {
     if (sideA) {
       this.updateTexture(this._textures.front, sideA);
@@ -408,6 +416,7 @@
     }
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.clearTexture = function(side) {
     switch(side){
       case 'sideA':
@@ -419,22 +428,22 @@
     }
   };
 
-  Sleeve.prototype.setType = function(format) {
-
+  //--------------------------------------------------------------
+  Sleeve.prototype.setFormat = function(format) {
     var idx = [
-      this.SleeveFormat.SINGLE_NO_SPINE, 
-      this.SleeveFormat.SINGLE, 
-      this.SleeveFormat.DOUBLE, 
-      this.SleeveFormat.GATEFOLD
+      Sleeve.Format.SINGLE_NO_SPINE, 
+      Sleeve.Format.SINGLE, 
+      Sleeve.Format.DOUBLE, 
+      Sleeve.Format.GATEFOLD
     ].indexOf(format);
 
     if (-1 === idx) {
-      console.error('Sleeve.prototype.setType: specified format "' + format + '" not found');
+      console.error('Sleeve.prototype.setFormat: specified format "' + format + '" not found');
       return;
     }
 
     if (this._format === format) {
-      console.info('Sleeve.prototype.setType: specified format "' + format + '" is already set');
+      console.info('Sleeve.prototype.setFormat: specified format "' + format + '" is already set');
       return;
     }
 
@@ -464,9 +473,15 @@
     this._container.add(this._currentObject.scene);
 
     this.setOpacity(1.0, 0);
-
   };
 
+  //--------------------------------------------------------------
+  Sleeve.prototype.setType = function(format) {
+    console.warn('Sleeve.setType(format) is deplicated. use Sleeve.setFormat(format) instead.');
+    this.setFormat(format);
+  };
+
+  //--------------------------------------------------------------
   Sleeve.prototype.setSize = function(size) {
     if (!size) {
       console.error('[Sleeve::setSize] no size specified');
@@ -502,6 +517,7 @@
     });
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.setOpacity = function(to, duration) {
     var self = this;
 
@@ -528,11 +544,13 @@
       .start();
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.setHole = function(value) {
     this._holed = value;
     this.setSize(this._size);
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.setGlossFinish = function(yn) {
     if (this.TYPE_BLACK === this._format || this.TYPE_WHITE === this._format) {
       return;
@@ -584,6 +602,7 @@
     });
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.setCoveredRatio = function(ratio, opts, updateCallback, completeCallback) {
     opts.duration = undefined !== opts.duration ? opts.duration : 500;
     opts.delay    = undefined !== opts.delay    ? opts.delay    : 0;
@@ -614,6 +633,7 @@
     tempObj = null;
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.setBumpScale = function(value) {
     var self = this;
     self._bumpScale = value;
@@ -634,24 +654,6 @@
 
     this._currentObject.scene.position.set(this.position.x, this.position.y, this.position.z);
     this._currentObject.scene.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
-
-    // Object.keys(self._front).forEach(function(key) {
-    //   self._front[key].position.set(self.position.x, self.position.y, self.position.z);
-    //   self._front[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
-    //   self._front[key].children[0].material.opacity = self._opacity;
-    // });
-
-    // Object.keys(self._back).forEach(function(key) {
-    //   self._back[key].position.set(self.position.x, self.position.y, self.position.z);
-    //   self._back[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
-    //   self._back[key].children[0].material.opacity = self._opacity;
-    // });
-
-    // Object.keys(self._spine).forEach(function(key) {
-    //   self._spine[key].position.set(self.position.x, self.position.y, self.position.z);
-    //   self._spine[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
-    //   // self._spine[key].children[0].material.opacity = self._opacity;
-    // });
   };
 
 })(this, (this.qvv = (this.qvv || {})));

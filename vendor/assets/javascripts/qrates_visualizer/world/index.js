@@ -225,8 +225,8 @@
       out: false,
       zoom: 1.0,
       'covered ratio': 0.8,
-      //bumpScale: 0.282,
-      bumpScale: 0.3,
+      'sleeve bump': 0.3,
+      'vinyl bump': 0.3,
       sleeveX: -15
     };
 
@@ -284,7 +284,8 @@
     var cameraXController = gui.add(cameraProps, 'x', -1000.0, 1000.0);
     var cameraYController = gui.add(cameraProps, 'y', -1000.0, 1000.0);
     var cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
-    var bumpScaleController = gui.add(props, 'bumpScale', 0, 1.0);
+    var sleeveBumpScaleController = gui.add(props, 'sleeve bump', 0, 1.0);
+    var vinylBumpScaleController = gui.add(props, 'vinyl bump', 0, 1.0);
 
     gui.add(this, 'flip');
 
@@ -349,12 +350,20 @@
       self.setCameraPosition( cameraProps.x, cameraProps.y, cameraProps.z, {duration:0});
     });
 
-    bumpScaleController.onChange(function(value) {
+    sleeveBumpScaleController.onChange(function(value) {
       if (!self._vinyl) {
         return;
       }
 
       self._sleeve.setBumpScale(value);
+    });
+
+    vinylBumpScaleController.onChange(function(value) {
+      if (!self._vinyl) {
+        return;
+      }
+
+      self._vinyl.setBumpScale(value);
     });
   };
 

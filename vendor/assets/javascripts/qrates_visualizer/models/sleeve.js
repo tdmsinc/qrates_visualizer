@@ -16,6 +16,28 @@
   exports.Sleeve = Sleeve;
 
   /**
+   * Constants
+   */
+  
+  Sleeve.Size = {
+    SIZE_7: '7',
+    SIZE_10: '10',
+    SIZE_12: '12'
+  };
+
+  Sleeve.Format = {
+    SINGLE_NO_SPINE: 'no-spine',
+    SINGLE: 'single',
+    DOUBLE: 'double',
+    GATEFOLD: 'gatefold'
+  };
+
+  Sleeve.Hole = {
+    NO_HOLE: 'normal',
+    HOLED: 'holed'
+  };
+
+  /**
    * Properties.
    */
 

@@ -16,6 +16,30 @@
   exports.Vinyl = Vinyl;
 
   /**
+   * Constants
+   */
+  
+  Vinyl.Size = {
+    SIZE_7_SMALL_HALL: '7S',
+    SIZE_7_LARGE_HALL: '7L',
+    SIZE_10: '10',
+    SIZE_12: '12'
+  };
+
+  Vinyl.ColorFormat = {
+    BLACK: 'black',
+    COLOR: 'color',
+    SPLATTER: 'splatter'
+  };
+
+  Vinyl.Format = {
+    NORMAL: 'normal',
+    HEAVY: 'heavy',
+    WITH_LABEL: 'with-label',
+    HEAVY_WITH_LABEL: 'heavy-with-label'
+  };
+
+  /**
    * Properties.
    */
 

@@ -11,13 +11,35 @@
   function Vinyl() {
   }
 
+  /**
+   * Constants
+   */
+  Vinyl.Size = {
+    SIZE_7_SMALL_HALL: '7S',
+    SIZE_7_LARGE_HALL: '7L',
+    SIZE_10: '10',
+    SIZE_12: '12'
+  };
+
+  Vinyl.ColorFormat = {
+    BLACK: 'black',
+    COLOR: 'color',
+    SPLATTER: 'splatter'
+  };
+
+  Vinyl.Format = {
+    NORMAL: 'normal',
+    HEAVY: 'heavy',
+    WITH_LABEL: 'with-label',
+    HEAVY_WITH_LABEL: 'heavy-with-label'
+  };
+
+  //--------------------------------------------------------------
   Vinyl.prototype.setup = function(scene, assets, opts, container) {
     opts = opts || {
-      format: 1,
-      size: 1,
+      format: Vinyl.Format.NORMAL,
+      size: Vinyl.Size.SIZE_7_SMALL_HALL,
       color: 0,
-      holeSize: 0,
-      heavy: false,
       speed: 45,
     };
 
@@ -70,37 +92,23 @@
     }
     cubeTexture.needsUpdate = true;
 
-    this.SIZE_7_SMALL_HALL = '7S';
-    this.SIZE_7_LARGE_HALL = '7L';
-    this.SIZE_10 = '10';
-    this.SIZE_12 = '12';
-
-    var sizes = [
-      this.SIZE_7,
-      this.SIZE_10,
-      this.SIZE_12
-    ];
-
-    this.TYPE_BLACK    = 1;
-    this.TYPE_COLOR    = 2;
-    this.TYPE_SPLATTER = 3;
-
     this._container = container;
     this._size = opts.size;
     this._format = opts.format;
-    this._colorType = opts.color_format;
+    this._colorFormat = opts.colorFormat;
     this._defaultColor = 0x000000;
     this._opacity = 0;
     this._rpm = opts.speed;
     this._heavy = opts.heavy;
+    this._bumpScale = 0.3;
     this._enableRotate = false;
     this._opacityTweenDuration = 300;
     this._clock = new THREE.Clock();
 
-    if (this._color_format === this.TYPE_SPLATTER) {
+    if (this._colorFormat === Vinyl.ColorFormat.SPLATTER) {
       this._materialParams = this._materialPresets[1];
       this._color = 0xffffff;
-    } else if (this._color_format === this.TYPE_COLOR) {
+    } else if (this._colorFormat === Vinyl.ColorFormat.COLOR) {
       this._materialParams = this._materialPresets[opts.color];
       this._color = this._materialParams.color;
     } else {
@@ -223,73 +231,73 @@
         },
         'with-label': {
           'vinyl': {
-            'ao': assets['assetsTextureVinylLargeHallWithLabelAo-10'],
-            'bumpmap': assets['assetsTextureVinylLargeHallWithLabelBumpmap-10'],
-            'color': assets['assetsTextureVinylLargeHallWithLabelColor-10']
+            'ao': assets['assetsTextureVinylWithLabelAo-10'],
+            'bumpmap': assets['assetsTextureVinylWithLabelBumpmap-10'],
+            'color': assets['assetsTextureVinylWithLabelColor-10']
           },
           'label': {
-            'ao': assets['assetsTextureVinylLargeHallWithLabelAoForLabel-10'],
-            'bumpmap': assets['assetsTextureVinylLargeHallWithLabelBumpmapForLabel-10'],
-            'color': assets['assetsTextureVinylLargeHallWithLabelColorForLabel-10']
+            'ao': assets['assetsTextureVinylWithLabelAoForLabel-10'],
+            'bumpmap': assets['assetsTextureVinylWithLabelBumpmapForLabel-10'],
+            'color': assets['assetsTextureVinylWithLabelColorForLabel-10']
           }
         },
         'heavy': {
-          'alpha': assets['assetsTextureVinylLargeHallHeavyAlpha-10'],
-          'ao': assets['assetsTextureVinylLargeHallHeavyAo-10'],
-          'bumpmap': assets['assetsTextureVinylLargeHallHeavyBumpmap-10'],
-          'color': assets['assetsTextureVinylLargeHallHeavyColor-10']
+          'alpha': assets['assetsTextureVinylHeavyAlpha-10'],
+          'ao': assets['assetsTextureVinylHeavyAo-10'],
+          'bumpmap': assets['assetsTextureVinylHeavyBumpmap-10'],
+          'color': assets['assetsTextureVinylHeavyColor-10']
         },
         'heavy-with-label': {
           'vinyl': {
-            'ao': assets['assetsTextureVinylLargeHallHeavyWithLabelAo-10'],
-            'bumpmap': assets['assetsTextureVinylLargeHallHeavyWithLabelBumpmap-10'],
-            'color': assets['assetsTextureVinylLargeHallHeavyWithLabelColor-10']
+            'ao': assets['assetsTextureVinylHeavyWithLabelAo-10'],
+            'bumpmap': assets['assetsTextureVinylHeavyWithLabelBumpmap-10'],
+            'color': assets['assetsTextureVinylHeavyWithLabelColor-10']
           },
           'label': {
-            'ao': assets['assetsTextureVinylLargeHallHeavyWithLabelAoForLabel-10'],
-            'bumpmap': assets['assetsTextureVinylLargeHallHeavyWithLabelBumpmapForLabel-10'],
-            'color': assets['assetsTextureVinylLargeHallHeavyWithLabelColorForLabel-10'],
-            'color-ao': assets['assetsTextureVinylLargeHallHeavyWithLabelColorAoForLabel-10']
+            'ao': assets['assetsTextureVinylHeavyWithLabelAoForLabel-10'],
+            'bumpmap': assets['assetsTextureVinylHeavyWithLabelBumpmapForLabel-10'],
+            'color': assets['assetsTextureVinylHeavyWithLabelColorForLabel-10'],
+            'color-ao': assets['assetsTextureVinylHeavyWithLabelColorAoForLabel-10']
           }
         }
       },
       '12': {
         'normal': {
-          'alpha': assets['assetsTextureVinylLargeHallAlpha-12'],
-          'ao': assets['assetsTextureVinylLargeHallAo-12'],
-          'bumpmap': assets['assetsTextureVinylLargeHallBumpmap-12'],
-          'color': assets['assetsTextureVinylLargeHallColor-12']
+          'alpha': assets['assetsTextureVinylAlpha-12'],
+          'ao': assets['assetsTextureVinylAo-12'],
+          'bumpmap': assets['assetsTextureVinylBumpmap-12'],
+          'color': assets['assetsTextureVinylColor-12']
         },
         'with-label': {
           'vinyl': {
-            'ao': assets['assetsTextureVinylLargeHallWithLabelAo-12'],
-            'bumpmap': assets['assetsTextureVinylLargeHallWithLabelBumpmap-12'],
-            'color': assets['assetsTextureVinylLargeHallWithLabelColor-12']
+            'ao': assets['assetsTextureVinylWithLabelAo-12'],
+            'bumpmap': assets['assetsTextureVinylWithLabelBumpmap-12'],
+            'color': assets['assetsTextureVinylWithLabelColor-12']
           },
           'label': {
-            'ao': assets['assetsTextureVinylLargeHallWithLabelAoForLabel-12'],
-            'bumpmap': assets['assetsTextureVinylLargeHallWithLabelBumpmapForLabel-12'],
-            'color': assets['assetsTextureVinylLargeHallWithLabelColorForLabel-12'],
-            'color-ao': assets['assetsTextureVinylLargeHallWithLabelColorAoForLabel-12']
+            'ao': assets['assetsTextureVinylWithLabelAoForLabel-12'],
+            'bumpmap': assets['assetsTextureVinylWithLabelBumpmapForLabel-12'],
+            'color': assets['assetsTextureVinylWithLabelColorForLabel-12'],
+            'color-ao': assets['assetsTextureVinylWithLabelColorAoForLabel-12']
           }
         },
         'heavy': {
-          'alpha': assets['assetsTextureVinylLargeHallHeavyAlpha-12'],
-          'ao': assets['assetsTextureVinylLargeHallHeavyAo-12'],
-          'bumpmap': assets['assetsTextureVinylLargeHallHeavyBumpmap-12'],
-          'color': assets['assetsTextureVinylLargeHallHeavyColor-12']
+          'alpha': assets['assetsTextureVinylHeavyAlpha-12'],
+          'ao': assets['assetsTextureVinylHeavyAo-12'],
+          'bumpmap': assets['assetsTextureVinylHeavyBumpmap-12'],
+          'color': assets['assetsTextureVinylHeavyColor-12']
         },
         'heavy-with-label': {
           'vinyl': {
-            'ao': assets['assetsTextureVinylLargeHallHeavyWithLabelAo-12'],
-            'bumpmap': assets['assetsTextureVinylLargeHallHeavyWithLabelBumpmap-12'],
-            'color': assets['assetsTextureVinylLargeHallHeavyWithLabelColor-12']
+            'ao': assets['assetsTextureVinylHeavyWithLabelAo-12'],
+            'bumpmap': assets['assetsTextureVinylHeavyWithLabelBumpmap-12'],
+            'color': assets['assetsTextureVinylHeavyWithLabelColor-12']
           },
           'label': {
-            'ao': assets['assetsTextureVinylLargeHallHeavyWithLabelAoForLabel-12'],
-            'bumpmap': assets['assetsTextureVinylLargeHallHeavyWithLabelBumpmapForLabel-12'],
-            'color': assets['assetsTextureVinylLargeHallHeavyWithLabelColorForLabel-12'],
-            'color-ao': assets['assetsTextureVinylLargeHallHeavyWithLabelColorAoForLabel-12']
+            'ao': assets['assetsTextureVinylHeavyWithLabelAoForLabel-12'],
+            'bumpmap': assets['assetsTextureVinylHeavyWithLabelBumpmapForLabel-12'],
+            'color': assets['assetsTextureVinylHeavyWithLabelColorForLabel-12'],
+            'color-ao': assets['assetsTextureVinylHeavyWithLabelColorAoForLabel-12']
           }
         }
       },
@@ -319,13 +327,6 @@
 
     this._opacityTween = new TWEEN.Tween(this);
 
-    // TODO: heavy オプション対応
-    if (this._heavy) {
-
-    } else {
-
-    }
-
     // マテリアルを初期化
     Object.keys(self._models).forEach(function(size) {
       Object.keys(self._models[size]).forEach(function(type) {
@@ -350,10 +351,12 @@
 
     this.setOpacity(this._materialParams.opacity);
 
-    this._container.add(this._models[this._size]['normal'].scene);
+    this._currentObject = this._models[this._size][this._format];
+    this._container.add(this._currentObject.scene);
+    console.log('current vinyl', this._currentObject);
   };
 
-  // モデルのマテリアルを初期化する
+  //--------------------------------------------------------------
   Vinyl.prototype.initMaterial = function(model, textures) {
     
     if (!model || !model.scene) {
@@ -364,34 +367,23 @@
 
     model.scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
-        //var bumpScale = 0.02;
-        var bumpScale = 0.03;
+        self._bumpScale = 0.03;
 
-        if (self.TYPE_COLOR === self._format) {
-          //bumpScale = 0.04;
-          bumpScale = 0.06;
-        } else if (self.TYPE_SPLATTER === self._format) {
-          bumpScale = 0.28;
+        if (Vinyl.ColorFormat.COLOR === self._colorFormat) {
+          self._bumpScale = 0.06;
+        } else if (Vinyl.ColorFormat.SPLATTER === self._colorFormat) {
+          self._bumpScale = 0.28;
         }
         
-        // child.material = new THREE.MeshPhongMaterial({
-        //   bumpScale: bumpScale,
-        //   color: self._color,
-        //   // combine: THREE.Multiply,
-        //   // envMap: self._textures.envMap,
-        //   // map: self.TYPE_SPLATTER === self._format ? textures['color'] : new THREE.Texture(),
-        //   needsUpdate: true,
-        //   opacity: self.TYPE_SPLATTER === self._format ? 0.7 : self._materialParams.opacity,
-        //   reflectivity: self.TYPE_SPLATTER === self._format ? 0.1 : self._materialParams.reflectivity,
-        //   refractionRatio: self._materialParams.refractionRatio,
-        //   shininess: self._materialParams.shininess,
-        //   //side: THREE.DoubleSide,
-        //   specular: 0x363636,
-        //   transparent: true,
-        //   // metal: self._materialParams.metal,
-        //   shading: THREE.SmoothShading,
-        // });
-        console.log('vinyl name:', child.name, ', material: ', child.material);
+        child.material.bumpScale = self._bumpScale;
+        child.material.opacity = self._colorFormat === Vinyl.ColorFormat.SPLATTER ? 0.7 : self._materialParams.opacity;
+        child.material.reflectivity = self._colorFormat === Vinyl.ColorFormat.SPLATTER ? 0.1 : self._materialParams.reflectivity;
+        child.material.reflectivity = self._materialParams.refractionRatio;
+        child.material.shininess = self._materialParams.shininess;
+        child.material.specular = new THREE.Color(0x363636);
+        child.material.transparent = true;
+        child.material.shading = THREE.SmoothShading;
+
         if (-1 < model.assetName.indexOf('with-label')) {
           if ('vinyl' === child.name) {
             child.material.aoMap = textures['vinyl']['ao'];
@@ -446,9 +438,6 @@
           }
         }
 
-        console.log('initMaterial model: ', model);
-        console.log('initMaterial textures: ', textures);
-
         child.geometry.computeVertexNormals();
       }
     });
@@ -456,6 +445,7 @@
     return model;
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.updateTexture = function(tex, img) {
     if (!tex || !img) {
       return;
@@ -467,8 +457,9 @@
     tex.needsUpdate = true;
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setTexture = function(sideA, sideB) {
-    if (this.TYPE_SPLATTER !== this._color_format) {
+    if (Vinyl.ColorFormat.SPLATTER !== this._colorFormat) {
       return false;
     }
 
@@ -479,37 +470,41 @@
 
       Object.keys(self._models).forEach(function(size) {
         Object.keys(self._models[size]).forEach(function(type) {
-          var tex = self.TYPE_SPLATTER === self._format ? self._textures[size][type] : new THREE.Texture();
+          var tex = Vinyl.ColorFormat.SPLATTER === self._colorFormat ? self._textures[size][type] : new THREE.Texture();
           self.initMaterial(self._models[size][type], tex);
         });
       });
     }
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setSideABumpMapTexture = function(image) {
     this.updateTexture(this._textures.bumpMap['front-' + self._size], image);
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setSideBBumpMapTexture = function(image) {
     this.updateTexture(this._textures.bumpMap['back-' + self._size], image);
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setBumpScale = function(value) {
     var self = this;
+    self._bumpScale = value;
 
-    // Object.keys(self._front).forEach(function(key) {
-    //   self._front[key].traverse(function(child) {
-    //     if (child instanceof THREE.Mesh) {
-    //       child.material.bumpScale = value;
-    //     }
-    //   });
-    // });
+    self._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.bumpScale = self._bumpScale;
+      }
+    });
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.getBumpScale = function() {
     return this._models[this._size][this._size].children[0].material.bumpScale;
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setSize = function(size) {
     if (!size) {
       console.error('[Vinyl::setSize] no size specified');
@@ -524,7 +519,7 @@
 
     Object.keys(self._models).forEach(function(size) {
       Object.keys(self._models[size]).forEach(function(type) {
-        var tex = self.TYPE_SPLATTER === self._colorType ? self._textures[size][type] : new THREE.Texture();
+        var tex = Vinyl.ColorFormat.SPLATTER === self._colorFormat ? self._textures[size][type] : new THREE.Texture();
         self.initMaterial(self._models[size][type], tex);
       });
     });
@@ -535,14 +530,20 @@
     this.setOpacity(this._materialParams.opacity);
   };
 
-  Vinyl.prototype.setType = function(colorType) {
-    if (!colorType) {
+  //--------------------------------------------------------------
+  Vinyl.prototype.setFormat = function(format) {
+
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setColorFormat = function(format) {
+    if (!format) {
       return;
     }
 
-    this._color_format = colorType;
+    this._colorFormat = format;
 
-    if (this.TYPE_SPLATTER === this._color_format) {
+    if (Vinyl.ColorFormat.SPLATTER === this._colorFormat) {
       this._materialParams = this._materialPresets[1];
     } else {
       this._materialParams = this._materialPresets[0];
@@ -554,7 +555,7 @@
 
     Object.keys(self._models).forEach(function(size) {
       Object.keys(self._models[size]).forEach(function(type) {
-        var tex = self.TYPE_SPLATTER === self._colorType ? self._textures[size][type] : new THREE.Texture();
+        var tex = Vinyl.ColorFormat.SPLATTER === self._colorFormat ? self._textures[size][type] : new THREE.Texture();
         self.initMaterial(self._models[size][type], tex);
       });
     });
@@ -563,21 +564,28 @@
     this.setOpacity(this._materialParams.opacity);
   };
 
+  //--------------------------------------------------------------
+  Vinyl.prototype.setType = function(colorType) {
+    this.setColorFormat(colorType);
+  };
+
+  //--------------------------------------------------------------
   Vinyl.prototype.setColor = function(index) {
     this._materialParams = this._materialPresets[index];
-    this._color = this.TYPE_SPLATTER === this._colorType ? 0xFFFFFF : this._materialParams.color;
-    this._opacity = this.TYPE_SPLATTER === this._colorType ? 0.8 : this._materialParams.opacity;
+    this._color = Vinyl.ColorFormat.SPLATTER === this._colorFormat ? 0xFFFFFF : this._materialParams.color;
+    this._opacity = Vinyl.ColorFormat.SPLATTER === this._colorFormat ? 0.8 : this._materialParams.opacity;
 
     var self = this;
 
     Object.keys(self._models).forEach(function(size) {
       Object.keys(self._models[size]).forEach(function(type) {
-        var tex = self.TYPE_SPLATTER === self._colorType ? self._textures[size][type] : null;
+        var tex = Vinyl.ColorFormat.SPLATTER === self._colorFormat ? self._textures[size][type] : null;
         self.initMaterial(self._models[size][type], tex);
       });
     });
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setOpacity = function(to, duration) {
     var self = this;
 
@@ -605,14 +613,17 @@
       .start();
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setEnableRotate = function(yn) {
     this._enableRotate = yn;
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setRPM = function(rpm) {
     this._rpm = rpm;
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setHeavy = function(yn) {
     
     if (this._heavy === yn) {
@@ -630,10 +641,12 @@
     // TODO: heavy オプションの適用
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.setVisibility = function(yn, opts, callback) {
     this._models[this._size][this._format].scene.visible = yn;
   };
 
+  //--------------------------------------------------------------
   Vinyl.prototype.update = function() {
 
     if (!(this._models && this._models[this._size][this._format])) {

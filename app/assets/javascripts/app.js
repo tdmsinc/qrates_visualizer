@@ -8,18 +8,16 @@ var canvas_width = window.innerWidth, canvas_height = window.innerHeight;
 var defaults = {
   vinyl: {
     format: qvv.VinylVisualizer.VinylFormat.NORMAL,
-    size: qvv.VinylVisualizer.Size.SIZE_12,
+    size: qvv.VinylVisualizer.VinylSize.SIZE_12,
     color: 0,
-    colorType: qvv.VinylVisualizer.VinylColorType.BLACK,
+    colorFormat: qvv.VinylVisualizer.VinylColorFormat.BLACK,
     splatterColor: 0,
-    holeSize: 0,
-    heavy: false,
     speed: 45,
   },
   sleeve: {
     format: qvv.VinylVisualizer.SleeveFormat.DOUBLE,
-    size: qvv.VinylVisualizer.Size.SIZE_12,
-    hole: qvv.VinylVisualizer.Hole.NO_HOLE,
+    size: qvv.VinylVisualizer.SleeveSize.SIZE_12,
+    hole: qvv.VinylVisualizer.SleeveHole.NO_HOLE,
     glossFinish: false
   }
 };

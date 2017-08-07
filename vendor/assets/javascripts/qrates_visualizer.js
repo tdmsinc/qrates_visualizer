@@ -50,42 +50,23 @@
 
   Emitter(VinylVisualizer.prototype);
 
-  // vinyl, sleeve 共通の定数 -----------------------
-  VinylVisualizer.Size = {
-    SIZE_7_SMALL_HALL: '7S',
-    SIZE_7_LARGE_HALL: '7L',
-    SIZE_10: '10',
-    SIZE_12: '12'
-  };
+  // vinyl のサイズ -----------------------
+  VinylVisualizer.VinylSize = Vinyl.Size;
 
-  // vinyl のタイプ -----------------------
-  VinylVisualizer.VinylFormat = {
-    NORMAL: 'normal',
-    HEAVY: 'heavy',
-    WITH_LABEL: 'with-label',
-    HEAVY_WITH_LABEL: 'heavy-with-label'
-  };
+  // vinyl のカラーフォーマット -----------------------
+  VinylVisualizer.VinylColorFormat = Vinyl.ColorFormat;
 
-  // vinyl のカラータイプ -----------------------
-  VinylVisualizer.VinylColorType = {
-    BLACK: 'black',
-    COLOR: 'color',
-    SPLATTER: 'splatter'
-  };
+  // vinyl のフォーマット -----------------------
+  VinylVisualizer.VinylFormat = Vinyl.Format;
 
-  // sleeve のタイプ -----------------------
-  VinylVisualizer.SleeveFormat = {
-    SINGLE_NO_SPINE: 'no-spine',
-    SINGLE: 'single',
-    DOUBLE: 'double',
-    GATEFOLD: 'gatefold'
-  };
+  // sleeve のサイズ -----------------------
+  VinylVisualizer.SleeveSize = Sleeve.Size;
+
+  // sleeve のフォーマット -----------------------
+  VinylVisualizer.SleeveFormat = Sleeve.Format;
 
   // sleeve のホールオプション -----------------------
-  VinylVisualizer.Hole = {
-    NO_HOLE: 'normal',
-    HOLED: 'holed'
-  };
+  VinylVisualizer.SleeveHole = Sleeve.Hole;
 
   /**
    * Setup visualizer.
