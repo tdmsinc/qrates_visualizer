@@ -7,22 +7,19 @@ var canvas_width = window.innerWidth, canvas_height = window.innerHeight;
 //
 var defaults = {
   vinyl: {
-    type: qvv.VinylVisualizer.VINYL_TYPE.NORMAL,
-    size: qvv.VinylVisualizer.SIZE.SIZE_12,
+    format: qvv.VinylVisualizer.VinylFormat.NORMAL,
+    size: qvv.VinylVisualizer.Size.SIZE_12,
     color: 0,
-    colorType: qvv.VinylVisualizer.VINYL_COLOR_TYPE.BLACK,
+    colorType: qvv.VinylVisualizer.VinylColorType.BLACK,
     splatterColor: 0,
     holeSize: 0,
     heavy: false,
     speed: 45,
   },
-  label: {
-    type: 1
-  },
   sleeve: {
-    type: qvv.VinylVisualizer.SLEEVE_TYPE.SINGLE_NO_SPINE,
-    size: qvv.VinylVisualizer.SIZE.SIZE_12,
-    hole: false,
+    format: qvv.VinylVisualizer.SleeveFormat.DOUBLE,
+    size: qvv.VinylVisualizer.Size.SIZE_12,
+    hole: qvv.VinylVisualizer.Hole.NO_HOLE,
     glossFinish: false
   }
 };
@@ -30,8 +27,6 @@ var defaults = {
 //
 // initialize vinyl visualizer.
 //
-console.log('qvv.VinylVisualizer.SIZE.SIZE_12', qvv.VinylVisualizer.SIZE.SIZE_12);
-console.log('defaults', defaults);
 var el = document.querySelector('.vinyl-visualizer-container');
 var vv = new qvv.VinylVisualizer(el, {
   width: canvas_width,
@@ -51,7 +46,6 @@ var vv = new qvv.VinylVisualizer(el, {
   },
   defaults: {
     vinyl: defaults.vinyl,
-    label: defaults.label,
     sleeve: defaults.sleeve
   }
 });

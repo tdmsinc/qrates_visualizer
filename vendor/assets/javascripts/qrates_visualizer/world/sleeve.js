@@ -19,20 +19,22 @@
     this.SIZE_12 = '12';
 
     // スリーブのタイプ
-    this.TYPE_SINGLE_NO_SPINE = 'no-spine';
-    this.TYPE_SINGLE = 'single';
-    this.TYPE_DOUBLE = 'double';
-    this.TYPE_GATEFOLD = 'gatefold';
+    this.SleeveFormat = {
+      SINGLE_NO_SPINE: 'no-spine',
+      SINGLE: 'single',
+      DOUBLE: 'double',
+      GATEFOLD: 'gatefold'
+    };
     
     // ホールオプション用の定数
-    this.NO_HOLED = 'default';
+    this.NO_HOLED = 'normal';
     this.HOLED = 'holed';
 
     opts = opts || {
       glossFinish: false,
-      hole: false,
+      hole: this.NO_HOLED,
       size: this.SIZE_7,
-      type: this.TYPE_SINGLE_NO_SPINE,
+      format: this.SleeveFormat.SINGLE_NO_SPINE,
       textures: {
 
       }
@@ -43,65 +45,66 @@
     this._container = container;
     this._size = opts.size;
     this._holed = opts.hole;
-    this._type = opts.type;
+    this._format = opts.format;
     this._currentTextures = opts.textures;
     this._opacity = 0.0;
     this._coveredRatio = 0.0;
+    this._bumpScale = 0.3;
     this._glossFinish = opts.glossFinish;
     this._opacityTweenDuration = 300;
 
     this._models = {
       '7': {
         'no-spine': {
-          'default': assets['assetsModelSleeveSingleNoSpine-7'],
+          'normal': assets['assetsModelSleeveSingleNoSpine-7'],
           'holed': assets['assetsModelSleeveSingleNoSpineHoled-7']
         },
         'single': {
-          'default': assets['assetsModelSleeveSingleNoSpine-7'],
-          'holed': assets['assetsModelSleeveSingleNoSpineHoled-7']
+          'normal': assets['assetsModelSleeveSingle-7'],
+          'holed': assets['assetsModelSleeveSingleHoled-7']
         },
         'double': {
-          'default': assets['assetsModelSleeveSingleNoSpine-7'],
-          'holed': assets['assetsModelSleeveSingleNoSpineHoled-7']
+          'normal': assets['assetsModelSleeveDouble-7'],
+          'holed': assets['assetsModelSleeveDoubleHoled-7']
         },
         'gatefold': {
-          'default': assets['assetsModelSleeveGatefold-7']
+          'normal': assets['assetsModelSleeveGatefold-7']
         }
       },
 
       '10': {
         'no-spine': {
-          'default': assets['assetsModelSleeveSingleNoSpine-10'],
+          'normal': assets['assetsModelSleeveSingleNoSpine-10'],
           'holed': assets['assetsModelSleeveSingleNoSpineHoled-10']
         },
         'single': {
-          'default': assets['assetsModelSleeveSingleNoSpine-10'],
-          'holed': assets['assetsModelSleeveSingleNoSpineHoled-10']
+          'normal': assets['assetsModelSleeveSingle-10'],
+          'holed': assets['assetsModelSleeveSingleHoled-10']
         },
         'double': {
-          'default': assets['assetsModelSleeveSingleNoSpine-10'],
-          'holed': assets['assetsModelSleeveSingleNoSpineHoled-10']
+          'normal': assets['assetsModelSleeveDouble-10'],
+          'holed': assets['assetsModelSleeveDoubleHoled-10']
         },
         'gatefold': {
-          'default': assets['assetsModelSleeveGatefold-10']
+          'normal': assets['assetsModelSleeveGatefold-10']
         }
       },
 
       '12': {
         'no-spine': {
-          'default': assets['assetsModelSleeveSingleNoSpine-12'],
+          'normal': assets['assetsModelSleeveSingleNoSpine-12'],
           'holed': assets['assetsModelSleeveSingleNoSpineHoled-12']
         },
         'single': {
-          'default': assets['assetsModelSleeveSingleNoSpine-12'],
-          'holed': assets['assetsModelSleeveSingleNoSpineHoled-12']
+          'normal': assets['assetsModelSleeveSingle-12'],
+          'holed': assets['assetsModelSleeveSingleHoled-12']
         },
         'double': {
-          'default': assets['assetsModelSleeveSingleNoSpine-12'],
-          'holed': assets['assetsModelSleeveSingleNoSpineHoled-12']
+          'normal': assets['assetsModelSleeveDouble-12'],
+          'holed': assets['assetsModelSleeveDoubleHoled-12']
         },
         'gatefold': {
-          'default': assets['assetsModelSleeveGatefold-12']
+          'normal': assets['assetsModelSleeveGatefold-12']
         }
       }
     };
@@ -109,16 +112,16 @@
     this._textures = {
       '7': {
         'no-spine': {
-          'default': null,
+          'normal': null,
           'holed': {
-            'ao': assets['assetsTextureSleeveHoledNoSpineAo-7'],
-            'bumpmap': assets['assetsTextureSleeveHoledNoSpineBumpmap-7'],
-            'color': assets['assetsTextureSleeveHoledNoSpineColor-7'],
-            'color-ao': assets['assetsTextureSleeveHoledNoSpineColorAndAo-7']
+            'ao': assets['assetsTextureSleeveSingleNoSpineAo-7'],
+            'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-7'],
+            'color': assets['assetsTextureSleeveSingleNoSpineColor-7'],
+            'color-ao': assets['assetsTextureSleeveSingleNoSpineColorAndAo-7']
           }
         },
         'single': {
-          'default': null,
+          'normal': null,
           'holed': {
             'ao': assets['assetsTextureSleeveSingleHoledAo-7'],
             'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-7'],
@@ -127,7 +130,7 @@
           }
         },
         'double': {
-          'default': null,
+          'normal': null,
           'holed': {
             'ao': assets['assetsTextureSleeveDoubleHoledAo-7'],
             'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-7'],
@@ -136,7 +139,7 @@
           }
         },
         'gatefold': {
-          'default': {
+          'normal': {
             'front': {
               'ao': assets[''],
               'bumpmap': assets[''],
@@ -159,16 +162,16 @@
 
       '10': {
         'no-spine': {
-          'default': null,
+          'normal': null,
           'holed': {
-            'ao': assets['assetsTextureSleeveHoledNoSpineAo-10'],
-            'bumpmap': assets['assetsTextureSleeveHoledNoSpineBumpmap-10'],
-            'color': assets['assetsTextureSleeveHoledNoSpineColor-10'],
-            'color-ao': assets['assetsTextureSleeveHoledNoSpineColorAndAo-10']
+            'ao': assets['assetsTextureSleeveSingleNoSpineAo-10'],
+            'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-10'],
+            'color': assets['assetsTextureSleeveSingleNoSpineColor-10'],
+            'color-ao': assets['assetsTextureSleeveSingleNoSpineColorAndAo-10']
           }
         },
         'single': {
-          'default': null,
+          'normal': null,
           'holed': {
             'ao': assets['assetsTextureSleeveSingleHoledAo-10'],
             'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-10'],
@@ -177,7 +180,7 @@
           }
         },
         'double': {
-          'default': null,
+          'normal': null,
           'holed': {
             'ao': assets['assetsTextureSleeveDoubleHoledAo-10'],
             'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-10'],
@@ -186,7 +189,7 @@
           }
         },
         'gatefold': {
-          'default': {
+          'normal': {
             'front': {
               'ao': assets[''],
               'bumpmap': assets[''],
@@ -208,16 +211,16 @@
 
       '12': {
         'no-spine': {
-          'default': null,
+          'normal': null,
           'holed': {
-            'ao': assets['assetsTextureSleeveHoledNoSpineAo-12'],
-            'bumpmap': assets['assetsTextureSleeveHoledNoSpineBumpmap-12'],
-            'color': assets['assetsTextureSleeveHoledNoSpineColor-12'],
-            'color-ao': assets['assetsTextureSleeveHoledNoSpineColorAndAo-12']
+            'ao': assets['assetsTextureSleeveSingleNoSpineAo-12'],
+            'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-12'],
+            'color': assets['assetsTextureSleeveSingleNoSpineColor-12'],
+            'color-ao': assets['assetsTextureSleeveSingleNoSpineColorAndAo-12']
           }
         },
         'single': {
-          'default': null,
+          'normal': null,
           'holed': {
             'ao': assets['assetsTextureSleeveSingleHoledAo-12'],
             'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-12'],
@@ -226,7 +229,7 @@
           }
         },
         'double': {
-          'default': null,
+          'normal': null,
           'holed': {
             'ao': assets['assetsTextureSleeveDoubleHoledAo-12'],
             'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-12'],
@@ -235,9 +238,9 @@
           }
         },
         'gatefold': {
-          'default': {
+          'normal': {
             'front': {
-              'ao': assets[''],
+              'ao': assets['assetsTextureSleeveGatefoldBackAo-12'],
               'bumpmap': assets[''],
               'color': assets['']
             },
@@ -260,12 +263,28 @@
 
     var self = this;
 
+    // Image として読み込まれたテクスチャを THREE.Texture に変換する
+    (function initTextures (obj) {
+      Object.keys(obj).forEach(function(key) {
+        if (obj[key] instanceof Image) {
+          if (!obj[key]) {
+            console.error('texture ' + obj + ':' + key + ' is ' + obj[key]);
+          }
+
+          obj[key] = new THREE.Texture(obj[key]);
+          obj[key].needsUpdate = true;
+        } else if (obj[key] instanceof Object) {
+          initTextures(obj[key]);
+        }
+      });
+    })(this._textures);
+
     // プリントスリーブとしてテクスチャーが渡された場合
     if (opts.textures) {
       if (this._holed) {
-        this.updateTexture(this._textures[this._size][this._type][this.HOLED], opts.textures);
+        this.updateTexture(this._textures[this._size][this._format][this.HOLED], opts.textures);
       } else {
-        this.updateTexture(this._textures[this._size][this._type][this.NO_HOLED], opts.textures);
+        this.updateTexture(this._textures[this._size][this._format][this.NO_HOLED], opts.textures);
       }
     }
 
@@ -284,21 +303,23 @@
 
           var assetName = size + '-' + type + '-' + opt;
 
-          self._models[size][type][opt].assetName = assetName;
-
-          if (self._models[size][type][opt]) {
-            self._models[size][type][opt].scene.scale.set(5.5, 5.5, 5.5);
-          }
-
           if (self._textures[size][type][opt]) { 
             self._textures[size][type][opt].assetName = assetName;
+          }
+
+          if (self._models[size][type][opt]) {
+            self._models[size][type][opt].assetName = assetName;
+            self._models[size][type][opt].scene.assetName = assetName;
+
+            var scale = 5.5;
+            self._models[size][type][opt].scene.scale.set(scale, scale, scale);
+
+            self.initMaterial(self._models[size][type][opt], self._textures[size][type][opt]);
           }
 
           console.log('------------------' + assetName + '-------------------');
           console.log('model', self._models[size][type][opt]);
           console.log('textures', self._textures[size][type][opt]);
-
-          self.initMaterial(self._models[size][type][opt], self._textures[size][type][opt]);
         });
       });
     });
@@ -306,9 +327,9 @@
 
     // currentObject = ステージに配置されるオブジェクト
     if (this._holed) {
-      this._currentObject = this._models[this._size][this._type][this.HOLED];
+      this._currentObject = this._models[this._size][this._format][this.HOLED];
     } else {
-      this._currentObject = this._models[this._size][this._type][this.NO_HOLED];
+      this._currentObject = this._models[this._size][this._format][this.NO_HOLED];
     }
 
     this.position = new THREE.Vector3(0, 0, 0);
@@ -317,11 +338,12 @@
     this._positionTween = new TWEEN.Tween(this.position);
     this._opacityTween = new TWEEN.Tween(this);
 
-    this.setType(opts.type);
+    this.setType(this._format);
 
     this._currentObject.name = 'sleeve';
 
     this._container.add(this._currentObject.scene);
+    console.log('this._currentObject.scene', this._currentObject.scene);
 
     this._opacity = 0;
     this.setOpacity(1);
@@ -340,19 +362,21 @@
     } else {
       model.scene.traverse(function(child) {
         if (child instanceof THREE.Mesh) {
-          child.material = new THREE.MeshPhongMaterial({
-            alphaMap: textures['alpha'] || null,
-            aoMap: textures['ao'] || null,
-            bumpMap: textures['bumpmap'] || null,
-            map: textures['color'] || null,
-            color: self.TYPE_BLACK === self._type ? 0 : 0xffffff,
-            opacity: 0,
-            shininess: self._glossFinish ? 15 : 5,
-            side: THREE.DoubleSide,
-            specular: 0x363636,
-            shading: THREE.SmoothShading,
-            transparent: true
-          });
+          child.material.bumpScale = self._bumpScale;
+          child.material.color = new THREE.Color(0xffffff);
+          child.material.shininess = self._glossFinish ? 15 : 5;
+          child.material.specular = new THREE.Color(0x363636);
+          child.material.shading = THREE.SmoothShading;
+          child.material.transparent = true;
+
+          child.material.aoMap = textures['ao'] || null;
+          child.material.aoMap.needsUpdate = true;
+
+          child.material.bumpMap = textures['bumpmap'] || null;
+          child.material.bumpMap.needsUpdate = true;
+
+          child.material.map = textures['color'] || null;
+          child.material.map.needsUpdate = true;
 
           child.geometry.computeVertexNormals();
         }
@@ -395,106 +419,46 @@
     }
   };
 
-  Sleeve.prototype.setType = function(type) {
+  Sleeve.prototype.setType = function(format) {
 
     var idx = [
-      this.TYPE_BLACK, 
-      this.TYPE_WHITE, 
-      this.TYPE_PRINT, 
-      this.TYPE_PRINT_SPINE,
-      this.TYPE_GATEFOLD
-    ].indexOf(type);
+      this.SleeveFormat.SINGLE_NO_SPINE, 
+      this.SleeveFormat.SINGLE, 
+      this.SleeveFormat.DOUBLE, 
+      this.SleeveFormat.GATEFOLD
+    ].indexOf(format);
 
     if (-1 === idx) {
-
+      console.error('Sleeve.prototype.setType: specified format "' + format + '" not found');
       return;
-
     }
 
-    if (this._type === type) {
-
+    if (this._format === format) {
+      console.info('Sleeve.prototype.setType: specified format "' + format + '" is already set');
       return;
-
     }
 
-    var lastType = this._type;
-    this._type = type;
+    var lastType = this._format;
+    this._format = format;
 
     var isOpaque = false;
 
-    if (this.TYPE_BLACK === this._type || this.TYPE_WHITE === this._type) {
+    // TODO: 無地の指定はテクスチャーでおこなう
+    // if (this.TYPE_BLACK === this._format || this.TYPE_WHITE === this._format) {
 
-      this._glossFinish = false;
-      isOpaque = true;
+    //   this._glossFinish = false;
+    //   isOpaque = true;
 
-    }
+    // }
 
     var self = this;
 
-    Object.keys(this._front).forEach(function(key) {
-      var tex = isOpaque ? self._textures.default : self._textures.front;
-      self.initMaterial(self._front[key].scene, tex);
-    });
-
-    Object.keys(this._back).forEach(function(key) {
-      var tex = isOpaque ? self._textures.default : self._textures.back;
-      self.initMaterial(self._back[key], tex);
-    });
-
-    Object.keys(this._spine).forEach(function(key) {
-      var tex = isOpaque ? self._textures.default : self._textures.spine;
-      self.initMaterial(self._spine[key], tex);
-    });
-
-    Object.keys(this._top).forEach(function(key) {
-      self.initMaterial(self._top[key], null);
-    });
-
-    Object.keys(this._bottom).forEach(function(key) {
-      self.initMaterial(self._bottom[key], null);
-    });
-
     this._container.remove(this._currentObject.scene);
-
-    if (this._type === this.TYPE_PRINT_SPINE) {
-
-      if (this._holed) {
-
-        this._currentObject = this._object['spine-holed-' + this._size];
-
-      } else {
-
-        this._currentObject = this._object['spine-' + this._size];
-
-      }
-
-    } else if (this._type === this.TYPE_BLACK || this._type === this.TYPE_WHITE || this._type === this.TYPE_PRINT) {
-
-      if (this._holed) {
-
-        this._currentObject = this._object['holed-' + this._size];
-
-      } else {
-
-        this._currentObject = this._object[this._size];
-
-      }
-
-    } else if (this._type === this.TYPE_GATEFOLD) {
-
-      var scale = 5.5;
-      this._object['gatefold-12'].scene.scale.set(scale, scale, scale);
-
-      if (this._holed) {
-
-        this._currentObject = this._object['gatefold-12'].scene;
-
-      } else {
-
-        this._currentObject = this._object['gatefold-12'].scene;
-
-      }
-
+    
+    if (this._holed) {
+      this._currentObject = this._models[this._size][this._format][this.HOLED];
+    } else {
+      this._currentObject = this._models[this._size][this._format][this.NO_HOLED];
     }
 
     this._container.add(this._currentObject.scene);
@@ -513,7 +477,7 @@
 
     this._size = size;
 
-    if (this._type === this.TYPE_PRINT_SPINE) {
+    if (this._format === this.TYPE_PRINT_SPINE) {
       if (this._holed) {
         this._currentObject = this._object['spine-holed-' + this._size];
       } else {
@@ -570,7 +534,7 @@
   };
 
   Sleeve.prototype.setGlossFinish = function(yn) {
-    if (this.TYPE_BLACK === this._type || this.TYPE_WHITE === this._type) {
+    if (this.TYPE_BLACK === this._format || this.TYPE_WHITE === this._format) {
       return;
     }
 
@@ -648,6 +612,17 @@
       .start();
 
     tempObj = null;
+  };
+
+  Sleeve.prototype.setBumpScale = function(value) {
+    var self = this;
+    self._bumpScale = value;
+
+    self._currentObject.scene.traverse(function(child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.bumpScale = self._bumpScale;
+      }
+    });
   };
 
   Sleeve.prototype.setVisibility = function(yn, opts, callback) {

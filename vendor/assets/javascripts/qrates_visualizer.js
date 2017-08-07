@@ -51,7 +51,7 @@
   Emitter(VinylVisualizer.prototype);
 
   // vinyl, sleeve 共通の定数 -----------------------
-  VinylVisualizer.SIZE = {
+  VinylVisualizer.Size = {
     SIZE_7_SMALL_HALL: '7S',
     SIZE_7_LARGE_HALL: '7L',
     SIZE_10: '10',
@@ -59,7 +59,7 @@
   };
 
   // vinyl のタイプ -----------------------
-  VinylVisualizer.VINYL_TYPE = {
+  VinylVisualizer.VinylFormat = {
     NORMAL: 'normal',
     HEAVY: 'heavy',
     WITH_LABEL: 'with-label',
@@ -67,14 +67,14 @@
   };
 
   // vinyl のカラータイプ -----------------------
-  VinylVisualizer.VINYL_COLOR_TYPE = {
+  VinylVisualizer.VinylColorType = {
     BLACK: 'black',
     COLOR: 'color',
     SPLATTER: 'splatter'
   };
 
   // sleeve のタイプ -----------------------
-  VinylVisualizer.SLEEVE_TYPE = {
+  VinylVisualizer.SleeveFormat = {
     SINGLE_NO_SPINE: 'no-spine',
     SINGLE: 'single',
     DOUBLE: 'double',
@@ -82,8 +82,8 @@
   };
 
   // sleeve のホールオプション -----------------------
-  VinylVisualizer.HOLE = {
-    NO_HOLE: 'default',
+  VinylVisualizer.Hole = {
+    NO_HOLE: 'normal',
     HOLED: 'holed'
   };
 

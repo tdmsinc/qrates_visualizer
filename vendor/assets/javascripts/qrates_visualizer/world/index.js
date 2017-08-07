@@ -99,9 +99,6 @@
 
     // copy sizes
     opts.defaults.sleeve.size = opts.defaults.vinyl.size;
-    opts.defaults.label.size = opts.defaults.vinyl.size;
-    opts.defaults.label.holeSize = opts.defaults.vinyl.holeSize;
-    opts.defaults.label.speed = opts.defaults.vinyl.speed;
 
     this._object = new THREE.Object3D();
     this._object.name = 'container';
@@ -164,7 +161,7 @@
     spotLight2.position.set(-980, -1900, -880);
     lights.add(spotLight2);
 
-    var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
+    var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
     pointLight1.position.set(-1000, 1200, -2300);
     lights.add(pointLight1);
 
@@ -357,7 +354,7 @@
         return;
       }
 
-      self._vinyl.setBumpScale(value);
+      self._sleeve.setBumpScale(value);
     });
   };
 
