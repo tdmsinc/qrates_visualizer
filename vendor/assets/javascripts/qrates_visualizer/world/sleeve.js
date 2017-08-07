@@ -49,7 +49,7 @@
 
     this._container = container;
     this._size = opts.size;
-    this._holed = opts.hole;
+    this._hole = opts.hole;
     this._format = opts.format;
     this._currentTextures = opts.textures;
     this._opacity = 0.0;
@@ -286,11 +286,7 @@
 
     // プリントスリーブとしてテクスチャーが渡された場合
     if (opts.textures) {
-      if (this._holed) {
-        this.updateTexture(this._textures[this._size][this._format][Sleev.Hole.HOLED], opts.textures);
-      } else {
-        this.updateTexture(this._textures[this._size][this._format][Sleev.Hole.NO_HOLED], opts.textures);
-      }
+      this.updateTexture(this._textures[this._size][this._format][this._hole], opts.textures);
     }
 
     // モデルのマテリアルを初期化
@@ -331,11 +327,7 @@
 
 
     // currentObject = ステージに配置されるオブジェクト
-    if (this._holed) {
-      this._currentObject = this._models[this._size][this._format][Sleeve.Hole.HOLED];
-    } else {
-      this._currentObject = this._models[this._size][this._format][Sleeve.Hole.NO_HOLED];
-    }
+    this._currentObject = this._models[this._size][this._format][this._hole];
 
     this.position = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Vector3(0, 0, 0);
@@ -430,6 +422,11 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setFormat = function(format) {
+    if (!format) {
+      console.warn('Sleeve.setFormat: no format specified');
+      return;
+    }
+
     var idx = [
       Sleeve.Format.SINGLE_NO_SPINE, 
       Sleeve.Format.SINGLE, 
@@ -438,16 +435,15 @@
     ].indexOf(format);
 
     if (-1 === idx) {
-      console.error('Sleeve.prototype.setFormat: specified format "' + format + '" not found');
+      console.error('Sleeve.setFormat: specified format "' + format + '" not found');
       return;
     }
 
     if (this._format === format) {
-      console.info('Sleeve.prototype.setFormat: specified format "' + format + '" is already set');
+      console.info('Sleeve.setFormat: specified format "' + format + '" is already applied');
       return;
     }
 
-    var lastType = this._format;
     this._format = format;
 
     var isOpaque = false;
@@ -460,15 +456,9 @@
 
     // }
 
-    var self = this;
-
     this._container.remove(this._currentObject.scene);
     
-    if (this._holed) {
-      this._currentObject = this._models[this._size][this._format][this.HOLED];
-    } else {
-      this._currentObject = this._models[this._size][this._format][this.NO_HOLED];
-    }
+    this._currentObject = this._models[this._size][this._format][this._hole];
 
     this._container.add(this._currentObject.scene);
 
@@ -477,6 +467,7 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setType = function(format) {
+    console.log('format', format);
     console.warn('Sleeve.setType(format) is deplicated. use Sleeve.setFormat(format) instead.');
     this.setFormat(format);
   };
@@ -484,33 +475,35 @@
   //--------------------------------------------------------------
   Sleeve.prototype.setSize = function(size) {
     if (!size) {
-      console.error('[Sleeve::setSize] no size specified');
+      console.warn('Sleeve.setSize: no size specified');
       return;
     }
 
-    this._container.remove(this._currentObject.scene);
+    var idx = [
+      Sleeve.Size.SIZE_7, 
+      Sleeve.Size.SIZE_10, 
+      Sleeve.Size.SIZE_12
+    ].indexOf(size);
+
+    if (-1 === idx) {
+      console.error('Sleeve.setSize: specified size "' + size + '" not found');
+      return;
+    }
+
+    if (this._format === format) {
+      console.info('Sleeve.setSize: specified size "' + size + '" is already applied');
+      return;
+    }
 
     this._size = size;
 
-    if (this._format === this.TYPE_PRINT_SPINE) {
-      if (this._holed) {
-        this._currentObject = this._object['spine-holed-' + this._size];
-      } else {
-        this._currentObject = this._object['spine-' + this._size];
-      }
-    } else {
-      if (this._holed) {
-        this._currentObject = this._object['holed-' + this._size];
-      } else {
-        this._currentObject = this._object[this._size];
-      }
-    }
+    this._container.remove(this._currentObject.scene);
 
-    this._currentObject.name = 'sleeve';
+    this._currentObject = this._models[this._size][this._format][this._hole];
 
     var self = this;
 
-    this.setCoveredRatio(this._coveredRatio, { duration: 1 }, null, function() {
+    self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
       self._container.add(self._currentObject.scene);
 
       self.setOpacity(1.0, 0);
@@ -546,8 +539,24 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setHole = function(value) {
-    this._holed = value;
-    this.setSize(this._size);
+    if (!(value === Sleeve.Hole.NO_HOLE || value === Sleeve.Hole.HOLED)) {
+      console.warn('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
+      return;
+    }
+    
+    if (this._hole === value) {
+      return;
+    }
+
+    this._hole = value;
+
+    this._container.remove(this._currentObject.scene);
+    
+    this._currentObject = this._models[this._size][this._format][this._hole];
+
+    this._container.add(this._currentObject.scene);
+
+    this.setOpacity(1.0, 0);
   };
 
   //--------------------------------------------------------------
