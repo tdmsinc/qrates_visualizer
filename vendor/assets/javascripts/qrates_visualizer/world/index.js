@@ -991,7 +991,7 @@
   World.prototype.onSleeveHoleChanged = function(value) {
     console.log('World::onSleeveHoleChanged', value);
 
-    this._sleeve.setHole(value);
+    this._sleeve.setHole(value ? Sleeve.Hole.HOLED : Sleeve.Hole.NO_HOLE);
   };
 
   World.prototype.onSleeveGlossFinishChanged = function(value) {

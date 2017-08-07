@@ -444,6 +444,12 @@
       return;
     }
 
+    if (format === Sleeve.Format.GATEFOLD && this._hole === Sleeve.Hole.HOLED) {
+      console.warn('Sleeve.setFormat: forcely disabled hole option because cannot apply it for gatefold');
+
+      this._hole = Sleeve.Hole.NO_HOLE;
+    }
+
     this._format = format;
 
     var isOpaque = false;
@@ -541,6 +547,11 @@
   Sleeve.prototype.setHole = function(value) {
     if (!(value === Sleeve.Hole.NO_HOLE || value === Sleeve.Hole.HOLED)) {
       console.warn('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
+      return;
+    }
+
+    if (value === Sleeve.Hole.HOLED && this._format === Sleeve.Format.GATEFOLD) {
+      console.warn('Sleeve.setHole: gatefold has no-hole format only');
       return;
     }
     
