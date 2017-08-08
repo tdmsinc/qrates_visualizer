@@ -873,35 +873,40 @@
     }
   };
 
-  World.prototype.onVinylSizeChanged = function(value) {
-    console.log('World::onVinylSizeChanged', value);
+  World.prototype.onVinylSizeChanged = function(size) {
+    console.log('World::onVinylSizeChanged', size);
 
-    var sizes = ['7', '10', '12'];
+    // to string
+    size += '';
 
-    if (!value) {
-      console.error('[World::onVinylSizeChanged] value is undefined');
+    if (!size) {
+      console.warn('World.onVinylSizeChanged: no size value passed');
       return;
     }
 
-    if (!sizes[value - 1]) {
-      throw new TypeError('Unknown vinyl size error. Size ' + value + ' is not expected.');
+    if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
+      throw new TypeError('Unknown vinyl size error. Size ' + size + ' is not expected.');
     }
 
-    var size = sizes[value - 1];
+    var sleeveSize = size;
+    var scale = 1;
 
     switch (size) {
-      case '7':
-        this._object.scale.set(1, 1, 1);
+      case Vinyl.Size.SIZE_7_SMALL_HOLE:
+      case Vinyl.Size.SIZE_7_LARGE_HOLE:
+        sleeveSize = Sleeve.Size.SIZE_7;
         break;
-      case '10':
-        this._object.scale.set(0.6890566038, 0.6890566038, 0.6890566038);
+      case Vinyl.Size.SIZE_10:
+        scale = 0.6890566038;
         break;
-      case '12':
-        this._object.scale.set(0.5833865815, 0.5833865815, 0.5833865815);
+      case Vinyl.Size.SIZE_12:
+        scale = 0.5833865815;
         break;
     }
 
-    this._sleeve.setSize(size);
+    // this._object.scale.set(scale, scale, scale);
+
+    this._sleeve.setSize(sleeveSize);
     this._vinyl.setSize(size);
   };
 

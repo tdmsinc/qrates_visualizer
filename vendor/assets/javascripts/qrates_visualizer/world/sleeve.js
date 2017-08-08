@@ -486,14 +486,7 @@
 
     var self = this;
 
-    var idx = [
-      Sleeve.Format.SINGLE_NO_SPINE, 
-      Sleeve.Format.SINGLE, 
-      Sleeve.Format.DOUBLE, 
-      Sleeve.Format.GATEFOLD
-    ].indexOf(format);
-
-    if (-1 === idx) {
+    if (-1 === Object.values(Sleeve.Format).indexOf(format)) {
       console.error('Sleeve.setFormat: specified format "' + format + '" not found');
       return;
     }
@@ -539,7 +532,7 @@
   //--------------------------------------------------------------
   Sleeve.prototype.setType = function(format) {
     console.log('format', format);
-    console.warn('Sleeve.setType(format) is deplicated. use Sleeve.setFormat(format) instead.');
+    console.warn('Sleeve.setType(format) is deprecated. use Sleeve.setFormat(format) instead.');
     this.setFormat(format);
   };
 
@@ -550,29 +543,23 @@
       return;
     }
 
-    var idx = [
-      Sleeve.Size.SIZE_7, 
-      Sleeve.Size.SIZE_10, 
-      Sleeve.Size.SIZE_12
-    ].indexOf(size);
-
-    if (-1 === idx) {
+    if (-1 === Object.values(Sleeve.Size).indexOf(size)) {
       console.error('Sleeve.setSize: specified size "' + size + '" not found');
       return;
     }
 
-    if (this._format === format) {
+    if (this._size === size) {
       console.info('Sleeve.setSize: specified size "' + size + '" is already applied');
       return;
     }
 
-    this._size = size;
-
-    this._container.remove(this._currentObject.scene);
-
-    this._currentObject = this._models[this._size][this._format][this._hole];
-
     var self = this;
+
+    self._size = size;
+
+    self._container.remove(self._currentObject.scene);
+
+    self._currentObject = self._models[self._size][self._format][self._hole];
 
     self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
       self._container.add(self._currentObject.scene);

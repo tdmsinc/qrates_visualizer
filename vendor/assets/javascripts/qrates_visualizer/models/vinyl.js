@@ -20,8 +20,8 @@
    */
   
   Vinyl.Size = {
-    SIZE_7_SMALL_HALL: '7S',
-    SIZE_7_LARGE_HALL: '7L',
+    SIZE_7_SMALL_HOLE: '7S',
+    SIZE_7_LARGE_HOLE: '7L',
     SIZE_10: '10',
     SIZE_12: '12'
   };

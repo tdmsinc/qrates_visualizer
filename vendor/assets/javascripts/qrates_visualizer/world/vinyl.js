@@ -15,8 +15,8 @@
    * Constants
    */
   Vinyl.Size = {
-    SIZE_7_SMALL_HALL: '7S',
-    SIZE_7_LARGE_HALL: '7L',
+    SIZE_7_SMALL_HOLE: '7S',
+    SIZE_7_LARGE_HOLE: '7L',
     SIZE_10: '10',
     SIZE_12: '12'
   };
@@ -38,7 +38,7 @@
   Vinyl.prototype.setup = function(scene, assets, opts, container) {
     opts = opts || {
       format: Vinyl.Format.NORMAL,
-      size: Vinyl.Size.SIZE_7_SMALL_HALL,
+      size: Vinyl.Size.SIZE_7_SMALL_HOLE,
       color: 0,
       speed: 45,
     };
@@ -100,10 +100,15 @@
     this._opacity = 0;
     this._rpm = opts.speed;
     this._heavy = opts.heavy;
-    this._bumpScale = 0.3;
     this._enableRotate = false;
     this._opacityTweenDuration = 300;
     this._clock = new THREE.Clock();
+
+    // this._currentObject が変更される度に反映する必要があるプロパティ
+    this._bumpScale = 0.3;
+
+    this._materialParams = this._materialPresets[0];
+    this._color = 0;
 
     if (this._colorFormat === Vinyl.ColorFormat.SPLATTER) {
       this._materialParams = this._materialPresets[1];
@@ -111,24 +116,21 @@
     } else if (this._colorFormat === Vinyl.ColorFormat.COLOR) {
       this._materialParams = this._materialPresets[opts.color];
       this._color = this._materialParams.color;
-    } else {
-      this._materialParams = this._materialPresets[0];
-      this._color = 0;
     }
 
     // モデル
     this._models = {
       '7S': {
-        'normal': assets['assetsModelVinylSmallHall-7'],
-        'with-label': assets['assetsModelVinylSmallHallWithLabel-7'],
-        'heavy': assets['assetsModelVinylSmallHallHeavy-7'],
-        'heavy-with-label': assets['assetsModelVinylSmallHallHeavyWithLabel-7']
+        'normal': assets['assetsModelVinylSmallHole-7'],
+        'with-label': assets['assetsModelVinylSmallHoleWithLabel-7'],
+        'heavy': assets['assetsModelVinylSmallHoleHeavy-7'],
+        'heavy-with-label': assets['assetsModelVinylSmallHoleHeavyWithLabel-7']
       },
       '7L': {
-        'normal': assets['assetsModelVinylLargeHall-7'],
-        'with-label': assets['assetsModelVinylLargeHallWithLabel-7'],
-        'heavy': assets['assetsModelVinylLargeHallHeavy-7'],
-        'heavy-with-label': assets['assetsModelVinylLargeHallHeavyWithLabel-7']
+        'normal': assets['assetsModelVinylLargeHole-7'],
+        'with-label': assets['assetsModelVinylLargeHoleWithLabel-7'],
+        'heavy': assets['assetsModelVinylLargeHoleHeavy-7'],
+        'heavy-with-label': assets['assetsModelVinylLargeHoleHeavyWithLabel-7']
       },
       '10': {
         'normal': assets['assetsModelVinyl-10'],
@@ -148,86 +150,86 @@
     this._textures = {
       '7S': {
         'normal': {
-          'alpha': assets['assetsTextureVinylAlphaSmallHall-7'],
-          'ao': assets['assetsTextureVinylAoSmallHall-7'],
-          'bumpmap': assets['assetsTextureVinylBumpmapSmallHall-7'],
-          'color': assets['assetsTextureVinylColorSmallHall-7']
+          'alpha': assets['assetsTextureVinylAlphaSmallHole-7'],
+          'ao': assets['assetsTextureVinylAoSmallHole-7'],
+          'bumpmap': assets['assetsTextureVinylBumpmapSmallHole-7'],
+          'color': assets['assetsTextureVinylColorSmallHole-7']
         },
         'with-label': {
           'vinyl': {
-            'ao': assets['assetsTextureVinylAoSmallHallWithLabel-7'],
-            'bumpmap': assets['assetsTextureVinylBumpmapSmallHallWithLabel-7'],
-            'color': assets['assetsTextureVinylColorSmallHallWithLabel-7']
+            'ao': assets['assetsTextureVinylAoSmallHoleWithLabel-7'],
+            'bumpmap': assets['assetsTextureVinylBumpmapSmallHoleWithLabel-7'],
+            'color': assets['assetsTextureVinylColorSmallHoleWithLabel-7']
           },
           'label': {
-            'ao': assets['assetsTextureVinylAoSmallHallWithLabelForLabel-7'],
-            'bumpmap': assets['assetsTextureVinylBumpmapSmallHallWithLabelForLabel-7'],
-            'color': assets['assetsTextureVinylColorSmallHallWithLabelForLabel-7']
+            'ao': assets['assetsTextureVinylAoSmallHoleWithLabelForLabel-7'],
+            'bumpmap': assets['assetsTextureVinylBumpmapSmallHoleWithLabelForLabel-7'],
+            'color': assets['assetsTextureVinylColorSmallHoleWithLabelForLabel-7']
           }
         },
         'heavy': {
-          'alpha': assets['assetsTextureVinylAlphaSmallHallHeavy-7'],
-          'ao': assets['assetsTextureVinylAoSmallHallHeavy-7'],
-          'bumpmap': assets['assetsTextureVinylBumpmapSmallHallHeavy-7'],
-          'color': assets['assetsTextureVinylColorSmallHallHeavy-7']
+          'alpha': assets['assetsTextureVinylAlphaSmallHoleHeavy-7'],
+          'ao': assets['assetsTextureVinylAoSmallHoleHeavy-7'],
+          'bumpmap': assets['assetsTextureVinylBumpmapSmallHoleHeavy-7'],
+          'color': assets['assetsTextureVinylColorSmallHoleHeavy-7']
         },
         'heavy-with-label': {
           'vinyl': {
-            'ao': assets['assetsTextureVinylAoSmallHallHeavyWithLabel-7'],
-            'bumpmap': assets['assetsTextureVinylBumpmapSmallHallHeavyWithLabel-7'],
-            'color': assets['assetsTextureVinylColorSmallHallHeavyWithLabel-7']
+            'ao': assets['assetsTextureVinylAoSmallHoleHeavyWithLabel-7'],
+            'bumpmap': assets['assetsTextureVinylBumpmapSmallHoleHeavyWithLabel-7'],
+            'color': assets['assetsTextureVinylColorSmallHoleHeavyWithLabel-7']
           },
           'label': {
-            'ao': assets['assetsTextureVinylAoSmallHallHeavyWithLabelForLabel-7'],
-            'bumpmap': assets['assetsTextureVinylBumpmapSmallHallHeavyWithLabelForLabel-7'],
-            'color': assets['assetsTextureVinylColorSmallHallHeavyWithLabelForLabel-7']
+            'ao': assets['assetsTextureVinylAoSmallHoleHeavyWithLabelForLabel-7'],
+            'bumpmap': assets['assetsTextureVinylBumpmapSmallHoleHeavyWithLabelForLabel-7'],
+            'color': assets['assetsTextureVinylColorSmallHoleHeavyWithLabelForLabel-7']
           }
         }
       },
       '7L': {
         'normal': {
-          'alpha': assets['assetsTextureVinylLargeHallAlpha-7'],
-          'ao': assets['assetsTextureVinylLargeHallAo-7'],
-          'bumpmap': assets['assetsTextureVinylLargeHallBumpmap-7'],
-          'color': assets['assetsTextureVinylLargeHallColor-7']
+          'alpha': assets['assetsTextureVinylLargeHoleAlpha-7'],
+          'ao': assets['assetsTextureVinylLargeHoleAo-7'],
+          'bumpmap': assets['assetsTextureVinylLargeHoleBumpmap-7'],
+          'color': assets['assetsTextureVinylLargeHoleColor-7']
         },
         'with-label': {
           'vinyl': {
-            'ao': assets['assetsTextureVinylLargeHallWithLabelAo-7'],
-            'bumpmap': assets['assetsTextureVinylLargeHallWithLabelBumpmap-7'],
-            'color': assets['assetsTextureVinylLargeHallWithLabelColor-7']
+            'ao': assets['assetsTextureVinylLargeHoleWithLabelAo-7'],
+            'bumpmap': assets['assetsTextureVinylLargeHoleWithLabelBumpmap-7'],
+            'color': assets['assetsTextureVinylLargeHoleWithLabelColor-7']
           },
           'label': {
-            'ao': assets['assetsTextureVinylLargeHallWithLabelAoForLabel-7'],
-            'bumpmap': assets['assetsTextureVinylLargeHallWithLabelBumpmapForLabel-7'],
-            'color': assets['assetsTextureVinylLargeHallWithLabelColorForLabel-7']
+            'ao': assets['assetsTextureVinylLargeHoleWithLabelAoForLabel-7'],
+            'bumpmap': assets['assetsTextureVinylLargeHoleWithLabelBumpmapForLabel-7'],
+            'color': assets['assetsTextureVinylLargeHoleWithLabelColorForLabel-7']
           }
         },
         'heavy': {
-          'alpha': assets['assetsTextureVinylLargeHallHeavyAlpha-7'],
-          'ao': assets['assetsTextureVinylLargeHallHeavyAo-7'],
-          'bumpmap': assets['assetsTextureVinylLargeHallHeavyBumpmap-7'],
-          'color': assets['assetsTextureVinylLargeHallHeavyColor-7']
+          'alpha': assets['assetsTextureVinylLargeHoleHeavyAlpha-7'],
+          'ao': assets['assetsTextureVinylLargeHoleHeavyAo-7'],
+          'bumpmap': assets['assetsTextureVinylLargeHoleHeavyBumpmap-7'],
+          'color': assets['assetsTextureVinylLargeHoleHeavyColor-7']
         },
         'heavy-with-label': {
           'vinyl': {
-            'ao': assets['assetsTextureVinylLargeHallHeavyWithLabelAo-7'],
-            'bumpmap': assets['assetsTextureVinylLargeHallHeavyWithLabelBumpmap-7'],
-            'color': assets['assetsTextureVinylLargeHallHeavyWithLabelColor-7']
+            'ao': assets['assetsTextureVinylLargeHoleHeavyWithLabelAo-7'],
+            'bumpmap': assets['assetsTextureVinylLargeHoleHeavyWithLabelBumpmap-7'],
+            'color': assets['assetsTextureVinylLargeHoleHeavyWithLabelColor-7']
           },
           'label': {
-            'ao': assets['assetsTextureVinylLargeHallHeavyWithLabelAoForLabel-7'],
-            'bumpmap': assets['assetsTextureVinylLargeHallHeavyWithLabelBumpmapForLabel-7'],
-            'color': assets['assetsTextureVinylLargeHallHeavyWithLabelColorForLabel-7']
+            'ao': assets['assetsTextureVinylLargeHoleHeavyWithLabelAoForLabel-7'],
+            'bumpmap': assets['assetsTextureVinylLargeHoleHeavyWithLabelBumpmapForLabel-7'],
+            'color': assets['assetsTextureVinylLargeHoleHeavyWithLabelColorForLabel-7']
           }
         }
       },
       '10': {
         'normal': {
-          'alpha': assets['assetsTextureVinylLargeHallAlpha-10'],
-          'ao': assets['assetsTextureVinylLargeHallAo-10'],
-          'bumpmap': assets['assetsTextureVinylLargeHallBumpmap-10'],
-          'color': assets['assetsTextureVinylLargeHallColor-10']
+          'alpha': assets['assetsTextureVinylAlpha-10'],
+          'ao': assets['assetsTextureVinylAo-10'],
+          'bumpmap': assets['assetsTextureVinylBumpmap-10'],
+          'color': assets['assetsTextureVinylColor-10']
         },
         'with-label': {
           'vinyl': {
@@ -367,10 +369,10 @@
 
     model.scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
-        self._bumpScale = 0.03;
+        self._bumpScale = 0.3;
 
         if (Vinyl.ColorFormat.COLOR === self._colorFormat) {
-          self._bumpScale = 0.06;
+          self._bumpScale = 0.6;
         } else if (Vinyl.ColorFormat.SPLATTER === self._colorFormat) {
           self._bumpScale = 0.28;
         }
@@ -501,33 +503,43 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.getBumpScale = function() {
-    return this._models[this._size][this._size].children[0].material.bumpScale;
+    return this._bumpScale;
   };
 
   //--------------------------------------------------------------
   Vinyl.prototype.setSize = function(size) {
     if (!size) {
-      console.error('[Vinyl::setSize] no size specified');
+      console.warn('Vinyl.setSize: no size specified');
       return;
     }
 
-    this._container.remove(this._models[this._size][this._format].scene);
+    if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
+      console.warn('Vinyl.setSize: invalid size "' + size + '"');
+      return;
+    }
 
-    this._size = size;
+    if (this._size === size) {
+      console.info('Vinyl.setSize: already set to size ' + size);
+      return;
+    }
 
     var self = this;
+    self._size = size;
 
-    Object.keys(self._models).forEach(function(size) {
-      Object.keys(self._models[size]).forEach(function(type) {
-        var tex = Vinyl.ColorFormat.SPLATTER === self._colorFormat ? self._textures[size][type] : new THREE.Texture();
-        self.initMaterial(self._models[size][type], tex);
-      });
+    self._container.remove(self._currentObject.scene);
+
+    self._currentObject = self._models[self._size][self._format];
+
+    self._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.bumpScale = self._bumpScale;
+      }
     });
 
-    this._container.add(this._models[this._size][this._format].scene);
+    self._container.add(self._currentObject.scene);
 
-    this._opacity = 0;
-    this.setOpacity(this._materialParams.opacity);
+    self._opacity = 0;
+    self.setOpacity(self._materialParams.opacity);
   };
 
   //--------------------------------------------------------------
