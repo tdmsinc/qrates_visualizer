@@ -364,6 +364,7 @@
             self._models[size][type][opt].scene.assetName = assetName;
 
             var scale = 5.5;
+            console.log('sleeve original scale', self._models[size][type][opt].scene.scale);
             self._models[size][type][opt].scene.scale.set(scale, scale, scale);
 
             self.initMaterial(self._models[size][type][opt], self._textures[size][type][opt]);
@@ -560,6 +561,8 @@
     self._container.remove(self._currentObject.scene);
 
     self._currentObject = self._models[self._size][self._format][self._hole];
+
+    console.log('new object', self._currentObject);
 
     self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
       self._container.add(self._currentObject.scene);
