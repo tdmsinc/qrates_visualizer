@@ -33,6 +33,11 @@
     HOLED: 'holed'
   };
 
+  Sleeve.Finish = {
+    NORMAL: 'normal',
+    GLOSS: 'gloss'
+  };
+
   //--------------------------------------------------------------
   Sleeve.prototype.setup = function(scene, assets, opts, container) {
     opts = opts || {
@@ -55,6 +60,7 @@
     this._opacity = 0.0;
     this._coveredRatio = 0.0;
     this._bumpScale = 0.3;
+    this._shininess = opts.glossFinish ? 15 : 5;
     this._glossFinish = opts.glossFinish;
     this._opacityTweenDuration = 300;
 
@@ -362,7 +368,7 @@
         if (child instanceof THREE.Mesh) {
           child.material.bumpScale = self._bumpScale;
           child.material.color = new THREE.Color(0xffffff);
-          child.material.shininess = self._glossFinish ? 15 : 5;
+          child.material.shininess = self._shininess;
           child.material.specular = new THREE.Color(0x363636);
           child.material.shading = THREE.SmoothShading;
           child.material.transparent = true;
@@ -427,6 +433,8 @@
       return;
     }
 
+    var self = this;
+
     var idx = [
       Sleeve.Format.SINGLE_NO_SPINE, 
       Sleeve.Format.SINGLE, 
@@ -439,18 +447,18 @@
       return;
     }
 
-    if (this._format === format) {
+    if (self._format === format) {
       console.info('Sleeve.setFormat: specified format "' + format + '" is already applied');
       return;
     }
 
-    if (format === Sleeve.Format.GATEFOLD && this._hole === Sleeve.Hole.HOLED) {
+    if (format === Sleeve.Format.GATEFOLD && self._hole === Sleeve.Hole.HOLED) {
       console.warn('Sleeve.setFormat: forcely disabled hole option because cannot apply it for gatefold');
 
-      this._hole = Sleeve.Hole.NO_HOLE;
+      self._hole = Sleeve.Hole.NO_HOLE;
     }
 
-    this._format = format;
+    self._format = format;
 
     var isOpaque = false;
 
@@ -462,13 +470,19 @@
 
     // }
 
-    this._container.remove(this._currentObject.scene);
+    self._container.remove(self._currentObject.scene);
     
-    this._currentObject = this._models[this._size][this._format][this._hole];
+    self._currentObject = self._models[self._size][self._format][self._hole];
 
-    this._container.add(this._currentObject.scene);
+    self._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.shininess = self._shininess;
+      }
+    });
 
-    this.setOpacity(1.0, 0);
+    self._container.add(self._currentObject.scene);
+
+    self.setOpacity(1.0, 0);
   };
 
   //--------------------------------------------------------------
@@ -576,49 +590,14 @@
       return;
     }
 
-    this._glossFinish = '0' === yn ? false : true;
-
     var self = this;
-    var shininess = self._glossFinish ? 15 : 5;
+    self._glossFinish = yn;
+    self._shininess = self._glossFinish ? 15 : 5;
 
-    Object.keys(self._front).forEach(function(key){
-      self._front[key].scene.traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
-    });
-
-    Object.keys(self._back).forEach(function(key) {
-      self._back[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
-    });
-
-    Object.keys(self._spine).forEach(function(key) {
-      self._back[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
-    });
-
-    Object.keys(self._top).forEach(function(key) {
-      self._back[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
-    });
-
-    Object.keys(self._bottom).forEach(function(key) {
-      self._back[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
+    self._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.shininess = self._shininess;
+      }
     });
   };
 
