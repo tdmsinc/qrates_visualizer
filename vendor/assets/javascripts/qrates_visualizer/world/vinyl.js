@@ -462,6 +462,7 @@
         }
 
         child.geometry.computeFaceNormals();
+        child.geometry.computeVertexNormals();
       }
     });
 
