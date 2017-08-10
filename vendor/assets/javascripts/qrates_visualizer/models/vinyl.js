@@ -1,5 +1,6 @@
 
 //= require ../model
+//= require ../world/vinyl
 
 (function(global, exports) {
 
@@ -19,30 +20,11 @@
    * Constants
    */
   
-  Vinyl.Size = {
-    SIZE_7_SMALL_HOLE: '7S',
-    SIZE_7_LARGE_HOLE: '7L',
-    SIZE_10: '10',
-    SIZE_12: '12'
-  };
-
-  Vinyl.ColorFormat = {
-    BLACK: 'black',
-    COLOR: 'color',
-    SPECIAL: 'special',
-    PICTURE: 'picture'
-  };
-
-  Vinyl.Weight = {
-    NORMAL: 'normal',
-    HEAVY: 'heavy'
-  };
-
-  Vinyl.Label = {
-    BLANK: 'blank',
-    MONO_PRINT: 'mono print',
-    COLOR_PRINT: 'color print'
-  };
+  Vinyl.Size = exports.world.Vinyl.Size;
+  Vinyl.ColorFormat = exports.world.Vinyl.ColorFormat;
+  Vinyl.Weight = exports.world.Vinyl.Weight;
+  Vinyl.Label = exports.world.Vinyl.Label;
+  Vinyl.Color = exports.world.Vinyl.Color;
 
   /**
    * Properties.
