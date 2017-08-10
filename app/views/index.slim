@@ -333,110 +333,118 @@ form.show
 
   h1 Vinyl options
 
-  p: select number="" v-model="vinyl.type"
-    option disabled="" ▾ type
-    option value="1" 1. black
-    option value="2" 2. color
-    option value="3" 3. splatter
+  p
+    label Size: 
+    select number="" v-model="vinyl.size"
+      option value="7S" 7 (small hole)″
+      option value="7L" 7 (large hole)″
+      option value="10" 10″
+      option value="12" 12″
 
-  p: select number="" v-model="vinyl.size"
-    option disabled="" ▾ size
-    option value="7S" 7 (small hole)″
-    option value="7L" 7 (large hole)″
-    option value="10" 10″
-    option value="12" 12″
+  p
+    label Type: 
+    select number="" v-model="vinyl.type"
+      option value="black" 1. Black
+      option value="color" 2. Color
+      option value="special" 3. Special
+      option value="picture" 4. Picture
 
-  p: select number="" v-model="vinyl.color"
-    option disabled="" ▾ color
-    option value="0" black
-    option value="1" #1 white
-    option value="2" #2 yellow
-    option value="3" #3 red
-    option value="4" #4 orange
-    option value="5" #5 blue
-    option value="6" #6 brown
-    option value="7" #7 green
-    option value="8" #8 gray
-    option value="9" #9 transparent green
-    option value="10" #10 transparent yellow
-    option value="11" #11 transparent red
-    option value="12" #12 transparent violet
-    option value="13" #13 transparent blue
-    option value="14" #14 transparent
-    option value="15" P1 SWAMP GREEN
-    option value="16" P2 SEA BLUE
-    option value="17" P3 BONE
-    option value="18" P4 BRONZE
-    option value="19" P5 BEER
-    option value="20" P6 ELECTRIC BLUE
-    option value="21" P7 GRIMACE PURPLE
-    option value="22" P8 OXBLOOD
-    option value="23" P9 COKE BOTTLE GREEN
-    option value="24" P10 ORANGE CRUSH
-    option value="25" P11 HOT PINK / MAGENTA
-    option value="26" P12 BABY PINK
-    option value="27" P13 OLIVE GREEN
-    option value="28" P14 AQUA BLUE
-    option value="29" P15 ULTRA CLEAR
-    option value="30" P16 BABY BLUE
-    option value="31" P17 HIGHLIGHTER YELLOW
-    option value="32" P18 GOLD
-    option value="33" P19 SILVER
-    option value="34" P20 MUSTARD
+  p
+    label Color: 
+    select number="" v-model="vinyl.color"
+      option value="0" black
+      option value="1" #1 white
+      option value="2" #2 yellow
+      option value="3" #3 red
+      option value="4" #4 orange
+      option value="5" #5 blue
+      option value="6" #6 brown
+      option value="7" #7 green
+      option value="8" #8 gray
+      option value="9" #9 transparent green
+      option value="10" #10 transparent yellow
+      option value="11" #11 transparent red
+      option value="12" #12 transparent violet
+      option value="13" #13 transparent blue
+      option value="14" #14 transparent
+      option value="15" P1 SWAMP GREEN
+      option value="16" P2 SEA BLUE
+      option value="17" P3 BONE
+      option value="18" P4 BRONZE
+      option value="19" P5 BEER
+      option value="20" P6 ELECTRIC BLUE
+      option value="21" P7 GRIMACE PURPLE
+      option value="22" P8 OXBLOOD
+      option value="23" P9 COKE BOTTLE GREEN
+      option value="24" P10 ORANGE CRUSH
+      option value="25" P11 HOT PINK / MAGENTA
+      option value="26" P12 BABY PINK
+      option value="27" P13 OLIVE GREEN
+      option value="28" P14 AQUA BLUE
+      option value="29" P15 ULTRA CLEAR
+      option value="30" P16 BABY BLUE
+      option value="31" P17 HIGHLIGHTER YELLOW
+      option value="32" P18 GOLD
+      option value="33" P19 SILVER
+      option value="34" P20 MUSTARD
 
-  p: select number="" v-model="vinyl.splatterColor"
-    option disabled="" ▾ splatter color
-    option value="0" black
-    option value="1" white
-    option value="2" yellow
-    option value="3" red
-    option value="4" orange
-    option value="5" blue
-    option value="6" brown
-    option value="7" green
-    option value="8" gray
-    option value="9" transparent green
-    option value="10" transparent yellow
-    option value="11" transparent red
-    option value="12" transparent violet
-    option value="13" transparent blue
-    option value="14" transparent
+  p
+    label Splatter color: 
+    select number="" v-model="vinyl.splatterColor"
+      option value="0" black
+      option value="1" white
+      option value="2" yellow
+      option value="3" red
+      option value="4" orange
+      option value="5" blue
+      option value="6" brown
+      option value="7" green
+      option value="8" gray
+      option value="9" transparent green
+      option value="10" transparent yellow
+      option value="11" transparent red
+      option value="12" transparent violet
+      option value="13" transparent blue
+      option value="14" transparent
 
-  p: label: input type="checkbox" v-model="vinyl.heavy" heavy
+  p: label: input type="checkbox" v-model="vinyl.heavy" Heavy
 
-  p: select number="" v-model="vinyl.speed"
-    option disabled="" ▾ speed
-    option value="33" 33rpm
-    option value="45" 45rpm
+  p
+    label RPM: 
+    select number="" v-model="vinyl.speed"
+      option value="33" 33rpm
+      option value="45" 45rpm
 
   p: label: input type="file" name="vinyl-a" A
   p: label: input type="file" name="vinyl-b" B
 
-  p: label: input type="file" name="vinyl-bumpmap" Bump
+  p: label: input type="file" name="vinyl-bumpmap" BumpMap
 
   h1 Label options
 
-  p: select number="" v-model="label.type"
-    option disabled="" ▾ type
-    option value="1" 1. white
-    option value="2" 2. print - monochrome
-    option value="3" 3. print - color
+  p
+    label Type 
+    select number="" v-model="label.type"
+      option value="1" 1. Blank
+      option value="2" 2. Mono Print
+      option value="3" 3. Color Print
 
   p: label: input type="file" name="label-a" A
   p: label: input type="file" name="label-b" B
 
   h1 Sleeve options
 
-  p: select number="" v-model="sleeve.type"
-    option disabled="" ▾ type
-    option value="no-spine" single (no spine)
-    option value="single" single (3mm spine)
-    option value="double" double (5mm spine)
-    option value="gatefold" gatefold
+  p
+    label Type: 
+    select number="" v-model="sleeve.type"
+      option value="no-spine" Single (without spine)
+      option value="single" Single (3mm spine)
+      option value="double" Double (5mm spine)
+      option value="gatefold" Gatefold
 
-  p: label: input type="checkbox" v-model="sleeve.hole" hole
+  p: label: input type="checkbox" v-model="sleeve.hole" Hole
 
-  p: label: input type="checkbox" v-model="sleeve.glossFinish" gloss finish
+  p: label: input type="checkbox" v-model="sleeve.glossFinish" Gloss Finish
 
   p: label: input type="file" name="sleeve-front" front
   p: label: input type="file" name="sleeve-back" back

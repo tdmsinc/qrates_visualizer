@@ -862,15 +862,14 @@
   };
 
   World.prototype.onVinylTypeChanged = function(value) {
-    console.log('World::onVinylTypeChanged', value);
+    console.log('World.onVinylTypeChanged:', value);
 
-    if (1 === value) {
-      this._vinyl.setType(this._vinyl.TYPE_BLACK);
-    } else if (2 === value) {
-      this._vinyl.setType(this._vinyl.TYPE_COLOR);
-    } else if (3 === value) {
-      this._vinyl.setType(this._vinyl.TYPE_SPLATTER);
+    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(value)) {
+      console.warn('World.onVinylTypeChanged: unknown value "' + value + '" for vinyl color format');
+      return;
     }
+
+    this._vinyl.setColorFormat(value);
   };
 
   World.prototype.onVinylSizeChanged = function(size) {
@@ -929,7 +928,7 @@
 
   World.prototype.onVinylHeavyChanged = function(value) {
     console.log('World::onVinylHeavyChanged', value);
-    this._vinyl.setHeavy(value);
+    this._vinyl.setWeight(value ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
   };
 
   World.prototype.onVinylSpeedChanged = function(value) {

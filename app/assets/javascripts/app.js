@@ -7,12 +7,13 @@ var canvas_width = window.innerWidth, canvas_height = window.innerHeight;
 //
 var defaults = {
   vinyl: {
-    format: qvv.VinylVisualizer.VinylFormat.NORMAL,
     size: qvv.VinylVisualizer.VinylSize.SIZE_12,
+    weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
+    label: qvv.VinylVisualizer.VinylLabel.COLOR_PRINT,
     color: 0,
     colorFormat: qvv.VinylVisualizer.VinylColorFormat.BLACK,
     splatterColor: 0,
-    speed: 45,
+    speed: 45
   },
   sleeve: {
     format: qvv.VinylVisualizer.SleeveFormat.DOUBLE,

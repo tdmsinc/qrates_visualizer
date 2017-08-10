@@ -56,8 +56,14 @@
   // vinyl のカラーフォーマット -----------------------
   VinylVisualizer.VinylColorFormat = Vinyl.ColorFormat;
 
+  // vinyl のウェイト -----------------------
+  VinylVisualizer.VinylWeight = Vinyl.Weight;
+
   // vinyl のフォーマット -----------------------
   VinylVisualizer.VinylFormat = Vinyl.Format;
+
+  // vinyl の label -----------------------
+  VinylVisualizer.VinylLabel = Vinyl.Label;
 
   // sleeve のサイズ -----------------------
   VinylVisualizer.SleeveSize = Sleeve.Size;

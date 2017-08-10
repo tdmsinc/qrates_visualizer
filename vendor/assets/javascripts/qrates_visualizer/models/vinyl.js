@@ -29,14 +29,19 @@
   Vinyl.ColorFormat = {
     BLACK: 'black',
     COLOR: 'color',
-    SPLATTER: 'splatter'
+    SPECIAL: 'special',
+    PICTURE: 'picture'
   };
 
-  Vinyl.Format = {
+  Vinyl.Weight = {
     NORMAL: 'normal',
-    HEAVY: 'heavy',
-    WITH_LABEL: 'with-label',
-    HEAVY_WITH_LABEL: 'heavy-with-label'
+    HEAVY: 'heavy'
+  };
+
+  Vinyl.Label = {
+    BLANK: 'blank',
+    MONO_PRINT: 'mono print',
+    COLOR_PRINT: 'color print'
   };
 
   /**
