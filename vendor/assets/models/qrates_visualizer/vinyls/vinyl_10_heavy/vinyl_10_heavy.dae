@@ -140,7 +140,7 @@
     </library_geometries>
     <library_visual_scenes>
         <visual_scene id="ID10">
-            <node id="ID11" name="_10_VINYL_Heavy_edge_thick_unify_&#x713C;&#x6210;&#x5F8C;&#x78BA;&#x8A8D;&#x7528;">
+            <node id="ID11" name="vinyl">
                 <translate sid="translate">0 0 -0</translate>
                 <rotate sid="rotateY">0 1 0 -0</rotate>
                 <rotate sid="rotateX">1 0 0 0</rotate>

@@ -47,41 +47,41 @@
   };
 
   Vinyl.Color = {
-    CLASSIC_BLACK: { color: 0x000000, opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true },
-    WHITE: { color: 0xFFFFFF, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
-    EASTER_YELLOW: { color: 0xfffd4d, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
-    RED: { color: 0xcc0e00, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
-    HALLOWEEN_ORANGE: { color: 0xff8c1a, opacity: 1.0, reflectivity:0.05, refractionRatio: 0.98, shininess:  15, metal: true },
-    CYAN_BLUE: { color: 0x00b1dd, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
-    DOOKIE_BROWN: { color: 0x593320, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
-    DOUBLE_MINT: { color: 0x41ff9f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
-    GREY: { color: 0x9EA2A2, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
-    KELLY_GREEN: { color: 0x00b94e, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
-    PISS_YELLOW: { color: 0xffed00, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true },
-    BLOOD_RED: { color: 0xc8000e, opacity: 0.8, reflectivity: 0.2, refractionRatio: 1.98, shininess:  60, metal: true },
-    DEEP_PURPLE: { color: 0x9a004c, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true },
-    ROYAL_BLUE: { color: 0x0040b6, opacity: 0.8, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
-    MILKY_CLEAR: { color: 0xFFFFFF, opacity: 0.6, reflectivity: 0.6, refractionRatio: 1.98, shininess:  80, metal: true },
-    SWAMP_GREEN: { color: 0x615c30, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  20, metal: true },
-    SEA_BLUE: { color: 0x187889, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  20, metal: true },
-    BONE: { color: 0xfbefd8, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
-    BRONZE: { color: 0x975d3b, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  40, metal: true },
-    BEER: { color: 0xddbd78, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
-    ELECTRIC_BLUE: { color: 0xbbdcde, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
-    GRIMACE_PURPLE: { color: 0x923b5d, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
-    OXBLOOD: { color: 0x962e3f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
-    COKE_BOTTLE_GREEN: { color: 0xd4e0cb, opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess:  60, metal: true },
-    ORANGE_CRUSH: { color: 0xf0773c, opacity: 0.7, reflectivity: 0.3, refractionRatio: 1.98, shininess:  20, metal: true },
-    HOT_PINK: { color: 0xd12b51, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
-    BABY_PINK: { color: 0xf5ccd4, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
-    OLIVE_GREEN: { color: 0x648044, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
-    AQUA_BLUE: { color: 0x18738e, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
-    ULTRA_CLEAR: { color: 0xFFFFFF, opacity: 0.3, reflectivity: 0.6, refractionRatio: 1.98, shininess:  80, metal: true },
-    BABY_BLUE: { color: 0xb1cbe5, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
-    HIGHLIGHTER_YELLOW: { color: 0xe4e343, opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess:  80, metal: true },
-    GOLD: { color: 0x9d793a, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  50, metal: true },
-    SILVER: { color: 0xa7a8aa, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  50, metal: true },
-    MUSTARD: { color: 0xfed76f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }
+    CLASSIC_BLACK: { color: new THREE.Color(0x000000), opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true },
+    WHITE: { color: new THREE.Color(0xFFFFFF), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
+    EASTER_YELLOW: { color: new THREE.Color(0xfffd4d), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
+    RED: { color: new THREE.Color(0xcc0e00), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
+    HALLOWEEN_ORANGE: { color: new THREE.Color(0xff8c1a), opacity: 1.0, reflectivity:0.05, refractionRatio: 0.98, shininess:  15, metal: true },
+    CYAN_BLUE: { color: new THREE.Color(0x00b1dd), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
+    DOOKIE_BROWN: { color: new THREE.Color(0x593320), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
+    DOUBLE_MINT: { color: new THREE.Color(0x41ff9f), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
+    GREY: { color: new THREE.Color(0x9EA2A2), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
+    KELLY_GREEN: { color: new THREE.Color(0x00b94e), opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
+    PISS_YELLOW: { color: new THREE.Color(0xffed00), opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true },
+    BLOOD_RED: { color: new THREE.Color(0xc8000e), opacity: 0.8, reflectivity: 0.2, refractionRatio: 1.98, shininess:  60, metal: true },
+    DEEP_PURPLE: { color: new THREE.Color(0x9a004c), opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true },
+    ROYAL_BLUE: { color: new THREE.Color(0x0040b6), opacity: 0.8, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
+    MILKY_CLEAR: { color: new THREE.Color(0xFFFFFF), opacity: 0.6, reflectivity: 0.6, refractionRatio: 1.98, shininess:  80, metal: true },
+    SWAMP_GREEN: { color: new THREE.Color(0x615c30), opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  20, metal: true },
+    SEA_BLUE: { color: new THREE.Color(0x187889), opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  20, metal: true },
+    BONE: { color: new THREE.Color(0xfbefd8), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
+    BRONZE: { color: new THREE.Color(0x975d3b), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  40, metal: true },
+    BEER: { color: new THREE.Color(0xddbd78), opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
+    ELECTRIC_BLUE: { color: new THREE.Color(0xbbdcde), opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true },
+    GRIMACE_PURPLE: { color: new THREE.Color(0x923b5d), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
+    OXBLOOD: { color: new THREE.Color(0x962e3f), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
+    COKE_BOTTLE_GREEN: { color: new THREE.Color(0xd4e0cb), opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess:  60, metal: true },
+    ORANGE_CRUSH: { color: new THREE.Color(0xf0773c), opacity: 0.7, reflectivity: 0.3, refractionRatio: 1.98, shininess:  20, metal: true },
+    HOT_PINK: { color: new THREE.Color(0xd12b51), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
+    BABY_PINK: { color: new THREE.Color(0xf5ccd4), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
+    OLIVE_GREEN: { color: new THREE.Color(0x648044), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
+    AQUA_BLUE: { color: new THREE.Color(0x18738e), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
+    ULTRA_CLEAR: { color: new THREE.Color(0xFFFFFF), opacity: 0.3, reflectivity: 0.6, refractionRatio: 1.98, shininess:  80, metal: true },
+    BABY_BLUE: { color: new THREE.Color(0xb1cbe5), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true },
+    HIGHLIGHTER_YELLOW: { color: new THREE.Color(0xe4e343), opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess:  80, metal: true },
+    GOLD: { color: new THREE.Color(0x9d793a), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  50, metal: true },
+    SILVER: { color: new THREE.Color(0xa7a8aa), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  50, metal: true },
+    MUSTARD: { color: new THREE.Color(0xfed76f), opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }
   };
 
   //--------------------------------------------------------------
@@ -89,7 +89,7 @@
     opts = opts || {
       format: Vinyl.Format.NORMAL,
       size: Vinyl.Size.SIZE_7_SMALL_HOLE,
-      color: 0,
+      color: Vinyl.Color.CLASSIC_BLACK,
       speed: 45,
       label: Vinyl.Label.BLANK
     };
@@ -147,9 +147,10 @@
     this._size = opts.size || Vinyl.Size.SIZE_12;
     this._weight = opts.weight || Vinyl.Weight.NORMAL;
     this._label = opts.label || Vinyl.Label.BLANK;
+    this._colorFormat = opts.colorFormat || Vinyl.ColorFormat.BLACK;
+    this._heavy = opts.heavy || Vinyl.Weight.NORMAL;
+    this._material = opts.color || Vinyl.Color.CLASSIC_BLACK;
     this._format = Vinyl.Format.NORMAL;
-    this._colorFormat = opts.colorFormat;
-    this._heavy = opts.heavy;
     this._defaultColor = 0x000000;
     this._opacity = 0;
     this._rpm = opts.speed;
@@ -163,16 +164,11 @@
     // this._currentObject が変更される度に反映する必要があるプロパティ
     this._bumpScale = 0.3;
 
-    this._materialParams = this._materialPresets[0];
-    this._color = 0;
-
     if (this._colorFormat === Vinyl.ColorFormat.SPECIAL) {
-      this._materialParams = this._materialPresets[1];
-      this._color = 0xffffff;
-    } else if (this._colorFormat === Vinyl.ColorFormat.COLOR) {
-      this._materialParams = this._materialPresets[opts.color];
-      this._color = this._materialParams.color;
+      this._material = Vinyl.Color.WHITE;
     }
+
+    this._color = this._material.color;
 
     // モデル
     this._models = {
@@ -436,16 +432,17 @@
         child.material.bumpScale = self._bumpScale;
         child.material.combine = THREE.MultiplyOperation;
         child.material.color = new THREE.Color(0xffffff);
-        // child.material.opacity = 0.5;
-        // child.material.opacity = self._colorFormat === Vinyl.ColorFormat.SPECIAL ? 0.7 : self._materialParams.opacity;
-        child.material.reflectivity = self._colorFormat === Vinyl.ColorFormat.SPECIAL ? 0.1 : self._materialParams.reflectivity;
-        child.material.reflectivity = self._materialParams.refractionRatio;
-        child.material.shininess = self._materialParams.shininess;
+        child.material.opacity = self._material.opacity;
+        child.material.reflectivity = self._material.reflectivity;
+        child.material.refractionRatio = self._material.refractionRatio;
+        child.material.shininess = self._material.shininess;
         child.material.specular = new THREE.Color(0x363636);
         child.material.transparent = true;
         child.material.shading = THREE.SmoothShading;
 
         if (-1 < model.assetName.indexOf('with-label')) {
+          child.material.color = self._material.color;
+
           if ('vinyl' === child.name) {
             child.material.aoMap = textures['vinyl']['ao'];
             if (child.material.aoMap) {
@@ -462,6 +459,8 @@
               child.material.map.needsUpdate = true;
             }
           } else if ('label' === child.name) {
+            child.material.color = new THREE.Color(0xffffff);
+
             child.material.aoMap = textures['label']['ao'];
             if (child.material.aoMap) {
               child.material.aoMap.needsUpdate = true;
@@ -559,7 +558,7 @@
 
 
   Vinyl.prototype.updateCurrentObject = function() {
-    
+
     var self = this;
 
     self._container.remove(self._currentObject.scene);
@@ -568,14 +567,29 @@
 
     self._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
-        child.material.bumpScale = self._bumpScale;
+        if (-1 < child.parent.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
+          if ('vinyl' === child.name) {
+            child.material.bumpScale = self._bumpScale;
+            child.material.color = self._material.color;
+          } else if ('label' === child.name) { 
+            child.material.bumpScale = self._bumpScale;
+            child.material.color = Vinyl.Color.WHITE.color;
+          }
+        } else {
+          child.material.bumpScale = self._bumpScale;
+          child.material.color = Vinyl.Color.WHITE.color;
+        }
+        
+        child.material.reflectivity = self._material.reflectivity;
+        child.material.refractionRatio = self._material.refractionRatio;
+        child.material.shininess = self._material.shininess;
       }
     });
 
     self._container.add(self._currentObject.scene);
 
     self._opacity = 0;
-    self.setOpacity(self._materialParams.opacity);
+    self.setOpacity(self._material.opacity);
   }
 
   //--------------------------------------------------------------
@@ -640,12 +654,12 @@
     this._colorFormat = format;
 
     if (Vinyl.ColorFormat.SPECIAL === this._colorFormat) {
-      this._materialParams = this._materialPresets[1];
+      this._material = Vinyl.Color.WHITE;
     } else {
-      this._materialParams = this._materialPresets[0];
+      this._material = Vinyl.Color.CLASSIC_BLACK;
     }
 
-    this._color = this._materialParams.color;
+    this._color = new THREE.Color(this._material.color);
 
     var self = this;
 
@@ -657,7 +671,7 @@
     });
 
     this._opacity = 0;
-    this.setOpacity(this._materialParams.opacity);
+    this.setOpacity(this._material.opacity);
   };
 
   //--------------------------------------------------------------
@@ -666,43 +680,52 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setColor = function(index) {
-    this._materialParams = this._materialPresets[index];
-    this._color = Vinyl.ColorFormat.SPECIAL === this._colorFormat ? 0xFFFFFF : this._materialParams.color;
-    this._opacity = Vinyl.ColorFormat.SPECIAL === this._colorFormat ? 0.8 : this._materialParams.opacity;
+  Vinyl.prototype.setColor = function(color) {
 
-    var self = this;
+    if (!color) {
+      return;
+    }
 
-    Object.keys(self._models).forEach(function(size) {
-      Object.keys(self._models[size]).forEach(function(type) {
-        var tex = Vinyl.ColorFormat.SPECIAL === self._colorFormat ? self._textures[size][type] : null;
-        self.initMaterial(self._models[size][type], tex);
-      });
-    });
+    if (-1 === Object.keys(Vinyl.Color).indexOf(color)) {
+      console.warn('Vinyl.setColor: unknown color "' + color + '"');
+      return;
+    }
+
+    this._material = Vinyl.Color[color];
+
+    if (this._colorFormat === Vinyl.ColorFormat.SPECIAL) {
+      this._material.color = 0xffffff;
+      this._material.opacity = 0.8;
+      this._material.reflectivity = 0.1;
+    }
+
+    this.updateCurrentObject();
   };
 
   //--------------------------------------------------------------
   Vinyl.prototype.setOpacity = function(to, duration) {
     var self = this;
 
-    duration = undefined !== duration ? duration : 300;
+    duration = undefined !== duration ? duration : 500;
 
     this._opacityTween
       .stop()
       .to({ _opacity: to }, duration)
       .onUpdate(function() {
-        self._models[self._size][self._format].scene.traverse(function(child) {
+        self._currentObject.scene.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
-            child.material.opacity = self._opacity;
+            if (child.name === 'vinyl') {
+              child.material.opacity = self._opacity;
+            }
           }
 
-          if (child instanceof THREE.Object3D) {
-            child.traverse(function(nextChild) {
-              if (nextChild instanceof THREE.Mesh) {
-                nextChild.material.opacity = self._opacity;
-              }
-            });
-          }
+          // if (child instanceof THREE.Object3D) {
+          //   child.traverse(function(nextChild) {
+          //     if (nextChild instanceof THREE.Mesh) {
+          //       nextChild.material.opacity = self._opacity;
+          //     }
+          //   });
+          // }
         });
       })
       .start();

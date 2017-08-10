@@ -912,13 +912,13 @@
   World.prototype.onVinylColorChanged = function(value) {
     console.log('World::onVinylColorChanged', value);
 
-    this._vinyl.setColor(value);
+    this._vinyl.setColor(Object.keys(Vinyl.Color)[value]);
   };
 
   World.prototype.onVinylSplatterColorChanged = function(value) {
     console.log('World::onVinylSplatterColorChanged', value);
 
-    this._vinyl.setColor(value);
+    this._vinyl.setColor(Object.keys(Vinyl.Color)[value]);
   };
 
   World.prototype.onVinylHoleSizeChanged = function(value) {
