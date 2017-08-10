@@ -394,7 +394,7 @@
         } else if (Vinyl.ColorFormat.SPECIAL === self._colorFormat) {
           self._bumpScale = 0.28;
         }
-        
+
         child.material.bumpScale = self._bumpScale;
         child.material.combine = THREE.MultiplyOperation;
         child.material.color = new THREE.Color(0xffffff);
@@ -405,7 +405,6 @@
         child.material.shininess = self._materialParams.shininess;
         child.material.specular = new THREE.Color(0x363636);
         child.material.transparent = true;
-        // child.material.side = THREE.DoubleSide;
         child.material.shading = THREE.SmoothShading;
 
         if (-1 < model.assetName.indexOf('with-label')) {
@@ -441,10 +440,10 @@
             }
           }
         } else {
-          // child.material.alphaMap = textures['alpha'] || null;
-          // if (child.material.alphaMap) {
-          //   child.material.alphaMap.needsUpdate = true;
-          // }
+          child.material.alphaMap = textures['alpha'] || null;
+          if (child.material.alphaMap) {
+            child.material.alphaMap.needsUpdate = true;
+          }
 
           child.material.aoMap = textures['ao'];
           if (child.material.aoMap) {
@@ -462,7 +461,7 @@
           }
         }
 
-        child.geometry.computeVertexNormals();
+        child.geometry.computeFaceNormals();
       }
     });
 
