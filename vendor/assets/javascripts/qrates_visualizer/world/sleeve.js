@@ -155,13 +155,11 @@
             'ao': assets['assetsTextureSleeveDoubleAo-7'],
             'bumpmap': assets['assetsTextureSleeveDoubleBumpmap-7'],
             'color': assets['assetsTextureSleeveDoubleColor-7'],
-            'color-ao': assets['assetsTextureSleeveDoubleColorAndAo-7']
           },
           'holed': {
             'ao': assets['assetsTextureSleeveDoubleHoledAo-7'],
             'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-7'],
             'color': assets['assetsTextureSleeveDoubleHoledColor-7'],
-            'color-ao': assets['assetsTextureSleeveDoubleHoledColorAndAo-7']
           }
         },
         'gatefold': {
@@ -220,7 +218,6 @@
             'ao': assets['assetsTextureSleeveDoubleAo-10'],
             'bumpmap': assets['assetsTextureSleeveDoubleBumpmap-10'],
             'color': assets['assetsTextureSleeveDoubleColor-10'],
-            'color-ao': assets['assetsTextureSleeveDoubleColorAndAo-10']
           },
           'holed': {
             'ao': assets['assetsTextureSleeveDoubleHoledAo-10'],
