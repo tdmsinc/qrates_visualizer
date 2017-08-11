@@ -848,9 +848,9 @@
     parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
     parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
     parent.sleeve.on('glossFinish', this.onSleeveGlossFinishChanged.bind(this));
-    parent.sleeve.on('frontTexture', this.onSleeveFrontTextureChanged.bind(this));
-    parent.sleeve.on('backTexture', this.onSleeveBackTextureChanged.bind(this));
-    parent.sleeve.on('spineTexture', this.onSleeveSpineTextureChanged.bind(this));
+    parent.sleeve.on('colorMap', this.onSleeveColorMapChanged.bind(this));
+    parent.sleeve.on('aoMap', this.onSleeveAoMapChanged.bind(this));
+    parent.sleeve.on('bumpMap', this.onSleeveBumpMapChanged.bind(this));
 
     return this;
   };
@@ -1004,26 +1004,33 @@
     this._sleeve.setGlossFinish(value);
   };
 
-  World.prototype.onSleeveFrontTextureChanged = function(value) {
-    console.log('World::onSleeveFrontTextureChanged');
-    if (value == null) {
-      this._sleeve.clearTexture('sideA');
-    } else {
-      this._sleeve.setTexture(value, null);
+  World.prototype.onSleeveColorMapChanged = function(value) {
+    console.log('World::onSleeveColorMapChanged');
+
+    if (!value) {
+      return;
     }
+    
+    this._sleeve.setColorMap(value);
   };
 
-  World.prototype.onSleeveBackTextureChanged = function(value) {
-    console.log('World::onSleeveBackTextureChanged');
-    if (value == null) {
-      this._sleeve.clearTexture('sideB');
-    } else {
-      this._sleeve.setTexture(null, value);
+  World.prototype.onSleeveAoMapChanged = function(value) {
+    console.log('World::onSleeveAoMapChanged');
+
+    if (!value) {
+      return;
     }
+    
+    this._sleeve.setAoMap(value);
   };
 
-  World.prototype.onSleeveSpineTextureChanged = function(value) {
-    console.log('World::onSleeveSpineTextureChanged');
-    this._sleeve.setTexture(null, null, value);
+  World.prototype.onSleeveBumpMapChanged = function(value) {
+    console.log('World::onSleeveBumpMapChanged');
+    
+    if (!value) {
+      return;
+    }
+    
+    this._sleeve.setBumpMap(value);
   };
 })(this, (this.qvv = (this.qvv || {})));

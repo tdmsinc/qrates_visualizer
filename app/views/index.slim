@@ -442,6 +442,14 @@ form.show
 
   p: label: input type="checkbox" v-model="sleeve.glossFinish" Gloss Finish
 
-  p: label: input type="file" name="sleeve-front" front
-  p: label: input type="file" name="sleeve-back" back
-  p: label: input type="file" name="sleeve-spine" spine
+  p
+    label Color Map
+    input type="file" name="sleeve-color"
+
+  p
+    label AO Map
+    input type="file" name="sleeve-ao"
+
+  p
+    label Bump Map 
+    input type="file" name="sleeve-bump"

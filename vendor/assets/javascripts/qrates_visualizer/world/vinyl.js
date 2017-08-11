@@ -718,14 +718,6 @@
               child.material.opacity = self._opacity;
             }
           }
-
-          // if (child instanceof THREE.Object3D) {
-          //   child.traverse(function(nextChild) {
-          //     if (nextChild instanceof THREE.Mesh) {
-          //       nextChild.material.opacity = self._opacity;
-          //     }
-          //   });
-          // }
         });
       })
       .start();

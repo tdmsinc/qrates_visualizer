@@ -114,9 +114,9 @@ vv.on('ready', function() {
   var vinylBumpMap = document.querySelector('input[name=vinyl-bumpmap]');
   var labelA = document.querySelector('input[name=label-a]');
   var labelB = document.querySelector('input[name=label-b]');
-  var sleeveFront = document.querySelector('input[name=sleeve-front]');
-  var sleeveBack = document.querySelector('input[name=sleeve-back]');
-  var sleeveSpine = document.querySelector('input[name=sleeve-spine]');
+  var sleeveColorMap = document.querySelector('input[name=sleeve-color]');
+  var sleeveAoMap = document.querySelector('input[name=sleeve-ao]');
+  var sleeveBumpMap = document.querySelector('input[name=sleeve-bump]');
 
   /**
    * @param {File} file
@@ -169,22 +169,22 @@ vv.on('ready', function() {
       vv.label.sideBTexture(img);
     });
   };
-  sleeveFront.onchange = function(e) {
+  sleeveColorMap.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.sleeve.frontTexture(img);
+      vv.sleeve.colorMap(img);
     });
   };
-  sleeveBack.onchange = function(e) {
+  sleeveAoMap.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.sleeve.backTexture(img);
+      vv.sleeve.aoMap(img);
     });
   };
-  sleeveSpine.onchange = function(e) {
+  sleeveBumpMap.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.sleeve.spineTexture(img);
+      vv.sleeve.bumpMap(img);
     });
   };
 });

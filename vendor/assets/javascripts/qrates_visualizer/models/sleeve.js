@@ -33,9 +33,9 @@
     'type',
     'hole',
     'glossFinish',
-    'frontTexture',
-    'backTexture',
-    'spineTexture'
+    'colorMap',
+    'aoMap',
+    'bumpMap'
   ];
 
   /**

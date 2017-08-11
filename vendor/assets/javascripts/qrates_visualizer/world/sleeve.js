@@ -327,8 +327,8 @@
             console.error('texture ' + obj + ':' + key + ' is ' + obj[key]);
           }
 
-          obj[key] = new THREE.Texture(obj[key]);
-          obj[key].needsUpdate = true;
+          texture = new THREE.Texture();
+          obj[key] = self.updateTexture(texture, obj[key]);
         } else if (obj[key] instanceof Object) {
           initTextures(obj[key]);
         }
@@ -443,27 +443,99 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.updateTexture = function(tex, img) {
-    if (!tex || !img) {
+  Sleeve.prototype.updateTexture = function(texture, image) {
+    if (!texture || !image) {
       return;
     }
-    tex.image = img;
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    tex.needsUpdate = true;
+
+    if (!(texture instanceof THREE.Texture)) {
+      console.error('Sleeve.updateTexture: texture is not instance of THREE.Texture');
+      return;
+    }
+    
+    if (!(image instanceof Image)) {
+      console.error('Sleeve.updateTexture: image is not instance of Image');
+      return;
+    }
+
+    texture.image = image;
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.needsUpdate = true;
+
+    return texture;
   };
 
   //--------------------------------------------------------------
+  Sleeve.prototype.setColorMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
+
+    if (!(image instanceof Image)) {
+      console.error('Sleeve.updateTexture: image is not instance of Image');
+      return;
+    }
+
+    this.updateTexture(this._textures[this._size][this._format][this._hole]['color'], image);
+  }
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setAoMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
+
+    if (!(image instanceof Image)) {
+      console.error('Sleeve.setAoMap: image is not instance of Image');
+      return;
+    }
+
+    this.updateTexture(this._textures[this._size][this._format][this._hole]['ao'], image);
+  }
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setBumpMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
+
+    if (!(image instanceof Image)) {
+      console.error('Sleeve.setBumpMap: image is not instance of Image');
+      return;
+    }
+
+    this.updateTexture(this._textures[this._size][this._format][this._hole]['bumpmap'], image);
+  }
+
+  // TODO: gatefold のテクスチャ変更メソッド
+  //--------------------------------------------------------------
+  Sleeve.prototype.setFrontColorMap = function(image) {
+
+    if (this._format !== Sleeve.Format.GATEFOLD) {
+      console.error('Sleeve.setFrontColorMap: this function is only valid for gatefold format');
+      return;
+    }
+    
+    if (!image) {
+      return;
+    }
+
+    if (!(image instanceof Image)) {
+      console.error('Sleeve.setFrontColorMap: image is not instance of Image');
+      return;
+    }
+
+    this.updateTexture(this._textures[this._size][Sleeve.Format.GATEFOLD][this._hole]['front']['color'], image);
+  }
+
+  //--------------------------------------------------------------
   Sleeve.prototype.setTexture = function(sideA, sideB, spine) {
-    if (sideA) {
-      this.updateTexture(this._textures.front, sideA);
-    }
-    if (sideB) {
-      this.updateTexture(this._textures.back, sideB);
-    }
-    if (spine) {
-      this.updateTexture(this._textures.spine, spine);
-    }
+    
+    console.warn('Sleeve.setTexture is deprecated. use setColorMap/setAoMap/setBumpMap to set each texture.');
   };
 
   //--------------------------------------------------------------
