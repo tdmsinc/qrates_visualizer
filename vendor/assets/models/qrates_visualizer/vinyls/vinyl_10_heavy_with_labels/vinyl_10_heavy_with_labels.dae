@@ -14,7 +14,7 @@
             <init_from>10inch_VINYL_heavy_picture_Color.jpg</init_from>
         </image>
         <image id="ID10">
-            <init_from>file:////Users/nishida/Desktop/works/TDMS/QRATES/models/VINYL/Dae/vinyls:vinyl_heavy_12_with_labels_0728/12inch_LABEL_heavy_AB_Color_and_AO.jpg</init_from>
+            <init_from>12inch_LABEL_heavy_AB_Color_and_AO.jpg</init_from>
         </image>
     </library_images>
     <library_effects>
