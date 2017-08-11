@@ -169,12 +169,12 @@
             'front': {
               'ao': assets['assetsTextureSleeveGatefoldFrontAo-7'],
               'bumpmap': assets['assetsTextureSleeveGatefoldFrontBumpmap-7'],
-              'color': assets['assetsTextureSleeveGatefoldFrontColorAndAo-7']
+              'color': assets['assetsTextureSleeveGatefoldFrontColor-7']
             },
             'back': {
               'ao': assets['assetsTextureSleeveGatefoldBackAo-7'],
               'bumpmap': assets['assetsTextureSleeveGatefoldBackBumpmap-7'],
-              'color': assets['assetsTextureSleeveGatefoldBackColorAndAo-7']
+              'color': assets['assetsTextureSleeveGatefoldBackColor-7']
             },
             'spine': {
               'ao': assets['assetsTextureSleeveGatefoldSpineAo-7'],
