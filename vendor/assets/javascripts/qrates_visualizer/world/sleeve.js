@@ -631,9 +631,9 @@
     self._size = size;
 
     self._container.remove(self._currentObject.scene);
-
+    console.log('size:', this._size, 'format:', self._format, 'hole:', self._hole);
     self._currentObject = self._models[self._size][self._format][self._hole];
-
+    
     console.log('new object', self._currentObject);
 
     self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
