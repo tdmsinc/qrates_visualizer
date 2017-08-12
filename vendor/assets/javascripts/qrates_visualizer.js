@@ -39,7 +39,6 @@
     var defaults = opts.defaults || {};
     this.el = el;
     this.vinyl = new Vinyl({ defaults: defaults.vinyl });
-    this.label = new Label({ defaults: defaults.label });
     this.sleeve = new Sleeve({ defaults: defaults.sleeve });
     this.setup();
   }

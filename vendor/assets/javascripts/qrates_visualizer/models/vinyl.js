@@ -38,10 +38,13 @@
     'holeSize',
     'heavy',
     'speed',
-    'sideATexture',
-    'sideBTexture',
-    'sideABumpMapTexture',
-    'sideBBumpMapTexture'
+    'aoMap',
+    'bumpMap',
+    'colorMap',
+    'labelType',
+    'labelAoMap',
+    'labelBumpMap',
+    'labelColorMap'
   ];
 
   /**

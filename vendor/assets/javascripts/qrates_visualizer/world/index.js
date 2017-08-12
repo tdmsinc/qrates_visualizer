@@ -54,7 +54,7 @@
     this._alphaMap.magFilter = THREE.LinearFilter;
     this._alphaMap.needsUpdate = true;
 
-    this._scene1 = new THREE.Scene();
+    this._scene = new THREE.Scene();
 
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -92,7 +92,7 @@
     ground.position.set(0, -80, 0);
     ground.rotation.x = 90 * Math.PI / 180;
     // ground.receiveShadow = true;
-    // this._scene1.add(ground);
+    // this._scene.add(ground);
 
     this._enableRotate = false;
     this._flip = false;
@@ -104,10 +104,10 @@
     this._object.name = 'container';
 
     this._sleeve = new Sleeve();
-    this._sleeve.setup(this._scene1, assets, opts.defaults.sleeve, this._object);
+    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._object);
 
     this._vinyl = new Vinyl();
-    this._vinyl.setup(this._scene1, assets, opts.defaults.vinyl, this._object);
+    this._vinyl.setup(this._scene, assets, opts.defaults.vinyl, this._object);
 
     var scale = this._objectScales[this._vinyl._size];
     this._object.scale.set(scale, scale, scale);
@@ -118,8 +118,8 @@
     this._presets = {};
     this.registerPresets();
 
-    this._scene1.add(this._lights);
-    this._scene1.add(this._object);
+    this._scene.add(this._lights);
+    this._scene.add(this._object);
 
     var self = this;
 
@@ -804,7 +804,7 @@
     this.update();
 
     this._renderer.clear();
-    this._renderer.render(this._scene1, this._camera);
+    this._renderer.render(this._scene, this._camera);
 
     this._request = requestAnimationFrame(this.draw.bind(this));
   };
@@ -836,14 +836,13 @@
     parent.vinyl.on('holeSize', this.onVinylHoleSizeChanged.bind(this));
     parent.vinyl.on('heavy', this.onVinylHeavyChanged.bind(this));
     parent.vinyl.on('speed', this.onVinylSpeedChanged.bind(this));
-    parent.vinyl.on('sideATexture', this.onVinylSideATextureChanged.bind(this));
-    parent.vinyl.on('sideBTexture', this.onVinylSideBTextureChanged.bind(this));
-    parent.vinyl.on('sideABumpMapTexture', this.onVinylSideABumpMapTextureChanged.bind(this));
-    parent.vinyl.on('sideBBumpMapTexture', this.onVinylSideBBumpMapTextureChanged.bind(this));
-
-    parent.label.on('type', this.onLabelTypeChanged.bind(this));
-    parent.label.on('sideATexture', this.onLabelSideATextureChanged.bind(this));
-    parent.label.on('sideBTexture', this.onLabelSideBTextureChanged.bind(this));
+    parent.vinyl.on('aoMap', this.onVinylAoMapChanged.bind(this));
+    parent.vinyl.on('bumpMap', this.onVinylBumpMapChanged.bind(this));
+    parent.vinyl.on('colorMap', this.onVinylColorMapChanged.bind(this));
+    parent.vinyl.on('labelType', this.onLabelTypeChanged.bind(this));
+    parent.vinyl.on('labelAoMap', this.onLabelAoMapChanged.bind(this));
+    parent.vinyl.on('labelBumpMap', this.onLabelBumpMapChanged.bind(this));
+    parent.vinyl.on('labelColorMap', this.onLabelColorMapChanged.bind(this));
 
     parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
     parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
@@ -855,12 +854,14 @@
     return this;
   };
 
+  //--------------------------------------------------------------
   World.prototype.undelegateEvents = function() {
     var parent = this._parent;
 
     return this;
   };
 
+  //--------------------------------------------------------------
   World.prototype.onVinylTypeChanged = function(value) {
     console.log('World.onVinylTypeChanged:', value);
 
@@ -872,6 +873,7 @@
     this._vinyl.setColorFormat(value);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onVinylSizeChanged = function(size) {
     console.log('World::onVinylSizeChanged', size);
 
@@ -903,107 +905,116 @@
         break;
     }
 
-    // this._object.scale.set(scale, scale, scale);
+    this._object.scale.set(scale, scale, scale);
 
     this._sleeve.setSize(sleeveSize);
     this._vinyl.setSize(size);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onVinylColorChanged = function(value) {
     console.log('World::onVinylColorChanged', value);
 
     this._vinyl.setColor(Object.keys(Vinyl.Color)[value]);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onVinylSplatterColorChanged = function(value) {
     console.log('World::onVinylSplatterColorChanged', value);
 
     this._vinyl.setColor(Object.keys(Vinyl.Color)[value]);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onVinylHoleSizeChanged = function(value) {
     console.log('World::onVinylHoleSizeChanged', value);
 
   };
 
+  //--------------------------------------------------------------
   World.prototype.onVinylHeavyChanged = function(value) {
     console.log('World::onVinylHeavyChanged', value);
     this._vinyl.setWeight(value ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onVinylSpeedChanged = function(value) {
     console.log('World::onVinylSpeedChanged', value);
 
     this._vinyl.setRPM(value);
   };
 
-  World.prototype.onVinylSideATextureChanged = function(value) {
-    console.log('World::onVinylSideATextureChanged');
+  //--------------------------------------------------------------
+  World.prototype.onVinylAoMapChanged = function(value) {
+    console.log('World::onVinylAoMapChanged');
 
-    this._vinyl.setTexture(value);
+    this._vinyl.setTexture({ aoMap: value });
   };
 
-  World.prototype.onVinylSideBTextureChanged = function(value) {
-    console.log('World::onVinylSideBTextureChanged', value);
+  //--------------------------------------------------------------
+  World.prototype.onVinylBumpMapChanged = function(value) {
+    console.log('World::onVinylBumpMapChanged', value);
 
-    this._vinyl.setTexture(null, value);
+    this._vinyl.setTexture({ bumpMap: value });
   };
 
-  World.prototype.onVinylSideABumpMapTextureChanged = function(value) {
-    console.log('World::onVinylSideABumpMapTextureChanged');
+  //--------------------------------------------------------------
+  World.prototype.onVinylColorMapChanged = function(value) {
+    console.log('World::onVinylColorMapChanged', value);
 
-    this._vinyl.setSideABumpMapTexture(value);
+    this._vinyl.setTexture({ map: value });
   };
 
-  World.prototype.onVinylSideBBumpMapTextureChanged = function(value) {
-    console.log('World::onVinylSideBBumpMapTextureChanged');
+  //--------------------------------------------------------------
+  World.prototype.onLabelAoMapChanged = function(value) {
+    console.log('World::onVinylAoMapChanged');
 
-    this._vinyl.setSideBBumpMapTexture(value);
+    this._vinyl.setLabelTexture({ aoMap: value });
   };
 
+  //--------------------------------------------------------------
+  World.prototype.onLabelBumpMapChanged = function(value) {
+    console.log('World::onVinylBumpMapChanged', value);
+
+    this._vinyl.setLabelTexture({ bumpMap: value });
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onLabelColorMapChanged = function(value) {
+    console.log('World::onLabelColorMapChanged', value);
+
+    this._vinyl.setLabelTexture({ map: value });
+  };
+
+  //--------------------------------------------------------------
   World.prototype.onLabelTypeChanged = function(value) {
     console.log('World::onLabelTypeChanged', value);
 
-    // var types = [this._label.TYPE_WHITE, this._label.TYPE_PRINT_MONOCHROME, this._label.TYPE_PRINT_COLOR];
-    // this._label.setType(types[value - 1]);
+    this._vinyl.setLabelType(value);
   };
 
-  World.prototype.onLabelSideATextureChanged = function(value) {
-    console.log('World::onLabelSideATextureChanged');
-    // if (value == null) {
-    //   this._label.clearTexture('sideA');
-    // } else {
-    //   this._label.setTexture(value, null);
-    // }
-  };
-
-  World.prototype.onLabelSideBTextureChanged = function(value) {
-    console.log('World::onLabelSideBTextureChanged', value);
-    // if (value == null) {
-    //   this._label.clearTexture('sideB');
-    // } else {
-    //   this._label.setTexture(null, value);
-    // }
-  };
-
+  //--------------------------------------------------------------
   World.prototype.onSleeveTypeChanged = function(value) {
     console.log('World::onSleeveTypeChanged', value);
 
     this._sleeve.setType(value);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onSleeveHoleChanged = function(value) {
     console.log('World::onSleeveHoleChanged', value);
 
     this._sleeve.setHole(value ? Sleeve.Hole.HOLED : Sleeve.Hole.NO_HOLE);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onSleeveGlossFinishChanged = function(value) {
     console.log(value);
 
     this._sleeve.setGlossFinish(value);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onSleeveColorMapChanged = function(value) {
     console.log('World::onSleeveColorMapChanged');
 
@@ -1014,6 +1025,7 @@
     this._sleeve.setColorMap(value);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onSleeveAoMapChanged = function(value) {
     console.log('World::onSleeveAoMapChanged');
 
@@ -1024,6 +1036,7 @@
     this._sleeve.setAoMap(value);
   };
 
+  //--------------------------------------------------------------
   World.prototype.onSleeveBumpMapChanged = function(value) {
     console.log('World::onSleeveBumpMapChanged');
     

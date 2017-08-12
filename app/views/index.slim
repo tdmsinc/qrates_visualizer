@@ -408,22 +408,39 @@ form.show
       option value="33" 33rpm
       option value="45" 45rpm
 
-  p: label: input type="file" name="vinyl-a" A
-  p: label: input type="file" name="vinyl-b" B
+  p
+    label AO Map
+    input type="file" name="vinyl-ao"
 
-  p: label: input type="file" name="vinyl-bumpmap" BumpMap
+  p
+    label Bump Map
+    input type="file" name="vinyl-bump"
+
+  p
+    label Color Map (Picture)
+    input type="file" name="vinyl-color"
 
   h1 Label options
 
   p
     label Type 
     select number="" v-model="label.type"
-      option value="1" 1. Blank
-      option value="2" 2. Mono Print
-      option value="3" 3. Color Print
+      option value="none" None
+      option value="blank" Blank
+      option value="mono print" Mono Print
+      option value="color print" Color Print
 
-  p: label: input type="file" name="label-a" A
-  p: label: input type="file" name="label-b" B
+  p 
+    label AO Map
+    input type="file" name="label-ao"
+
+  p 
+    label Bump Map
+    input type="file" name="label-bump"
+
+  p 
+    label Color Map
+    input type="file" name="label-color"
 
   h1 Sleeve options
 
@@ -440,13 +457,13 @@ form.show
   p: label: input type="checkbox" v-model="sleeve.glossFinish" Gloss Finish
 
   p
-    label Color Map
-    input type="file" name="sleeve-color"
-
-  p
     label AO Map
     input type="file" name="sleeve-ao"
 
   p
     label Bump Map 
     input type="file" name="sleeve-bump"
+
+  p
+    label Color Map
+    input type="file" name="sleeve-color"
