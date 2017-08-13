@@ -175,7 +175,7 @@
     this.updateFormat();
 
     // this._currentObject が変更される度に反映する必要があるプロパティ
-    this._bumpScale = 0.3;
+    this._bumpScale = 0.17;
 
     if (this._colorFormat === Vinyl.ColorFormat.SPECIAL) {
       this._material = Vinyl.Color.WHITE;
@@ -440,7 +440,7 @@
         self._bumpScale = 0.3;
 
         if (Vinyl.ColorFormat.COLOR === self._colorFormat) {
-          self._bumpScale = 0.6;
+          self._bumpScale = 0.17;
         } else if (Vinyl.ColorFormat.SPECIAL === self._colorFormat) {
           self._bumpScale = 0.28;
         }

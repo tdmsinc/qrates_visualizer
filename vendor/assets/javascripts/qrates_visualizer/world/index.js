@@ -129,10 +129,10 @@
       this.updateView(opts.defaults.view, {duration:0});
     }
 
-    // this.cover(0.8, {
-    //   delay: 1000,
-    //   duration: 2000
-    // });
+    this.cover(0.8, {
+      delay: 1000,
+      duration: 2000
+    });
   }
 
   /**
@@ -845,8 +845,9 @@
     parent.vinyl.on('labelColorMap', this.onLabelColorMapChanged.bind(this));
 
     parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
+    parent.sleeve.on('colorFormat', this.onSleeveColorFormatChanged.bind(this));
     parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
-    parent.sleeve.on('glossFinish', this.onSleeveGlossFinishChanged.bind(this));
+    parent.sleeve.on('finish', this.onSleeveFinishChanged.bind(this));
     parent.sleeve.on('colorMap', this.onSleeveColorMapChanged.bind(this));
     parent.sleeve.on('aoMap', this.onSleeveAoMapChanged.bind(this));
     parent.sleeve.on('bumpMap', this.onSleeveBumpMapChanged.bind(this));
@@ -1001,6 +1002,13 @@
   };
 
   //--------------------------------------------------------------
+  World.prototype.onSleeveColorFormatChanged = function(value) {
+    console.log('World::onSleeveColorFormatChanged', value);
+
+    this._sleeve.setColorFormat(value);
+  };
+
+  //--------------------------------------------------------------
   World.prototype.onSleeveHoleChanged = function(value) {
     console.log('World::onSleeveHoleChanged', value);
 
@@ -1008,10 +1016,10 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.onSleeveGlossFinishChanged = function(value) {
+  World.prototype.onSleeveFinishChanged = function(value) {
     console.log(value);
 
-    this._sleeve.setGlossFinish(value);
+    this._sleeve.setFinish(value);
   };
 
   //--------------------------------------------------------------

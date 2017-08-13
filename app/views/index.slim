@@ -445,6 +445,13 @@ form.show
   h1 Sleeve options
 
   p
+    label Color: 
+    select number="" v-model="sleeve.colorFormat"
+      option value="white" Whtie
+      option value="black" Black
+      option value="print" Print
+
+  p
     label Type: 
     select number="" v-model="sleeve.type"
       option value="no-spine" Single (without spine)
@@ -452,9 +459,13 @@ form.show
       option value="double" Double (5mm spine)
       option value="gatefold" Gatefold
 
-  p: label: input type="checkbox" v-model="sleeve.hole" Hole
+  p
+    label Finish: 
+    select number="" v-model="sleeve.finish"
+      option value="normal" Normal Lamination
+      option value="gloss" Gloss Lamination
 
-  p: label: input type="checkbox" v-model="sleeve.glossFinish" Gloss Finish
+  p: label: input type="checkbox" v-model="sleeve.hole" Hole
 
   p
     label AO Map

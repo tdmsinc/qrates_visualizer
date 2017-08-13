@@ -28,6 +28,12 @@
     GATEFOLD: 'gatefold'
   };
 
+  Sleeve.ColorFormat = {
+    WHITE: 'white',
+    BLACK: 'black',
+    PRINT: 'print'
+  };
+
   Sleeve.Hole = {
     NO_HOLE: 'normal',
     HOLED: 'holed'
@@ -38,13 +44,19 @@
     GLOSS: 'gloss'
   };
 
+  Sleeve.Shininess = {
+    'normal': 5,
+    'gloss': 15
+  };
+
   //--------------------------------------------------------------
   Sleeve.prototype.setup = function(scene, assets, opts, container) {
     opts = opts || {
-      glossFinish: false,
-      hole: Sleeve.Hole.NO_HOLED,
-      size: Sleeve.Size.SIZE_7,
       format: Sleeve.Format.SINGLE_NO_SPINE,
+      ColorFormat: Sleeve.ColorFormat.WHITE,
+      size: Sleeve.Size.SIZE_12,
+      hole: Sleeve.Hole.NO_HOLED,
+      finish: Sleeve.Finish.NORMAL,
       textures: {
 
       }
@@ -56,12 +68,12 @@
     this._size = opts.size;
     this._hole = opts.hole;
     this._format = opts.format;
+    this._finish = opts.finish || Sleeve.Finish.NORMAL;
     this._currentTextures = opts.textures;
     this._opacity = 0.0;
     this._coveredRatio = 0.0;
     this._bumpScale = 0.3;
-    this._shininess = opts.glossFinish ? 15 : 5;
-    this._glossFinish = opts.glossFinish;
+    this._shininess = Sleeve.Shininess[this._finish];
     this._opacityTweenDuration = 300;
 
     this._models = {
@@ -557,7 +569,7 @@
     var self = this;
 
     if (-1 === Object.values(Sleeve.Format).indexOf(format)) {
-      console.error('Sleeve.setFormat: specified format "' + format + '" not found');
+      console.error('Sleeve.setFormat: unknown format "' + format + '"');
       return;
     }
 
@@ -567,7 +579,7 @@
     }
 
     if (format === Sleeve.Format.GATEFOLD && self._hole === Sleeve.Hole.HOLED) {
-      console.warn('Sleeve.setFormat: forcely disabled hole option because cannot apply it for gatefold');
+      console.warn('Sleeve.setFormat: forcibly disabled hole option because gatefold cannot have hole');
 
       self._hole = Sleeve.Hole.NO_HOLE;
     }
@@ -601,10 +613,45 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setType = function(format) {
-    console.log('format', format);
     console.warn('Sleeve.setType(format) is deprecated. use Sleeve.setFormat(format) instead.');
     this.setFormat(format);
   };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setColorFormat = function(format) {
+
+    if (!format) {
+      return;
+    }
+
+    var self = this;
+
+    if (-1 === Object.values(Sleeve.ColorFormat).indexOf(format)) {
+      console.error('Sleeve.setColorFormat: unknown color format "' + format + '"');
+      return;
+    }
+
+    if (self._colorFormat === format) {
+      console.info('Sleeve.setColorFormat: specified color format "' + format + '" is already applied');
+      return;
+    }
+
+    var self = this;
+    self._colorFormat = format;
+
+    if (self._colorFormat === Sleeve.ColorFormat.WHITE || self._colorFormat === Sleeve.ColorFormat.BLACK) {
+      self._finish = Sleeve.Finish.NORMAL;
+      self._shininess = Sleeve.Shininess[Sleeve.Finish.NORMAL];
+    }
+    
+    // TODO: Sleeve.ColorFormat.WHITE || Sleeve.ColorFormat.BLACK の場合に
+    // テクスチャをクリアする
+    self._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.shininess = self._shininess;
+      }
+    });
+  }
 
   //--------------------------------------------------------------
   Sleeve.prototype.setSize = function(size) {
@@ -695,14 +742,32 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setGlossFinish = function(yn) {
-    if (this.TYPE_BLACK === this._format || this.TYPE_WHITE === this._format) {
+  Sleeve.prototype.setFinish = function(finish) {
+
+    if (!finish) {
       return;
     }
 
+    if (-1 === Object.value(Sleeve.Finish).indexOf(finish)) {
+      console.error('Sleeve.setFinish: unknown value "' + finish + '"');
+      return;
+    }
+
+    if (this._finish === finish) {
+      return;
+    }
+
+    if (Sleeve.Finish.GLOSS === finish) {
+      if (Sleeve.ColorFormat.WHITE === this._colorFormat || Sleeve.ColorFormat.BLACK === this._colorFormat) {
+        console.error('Sleeve.setFinish: gloss lamination is only valid for print sleeve');
+        return;
+      }
+    }
+
     var self = this;
-    self._glossFinish = yn;
-    self._shininess = self._glossFinish ? 15 : 5;
+    self._finish = finish;
+
+    self._shininess = Sleeve.Shininess[self._finish];
 
     self._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {

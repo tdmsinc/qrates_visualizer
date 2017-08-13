@@ -70,8 +70,14 @@
   // sleeve のフォーマット -----------------------
   VinylVisualizer.SleeveFormat = Sleeve.Format;
 
+  // sleeve のカラーフォーマット -----------------------
+  VinylVisualizer.SleeveColorFormat = Sleeve.ColorFormat;
+
   // sleeve のホールオプション -----------------------
   VinylVisualizer.SleeveHole = Sleeve.Hole;
+
+  // sleeve のフィニッシュ(光沢)オプション -----------------------
+  VinylVisualizer.SleeveFinish = Sleeve.Finish;
 
   /**
    * Setup visualizer.

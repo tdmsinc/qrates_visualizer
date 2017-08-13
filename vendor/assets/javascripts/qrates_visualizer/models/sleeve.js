@@ -22,6 +22,7 @@
   
   Sleeve.Size = exports.world.Sleeve.Size;
   Sleeve.Format = exports.world.Sleeve.Format;
+  Sleeve.ColorFormat = exports.world.Sleeve.ColorFormat;
   Sleeve.Hole = exports.world.Sleeve.Hole;
   Sleeve.Finish = exports.world.Sleeve.Finish;
 
@@ -31,8 +32,9 @@
 
   var properties = [
     'type',
+    'colorFormat',
     'hole',
-    'glossFinish',
+    'finish',
     'colorMap',
     'aoMap',
     'bumpMap'
