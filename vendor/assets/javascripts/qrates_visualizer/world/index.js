@@ -48,12 +48,6 @@
 
     this._isRendering = false;
 
-    this._alphaMap = new THREE.Texture();
-    this._alphaMap.image = assets['assetsTextureVinylAlphamap'];
-    this._alphaMap.minFilter = THREE.LinearFilter;
-    this._alphaMap.magFilter = THREE.LinearFilter;
-    this._alphaMap.needsUpdate = true;
-
     this._scene = new THREE.Scene();
 
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
@@ -82,17 +76,6 @@
     this._controls.enabled = this._opts.camera.control;
 
     this._lights = this.createLights();
-
-    var shadowTexture = this.shadowTexture = new THREE.Texture();
-    shadowTexture.image = assets['assetsTextureShadow'];
-    shadowTexture.needsUpdate = true;
-    var pgeometry = new THREE.PlaneGeometry(300, 300);
-    var pmaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, side: THREE.DoubleSide, map: shadowTexture });
-    var ground = new THREE.Mesh(pgeometry, pmaterial);
-    ground.position.set(0, -80, 0);
-    ground.rotation.x = 90 * Math.PI / 180;
-    // ground.receiveShadow = true;
-    // this._scene.add(ground);
 
     this._enableRotate = false;
     this._flip = false;
@@ -227,6 +210,8 @@
       'covered ratio': 0.8,
       'sleeve bump': 0.3,
       'vinyl bump': 0.3,
+      'sleeve ao': 1.0,
+      'vinyl ao': 1.0,
       sleeveX: -15
     };
 
@@ -286,6 +271,8 @@
     var cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
     var sleeveBumpScaleController = gui.add(props, 'sleeve bump', 0, 1.0);
     var vinylBumpScaleController = gui.add(props, 'vinyl bump', 0, 1.0);
+    var sleeveAoController = gui.add(props, 'sleeve ao', 0.0, 1.0);
+    var vinylAoController = gui.add(props, 'vinyl ao', 0.0, 1.0);
 
     gui.add(this, 'flip');
 
@@ -364,6 +351,14 @@
       }
 
       self._vinyl.setBumpScale(value);
+    });
+
+    sleeveAoController.onChange(function (value) {
+      self._sleeve.setAoMapIntensity(value);
+    });
+
+    vinylAoController.onChange(function (value) {
+      self._vinyl.setAoMapIntensity(value);
     });
   };
 

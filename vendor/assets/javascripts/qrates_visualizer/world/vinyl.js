@@ -148,13 +148,13 @@
     ];
 
     var images = [];
-    var cubeTexture = new THREE.CubeTexture(images);
-    cubeTexture.flipY = false;
+    this._envMapTexture = new THREE.CubeTexture(images);
+    this._envMapTexture.flipY = false;
 
     for (var i = 0; i < 6; ++i) {
-      cubeTexture.images[i] = assets['assetsTextureVinylEnvmap'];
+      this._envMapTexture.images[i] = assets['assetsTextureVinylEnvmap'];
     }
-    cubeTexture.needsUpdate = true;
+    this._envMapTexture.needsUpdate = true;
 
     this._container = container;
     this._size = opts.size || Vinyl.Size.SIZE_12;
@@ -449,17 +449,18 @@
         child.material.combine = THREE.MultiplyOperation;
         child.material.color = self._material.color;
         child.material.opacity = self._material.opacity;
-        child.material.reflectivity = self._material.reflectivity;
-        child.material.refractionRatio = self._material.refractionRatio;
-        child.material.shininess = self._material.shininess;
         child.material.specular = new THREE.Color(0x363636);
         child.material.transparent = true;
         child.material.shading = THREE.SmoothShading;
+        child.material.envMap = self._envMapTexture;
 
-        if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
-          child.material.shininess = 5;
-          
+        if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {          
           if (Vinyl.Part.VINYL === child.name) {
+
+            child.material.reflectivity = self._material.reflectivity;
+            child.material.refractionRatio = self._material.refractionRatio;
+            child.material.shininess = self._material.shininess;
+
             if (textures) {
               child.material.aoMap = textures[Vinyl.Part.VINYL][Vinyl.Map.AO] || null;
               if (child.material.aoMap) {
@@ -477,7 +478,11 @@
               }
             }
           } else if (Vinyl.Part.LABEL === child.name) {
-            child.material.color = new THREE.Color(0xffffff);;
+
+            child.material.color = new THREE.Color(0xffffff);
+            child.material.reflectivity = 0;
+            child.material.refractionRatio = 0;
+            child.material.shininess = 5;
 
             if (textures) {
               child.material.aoMap = textures[Vinyl.Part.LABEL][Vinyl.Map.AO] || null;
@@ -497,11 +502,16 @@
             }
           }
         } else {
+
+          child.material.reflectivity = self._material.reflectivity;
+          child.material.refractionRatio = self._material.refractionRatio;
+          child.material.shininess = self._material.shininess;
+
           if (textures) {
-            child.material.alphaMap = textures[Vinyl.Map.ALPHA] || null;
-            if (child.material.alphaMap) {
-              child.material.alphaMap.needsUpdate = true;
-            }
+            // child.material.alphaMap = textures[Vinyl.Map.ALPHA] || null;
+            // if (child.material.alphaMap) {
+            //   child.material.alphaMap.needsUpdate = true;
+            // }
 
             child.material.aoMap = textures[Vinyl.Map.AO] || null;
             if (child.material.aoMap) {
@@ -522,6 +532,8 @@
 
         child.geometry.computeFaceNormals();
         child.geometry.computeVertexNormals();
+
+        child.material.needsUpdate = true;
       }
     });
 
@@ -616,6 +628,7 @@
         child.material.reflectivity = self._material.reflectivity;
         child.material.refractionRatio = self._material.refractionRatio;
         child.material.shininess = self._material.shininess;
+        child.material.needsUpdate = true;
       }
     });
 
@@ -633,6 +646,19 @@
     self._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.bumpScale = self._bumpScale;
+        child.material.needsUpdate = true;
+      }
+    });
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setAoMapIntensity = function(value) {
+    var self = this;
+
+    self._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.aoMapIntensity = value;
+        child.material.needsUpdate = true;
       }
     });
   };
@@ -746,6 +772,7 @@
           if (child instanceof THREE.Mesh) {
             if (child.name === Vinyl.Part.VINYL) {
               child.material.opacity = self._opacity;
+              child.material.needsUpdate = true;
             }
           }
         });

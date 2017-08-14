@@ -444,6 +444,8 @@
           }
 
           child.geometry.computeVertexNormals();
+
+          child.material.needsUpdate = true;
         }
       });
     }
@@ -603,6 +605,7 @@
     self._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.shininess = self._shininess;
+        child.material.needsUpdate = true;
       }
     });
 
@@ -649,6 +652,7 @@
     self._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.shininess = self._shininess;
+        child.material.needsUpdate = true;
       }
     });
   }
@@ -700,12 +704,14 @@
         self._currentObject.scene.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
             child.material.opacity = self._opacity;
+            child.material.needsUpdate = true;
           }
 
           if (child instanceof THREE.Object3D) {
             child.traverse(function(nextChild) {
               if (nextChild instanceof THREE.Mesh) {
                 nextChild.material.opacity = self._opacity;
+                nextChild.material.needsUpdate = true;
               }
             });
           }
@@ -748,7 +754,7 @@
       return;
     }
 
-    if (-1 === Object.value(Sleeve.Finish).indexOf(finish)) {
+    if (-1 === Object.values(Sleeve.Finish).indexOf(finish)) {
       console.error('Sleeve.setFinish: unknown value "' + finish + '"');
       return;
     }
@@ -772,6 +778,7 @@
     self._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.shininess = self._shininess;
+        child.material.needsUpdate = true;
       }
     });
   };
@@ -815,14 +822,29 @@
     self._currentObject.scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material.bumpScale = self._bumpScale;
+        child.material.needsUpdate = true;
       }
     });
   };
 
+  //--------------------------------------------------------------
+  Sleeve.prototype.setAoMapIntensity = function(value) {
+    var self = this;
+
+    self._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.aoMapIntensity = value;
+        child.material.needsUpdate = true;
+      }
+    });
+  };
+
+  //--------------------------------------------------------------
   Sleeve.prototype.setVisibility = function(yn, opts, callback) {
     this._currentObject.scene.visible = yn;
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.update = function() {
     var self = this;
 
