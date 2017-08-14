@@ -211,7 +211,7 @@ Sleeve モデルのハンドラ。
 - `value:Number`
   - `1`: black
   - `2`: color
-  - `3`: splatter
+  - `3`: texture
 
 #### Vinyl#size([value:Number]):Vinyl
 
@@ -242,6 +242,26 @@ Sleeve モデルのハンドラ。
   - `12`: Transparent Violet
   - `13`: Transparent Blue
   - `14`: Transparent
+  - `15`: Swamp Green (P1)
+  - `16`: Sea Blue (P2)
+  - `17`: Bone (P3)
+  - `18`: Bronze (P4)
+  - `19`: Beer (P5)
+  - `20`: Electric Blue (P6)
+  - `21`: Grimace Purple (P7)
+  - `22`: Oxblood (P8)
+  - `23`: Coke Bottle Green (P9)
+  - `24`: Orange Crush (P10)
+  - `25`: Hot Pink / Magenta (P11)
+  - `26`: Baby Pink (P12)
+  - `27`: Olive Green (P13)
+  - `28`: Aqua Blue (P14)
+  - `29`: Ultra Clear (P15)
+  - `30`: Baby Blue (P16)
+  - `31`: Highlighter Yellow (P17)
+  - `32`: Gold (P18)
+  - `33`: Silver (P19)
+  - `34`: Mustard (P20)
 
 #### Vinyl#splatterColor([value:Number]):Vinyl
 
@@ -328,14 +348,14 @@ B 面用のレーベルのテクスチャを指定します。引数を省略す
 タイプを指定します。引数を省略すると現在値を返します。
 
 - `value:Number`
-  - `1`: black
-  - `2`: white
-  - `3`: print
-  - `4`: print - 3mm spine
+  - `1`: no spine / discobag
+  - `2`: 3mm spine
+  - `3`: 5mm spine
+  - `4`: gatefold
 
 #### Sleeve#hole([value:Boolean]):Sleeve
 
-ホールの有無を指定します。引数を省略すると現在値を返します。
+ホールの有無を指定します。引数を省略すると現在値を返します。Sleeve#typeで4を指定している時には、trueを設定できません
 
 - `value:Boolean`
   - `true`: ホールあり
