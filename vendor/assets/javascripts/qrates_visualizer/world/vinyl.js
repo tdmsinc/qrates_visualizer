@@ -422,8 +422,8 @@
     // this.setOpacity(this._materialParams.opacity);
 
     this._currentObject = this._models[this._size][this._format];
-    this._container.add(this._currentObject.scene);
     console.log('current vinyl', this._currentObject);
+    this._container.add(this._currentObject.scene);
   };
 
   //--------------------------------------------------------------
@@ -702,10 +702,10 @@
     console.log('color format', format);
     this._colorFormat = format;
 
-    if (Vinyl.ColorFormat.BLACK === this._colorFormat) {
+    if (Vinyl.ColorFormat.BLACK === this._colorFormat || Vinyl.ColorFormat.COLOR === this._colorFormat) {
       this._material = Vinyl.Color.CLASSIC_BLACK;
     } else {
-      this._material = Vinyl.Color.WHITE;
+      this._material = Vinyl.Color.WHITE  ;
     } 
 
     this._color = new THREE.Color(this._material.color);

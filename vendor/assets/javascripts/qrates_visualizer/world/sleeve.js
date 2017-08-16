@@ -22,7 +22,7 @@
   };
 
   Sleeve.Format = {
-    SINGLE_NO_SPINE: 'no-spine',
+    SINGLE_WITHOUT_SPINE: 'no-spine',
     SINGLE: 'single',
     DOUBLE: 'double',
     GATEFOLD: 'gatefold'
@@ -52,7 +52,7 @@
   //--------------------------------------------------------------
   Sleeve.prototype.setup = function(scene, assets, opts, container) {
     opts = opts || {
-      format: Sleeve.Format.SINGLE_NO_SPINE,
+      format: Sleeve.Format.SINGLE_WITHOUT_SPINE,
       ColorFormat: Sleeve.ColorFormat.WHITE,
       size: Sleeve.Size.SIZE_12,
       hole: Sleeve.Hole.NO_HOLED,
@@ -390,10 +390,10 @@
     // currentObject = ステージに配置されるオブジェクト
     this._currentObject = this._models[this._size][this._format][this._hole];
 
-    this.position = new THREE.Vector3(0, 0, 0);
-    this.rotation = new THREE.Vector3(0, 0, 0);
+    this._position = new THREE.Vector3(0, 0, 0);
+    this._rotation = new THREE.Vector3(0, 0, 0);
 
-    this._positionTween = new TWEEN.Tween(this.position);
+    this._positionTween = new TWEEN.Tween(this._position);
     this._opacityTween = new TWEEN.Tween(this);
 
     this.setFormat(this._format);
@@ -815,6 +815,29 @@
   };
 
   //--------------------------------------------------------------
+  Sleeve.prototype.setGatefoldDegree = function (value) {
+
+    if (Sleeve.Format.GATEFOLD !== this._format) {
+      console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
+      return;
+    }
+
+    var rad = value * (Math.PI / 180);
+
+    this._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        if (-1 < child.name.toLowerCase().indexOf('front')) {
+          var rotation = child.rotation;
+          child.rotation.set(rotation.x, rotation.y, rad);
+        } else if (-1 < child.name.toLowerCase().indexOf('back')) {
+          var rotation = child.rotation;
+          child.rotation.set(rotation.x, rotation.y, -rad);
+        }
+      }
+    });
+  };
+
+  //--------------------------------------------------------------
   Sleeve.prototype.setBumpScale = function(value) {
     var self = this;
     self._bumpScale = value;
@@ -848,8 +871,8 @@
   Sleeve.prototype.update = function() {
     var self = this;
 
-    this._currentObject.scene.position.set(this.position.x, this.position.y, this.position.z);
-    this._currentObject.scene.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._currentObject.scene.position.set(this._position.x, this._position.y, this._position.z);
+    // this._currentObject.scene.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
   };
 
 })(this, (this.qvv = (this.qvv || {})));

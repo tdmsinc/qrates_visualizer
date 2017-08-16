@@ -208,6 +208,7 @@
       out: false,
       zoom: 1.0,
       'covered ratio': 0.8,
+      'gatefold degrees': 60,
       'sleeve bump': 0.3,
       'vinyl bump': 0.3,
       'sleeve ao': 1.0,
@@ -259,6 +260,7 @@
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
     var coveredRatioController = gui.add(props, 'covered ratio', 0.0, 1.0);
+    var gatefoldDegreeController = gui.add(props, 'gatefold degrees', 0, 90);
     var sleeveVisibilityController = gui.add(props, 'sleeve visibility');
     var vinylVisibilityController = gui.add(props, 'vinyl visibility');
     var captureController = gui.add(temp, 'capture');
@@ -298,6 +300,10 @@
 
     coveredRatioController.onChange(function(value) {
       self.cover(value, { duration: 2000 });
+    });
+
+    gatefoldDegreeController.onChange(function (value) {
+      self.setGatefoldDegree(value);
     });
 
     sleeveVisibilityController.onChange(function(value) {
@@ -443,6 +449,10 @@
 
   World.prototype.setVinylVisibility = function(yn, opts, callback) {
     this._vinyl.setVisibility(yn);
+  };
+
+  World.prototype.setGatefoldDegree = function (value) {
+    this._sleeve.setGatefoldDegree(value);
   };
 
   World.prototype.setSleeveVisibility = function(yn, opts, callback) {
