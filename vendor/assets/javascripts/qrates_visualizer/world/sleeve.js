@@ -75,6 +75,7 @@
     this._bumpScale = 0.3;
     this._shininess = Sleeve.Shininess[this._finish];
     this._opacityTweenDuration = 300;
+    this._boundingBox = null;
 
     this._models = {
       '7': {
@@ -389,6 +390,7 @@
 
     // currentObject = ステージに配置されるオブジェクト
     this._currentObject = this._models[this._size][this._format][this._hole];
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.scene);
 
     this._position = new THREE.Vector3(0, 0, 0);
     this._rotation = new THREE.Vector3(0, 0, 0);
@@ -785,20 +787,26 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setCoveredRatio = function(ratio, opts, updateCallback, completeCallback) {
+    
     opts.duration = undefined !== opts.duration ? opts.duration : 500;
     opts.delay    = undefined !== opts.delay    ? opts.delay    : 0;
 
-    var tempObj = this._currentObject.scene.clone();
+    var self = this;
+
+    var tempObj = self._currentObject.scene.clone();
     tempObj.scale = 1.0;
 
-    var offset = new THREE.Box3().setFromObject(tempObj).getSize().x;
+    // var offset = new THREE.Box3().setFromObject(tempObj).getSize().x;
+    var offset = this._boundingBox.getSize().x;
 
-    this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
+    self._coveredRatio = Math.max(0, Math.min(1.0, ratio));
 
-    this._positionTween
+    var tween = new TWEEN.Tween(this._currentObject.scene.position);
+
+    tween
       .stop()
       .delay(opts.delay)
-      .to({ x: this._coveredRatio * -offset }, opts.duration)
+      .to({ x: self._coveredRatio * -offset }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function() {
         if (updateCallback) updateCallback();
@@ -815,7 +823,23 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setGatefoldDegree = function (value) {
+  Sleeve.prototype.setGatefoldRotation = function (value) {
+
+    if (Sleeve.Format.GATEFOLD !== this._format) {
+      console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
+      return;
+    }
+
+    var rad = value * (Math.PI / 180);
+
+    var offsetX = this._boundingBox.max.x - 0.5;
+    this._currentObject.scene.translateX(-offsetX);
+    this._currentObject.scene.rotation.set(0, 0, rad);
+    this._currentObject.scene.translateX(offsetX);
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setGatefoldFrontRotation = function (value) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
       console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
@@ -829,7 +853,24 @@
         if (-1 < child.name.toLowerCase().indexOf('front')) {
           var rotation = child.rotation;
           child.rotation.set(rotation.x, rotation.y, rad);
-        } else if (-1 < child.name.toLowerCase().indexOf('back')) {
+        }
+      }
+    });
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setGatefoldBackRotation = function (value) {
+
+    if (Sleeve.Format.GATEFOLD !== this._format) {
+      console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
+      return;
+    }
+
+    var rad = value * (Math.PI / 180);
+
+    this._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        if (-1 < child.name.toLowerCase().indexOf('back')) {
           var rotation = child.rotation;
           child.rotation.set(rotation.x, rotation.y, -rad);
         }
@@ -871,7 +912,7 @@
   Sleeve.prototype.update = function() {
     var self = this;
 
-    this._currentObject.scene.position.set(this._position.x, this._position.y, this._position.z);
+    // this._currentObject.scene.position.set(this._position.x, this._position.y, this._position.z);
     // this._currentObject.scene.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
   };
 

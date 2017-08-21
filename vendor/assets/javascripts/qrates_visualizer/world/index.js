@@ -208,7 +208,9 @@
       out: false,
       zoom: 1.0,
       'covered ratio': 0.8,
-      'gatefold degrees': 60,
+      'sleeve rot': 60,
+      'sleeve front rot': 0,
+      'sleeve back rot': 0,
       'sleeve bump': 0.3,
       'vinyl bump': 0.3,
       'sleeve ao': 1.0,
@@ -260,7 +262,9 @@
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
     var coveredRatioController = gui.add(props, 'covered ratio', 0.0, 1.0);
-    var gatefoldDegreeController = gui.add(props, 'gatefold degrees', 0, 90);
+    var sleeveRotationController = gui.add(props, 'sleeve rot', 0, 90);
+    var sleeveFrontRotationController = gui.add(props, 'sleeve front rot', 0, 90);
+    var sleeveBackRotationController = gui.add(props, 'sleeve back rot', 0, 90);
     var sleeveVisibilityController = gui.add(props, 'sleeve visibility');
     var vinylVisibilityController = gui.add(props, 'vinyl visibility');
     var captureController = gui.add(temp, 'capture');
@@ -302,8 +306,16 @@
       self.cover(value, { duration: 2000 });
     });
 
-    gatefoldDegreeController.onChange(function (value) {
-      self.setGatefoldDegree(value);
+    sleeveRotationController.onChange(function (value) {
+      self.setSleeveRotation(value);
+    });
+
+    sleeveFrontRotationController.onChange(function (value) {
+      self.setSleeveFrontRotation(value);
+    });
+
+    sleeveBackRotationController.onChange(function (value) {
+      self.setSleeveBackRotation(value);
     });
 
     sleeveVisibilityController.onChange(function(value) {
@@ -451,8 +463,16 @@
     this._vinyl.setVisibility(yn);
   };
 
-  World.prototype.setGatefoldDegree = function (value) {
-    this._sleeve.setGatefoldDegree(value);
+  World.prototype.setSleeveRotation = function (value) {
+    this._sleeve.setGatefoldRotation(value);
+  };
+  
+  World.prototype.setSleeveFrontRotation = function (value) {
+    this._sleeve.setGatefoldFrontRotation(value);
+  };
+
+  World.prototype.setSleeveBackRotation = function (value) {
+    this._sleeve.setGatefoldBackRotation(value);
   };
 
   World.prototype.setSleeveVisibility = function(yn, opts, callback) {
