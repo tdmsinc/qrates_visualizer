@@ -64,6 +64,8 @@
     this._renderer.setSize(this._width, this._height);
     this._renderer.autoClear = false;
     this._renderer.setClearColor(0, 0.0);
+    // this._renderer.shadowMap.enabled = true;
+    // this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
 
@@ -138,30 +140,37 @@
 
     var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
     spotLight1.position.set(335, 1955, 475);
+    spotLight1.castShadow = true;
     lights.add(spotLight1);
 
     var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
     spotLight2.position.set(-980, -1900, -880);
+    spotLight2.castShadow = true;
     lights.add(spotLight2);
 
     var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
     pointLight1.position.set(-1000, 1200, -2300);
+    pointLight1.castShadow = true;
     lights.add(pointLight1);
 
     var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
     pointLight2.position.set(-2, -160, 1480);
+    pointLight2.castShadow = true;
     lights.add(pointLight2);
 
     var hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 0.2);
     hemisphereLight1.position.set(380, 140, -1225);
+    hemisphereLight1.castShadow = true;
     lights.add(hemisphereLight1);
 
     var hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 0.2);
     hemisphereLight2.position.set(-360, 60, 1285);
+    hemisphereLight2.castShadow = true;
     lights.add(hemisphereLight2);
 
     var ambientLight = new THREE.AmbientLight(0x0D0D0D);
     ambientLight.position.set(0, 820, 2);
+    ambientLight.castShadow = true;
     lights.add(ambientLight);
 
     return lights;

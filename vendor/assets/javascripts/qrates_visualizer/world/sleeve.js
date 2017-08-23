@@ -8,6 +8,32 @@
   exports.world.Sleeve = Sleeve;
 
   //--------------------------------------------------------------
+  function map(value, inputMin, inputMax, outputMin, outputMax, clamp) {
+    if (Math.abs(inputMin - inputMax) < Number.EPSILON){
+      return outputMin;
+    } else {
+      var outVal = ((value - inputMin) / (inputMax - inputMin) * (outputMax - outputMin) + outputMin);
+    
+      if (clamp){
+        if (outputMax < outputMin) {
+          if (outVal < outputMax) {
+            outVal = outputMax;
+          } else if (outVal > outputMin) {
+            outVal = outputMin;
+          }
+        } else {
+          if (outVal > outputMax) {
+            outVal = outputMax;
+          } else if (outVal < outputMin) {
+            outVal = outputMin;
+          }
+        }
+      }
+      return outVal;
+    }
+  }
+
+  //--------------------------------------------------------------
   function Sleeve() {
   }
 
@@ -203,13 +229,11 @@
             'ao': assets['assetsTextureSleeveSingleNoSpineAo-10'],
             'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-10'],
             'color': assets['assetsTextureSleeveSingleNoSpineColor-10'],
-            'color-ao': assets['assetsTextureSleeveSingleNoSpineColorAndAo-10']
           },
           'holed': {
             'ao': assets['assetsTextureSleeveSingleNoSpineHoledAo-10'],
             'bumpmap': assets['assetsTextureSleeveSingleNoSpineHoledBumpmap-10'],
             'color': assets['assetsTextureSleeveSingleNoSpineHoledColor-10'],
-            'color-ao': assets['assetsTextureSleeveSingleNoSpineHoledColorAndAo-10']
           }
         },
         'single': {
@@ -266,13 +290,11 @@
             'ao': assets['assetsTextureSleeveSingleNoSpineAo-12'],
             'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-12'],
             'color': assets['assetsTextureSleeveSingleNoSpineColor-12'],
-            'color-ao': assets['assetsTextureSleeveSingleNoSpineColorAndAo-12']
           },
           'holed': {
             'ao': assets['assetsTextureSleeveSingleNoSpineHoledAo-12'],
             'bumpmap': assets['assetsTextureSleeveSingleNoSpineHoledBumpmap-12'],
             'color': assets['assetsTextureSleeveSingleNoSpineHoledColor-12'],
-            'color-ao': assets['assetsTextureSleeveSingleNoSpineHoledColorAndAo-12']
           }
         },
         'single': {
@@ -836,6 +858,9 @@
     this._currentObject.scene.translateX(-offsetX);
     this._currentObject.scene.rotation.set(0, 0, rad);
     this._currentObject.scene.translateX(offsetX);
+
+    var pos = this._currentObject.scene.position;
+    this._currentObject.scene.position.set(0, pos.y, pos.z);
   };
 
   //--------------------------------------------------------------
@@ -853,9 +878,20 @@
         if (-1 < child.name.toLowerCase().indexOf('front')) {
           var rotation = child.rotation;
           child.rotation.set(rotation.x, rotation.y, rad);
+        } else if (-1 < child.name.toLowerCase().indexOf('back')) {
+          var rotation = child.rotation;
+          child.rotation.set(rotation.x, rotation.y, -rad);
         }
       }
     });
+
+    var offsetX = this._boundingBox.max.x - 0.5;
+    this._currentObject.scene.translateX(-offsetX);
+    this._currentObject.scene.rotation.set(0, 0, rad);
+    this._currentObject.scene.translateX(offsetX);
+
+    var pos = this._currentObject.scene.position;
+    this._currentObject.scene.position.set(0, pos.y, pos.z);
   };
 
   //--------------------------------------------------------------

@@ -14,7 +14,7 @@
             <init_from>7inch_LABEL_normal_small_AB_Color.jpg</init_from>
         </image>
         <image id="ID10">
-            <init_from>7inch_VINYL_normal_Color.jpg</init_from>
+            <init_from>7inch_VINYL_normal_small_Color.jpg</init_from>
         </image>
     </library_images>
     <library_effects>
