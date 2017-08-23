@@ -28,6 +28,7 @@
    * @api public
    */
 
+  //--------------------------------------------------------------
   function World(parent, assets, opts) {
     this._parent = parent;
     this._assets = assets;
@@ -64,8 +65,6 @@
     this._renderer.setSize(this._width, this._height);
     this._renderer.autoClear = false;
     this._renderer.setClearColor(0, 0.0);
-    // this._renderer.shadowMap.enabled = true;
-    // this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
 
@@ -130,10 +129,12 @@
    *
    */
 
+  //--------------------------------------------------------------
   World.prototype.getRenderer = function() {
     return this._renderer;
   };
 
+  //--------------------------------------------------------------
   World.prototype.createLights = function() {
     var lights = new THREE.Object3D();
     lights.name = 'lights';
@@ -176,6 +177,7 @@
     return lights;
   };
 
+  //--------------------------------------------------------------
   World.prototype.registerPresets = function() {
     // TODO: register preset parameters
 
@@ -196,10 +198,7 @@
     });
   };
 
-  /**
-   *
-   */
-
+  //--------------------------------------------------------------
   World.prototype.initGui = function() {
     if (!window.dat) {
       console.warn('dat.GUI is not loaded');
@@ -389,6 +388,7 @@
     });
   };
 
+  //--------------------------------------------------------------
   World.prototype.setCameraPosition = function(tx, ty, tz, opts, callback) {
     if (!callback) {
       callback = null;
@@ -419,6 +419,7 @@
       .start();
   };
 
+  //--------------------------------------------------------------
   World.prototype.setCameraRotation = function(tx, ty, tz, opts, callback) {
     if (!callback) {
       callback = null;
@@ -447,6 +448,7 @@
       .start();
   };
 
+  //--------------------------------------------------------------
   World.prototype.resetCamera = function() {
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.position.set(212, 288, 251);
@@ -458,36 +460,44 @@
     this._controls.update();
   };
 
+  //--------------------------------------------------------------
   World.prototype.setPerspective = function() {
     this._camera.toPerspective();
     this._camera.setZoom(1);
   };
 
+  //--------------------------------------------------------------
   World.prototype.setOrthographic = function() {
     this._camera.toOrthographic();
     this._camera.setZoom(this._orthographicZoom);
   };
 
+  //--------------------------------------------------------------
   World.prototype.setVinylVisibility = function(yn, opts, callback) {
     this._vinyl.setVisibility(yn);
   };
 
+  //--------------------------------------------------------------
   World.prototype.setSleeveRotation = function (value) {
     this._sleeve.setGatefoldRotation(value);
   };
   
+  //--------------------------------------------------------------
   World.prototype.setSleeveFrontRotation = function (value) {
     this._sleeve.setGatefoldFrontRotation(value);
   };
 
+  //--------------------------------------------------------------
   World.prototype.setSleeveBackRotation = function (value) {
     this._sleeve.setGatefoldBackRotation(value);
   };
 
+  //--------------------------------------------------------------
   World.prototype.setSleeveVisibility = function(yn, opts, callback) {
     this._sleeve.setVisibility(yn);
   };
 
+  //--------------------------------------------------------------
   World.prototype.flip = function(value) {
     console.log('World::flip', value);
 
@@ -505,6 +515,7 @@
       .start();
   };
 
+  //--------------------------------------------------------------
   World.prototype.rotateHorizontal = function(degrees) {
     console.log('World::rotateHorizontal', degrees);
 
@@ -513,6 +524,7 @@
     // this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(30, 0));
   };
 
+  //--------------------------------------------------------------
   World.prototype.rotateVertical = function(degrees) {
     console.log('World::rotateVertical', degrees);
 
@@ -521,12 +533,14 @@
     // this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2 + 6 * degrees));
   };
 
+  //--------------------------------------------------------------
   World.prototype.cover = function(value, opts) {
     var self = this;
 
     this._sleeve.setCoveredRatio(value, opts);
   };
 
+  //--------------------------------------------------------------
   World.prototype.zoomIn = function(step) {
     if (this._camera.type === this._camera.TYPE_PERSPECTIVE) {
       this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
@@ -538,6 +552,7 @@
     }
   };
 
+  //--------------------------------------------------------------
   World.prototype.zoomOut = function(step) {
     if (this._camera.type === this._camera.TYPE_PERSPECTIVE) {
       this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
@@ -549,6 +564,7 @@
     }
   };
 
+  //--------------------------------------------------------------
   World.prototype.capture = function(callback) {
     console.log('World::capture');
     var image = new Image();
@@ -558,6 +574,7 @@
     };
   };
 
+  //--------------------------------------------------------------
   World.prototype.resize = function(width, height) {
     console.log('World::resize');
     this.stopRender();
@@ -579,27 +596,21 @@
     this.startRender();
   };
 
-  /**
-   *
-   */
+  //--------------------------------------------------------------
   World.prototype.play = function() {
     console.log('World::play');
     this._enableRotate = true;
     this._vinyl.setEnableRotate(true);
   };
 
-  /**
-   *
-   */
+  //--------------------------------------------------------------
   World.prototype.pause = function() {
     console.log('World::pause');
     this._enableRotate = false;
     this._vinyl.setEnableRotate(false);
   };
 
-  /**
-   *
-   */
+  //--------------------------------------------------------------
   World.prototype.updateView = function(type, opts, callback) {
     console.log('World::updateView', type);
 
@@ -779,9 +790,7 @@
     }
   };
 
-  /**
-   *
-   */
+  //--------------------------------------------------------------
   World.prototype.startRender =
   World.prototype.resumeRender = function() {
     console.log('World::startRender', this._request);
@@ -793,9 +802,7 @@
     return this;
   };
 
-  /**
-   *
-   */
+  //--------------------------------------------------------------
   World.prototype.stopRender = function() {
     console.log('World::stopRender', this._request);
     if (this._request) {
@@ -806,9 +813,7 @@
     return this;
   };
 
-  /**
-   *
-   */
+  //--------------------------------------------------------------
   World.prototype.update = function() {
     if (this._sleeve) {
       this._sleeve.update();
@@ -827,9 +832,7 @@
     this._lights.lookAt(this._controls.target);
   };
 
-  /**
-   *
-   */
+  //--------------------------------------------------------------
   World.prototype.draw = function() {
     if (!this._isRendering) {
       return;
@@ -843,6 +846,7 @@
     this._request = requestAnimationFrame(this.draw.bind(this));
   };
 
+  //--------------------------------------------------------------
   /**
    * @param {String|Mixed} type
    * @param {Function} fn
@@ -857,9 +861,7 @@
     return this;
   };
 
-  /**
-   *
-   */
+  //--------------------------------------------------------------
   World.prototype.delegateEvents = function() {
     var parent = this._parent;
 
@@ -1033,6 +1035,12 @@
     console.log('World::onSleeveTypeChanged', value);
 
     this._sleeve.setType(value);
+
+    if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
+      this._vinyl.enableDoubleVinyl(value);
+    } else {
+      this._vinyl.disableDoubleVinyl();
+    }
   };
 
   //--------------------------------------------------------------

@@ -156,6 +156,11 @@
     }
     this._envMapTexture.needsUpdate = true;
 
+    this._currentObject = {
+      first: null,
+      second: null
+    }
+
     this._container = container;
     this._size = opts.size || Vinyl.Size.SIZE_12;
     this._weight = opts.weight || Vinyl.Weight.NORMAL;
@@ -421,9 +426,9 @@
 
     // this.setOpacity(this._materialParams.opacity);
 
-    this._currentObject = this._models[this._size][this._format];
+    this._currentObject.first = this._models[this._size][this._format].scene;
     console.log('current vinyl', this._currentObject);
-    this._container.add(this._currentObject.scene);
+    this._container.add(this._currentObject.first);
   };
 
   //--------------------------------------------------------------
@@ -559,12 +564,14 @@
 
     var self = this;
 
-    this._currentObject.scene.traverse(function(child) {
-      if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
-        Object.keys(textures).forEach(function(key) {
-          console.log(child.material[key], textures[key]);
-          self.updateTexture(child.material[key], textures[key]);
-          console.log(child.material[key]);
+    Object.values(self._currentObject).forEach(function (collada) {
+      if (collada) {
+        collada.traverse(function (child) {
+          if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
+            Object.keys(textures).forEach(function(key) {
+              self.updateTexture(child.material[key], textures[key]);
+            });
+          }
         });
       }
     });
@@ -572,12 +579,17 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.setLabelTexture = function(textures /* = {} */) {
+
     var self = this;
 
-    this._currentObject.scene.traverse(function(child) {
-      if (child instanceof THREE.Mesh && child.name === Vinyl.Part.LABEL) {
-        Object.keys(textures).forEach(function(key) {
-          self.updateTexture(child.material[key], textures[key]);
+    Object.values(self._currentObject).forEach(function (collada) {
+      if (collada) {
+        collada.traverse(function (child) {
+          if (child instanceof THREE.Mesh && child.name === Vinyl.Part.LABEL) {
+            Object.keys(textures).forEach(function(key) {
+              self.updateTexture(child.material[key], textures[key]);
+            });
+          }
         });
       }
     });
@@ -602,37 +614,43 @@
   }
 
 
-  Vinyl.prototype.updateCurrentObject = function() {
+  Vinyl.prototype.updateCurrentObjectMaterial = function() {
 
     var self = this;
 
-    self._container.remove(self._currentObject.scene);
+    Object.keys(self._currentObject).forEach(function (key) {
+      if (!self._currentObject[key]) {
+        return;
+      }
 
-    self._currentObject = self._models[self._size][self._format];
+      self._container.remove(self._currentObject[key]);
 
-    self._currentObject.scene.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        if (-1 < child.parent.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
-          if (Vinyl.Part.VINYL === child.name) {
-            child.material.bumpScale = self._bumpScale;
-            child.material.color = self._material.color;
-          } else if (Vinyl.Part.LABEL === child.name) { 
+      self._currentObject[key] = self._models[self._size][self._format].scene.clone();
+
+      self._currentObject[key].traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          if (-1 < child.parent.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
+            if (Vinyl.Part.VINYL === child.name) {
+              child.material.bumpScale = self._bumpScale;
+              child.material.color = self._material.color;
+            } else if (Vinyl.Part.LABEL === child.name) { 
+              child.material.bumpScale = self._bumpScale;
+              child.material.color = Vinyl.Color.WHITE.color;
+            }
+          } else {
             child.material.bumpScale = self._bumpScale;
             child.material.color = Vinyl.Color.WHITE.color;
           }
-        } else {
-          child.material.bumpScale = self._bumpScale;
-          child.material.color = Vinyl.Color.WHITE.color;
+          
+          child.material.reflectivity = self._material.reflectivity;
+          child.material.refractionRatio = self._material.refractionRatio;
+          child.material.shininess = self._material.shininess;
+          child.material.needsUpdate = true;
         }
-        
-        child.material.reflectivity = self._material.reflectivity;
-        child.material.refractionRatio = self._material.refractionRatio;
-        child.material.shininess = self._material.shininess;
-        child.material.needsUpdate = true;
-      }
-    });
+      });
 
-    self._container.add(self._currentObject.scene);
+      self._container.add(self._currentObject[key]);
+    });
 
     self._opacity = 0;
     self.setOpacity(self._material.opacity);
@@ -640,25 +658,35 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.setBumpScale = function(value) {
+
     var self = this;
     self._bumpScale = value;
 
-    self._currentObject.scene.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        child.material.bumpScale = self._bumpScale;
-        child.material.needsUpdate = true;
+    Object.values(self._currentObject).forEach(function (collada) {
+      if (collada) {
+        collada.traverse(function (child) {
+          if (child instanceof THREE.Mesh) {
+            child.material.bumpScale = self._bumpScale;
+            child.material.needsUpdate = true;
+          }
+        });
       }
     });
   };
 
   //--------------------------------------------------------------
   Vinyl.prototype.setAoMapIntensity = function(value) {
+
     var self = this;
 
-    self._currentObject.scene.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        child.material.aoMapIntensity = value;
-        child.material.needsUpdate = true;
+    Object.values(self._currentObject).forEach(function (collada) {
+      if (collada) {
+        collada.traverse(function (child) {
+          if (child instanceof THREE.Mesh) {
+            child.material.aoMapIntensity = value;
+            child.material.needsUpdate = true;
+          }
+        });
       }
     });
   };
@@ -686,7 +714,7 @@
     }
 
     this._size = size;
-    this.updateCurrentObject();
+    this.updateCurrentObjectMaterial();
   };
 
   //--------------------------------------------------------------
@@ -755,7 +783,7 @@
       this._material.reflectivity = 0.1;
     }
 
-    this.updateCurrentObject();
+    this.updateCurrentObjectMaterial();
   };
 
   //--------------------------------------------------------------
@@ -768,7 +796,7 @@
       .stop()
       .to({ _opacity: to }, duration)
       .onUpdate(function() {
-        self._currentObject.scene.traverse(function(child) {
+        self._currentObject.first.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
             if (child.name === Vinyl.Part.VINYL) {
               child.material.opacity = self._opacity;
@@ -776,6 +804,17 @@
             }
           }
         });
+
+        if (self._currentObject.second) {
+          self._currentObject.second.traverse(function(child) {
+            if (child instanceof THREE.Mesh) {
+              if (child.name === Vinyl.Part.VINYL) {
+                child.material.opacity = self._opacity;
+                child.material.needsUpdate = true;
+              }
+            }
+          });
+        }
       })
       .start();
   };
@@ -804,7 +843,7 @@
 
     this._weight = weight;
     this.updateFormat();
-    this.updateCurrentObject();
+    this.updateCurrentObjectMaterial();
   };
 
   //--------------------------------------------------------------
@@ -821,13 +860,47 @@
     }
 
     this._heavy = yn;
-
-    // TODO: heavy オプションの適用
   };
 
   //--------------------------------------------------------------
   Vinyl.prototype.setVisibility = function(yn, opts, callback) {
     this._models[this._size][this._format].scene.visible = yn;
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.enableDoubleVinyl = function (sleeveFormat) {
+    
+    console.log('Vinyl.enableDoubleVinyl: ');
+
+    if (this._currentObject.second) {
+      this._container.remove(this._currentObject.second);      
+    }
+
+    this._currentObject.second = this._currentObject.first.clone();
+
+    if (exports.world.Sleeve.Format.DOUBLE === sleeveFormat) {
+      var pos1 = this._currentObject.first.position;
+      this._currentObject.first.position.set(pos1.x, pos1.y + 1, pos1.z);
+
+      var pos2 = this._currentObject.second.position;
+      this._currentObject.second.position.set(pos2.x + 100, pos2.y -1, pos2.z);
+    } else if (exports.world.Sleeve.Format.GATEFOLD === sleeveFormat) {
+      // TODO: gatefold の場合のポジショニング
+    }
+
+    this._container.add(this._currentObject.second);
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.disableDoubleVinyl = function () {
+
+    console.log('Vinyl.disableDoubleVinyl: ');
+
+    if (this._currentObject.second) {
+      this._container.remove(this._currentObject.second);
+      
+      this._currentObject.second = null;
+    }
   };
 
   //--------------------------------------------------------------
