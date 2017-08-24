@@ -638,6 +638,11 @@
   };
 
   //--------------------------------------------------------------
+  Sleeve.prototype.getFormat = function () {
+    return this._format;
+  };
+
+  //--------------------------------------------------------------
   Sleeve.prototype.setColorFormat = function(format) {
 
     if (!format) {

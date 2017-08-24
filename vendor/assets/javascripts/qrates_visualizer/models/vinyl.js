@@ -25,6 +25,7 @@
   Vinyl.Weight = exports.world.Vinyl.Weight;
   Vinyl.Label = exports.world.Vinyl.Label;
   Vinyl.Color = exports.world.Vinyl.Color;
+  Vinyl.Index = exports.world.Vinyl.Index;
 
   /**
    * Properties.

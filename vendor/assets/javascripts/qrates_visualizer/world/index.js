@@ -113,10 +113,22 @@
       this.updateView(opts.defaults.view, {duration:0});
     }
 
-    this.cover(0.8, {
-      delay: 1000,
-      duration: 2000
-    });
+    var sleeveFormat = this._sleeve.getFormat();
+    if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
+      this._vinyl.enableDoubleVinyl(sleeveFormat);
+
+      this.cover(0.5, {
+        delay: 3000,
+        duration: 2000,
+        index: Vinyl.Index.FIRST
+      });
+
+      this.cover(1.0, {
+        delay: 3000,
+        duration: 2000,
+        index: Vinyl.Index.SECOND
+      });
+    }
   }
 
   /**
@@ -215,7 +227,8 @@
       'vinyl visibility': true,
       out: false,
       zoom: 1.0,
-      'covered ratio': 0.8,
+      'covered ratio 1': 1.0,
+      'covered ratio 2' : 0.5,
       'sleeve rot': 60,
       'sleeve front rot': 0,
       'sleeve back rot': 0,
@@ -269,7 +282,8 @@
     var gui = this.gui = new window.dat.GUI();
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
-    var coveredRatioController = gui.add(props, 'covered ratio', 0.0, 1.0);
+    var coveredRatioController = gui.add(props, 'covered ratio 1', 0.0, 1.0);
+    var secondCoveredRatioController = gui.add(props, 'covered ratio 2', 0.0, 1.0);
     var sleeveRotationController = gui.add(props, 'sleeve rot', 0, 90);
     var sleeveFrontRotationController = gui.add(props, 'sleeve front rot', 0, 90);
     var sleeveBackRotationController = gui.add(props, 'sleeve back rot', 0, 90);
@@ -311,7 +325,11 @@
     });
 
     coveredRatioController.onChange(function(value) {
-      self.cover(value, { duration: 2000 });
+      self.cover(value, { duration: 2000, index: Vinyl.Index.FIRST });
+    });
+
+    secondCoveredRatioController.onChange(function(value) {
+      self.cover(value, { duration: 2000, index: Vinyl.Index.SECOND });
     });
 
     sleeveRotationController.onChange(function (value) {
@@ -537,7 +555,14 @@
   World.prototype.cover = function(value, opts) {
     var self = this;
 
-    this._sleeve.setCoveredRatio(value, opts);
+    var sleeveFormat = this._sleeve.getFormat();
+
+    if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
+      this._sleeve.setCoveredRatio(0, opts);
+      this._vinyl.setCoveredRatio(opts.index || Vinyl.Index.FIRST, value);
+    } else {
+      this._sleeve.setCoveredRatio(value, opts);
+    }
   };
 
   //--------------------------------------------------------------
@@ -1034,7 +1059,7 @@
   World.prototype.onSleeveTypeChanged = function(value) {
     console.log('World::onSleeveTypeChanged', value);
 
-    this._sleeve.setType(value);
+    this._sleeve.setFormat(value);
 
     if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
       this._vinyl.enableDoubleVinyl(value);

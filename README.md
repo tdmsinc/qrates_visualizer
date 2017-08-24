@@ -150,6 +150,8 @@ Vinyl が Sleeve に収納されている状況を指定します。
 - `value:Number`: 収納状態を値で指定します。`0` が完全に Sleeve に収まっている状態、`1` が完全に Sleeve から出ている状態。
 - `opts:Object`
   - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
+  - `opts.delay:Number`: トランジション開始までのディレイをミリ秒で指定。
+  - `opts.index:Vinyl.Index[FIRST|SECOND]`: Sleeve のタイプが Double または Gatefold の場合、index で指定した Vinyl の位置が変更されます。
 
 #### VinylVisualizer#zoom(step:Number, opts:Object):VinylVisualizer
 

@@ -59,6 +59,11 @@
     COLOR: 'color'
   };
 
+  Vinyl.Index = {
+    FIRST: 'first',
+    SECOND: 'second'
+  }
+
   Vinyl.Color = {
     CLASSIC_BLACK: { color: new THREE.Color(0x000000), opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true },
     WHITE: { color: new THREE.Color(0xFFFFFF), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true },
@@ -904,6 +909,58 @@
   };
 
   //--------------------------------------------------------------
+  Vinyl.prototype.setCoveredRatio = function (index, ratio, duration, delay, updateCallback, completeCallback) {
+
+    if (-1 === Object.values(Vinyl.Index).indexOf(index)) {
+      console.error('Vinyl.setCoveredRatio: invalid index');
+      return;
+    }
+
+    if (!this._currentObject[index]) {
+      console.error('Vinyl.setCoveredRatio: vinyl is not available for index ' + index);
+      return;
+    }
+
+    if (undefined === duration) {
+      duration = 500;
+    } else {
+      duration = Math.max(0, duration);
+    }
+
+    if (undefined === delay) {
+      delay = 0;
+    } else {
+      delay = Math.max(0, delay);
+    }
+
+    var self = this;
+
+    var tempObj = self._currentObject[index].clone();
+    tempObj.scale = 1.0;
+
+    var offset = new THREE.Box3().setFromObject(tempObj).getSize().x;
+    var tween = new TWEEN.Tween(this._currentObject[index].position);
+
+    tween
+      .stop()
+      .delay(delay)
+      .to({ x: ratio * offset }, duration)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function() {
+        if (updateCallback) updateCallback();
+      })
+      .onComplete(function() {
+        if (completeCallback) completeCallback();
+      })
+      .onStop(function() {
+        if (completeCallback) completeCallback();
+      })
+      .start();
+
+    tempObj = null;
+  };
+
+  //--------------------------------------------------------------
   Vinyl.prototype.update = function() {
 
     if (!(this._models && this._models[this._size][this._format])) {
@@ -913,19 +970,11 @@
     var amount = this._enableRotate ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
     this.rotation.y -= amount;
 
-    var self = this;
-
-    Object.keys(self._models).forEach(function(size) {
-      Object.keys(self._models[size]).forEach(function(type) {
-
-        if (!self._models[size][type]) {
-          return;
-        }
-
-        self._models[size][type].scene.position.set(self._position.x, self._position.y, self._position.z);
-        self._models[size][type].scene.rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
-      });
-    });
+    this._currentObject[Vinyl.Index.FIRST].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    
+    if (this._currentObject[Vinyl.Index.SECOND]) {
+      this._currentObject[Vinyl.Index.SECOND].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    }
   };
 
 })(this, (this.qvv = (this.qvv || {})));
