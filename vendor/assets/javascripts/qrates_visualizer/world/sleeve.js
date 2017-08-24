@@ -241,13 +241,11 @@
             'ao': assets['assetsTextureSleeveSingleAo-10'],
             'bumpmap': assets['assetsTextureSleeveSingleBumpmap-10'],
             'color': assets['assetsTextureSleeveSingleColor-10'],
-            'color-ao': assets['assetsTextureSleeveSingleColorAndAo-10']
           },
           'holed': {
             'ao': assets['assetsTextureSleeveSingleHoledAo-10'],
             'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-10'],
             'color': assets['assetsTextureSleeveSingleHoledColor-10'],
-            'color-ao': assets['assetsTextureSleeveSingleHoledColorAndAo-10']
           }
         },
         'double': {
@@ -260,7 +258,6 @@
             'ao': assets['assetsTextureSleeveDoubleHoledAo-10'],
             'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-10'],
             'color': assets['assetsTextureSleeveDoubleHoledColor-10'],
-            'color-ao': assets['assetsTextureSleeveDoubleHoledColorAndAo-10']
           }
         },
         'gatefold': {
@@ -302,13 +299,11 @@
             'ao': assets['assetsTextureSleeveSingleAo-12'],
             'bumpmap': assets['assetsTextureSleeveSingleBumpmap-12'],
             'color': assets['assetsTextureSleeveSingleColor-12'],
-            'color-ao': assets['assetsTextureSleeveSingleColorAndAo-12']
           },
           'holed': {
             'ao': assets['assetsTextureSleeveSingleHoledAo-12'],
             'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-12'],
             'color': assets['assetsTextureSleeveSingleHoledColor-12'],
-            'color-ao': assets['assetsTextureSleeveSingleHoledColorAndAo-12']
           }
         },
         'double': {
@@ -316,13 +311,11 @@
             'ao': assets['assetsTextureSleeveDoubleAo-12'],
             'bumpmap': assets['assetsTextureSleeveDoubleBumpmap-12'],
             'color': assets['assetsTextureSleeveDoubleColor-12'],
-            'color-ao': assets['assetsTextureSleeveDoubleColorAndAo-12']
           },
           'holed': {
             'ao': assets['assetsTextureSleeveDoubleHoledAo-12'],
             'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-12'],
             'color': assets['assetsTextureSleeveDoubleHoledColor-12'],
-            'color-ao': assets['assetsTextureSleeveDoubleHoledColorAndAo-12']
           }
         },
         'gatefold': {

@@ -4,14 +4,14 @@
         <contributor>
             <authoring_tool>CINEMA4D 16.011 COLLADA Exporter</authoring_tool>
         </contributor>
-        <created>2017-07-31T11:51:16Z</created>
-        <modified>2017-07-31T11:51:16Z</modified>
+        <created>2017-08-24T08:49:17Z</created>
+        <modified>2017-08-24T08:49:17Z</modified>
         <unit meter="0.01" name="centimeter"/>
         <up_axis>Y_UP</up_axis>
     </asset>
     <library_images>
         <image id="ID5">
-            <init_from>5mm_sleeve_Color_and_AO.jpg</init_from>
+            <init_from>5mm_sleeve_Color.jpg</init_from>
         </image>
     </library_images>
     <library_effects>
@@ -120,7 +120,7 @@
     </library_geometries>
     <library_visual_scenes>
         <visual_scene id="ID8">
-            <node id="ID9" name="_5mm_sleeve_tawami_ari_polygon_original_unify.1">
+            <node id="ID9" name="sleeve">
                 <translate sid="translate">0 0 -0</translate>
                 <rotate sid="rotateY">0 1 0 -0</rotate>
                 <rotate sid="rotateX">1 0 0 0</rotate>
