@@ -467,7 +467,7 @@
             child.material.map.needsUpdate = true;
           }
 
-          child.geometry.computeVertexNormals();
+          child.geometry.computeFaceNormals();
 
           child.material.needsUpdate = true;
         }
