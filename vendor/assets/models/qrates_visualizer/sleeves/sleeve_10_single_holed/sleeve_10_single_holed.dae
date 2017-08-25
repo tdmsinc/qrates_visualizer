@@ -4,14 +4,14 @@
         <contributor>
             <authoring_tool>CINEMA4D 16.011 COLLADA Exporter</authoring_tool>
         </contributor>
-        <created>2017-08-08T12:57:25Z</created>
-        <modified>2017-08-08T12:57:25Z</modified>
+        <created>2017-08-25T09:50:41Z</created>
+        <modified>2017-08-25T09:50:41Z</modified>
         <unit meter="0.01" name="centimeter"/>
         <up_axis>Y_UP</up_axis>
     </asset>
     <library_images>
         <image id="ID5">
-            <init_from>10inch_3mm_sleeve_hole_Color_and_AO.jpg</init_from>
+            <init_from>10inch_3mm_sleeve_hole_Color.jpg</init_from>
         </image>
     </library_images>
     <library_effects>
