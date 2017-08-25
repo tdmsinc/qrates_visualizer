@@ -496,18 +496,19 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.setSleeveRotation = function (value) {
-    this._sleeve.setGatefoldRotation(value);
+  World.prototype.setSleeveRotation = function (degree) {
+    this._sleeve.setGatefoldRotation(degree);
+    this._vinyl.setRotationZ(degree);
   };
   
   //--------------------------------------------------------------
-  World.prototype.setSleeveFrontRotation = function (value) {
-    this._sleeve.setGatefoldFrontRotation(value);
+  World.prototype.setSleeveFrontRotation = function (degree) {
+    this._sleeve.setGatefoldFrontRotation(degree);
   };
 
   //--------------------------------------------------------------
-  World.prototype.setSleeveBackRotation = function (value) {
-    this._sleeve.setGatefoldBackRotation(value);
+  World.prototype.setSleeveBackRotation = function (degree) {
+    this._sleeve.setGatefoldBackRotation(degree);
   };
 
   //--------------------------------------------------------------

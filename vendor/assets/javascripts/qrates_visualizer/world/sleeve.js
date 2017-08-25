@@ -618,6 +618,7 @@
     self._container.remove(self._currentObject.scene);
     
     self._currentObject = self._models[self._size][self._format][self._hole];
+    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.scene);
 
     self._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
@@ -701,9 +702,10 @@
     self._size = size;
 
     self._container.remove(self._currentObject.scene);
-    console.log('size:', this._size, 'format:', self._format, 'hole:', self._hole);
+    console.log('size:', self._size, 'format:', self._format, 'hole:', self._hole);
     self._currentObject = self._models[self._size][self._format][self._hole];
-    
+    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.scene);
+
     console.log('new object', self._currentObject);
 
     self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
@@ -763,6 +765,7 @@
     this._container.remove(this._currentObject.scene);
     
     this._currentObject = this._models[this._size][this._format][this._hole];
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.scene);
 
     this._container.add(this._currentObject.scene);
 
@@ -843,14 +846,14 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setGatefoldRotation = function (value) {
+  Sleeve.prototype.setGatefoldRotation = function (degree) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
       console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
       return;
     }
 
-    var rad = value * (Math.PI / 180);
+    var rad = degree * (Math.PI / 180);
 
     var offsetX = this._boundingBox.max.x - 0.5;
     this._currentObject.scene.translateX(-offsetX);

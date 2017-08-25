@@ -180,6 +180,8 @@
     this._enableRotate = false;
     this._opacityTweenDuration = 300;
     this._clock = new THREE.Clock();
+    this._boundingBox = null;
+    this._sleeveFormat;
 
     // weight と label の組み合わせで format を決定する
     this.updateFormat();
@@ -395,7 +397,6 @@
           obj[key] = new THREE.Texture(obj[key]);
           obj[key].assetName = parentKey + '-' + key;
           obj[key].needsUpdate = true;
-          console.log('obj[key].assetName', obj[key].assetName);
         } else if (obj[key] instanceof Object) {
           initTextures(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
         }
@@ -431,7 +432,10 @@
 
     // this.setOpacity(this._materialParams.opacity);
 
-    this._currentObject.first = this._models[this._size][this._format].scene;
+    this._currentObject.first = this._models[this._size][this._format].scene.clone();
+    this._currentObject.first.assetName = this._models[this._size][this._format].assetName;
+
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.first);
     console.log('current vinyl', this._currentObject);
     this._container.add(this._currentObject.first);
   };
@@ -627,10 +631,10 @@
       if (!self._currentObject[key]) {
         return;
       }
-
       self._container.remove(self._currentObject[key]);
 
       self._currentObject[key] = self._models[self._size][self._format].scene.clone();
+      self._currentObject[key].assetName = self._models[self._size][self._format].assetName;
 
       self._currentObject[key].traverse(function (child) {
         if (child instanceof THREE.Mesh) {
@@ -638,24 +642,35 @@
             if (Vinyl.Part.VINYL === child.name) {
               child.material.bumpScale = self._bumpScale;
               child.material.color = self._material.color;
+              child.material.reflectivity = self._material.reflectivity;
+              child.material.refractionRatio = self._material.refractionRatio;
+              child.material.shininess = self._material.shininess;
             } else if (Vinyl.Part.LABEL === child.name) { 
               child.material.bumpScale = self._bumpScale;
               child.material.color = Vinyl.Color.WHITE.color;
+              child.material.reflectivity = 0;
+              child.material.refractionRatio = 0;
+              child.material.shininess = 5;
             }
           } else {
             child.material.bumpScale = self._bumpScale;
             child.material.color = Vinyl.Color.WHITE.color;
+            child.material.reflectivity = self._material.reflectivity;
+            child.material.refractionRatio = self._material.refractionRatio;
+            child.material.shininess = self._material.shininess;
           }
           
-          child.material.reflectivity = self._material.reflectivity;
-          child.material.refractionRatio = self._material.refractionRatio;
-          child.material.shininess = self._material.shininess;
+          
           child.material.needsUpdate = true;
         }
       });
 
       self._container.add(self._currentObject[key]);
     });
+
+    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.first);
+
+    this.enableDoubleVinyl(this._sleeveFormat);
 
     self._opacity = 0;
     self.setOpacity(self._material.opacity);
@@ -877,23 +892,41 @@
     
     console.log('Vinyl.enableDoubleVinyl: ');
 
+    if (!sleeveFormat) {
+      return;
+    }
+
+    if (-1 === Object.values(exports.world.Sleeve.Format).indexOf(sleeveFormat)) {
+      console.error('Vinyl.enableDoubleVinyl: invalid sleeve format "' + sleeveFormat + '"');
+      return;
+    }
+
+    this._sleeveFormat = sleeveFormat;
+
     if (this._currentObject.second) {
       this._container.remove(this._currentObject.second);      
     }
 
     this._currentObject.second = this._currentObject.first.clone();
+    this._currentObject.second.assetName = this._currentObject.first.assetName;
 
-    if (exports.world.Sleeve.Format.DOUBLE === sleeveFormat) {
+    if (exports.world.Sleeve.Format.DOUBLE === this._sleeveFormat) {
       var pos1 = this._currentObject.first.position;
-      this._currentObject.first.position.set(pos1.x, pos1.y + 1, pos1.z);
+      this._currentObject.first.position.set(pos1.x, 1, pos1.z);
 
       var pos2 = this._currentObject.second.position;
-      this._currentObject.second.position.set(pos2.x + 100, pos2.y -1, pos2.z);
-    } else if (exports.world.Sleeve.Format.GATEFOLD === sleeveFormat) {
-      // TODO: gatefold の場合のポジショニング
+      this._currentObject.second.position.set(pos2.x + 100, -1, pos2.z);
+    } else if (exports.world.Sleeve.Format.GATEFOLD === this._sleeveFormat) {
+      var pos1 = this._currentObject.first.position;
+      this._currentObject.first.position.set(0, 1, pos1.z);
+
+      var pos2 = this._currentObject.second.position;
+      this._currentObject.second.position.set(0, -1, pos2.z);
     }
 
     this._container.add(this._currentObject.second);
+
+    console.log('enableDoubleVinyl', this._currentObject);
   };
 
   //--------------------------------------------------------------
@@ -958,6 +991,14 @@
       .start();
 
     tempObj = null;
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setRotationZ = function (degree) {
+
+    console.log('Vinyl.setRotationZ: angle ', degree);
+
+    var rad = degree * (Math.PI / 180);
   };
 
   //--------------------------------------------------------------
