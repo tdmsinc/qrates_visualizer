@@ -912,10 +912,10 @@
 
     if (exports.world.Sleeve.Format.DOUBLE === this._sleeveFormat) {
       var pos1 = this._currentObject.first.position;
-      this._currentObject.first.position.set(pos1.x, 1, pos1.z);
+      this._currentObject.first.position.set(0, 1, pos1.z);
 
       var pos2 = this._currentObject.second.position;
-      this._currentObject.second.position.set(pos2.x + 100, -1, pos2.z);
+      this._currentObject.second.position.set(0, -1, pos2.z);
     } else if (exports.world.Sleeve.Format.GATEFOLD === this._sleeveFormat) {
       var pos1 = this._currentObject.first.position;
       this._currentObject.first.position.set(0, 1, pos1.z);
@@ -939,6 +939,9 @@
       
       this._currentObject.second = null;
     }
+
+    var pos = this._currentObject.first.position;
+    this._currentObject.first.position.set(0, 0, pos.z);
   };
 
   //--------------------------------------------------------------

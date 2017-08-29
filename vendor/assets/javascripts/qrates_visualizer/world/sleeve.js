@@ -855,6 +855,18 @@
 
     var rad = degree * (Math.PI / 180);
 
+    this._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        if (-1 < child.name.toLowerCase().indexOf('front')) {
+          var rotation = child.rotation;
+          child.rotation.set(rotation.x, rotation.y, rad);
+        } else if (-1 < child.name.toLowerCase().indexOf('back')) {
+          var rotation = child.rotation;
+          child.rotation.set(rotation.x, rotation.y, -rad);
+        }
+      }
+    });
+
     var offsetX = this._boundingBox.max.x - 0.5;
     this._currentObject.scene.translateX(-offsetX);
     this._currentObject.scene.rotation.set(0, 0, rad);
