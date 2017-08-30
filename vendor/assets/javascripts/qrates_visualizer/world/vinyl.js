@@ -404,7 +404,7 @@
     })(this._textures);
 
     this._position = new THREE.Vector3(0, 0, 0);
-    this.rotation = new THREE.Vector3(0, 0, 0);
+    this._rotation = new THREE.Vector3(0, 0, 0);
 
     this._opacityTween = new TWEEN.Tween(this);
 
@@ -1002,6 +1002,11 @@
     console.log('Vinyl.setRotationZ: angle ', degree);
 
     var rad = degree * (Math.PI / 180);
+
+    this._rotation.z = rad;
+
+    // var rot = this._currentObject.first.rotation;
+    // this._currentObject.first.rotation.set(rot.x, rot.y, rad);
   };
 
   //--------------------------------------------------------------
@@ -1012,12 +1017,12 @@
     }
 
     var amount = this._enableRotate ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
-    this.rotation.y -= amount;
+    this._rotation.y -= amount;
 
-    this._currentObject[Vinyl.Index.FIRST].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+    this._currentObject[Vinyl.Index.FIRST].rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
     
     if (this._currentObject[Vinyl.Index.SECOND]) {
-      this._currentObject[Vinyl.Index.SECOND].rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
+      this._currentObject[Vinyl.Index.SECOND].rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
     }
   };
 

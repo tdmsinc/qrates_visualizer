@@ -30,6 +30,14 @@
 
   //--------------------------------------------------------------
   function World(parent, assets, opts) {
+
+    if (window.Stats) {
+      this._stats = new window.Stats();
+      this._stats.domElement.setAttribute('class', 'stats');
+      document.body.appendChild(this._stats.domElement);
+      
+    }
+
     this._parent = parent;
     this._assets = assets;
     this._opts = opts || {
@@ -860,6 +868,11 @@
 
   //--------------------------------------------------------------
   World.prototype.draw = function() {
+
+    if (this._stats) {
+      this._stats.begin();
+    }
+
     if (!this._isRendering) {
       return;
     }
@@ -868,6 +881,10 @@
 
     this._renderer.clear();
     this._renderer.render(this._scene, this._camera);
+
+    if (this._stats) {
+      this._stats.end();
+    }
 
     this._request = requestAnimationFrame(this.draw.bind(this));
   };
