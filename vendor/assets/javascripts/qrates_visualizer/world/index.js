@@ -921,6 +921,7 @@
     parent.vinyl.on('splatterColor', this.onVinylSplatterColorChanged.bind(this));
     parent.vinyl.on('holeSize', this.onVinylHoleSizeChanged.bind(this));
     parent.vinyl.on('heavy', this.onVinylHeavyChanged.bind(this));
+    parent.vinyl.on('labelType', this.onLabelTypeChanged.bind(this));
     parent.vinyl.on('speed', this.onVinylSpeedChanged.bind(this));
     parent.vinyl.on('aoMap', this.onVinylAoMapChanged.bind(this));
     parent.vinyl.on('bumpMap', this.onVinylBumpMapChanged.bind(this));
@@ -1022,6 +1023,12 @@
   World.prototype.onVinylHeavyChanged = function(value) {
     console.log('World::onVinylHeavyChanged', value);
     this._vinyl.setWeight(value ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onLabelTypeChanged = function(value) {
+    console.log('World::onLabelTypeChanged', value);
+    this._vinyl.setLabelType(value);
   };
 
   //--------------------------------------------------------------

@@ -373,6 +373,12 @@ form.show
   p: label: input type="checkbox" v-model="vinyl.heavy" Heavy
 
   p
+    label Label: 
+    select number="" v-model="vinyl.labelType"
+      option value="none" None
+      option value="texture" Texture
+
+  p
     label RPM: 
     select number="" v-model="vinyl.speed"
       option value="33" 33rpm

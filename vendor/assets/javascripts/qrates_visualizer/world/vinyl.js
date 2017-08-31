@@ -161,8 +161,16 @@
     this._envMapTexture.needsUpdate = true;
 
     this._currentObject = {
-      first: null,
-      second: null
+      first: {
+        assetName: '',
+        scene: null,
+        format: null,
+      },
+      second: {
+        assetName: '',
+        scene: null,
+        format: null,
+      }
     }
 
     this._container = container;
@@ -431,12 +439,12 @@
 
     // this.setOpacity(this._materialParams.opacity);
 
-    this._currentObject.first = this._models[this._size][this._format].scene.clone();
+    this._currentObject.first.scene = this._models[this._size][this._format].scene.clone();
     this._currentObject.first.assetName = this._models[this._size][this._format].assetName;
 
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.first);
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.first.scene);
     console.log('current vinyl', this._currentObject);
-    this._container.add(this._currentObject.first);
+    this._container.add(this._currentObject.first.scene);
   };
 
   //--------------------------------------------------------------
@@ -572,9 +580,9 @@
 
     var self = this;
 
-    Object.values(self._currentObject).forEach(function (collada) {
-      if (collada) {
-        collada.traverse(function (child) {
+    Object.values(self._currentObject).forEach(function (object) {
+      if (object.scene) {
+        object.scene.traverse(function (child) {
           if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
             Object.keys(textures).forEach(function(key) {
               self.updateTexture(child.material[key], textures[key]);
@@ -590,9 +598,9 @@
 
     var self = this;
 
-    Object.values(self._currentObject).forEach(function (collada) {
-      if (collada) {
-        collada.traverse(function (child) {
+    Object.values(self._currentObject).forEach(function (object) {
+      if (object.scene) {
+        object.scene.traverse(function (child) {
           if (child instanceof THREE.Mesh && child.name === Vinyl.Part.LABEL) {
             Object.keys(textures).forEach(function(key) {
               self.updateTexture(child.material[key], textures[key]);
@@ -627,18 +635,18 @@
     var self = this;
 
     Object.keys(self._currentObject).forEach(function (key) {
-      if (!self._currentObject[key]) {
+      if (!self._currentObject[key].scene) {
         return;
       }
 
-      var pos = self._currentObject[key].position;
+      var pos = self._currentObject[key].scene.position;
 
-      self._container.remove(self._currentObject[key]);
+      self._container.remove(self._currentObject[key].scene);
 
-      self._currentObject[key] = self._models[self._size][self._format].scene.clone();
+      self._currentObject[key].scene = self._models[self._size][self._format].scene.clone();
       self._currentObject[key].assetName = self._models[self._size][self._format].assetName;
 
-      self._currentObject[key].traverse(function (child) {
+      self._currentObject[key].scene.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
           if (-1 < child.parent.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
             if (Vinyl.Part.VINYL === child.name) {
@@ -667,12 +675,11 @@
         }
       });
 
-      self._container.add(self._currentObject[key]);
+      self._container.add(self._currentObject[key].scene);
       self._currentObject[key].position.set(pos.x, pos.y, pos.z);
-      console.log('self._currentObject[key].position', self._currentObject[key]);
     });
 
-    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.first);
+    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.first.scene);
 
     self._opacity = 0;
     self.setOpacity(self._material.opacity);
@@ -684,9 +691,9 @@
     var self = this;
     self._bumpScale = value;
 
-    Object.values(self._currentObject).forEach(function (collada) {
-      if (collada) {
-        collada.traverse(function (child) {
+    Object.values(self._currentObject).forEach(function (object) {
+      if (object.scene) {
+        object.scene.traverse(function (child) {
           if (child instanceof THREE.Mesh) {
             child.material.bumpScale = self._bumpScale;
             child.material.needsUpdate = true;
@@ -701,9 +708,9 @@
 
     var self = this;
 
-    Object.values(self._currentObject).forEach(function (collada) {
-      if (collada) {
-        collada.traverse(function (child) {
+    Object.values(self._currentObject).forEach(function (object) {
+      if (object.scene) {
+        object.scene.traverse(function (child) {
           if (child instanceof THREE.Mesh) {
             child.material.aoMapIntensity = value;
             child.material.needsUpdate = true;
@@ -801,6 +808,27 @@
   };
 
   //--------------------------------------------------------------
+  Vinyl.prototype.setLabelType = function (index, labelType) {
+
+    if (-1 === Object.values(Vinyl.Index).indexOf(index)) {
+      console.error('Vinyl.setLabelType: invalid value "' + index + '" for index');
+      return;
+    }
+
+    if (Vinyl.Index.SECOND === index && !this._currentObject.second) {
+      console.error('Vinyl.setVisibility: second vinyl is not available');
+      return;
+    }
+
+    if (-1 === Object.values(Vinyl.Label).indexOf(labelType)) {
+      console.error('Vinyl.setLabelType: invalid value "' + labelType + '" for label type');
+      return;
+    }
+
+
+  };
+
+  //--------------------------------------------------------------
   Vinyl.prototype.setOpacity = function(to, duration) {
     var self = this;
 
@@ -810,7 +838,7 @@
       .stop()
       .to({ _opacity: to }, duration)
       .onUpdate(function() {
-        self._currentObject.first.traverse(function(child) {
+        self._currentObject.first.scene.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
             if (child.name === Vinyl.Part.VINYL) {
               child.material.opacity = self._opacity;
@@ -819,8 +847,8 @@
           }
         });
 
-        if (self._currentObject.second) {
-          self._currentObject.second.traverse(function(child) {
+        if (self._currentObject.second.scene) {
+          self._currentObject.second.scene.traverse(function(child) {
             if (child instanceof THREE.Mesh) {
               if (child.name === Vinyl.Part.VINYL) {
                 child.material.opacity = self._opacity;
@@ -878,18 +906,18 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.setVisibility = function(index, visibility) {
-    console.log(this._currentObject[index], visibility);
+
     if (-1 === Object.values(Vinyl.Index).indexOf(index)) {
       console.error('Vinyl.setVisibility: invalid value for index: ' + index);
       return;
     }
 
-    if (Vinyl.Index.SECOND === index && !this._currentObject.second) {
+    if (Vinyl.Index.SECOND === index && !this._currentObject.second.scene) {
       console.warn('Vinyl.setVisibility: second vinyl is not available');
       return;
     }
 
-    this._currentObject[index].visible = visibility;
+    this._currentObject[index].scene.visible = visibility;
   };
 
   //--------------------------------------------------------------
@@ -908,28 +936,28 @@
 
     this._sleeveFormat = sleeveFormat;
 
-    if (this._currentObject.second) {
-      this._container.remove(this._currentObject.second);      
+    if (this._currentObject.second.scene) {
+      this._container.remove(this._currentObject.second.scene);      
     }
 
-    this._currentObject.second = this._currentObject.first.clone();
+    this._currentObject.second.scene = this._currentObject.first.scene.clone();
     this._currentObject.second.assetName = this._currentObject.first.assetName;
 
     if (exports.world.Sleeve.Format.DOUBLE === this._sleeveFormat) {
-      var pos1 = this._currentObject.first.position;
-      this._currentObject.first.position.set(pos1.x, 1, pos1.z);
+      var pos1 = this._currentObject.first.scene.position;
+      this._currentObject.first.scene.position.set(pos1.x, 1, pos1.z);
 
-      var pos2 = this._currentObject.second.position;
-      this._currentObject.second.position.set(pos2.x, -1, pos2.z);
+      var pos2 = this._currentObject.second.scene.position;
+      this._currentObject.second.scene.position.set(pos2.x, -1, pos2.z);
     } else if (exports.world.Sleeve.Format.GATEFOLD === this._sleeveFormat) {
-      var pos1 = this._currentObject.first.position;
-      this._currentObject.first.position.set(pos1.x, 1, pos1.z);
+      var pos1 = this._currentObject.first.scene.position;
+      this._currentObject.first.scene.position.set(pos1.x, 1, pos1.z);
 
-      var pos2 = this._currentObject.second.position;
-      this._currentObject.second.position.set(pos2.x, -1, pos2.z);
+      var pos2 = this._currentObject.second.scene.position;
+      this._currentObject.second.scene.position.set(pos2.x, -1, pos2.z);
     }
 
-    this._container.add(this._currentObject.second);
+    this._container.add(this._currentObject.second.scene);
 
     console.log('enableDoubleVinyl', this._currentObject);
   };
@@ -939,14 +967,14 @@
 
     console.log('Vinyl.disableDoubleVinyl: ');
 
-    if (this._currentObject.second) {
-      this._container.remove(this._currentObject.second);
+    if (this._currentObject.second.scene) {
+      this._container.remove(this._currentObject.second.scene);
       
-      this._currentObject.second = null;
+      this._currentObject.second.scene = null;
     }
 
-    var pos = this._currentObject.first.position;
-    this._currentObject.first.position.set(0, 0, pos.z);
+    var pos = this._currentObject.first.scene.position;
+    this._currentObject.first.scene.position.set(0, 0, pos.z);
   };
 
   //--------------------------------------------------------------
@@ -976,11 +1004,11 @@
 
     var self = this;
 
-    var tempObj = self._currentObject[index].clone();
+    var tempObj = self._currentObject[index].scene.clone();
     tempObj.scale = 1.0;
 
     var offset = new THREE.Box3().setFromObject(tempObj).getSize().x;
-    var tween = new TWEEN.Tween(this._currentObject[index].position);
+    var tween = new TWEEN.Tween(this._currentObject[index].scene.position);
 
     tween
       .stop()
@@ -1024,10 +1052,10 @@
     var amount = this._enableRotate ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
     this._rotation.y -= amount;
 
-    this._currentObject[Vinyl.Index.FIRST].rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
+    this._currentObject[Vinyl.Index.FIRST].scene.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
     
-    if (this._currentObject[Vinyl.Index.SECOND]) {
-      this._currentObject[Vinyl.Index.SECOND].rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
+    if (this._currentObject[Vinyl.Index.SECOND].scene) {
+      this._currentObject[Vinyl.Index.SECOND].scene.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
     }
   };
 
