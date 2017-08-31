@@ -1003,14 +1003,14 @@
   World.prototype.onVinylColorChanged = function(value) {
     console.log('World::onVinylColorChanged', value);
 
-    this._vinyl.setColor(Object.keys(Vinyl.Color)[value]);
+    this._vinyl.setColor(value.index, Object.keys(Vinyl.Color)[value.color]);
   };
 
   //--------------------------------------------------------------
   World.prototype.onVinylSplatterColorChanged = function(value) {
     console.log('World::onVinylSplatterColorChanged', value);
 
-    this._vinyl.setColor(Object.keys(Vinyl.Color)[value]);
+    this._vinyl.setColor(value.index, Object.keys(Vinyl.Color)[value.color]);
   };
 
   //--------------------------------------------------------------
@@ -1022,7 +1022,7 @@
   //--------------------------------------------------------------
   World.prototype.onVinylHeavyChanged = function(value) {
     console.log('World::onVinylHeavyChanged', value);
-    this._vinyl.setWeight(value ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
+    this._vinyl.setWeight(value.index, value.heavy ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
   };
 
   //--------------------------------------------------------------
@@ -1078,13 +1078,6 @@
     console.log('World::onLabelColorMapChanged', value);
 
     this._vinyl.setLabelTexture({ map: value });
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onLabelTypeChanged = function(value) {
-    console.log('World::onLabelTypeChanged', value);
-
-    this._vinyl.setLabelType(value);
   };
 
   //--------------------------------------------------------------

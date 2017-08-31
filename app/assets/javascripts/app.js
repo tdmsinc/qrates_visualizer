@@ -94,10 +94,30 @@ vv.on('ready', function() {
 
   vm.$watch('vinyl.colorFormat', function(value) { vv.vinyl.colorFormat(value); });
   vm.$watch('vinyl.size', function(value) { vv.vinyl.size(value); });
-  vm.$watch('vinyl.colors', function(value) { vv.vinyl.color(value); });
-  vm.$watch('vinyl.splatter', function(value) { vv.vinyl.splatter(value); });
+  vm.$watch('vinyl.colors', function(value) {
+    vv.vinyl.color({
+      index: qvv.VinylVisualizer.VinylIndex.FIRST,
+      color: value
+    });
+
+    vv.vinyl.color({
+      index: qvv.VinylVisualizer.VinylIndex.SECOND,
+      color: value
+    });
+  });
   vm.$watch('vinyl.holeSize', function(value) { vv.vinyl.holeSize(value); });
-  vm.$watch('vinyl.heavy', function(value) { vv.vinyl.heavy(value); });
+  vm.$watch('vinyl.heavy1', function(value) {
+    vv.vinyl.heavy({
+      index: qvv.VinylVisualizer.VinylIndex.FIRST,
+      heavy: value
+    });
+  });
+  vm.$watch('vinyl.heavy2', function(value) {
+    vv.vinyl.heavy({
+      index: qvv.VinylVisualizer.VinylIndex.SECOND,
+      heavy: value
+    });
+  });
   vm.$watch('vinyl.labelType', function(value) { vv.vinyl.labelType(value); });
   vm.$watch('vinyl.speed', function(value) { vv.vinyl.speed(value); });
   vm.$watch('vinyl.labelType', function(value) { vv.vinyl.labelType(value); });
