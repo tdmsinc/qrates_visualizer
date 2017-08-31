@@ -883,8 +883,19 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setVisibility = function(yn, opts, callback) {
-    this._models[this._size][this._format].scene.visible = yn;
+  Vinyl.prototype.setVisibility = function(index, visibility) {
+    console.log(this._currentObject[index], visibility);
+    if (-1 === Object.values(Vinyl.Index).indexOf(index)) {
+      console.error('Vinyl.setVisibility: invalid value for index: ' + index);
+      return;
+    }
+
+    if (Vinyl.Index.SECOND === index && !this._currentObject.second) {
+      console.warn('Vinyl.setVisibility: second vinyl is not available');
+      return;
+    }
+
+    this._currentObject[index].visible = visibility;
   };
 
   //--------------------------------------------------------------

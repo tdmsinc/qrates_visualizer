@@ -151,7 +151,7 @@ Vinyl が Sleeve に収納されている状況を指定します。
 - `opts:Object`
   - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
   - `opts.delay:Number`: トランジション開始までのディレイをミリ秒で指定。
-  - `opts.index:Vinyl.Index[FIRST|SECOND]`: Sleeve のタイプが Double または Gatefold の場合、index で指定した Vinyl の位置が変更されます。
+  - `opts.index:VinylVisualizer.VinylIndex[FIRST|SECOND]`: Sleeve のタイプが Double または Gatefold の場合、index で指定した Vinyl の位置が変更されます。
 
 #### VinylVisualizer#zoom(step:Number, opts:Object):VinylVisualizer
 
@@ -161,10 +161,13 @@ Vinyl が Sleeve に収納されている状況を指定します。
 - `opts:Object`
   - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
 
-#### VinylVisualizer#vinylVisibility(value:Boolean, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
+#### VinylVisualizer#vinylVisibility(index:String, value:Boolean, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
 
 Vinyl の可視状態を変更します。
 
+- `index:String`
+  - `VinylVisualizer.VinylIndex.FIRST`
+  - `VinylVisualizer.VinylIndex.SECOND`: 2枚組になっていない場合は無効
 - `value:Boolean`
   - `true`: Vinyl を可視状態に変更
   - `false`: Vinyl を不可視状態に変更
@@ -206,81 +209,81 @@ Sleeve モデルのハンドラ。
 サイズを指定します。引数を省略すると現在値を返します。
 
 - `value:String`
-  - `qvv.VinylVisualizer.VinylSize.SIZE_7_SMALL_HOLE`: 7″ with small hole
-  - `qvv.VinylVisualizer.VinylSize.SIZE_7_LARGE_HOLE`: 7″ with large hole
-  - `qvv.VinylVisualizer.VinylSize.SIZE_10`: 10″
-  - `qvv.VinylVisualizer.VinylSize.SIZE_12`: 12″
+  - `VinylVisualizer.VinylSize.SIZE_7_SMALL_HOLE`: 7″ with small hole
+  - `VinylVisualizer.VinylSize.SIZE_7_LARGE_HOLE`: 7″ with large hole
+  - `VinylVisualizer.VinylSize.SIZE_10`: 10″
+  - `VinylVisualizer.VinylSize.SIZE_12`: 12″
 
 #### Vinyl#weight([value:String]):Vinyl
 
 ウェイトを指定します。引数を省略すると現在値を返します。
 
 - `value:String`
-  - `qvv.VinylVisualizer.VinylWeight.NORMAL`: ノーマル
-  - `qvv.VinylVisualizer.VinylWeight.HEAVY`: ヘビー
+  - `VinylVisualizer.VinylWeight.NORMAL`: ノーマル
+  - `VinylVisualizer.VinylWeight.HEAVY`: ヘビー
 
 #### Vinyl#label([value:String]):Vinyl
 
 カラーのフォーマットを指定します。引数を省略すると現在値を返します。
 
 - `value:String`
-  - `qvv.VinylVisualizer.VinylLabel.NONE`: レーベルなし
-  - `qvv.VinylVisualizer.VinylLabel.BLANK`: 無地
-  - `qvv.VinylVisualizer.VinylLabel.MONO_PRINT`: モノクロプリント
-  - `qvv.VinylVisualizer.VinylLabel.COLOR_PRINT`: カラープリント
+  - `VinylVisualizer.VinylLabel.NONE`: レーベルなし
+  - `VinylVisualizer.VinylLabel.BLANK`: 無地
+  - `VinylVisualizer.VinylLabel.MONO_PRINT`: モノクロプリント
+  - `VinylVisualizer.VinylLabel.COLOR_PRINT`: カラープリント
 
 #### Vinyl#colorFormat([value:String]):Vinyl
 
 カラーのフォーマットを指定します。引数を省略すると現在値を返します。
 
 - `value:String`
-  - `qvv.VinylVisualizer.VinylColorFormat.BLACK`: ブラック
-  - `qvv.VinylVisualizer.VinylColorFormat.COLOR`: カラー
-  - `qvv.VinylVisualizer.VinylColorFormat.SPECIAL`: スペシャルカラー
-  - `qvv.VinylVisualizer.VinylColorFormat.PICTURE`: ピクチャー盤
+  - `VinylVisualizer.VinylColorFormat.BLACK`: ブラック
+  - `VinylVisualizer.VinylColorFormat.COLOR`: カラー
+  - `VinylVisualizer.VinylColorFormat.SPECIAL`: スペシャルカラー
+  - `VinylVisualizer.VinylColorFormat.PICTURE`: ピクチャー盤
 
 #### Vinyl#color([value:Object]):Vinyl
 
 カラーを設定します。引数を省略すると現在値を返します。
 
-`colorFormat` が `qvv.VinylVisualizer.VinylColorFormat.COLOR` の場合にのみ有効です。
+`colorFormat` が `VinylVisualizer.VinylColorFormat.COLOR` の場合にのみ有効です。
 
 
 - `value:Object`
-  - `qvv.VinylVisualizer.VinylColor.CLASSIC_BLACK`: Black
-  - `qvv.VinylVisualizer.VinylColor.WHITE`: White
-  - `qvv.VinylVisualizer.VinylColor.EASTER_YELLOW`: Yellow
-  - `qvv.VinylVisualizer.VinylColor.RED`: Red
-  - `qvv.VinylVisualizer.VinylColor.HALLOWEEN_ORANGE`: Orange
-  - `qvv.VinylVisualizer.VinylColor.CYAN_BLUE`: Blue
-  - `qvv.VinylVisualizer.VinylColor.DOOKIE_BROWN`: Brown
-  - `qvv.VinylVisualizer.VinylColor.DOUBLE_MINT`: Green
-  - `qvv.VinylVisualizer.VinylColor.GREY`: Gray
-  - `qvv.VinylVisualizer.VinylColor.KELLY_GREEN`: Transparent Green
-  - `qvv.VinylVisualizer.VinylColor.PISS_YELLOW`: Transparent Yellow
-  - `qvv.VinylVisualizer.VinylColor.BLOOD_RED`: Transparent Red
-  - `qvv.VinylVisualizer.VinylColor.DEEP_PURPLE`: Transparent Violet
-  - `qvv.VinylVisualizer.VinylColor.ROYAL_BLUE`: Transparent Blue
-  - `qvv.VinylVisualizer.VinylColor.MILKY_CLEAR`: Transparent
-  - `qvv.VinylVisualizer.VinylColor.SWAMP_GREEN`: Swamp Green
-  - `qvv.VinylVisualizer.VinylColor.SEA_BLUE`: Sea Blue
-  - `qvv.VinylVisualizer.VinylColor.BONE`: Bone
-  - `qvv.VinylVisualizer.VinylColor.BRONZE`: Bronze
-  - `qvv.VinylVisualizer.VinylColor.BEER`: Beer
-  - `qvv.VinylVisualizer.VinylColor.ELECTRIC_BLUE`: Electric Blue
-  - `qvv.VinylVisualizer.VinylColor.GRIMACE_PURPLE`: Grimace Purple
-  - `qvv.VinylVisualizer.VinylColor.OXBLOOD`: Oxblood
-  - `qvv.VinylVisualizer.VinylColor.COKE_BOTTLE_GREEN`: Coke Bottle Green
-  - `qvv.VinylVisualizer.VinylColor.ORANGE_CRUSH`: Orange Crush
-  - `qvv.VinylVisualizer.VinylColor.HOT_PINK`: Hot Pink
-  - `qvv.VinylVisualizer.VinylColor.BABY_PINK`: Baby Pink
-  - `qvv.VinylVisualizer.VinylColor.OLIVE_GREEN`: Olive Green
-  - `qvv.VinylVisualizer.VinylColor.AQUA_BLUE`: Aqua Blue
-  - `qvv.VinylVisualizer.VinylColor.BABY_BLUE`: Baby Blue
-  - `qvv.VinylVisualizer.VinylColor.HIGHLIGHTER_YELLOW`: Highlighter Yellow
-  - `qvv.VinylVisualizer.VinylColor.GOLD`: Gold
-  - `qvv.VinylVisualizer.VinylColor.SILVER`: Silver
-  - `qvv.VinylVisualizer.VinylColor.MUSTARD`: Mustard
+  - `VinylVisualizer.VinylColor.CLASSIC_BLACK`: Black
+  - `VinylVisualizer.VinylColor.WHITE`: White
+  - `VinylVisualizer.VinylColor.EASTER_YELLOW`: Yellow
+  - `VinylVisualizer.VinylColor.RED`: Red
+  - `VinylVisualizer.VinylColor.HALLOWEEN_ORANGE`: Orange
+  - `VinylVisualizer.VinylColor.CYAN_BLUE`: Blue
+  - `VinylVisualizer.VinylColor.DOOKIE_BROWN`: Brown
+  - `VinylVisualizer.VinylColor.DOUBLE_MINT`: Green
+  - `VinylVisualizer.VinylColor.GREY`: Gray
+  - `VinylVisualizer.VinylColor.KELLY_GREEN`: Transparent Green
+  - `VinylVisualizer.VinylColor.PISS_YELLOW`: Transparent Yellow
+  - `VinylVisualizer.VinylColor.BLOOD_RED`: Transparent Red
+  - `VinylVisualizer.VinylColor.DEEP_PURPLE`: Transparent Violet
+  - `VinylVisualizer.VinylColor.ROYAL_BLUE`: Transparent Blue
+  - `VinylVisualizer.VinylColor.MILKY_CLEAR`: Transparent
+  - `VinylVisualizer.VinylColor.SWAMP_GREEN`: Swamp Green
+  - `VinylVisualizer.VinylColor.SEA_BLUE`: Sea Blue
+  - `VinylVisualizer.VinylColor.BONE`: Bone
+  - `VinylVisualizer.VinylColor.BRONZE`: Bronze
+  - `VinylVisualizer.VinylColor.BEER`: Beer
+  - `VinylVisualizer.VinylColor.ELECTRIC_BLUE`: Electric Blue
+  - `VinylVisualizer.VinylColor.GRIMACE_PURPLE`: Grimace Purple
+  - `VinylVisualizer.VinylColor.OXBLOOD`: Oxblood
+  - `VinylVisualizer.VinylColor.COKE_BOTTLE_GREEN`: Coke Bottle Green
+  - `VinylVisualizer.VinylColor.ORANGE_CRUSH`: Orange Crush
+  - `VinylVisualizer.VinylColor.HOT_PINK`: Hot Pink
+  - `VinylVisualizer.VinylColor.BABY_PINK`: Baby Pink
+  - `VinylVisualizer.VinylColor.OLIVE_GREEN`: Olive Green
+  - `VinylVisualizer.VinylColor.AQUA_BLUE`: Aqua Blue
+  - `VinylVisualizer.VinylColor.BABY_BLUE`: Baby Blue
+  - `VinylVisualizer.VinylColor.HIGHLIGHTER_YELLOW`: Highlighter Yellow
+  - `VinylVisualizer.VinylColor.GOLD`: Gold
+  - `VinylVisualizer.VinylColor.SILVER`: Silver
+  - `VinylVisualizer.VinylColor.MUSTARD`: Mustard
 
 #### Vinyl#splatterColor([value:Number]):Vinyl
 
@@ -352,44 +355,44 @@ Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください
 タイプを指定します。引数を省略すると現在値を返します。
 
 - `value:Number`
-  - `qvv.VinylVisualizer.SleeveFormat.SINGLE_WITHOUT_SPINE`: Single w/o Spine
-  - `qvv.VinylVisualizer.SleeveFormat.SINGLE`: Single (3mm spine)
-  - `qvv.VinylVisualizer.SleeveFormat.DOUBLE`: Double (5mm spine)
-  - `qvv.VinylVisualizer.SleeveFormat.GATEFOLD`: Gatefold
+  - `VinylVisualizer.SleeveFormat.SINGLE_WITHOUT_SPINE`: Single w/o Spine
+  - `VinylVisualizer.SleeveFormat.SINGLE`: Single (3mm spine)
+  - `VinylVisualizer.SleeveFormat.DOUBLE`: Double (5mm spine)
+  - `VinylVisualizer.SleeveFormat.GATEFOLD`: Gatefold
 
 #### Sleeve#size([value:String]):Sleeve
 
 サイズを指定します。引数を省略すると現在値を返します。
 
 - `value:String`
-  - `qvv.VinylVisualizer.SleeveSize.SIZE_7`: 7″
-  - `qvv.VinylVisualizer.SleeveSize.SIZE_10`: 10″
-  - `qvv.VinylVisualizer.SleeveSize.SIZE_12`: 12″
+  - `VinylVisualizer.SleeveSize.SIZE_7`: 7″
+  - `VinylVisualizer.SleeveSize.SIZE_10`: 10″
+  - `VinylVisualizer.SleeveSize.SIZE_12`: 12″
 
 #### Sleeve#colorFormat([value:String]):Sleeve
 
 カラーのフォーマットを指定します。引数を省略すると現在値を返します。
 
 - `value:String`
-  - `qvv.VinylVisualizer.SleeveColorFormat.WHITE`: ホワイト
-  - `qvv.VinylVisualizer.SleeveColorFormat.BLACK`: ブラック
-  - `qvv.VinylVisualizer.SleeveColorFormat.PRINT`: プリント
+  - `VinylVisualizer.SleeveColorFormat.WHITE`: ホワイト
+  - `VinylVisualizer.SleeveColorFormat.BLACK`: ブラック
+  - `VinylVisualizer.SleeveColorFormat.PRINT`: プリント
 
 #### Sleeve#hole([value:String]):Sleeve
 
 ホールのタイプを指定します。引数を省略すると現在値を返します。
 
 - `value:String`
-  - `qvv.VinylVisualizer.SleeveHole.NO_HOLE`: ホールなし
-  - `qvv.VinylVisualizer.SleeveHole.HOLED`: ホールあり
+  - `VinylVisualizer.SleeveHole.NO_HOLE`: ホールなし
+  - `VinylVisualizer.SleeveHole.HOLED`: ホールあり
 
 #### Sleeve#finish([value:String]):Sleeve
 
 表面仕上げのタイプを指定します。引数を省略すると現在値を返します。
 
 - `value:String`
-  - `qvv.VinylVisualizer.SleeveFinish.NORMAL`: 光沢なし
-  - `qvv.VinylVisualizer.SleeveFinish.GLOSS`: 光沢あり
+  - `VinylVisualizer.SleeveFinish.NORMAL`: 光沢なし
+  - `VinylVisualizer.SleeveFinish.GLOSS`: 光沢あり
 
 #### Sleeve#texture([value:Object]):Sleeve
 

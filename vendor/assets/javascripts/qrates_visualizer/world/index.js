@@ -232,7 +232,8 @@
       render: true,
       rotate: false,
       'sleeve visibility': true,
-      'vinyl visibility': true,
+      'vinyl 1 visibility': true,
+      'vinyl 2 visibility': true,
       out: false,
       zoom: 1.0,
       'covered ratio 1': 1.0,
@@ -296,7 +297,8 @@
     var sleeveFrontRotationController = gui.add(props, 'sleeve front rot', 0, 90);
     var sleeveBackRotationController = gui.add(props, 'sleeve back rot', 0, 90);
     var sleeveVisibilityController = gui.add(props, 'sleeve visibility');
-    var vinylVisibilityController = gui.add(props, 'vinyl visibility');
+    var firstVinylVisibilityController = gui.add(props, 'vinyl 1 visibility');
+    var secondVinylVisibilityController = gui.add(props, 'vinyl 2 visibility');
     var captureController = gui.add(temp, 'capture');
     var zoomController = gui.add(props, 'zoom', 0, 400);
     var objXController = gui.add(objPosProps, 'posX', -1000.0, 1000.0);
@@ -357,8 +359,13 @@
       });
     });
 
-    vinylVisibilityController.onChange(function(value) {
-      self.setVinylVisibility(value, null, function() {
+    firstVinylVisibilityController.onChange(function(value) {
+      self.setVinylVisibility(Vinyl.Index.FIRST, value, null, function() {
+      });
+    });
+
+    secondVinylVisibilityController.onChange(function(value) {
+      self.setVinylVisibility(Vinyl.Index.SECOND, value, null, function() {
       });
     });
 
@@ -499,8 +506,8 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.setVinylVisibility = function(yn, opts, callback) {
-    this._vinyl.setVisibility(yn);
+  World.prototype.setVinylVisibility = function(index, yn, opts, callback) {
+    this._vinyl.setVisibility(index, yn);
   };
 
   //--------------------------------------------------------------
