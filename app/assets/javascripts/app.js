@@ -10,9 +10,7 @@ var defaults = {
     size: qvv.VinylVisualizer.VinylSize.SIZE_12,
     weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
     label: qvv.VinylVisualizer.VinylLabel.COLOR_PRINT,
-    color: 0,
-    colorFormat: qvv.VinylVisualizer.VinylColorFormat.BLACK,
-    splatterColor: 0,
+    colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
     speed: 45
   },
   sleeve: {
@@ -94,9 +92,9 @@ vv.on('ready', function() {
     vv.view(value, {duration:0});
   });
 
-  vm.$watch('vinyl.type', function(value) { vv.vinyl.type(value); });
+  vm.$watch('vinyl.colorFormat', function(value) { vv.vinyl.colorFormat(value); });
   vm.$watch('vinyl.size', function(value) { vv.vinyl.size(value); });
-  vm.$watch('vinyl.color', function(value) { vv.vinyl.color(value); });
+  vm.$watch('vinyl.colors', function(value) { vv.vinyl.color(value); });
   vm.$watch('vinyl.splatter', function(value) { vv.vinyl.splatter(value); });
   vm.$watch('vinyl.holeSize', function(value) { vv.vinyl.holeSize(value); });
   vm.$watch('vinyl.heavy', function(value) { vv.vinyl.heavy(value); });
@@ -210,8 +208,11 @@ vv.on('ready', function() {
 // observers. (for internal use)
 //
 
-vv.vinyl.on('type', function(value) {
-  console.log('change vinyl.type', value);
+vv.vinyl.on('colorFormat', function(value) {
+  console.log('change vinyl.colorFormat', value);
+});
+vv.vinyl.on('color', function(value) {
+  console.log('change vinyl.color', value);
 });
 vv.vinyl.on('size', function(value) {
   console.log('change vinyl.size', value);

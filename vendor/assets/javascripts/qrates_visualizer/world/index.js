@@ -915,7 +915,7 @@
   World.prototype.delegateEvents = function() {
     var parent = this._parent;
 
-    parent.vinyl.on('type', this.onVinylTypeChanged.bind(this));
+    parent.vinyl.on('colorFormat', this.onVinylColorFormatChanged.bind(this));
     parent.vinyl.on('size', this.onVinylSizeChanged.bind(this));
     parent.vinyl.on('color', this.onVinylColorChanged.bind(this));
     parent.vinyl.on('splatterColor', this.onVinylSplatterColorChanged.bind(this));
@@ -949,11 +949,11 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylTypeChanged = function(value) {
-    console.log('World.onVinylTypeChanged:', value);
+  World.prototype.onVinylColorFormatChanged = function(value) {
+    console.log('World.onVinylColorFormatChanged:', value);
 
     if (-1 === Object.values(Vinyl.ColorFormat).indexOf(value)) {
-      console.warn('World.onVinylTypeChanged: unknown value "' + value + '" for vinyl color format');
+      console.warn('World.onVinylColorFormatChanged: unknown value "' + value + '" for vinyl color format');
       return;
     }
 

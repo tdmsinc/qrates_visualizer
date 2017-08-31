@@ -22,10 +22,8 @@
   };
 
   Vinyl.ColorFormat = {
-    BLACK: 'black',
     COLOR: 'color',
-    SPECIAL: 'special',
-    PICTURE: 'picture'
+    TEXTURE: 'texture'
   };
 
   Vinyl.Weight = {
@@ -104,6 +102,7 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.setup = function(scene, assets, opts, container) {
+
     opts = opts || {
       format: Vinyl.Format.NORMAL,
       size: Vinyl.Size.SIZE_7_SMALL_HOLE,
@@ -172,7 +171,7 @@
     this._label = opts.label || Vinyl.Label.BLANK;
     this._colorFormat = opts.colorFormat || Vinyl.ColorFormat.BLACK;
     this._heavy = opts.heavy || Vinyl.Weight.NORMAL;
-    this._material = opts.color || Vinyl.Color.CLASSIC_BLACK;
+    this._material = this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE;
     this._format = Vinyl.Format.NORMAL;
     this._defaultColor = 0x000000;
     this._opacity = 0;
@@ -631,6 +630,9 @@
       if (!self._currentObject[key]) {
         return;
       }
+
+      var pos = self._currentObject[key].position;
+
       self._container.remove(self._currentObject[key]);
 
       self._currentObject[key] = self._models[self._size][self._format].scene.clone();
@@ -666,11 +668,11 @@
       });
 
       self._container.add(self._currentObject[key]);
+      self._currentObject[key].position.set(pos.x, pos.y, pos.z);
+      console.log('self._currentObject[key].position', self._currentObject[key]);
     });
 
     self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.first);
-
-    this.enableDoubleVinyl(this._sleeveFormat);
 
     self._opacity = 0;
     self.setOpacity(self._material.opacity);
@@ -738,22 +740,19 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setFormat = function(format) {
-
-  };
-
-  //--------------------------------------------------------------
   Vinyl.prototype.setColorFormat = function(format) {
-    if (!format) {
+
+    if (!format || -1 === Object.values(Vinyl.ColorFormat).indexOf(format)) {
+      console.error('Vinyl.setColorFormat: invalid color format + "' + format + '"');
       return;
     }
-    console.log('color format', format);
+    
     this._colorFormat = format;
 
-    if (Vinyl.ColorFormat.BLACK === this._colorFormat || Vinyl.ColorFormat.COLOR === this._colorFormat) {
+    if (Vinyl.ColorFormat.COLOR === this._colorFormat) {
       this._material = Vinyl.Color.CLASSIC_BLACK;
     } else {
-      this._material = Vinyl.Color.WHITE  ;
+      this._material = Vinyl.Color.WHITE;
     } 
 
     this._color = new THREE.Color(this._material.color);
@@ -774,13 +773,8 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setType = function(colorType) {
-    this.setColorFormat(colorType);
-  };
-
-  //--------------------------------------------------------------
   Vinyl.prototype.setColor = function(color) {
-
+    console.log('setColor', color);
     if (Vinyl.ColorFormat.COLOR !== this._colorFormat) {
       console.warn('Vinyl.setColor: color option is valid when vinyl type = COLOR');
       return;
@@ -923,16 +917,16 @@
 
     if (exports.world.Sleeve.Format.DOUBLE === this._sleeveFormat) {
       var pos1 = this._currentObject.first.position;
-      this._currentObject.first.position.set(0, 1, pos1.z);
+      this._currentObject.first.position.set(pos1.x, 1, pos1.z);
 
       var pos2 = this._currentObject.second.position;
-      this._currentObject.second.position.set(0, -1, pos2.z);
+      this._currentObject.second.position.set(pos2.x, -1, pos2.z);
     } else if (exports.world.Sleeve.Format.GATEFOLD === this._sleeveFormat) {
       var pos1 = this._currentObject.first.position;
-      this._currentObject.first.position.set(0, 1, pos1.z);
+      this._currentObject.first.position.set(pos1.x, 1, pos1.z);
 
       var pos2 = this._currentObject.second.position;
-      this._currentObject.second.position.set(0, -1, pos2.z);
+      this._currentObject.second.position.set(pos2.x, -1, pos2.z);
     }
 
     this._container.add(this._currentObject.second);
