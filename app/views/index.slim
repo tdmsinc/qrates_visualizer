@@ -328,10 +328,8 @@ form.show
   p
     label Type: 
     select number="" v-model="vinyl.type"
-      option value="black" 1. Black
-      option value="color" 2. Color
-      option value="special" 3. Special
-      option value="picture" 4. Picture
+      option value="color" Color
+      option value="texture" Texture
 
   p
     label Color: 
@@ -372,25 +370,6 @@ form.show
       option value="33" P19 SILVER
       option value="34" P20 MUSTARD
 
-  p
-    label Splatter color: 
-    select number="" v-model="vinyl.splatterColor"
-      option value="0" black
-      option value="1" white
-      option value="2" yellow
-      option value="3" red
-      option value="4" orange
-      option value="5" blue
-      option value="6" brown
-      option value="7" green
-      option value="8" gray
-      option value="9" transparent green
-      option value="10" transparent yellow
-      option value="11" transparent red
-      option value="12" transparent violet
-      option value="13" transparent blue
-      option value="14" transparent
-
   p: label: input type="checkbox" v-model="vinyl.heavy" Heavy
 
   p
@@ -413,14 +392,6 @@ form.show
 
   h1 Label options
 
-  p
-    label Type 
-    select number="" v-model="label.type"
-      option value="none" None
-      option value="blank" Blank
-      option value="mono print" Mono Print
-      option value="color print" Color Print
-
   p 
     label AO Map
     input type="file" name="label-ao"
@@ -434,13 +405,6 @@ form.show
     input type="file" name="label-color"
 
   h1 Sleeve options
-
-  p
-    label Color: 
-    select number="" v-model="sleeve.colorFormat"
-      option value="white" Whtie
-      option value="black" Black
-      option value="print" Print
 
   p
     label Type: 
