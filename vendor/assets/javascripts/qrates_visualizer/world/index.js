@@ -958,7 +958,7 @@
       return;
     }
 
-    this._vinyl.setColorFormat(value);
+    this._vinyl.setColorFormat(value.index, value.colorFormat);
   };
 
   //--------------------------------------------------------------

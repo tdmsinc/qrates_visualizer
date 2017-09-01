@@ -92,7 +92,18 @@ vv.on('ready', function() {
     vv.view(value, {duration:0});
   });
 
-  vm.$watch('vinyl.colorFormat', function(value) { vv.vinyl.colorFormat(value); });
+  vm.$watch('vinyl.colorFormat1', function(value) {
+    vv.vinyl.colorFormat({
+      index: qvv.VinylVisualizer.VinylIndex.FIRST,
+      heavy: value
+    });
+  });
+  vm.$watch('vinyl.colorFormat2', function(value) {
+    vv.vinyl.colorFormat({
+      index: qvv.VinylVisualizer.VinylIndex.SECOND,
+      heavy: value
+    });
+  });
   vm.$watch('vinyl.size', function(value) { vv.vinyl.size(value); });
   vm.$watch('vinyl.colors', function(value) {
     vv.vinyl.color({

@@ -144,17 +144,21 @@
     this._currentObject = {
       first: {
         assetName: '',
+        colorFormat: this._colorFormat,
         scene: null,
         format: '',
         label: this._label,
+        material: this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE,
         opacity: 1,
         weight: this._weight
       },
       second: {
         assetName: '',
+        colorFormat: this._colorFormat,
         scene: null,
         format: '',
         label: this._label,
+        material: this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE,
         opacity: 1,
         weight: this._weight
       }
@@ -623,10 +627,10 @@
         if (-1 < child.parent.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
           if (Vinyl.Part.VINYL === child.name) {
             child.material.bumpScale = self._bumpScale;
-            child.material.color = self._material.color;
-            child.material.reflectivity = self._material.reflectivity;
-            child.material.refractionRatio = self._material.refractionRatio;
-            child.material.shininess = self._material.shininess;
+            child.material.color = self._currentObject[index].material.color;
+            child.material.reflectivity = self._currentObject[index].material.reflectivity;
+            child.material.refractionRatio = self._currentObject[index].material.refractionRatio;
+            child.material.shininess = self._currentObject[index].material.shininess;
           } else if (Vinyl.Part.LABEL === child.name) { 
             child.material.bumpScale = self._bumpScale;
             child.material.color = Vinyl.Color.WHITE.color;
@@ -637,9 +641,9 @@
         } else {
           child.material.bumpScale = self._bumpScale;
           child.material.color = Vinyl.Color.WHITE.color;
-          child.material.reflectivity = self._material.reflectivity;
-          child.material.refractionRatio = self._material.refractionRatio;
-          child.material.shininess = self._material.shininess;
+          child.material.reflectivity = self._currentObject[index].material.reflectivity;
+          child.material.refractionRatio = self._currentObject[index].material.refractionRatio;
+          child.material.shininess = self._currentObject[index].material.shininess;
         }
         
         
@@ -653,7 +657,7 @@
     self._boundingBox = new THREE.Box3().setFromObject(self._currentObject[index].scene);
 
     self._currentObject[index].scene.opacity = 0;
-    self.setOpacity(index, self._material.opacity);
+    self.setOpacity(index, self._currentObject[index].material.opacity);
   }
 
   //--------------------------------------------------------------
@@ -719,27 +723,39 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setColorFormat = function(format) {
+  Vinyl.prototype.setColorFormat = function(index, format) {
 
-    if (!format || -1 === Object.values(Vinyl.ColorFormat).indexOf(format)) {
+    if (-1 === Object.values(Vinyl.Index).indexOf(index)) {
+      console.error('Vinyl.setColorFormat: invalid value "' + index + '" for index');
+      return;
+    }
+
+    if (Vinyl.Index.SECOND === index && !this._currentObject.second.scene) {
+      console.error('Vinyl.setColorFormat: second vinyl is not available');
+      return;
+    }
+
+    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(format)) {
       console.error('Vinyl.setColorFormat: invalid color format + "' + format + '"');
       return;
     }
+
+    if (this._currentObject[index].colorFormat === format) {
+      return;
+    }
     
-    this._colorFormat = format;
+    this._currentObject[index].colorFormat = format;
 
-    if (Vinyl.ColorFormat.COLOR === this._colorFormat) {
-      this._material = Vinyl.Color.CLASSIC_BLACK;
+    if (Vinyl.ColorFormat.COLOR === this._currentObject[index].colorFormat) {
+      this._currentObject[index].material = Vinyl.Color.CLASSIC_BLACK;
     } else {
-      this._material = Vinyl.Color.WHITE;
+      this._currentObject[index].material = Vinyl.Color.WHITE;
     } 
-
-    this._color = new THREE.Color(this._material.color);
 
     var self = this;
 
-    Object.keys(self._models).forEach(function(size) {
-      Object.keys(self._models[size]).forEach(function(type) {
+    Object.keys(self._models).forEach(function (size) {
+      Object.keys(self._models[size]).forEach(function (type) {
 
         if (self._models[size][type]) {
           self.initMaterial(self._models[size][type]);
@@ -747,9 +763,8 @@
       });
     });
 
-    this._opacity = 0;
-    this.setOpacity(Vinyl.Index.FIRST, this._material.opacity);
-    this.setOpacity(Vinyl.Index.SECOND, this._material.opacity);
+    this._currentObject[index].opacity = 0;
+    this.setOpacity(index, this._currentObject[index].material.opacity);
   };
 
   //--------------------------------------------------------------
@@ -775,12 +790,12 @@
       return;
     }
 
-    this._material = Vinyl.Color[color];
+    this._currentObject[index].material = Vinyl.Color[color];
 
-    if (this._colorFormat === Vinyl.ColorFormat.SPECIAL) {
-      this._material.color = 0xffffff;
-      this._material.opacity = 0.8;
-      this._material.reflectivity = 0.1;
+    if (this._currentObject[index].colorFormat === Vinyl.ColorFormat.SPECIAL) {
+      this._currentObject[index].material.color = 0xffffff;
+      this._currentObject[index].material.opacity = 0.8;
+      this._currentObject[index].material.reflectivity = 0.1;
     }
 
     this.updateCurrentObjectMaterial(index);
