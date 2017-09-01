@@ -118,9 +118,19 @@ vv.on('ready', function() {
       heavy: value
     });
   });
-  vm.$watch('vinyl.labelType', function(value) { vv.vinyl.labelType(value); });
+  vm.$watch('vinyl.labelType1', function(value) { 
+    vv.vinyl.labelType({
+      index: qvv.VinylVisualizer.VinylIndex.FIRST,
+      label: value
+    });
+  });
+  vm.$watch('vinyl.labelType2', function(value) {
+    vv.vinyl.labelType({
+      index: qvv.VinylVisualizer.VinylIndex.SECOND,
+      label: value
+    });
+  });
   vm.$watch('vinyl.speed', function(value) { vv.vinyl.speed(value); });
-  vm.$watch('vinyl.labelType', function(value) { vv.vinyl.labelType(value); });
   vm.$watch('sleeve.type', function(value) { vv.sleeve.type(value); });
   vm.$watch('sleeve.colorFormat', function(value) { vv.sleeve.colorFormat(value); });
   vm.$watch('sleeve.hole', function(value) { vv.sleeve.hole(value); });
@@ -238,8 +248,8 @@ vv.vinyl.on('color', function(value) {
 vv.vinyl.on('size', function(value) {
   console.log('change vinyl.size', value);
 });
-vv.vinyl.on('labelType', function(value) {
-  console.log('change vinyl.labelType', value);
+vv.vinyl.on('labelType1', function(value) {
+  console.log('change vinyl.labelType 1', value);
 });
 vv.sleeve.on('finish', function(value) {
   console.log('change sleeve.finish', value);

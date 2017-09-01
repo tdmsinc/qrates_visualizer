@@ -185,6 +185,7 @@
         scene: null,
         format: '',
         label: this._label,
+        opacity: 1,
         weight: this._weight
       },
       second: {
@@ -192,6 +193,7 @@
         scene: null,
         format: '',
         label: this._label,
+        opacity: 1,
         weight: this._weight
       }
     }
@@ -623,13 +625,13 @@
   Vinyl.prototype.updateFormat = function(weight, label) {
 
     if (weight === Vinyl.Weight.NORMAL) {
-      if (label === Vinyl.Label.BLANK) {
+      if (label === Vinyl.Label.NONE) {
         return Vinyl.Format.NORMAL;
       } else {
         return Vinyl.Format.WITH_LABEL;
       }
     } else if (weight === Vinyl.Weight.HEAVY) {
-      if (label === Vinyl.Label.BLANK) {
+      if (label === Vinyl.Label.NONE) {
         return Vinyl.Format.HEAVY;
       } else {
         return Vinyl.Format.HEAVY_WITH_LABEL;
@@ -688,8 +690,8 @@
 
     self._boundingBox = new THREE.Box3().setFromObject(self._currentObject[index].scene);
 
-    self._opacity = 0;
-    self.setOpacity(self._material.opacity);
+    self._currentObject[index].scene.opacity = 0;
+    self.setOpacity(index, self._material.opacity);
   }
 
   //--------------------------------------------------------------
@@ -784,7 +786,8 @@
     });
 
     this._opacity = 0;
-    this.setOpacity(this._material.opacity);
+    this.setOpacity(Vinyl.Index.FIRST, this._material.opacity);
+    this.setOpacity(Vinyl.Index.SECOND, this._material.opacity);
   };
 
   //--------------------------------------------------------------
@@ -839,40 +842,55 @@
       return;
     }
 
-    
+    this._currentObject[index].label = labelType;
+    this._currentObject[index].format = this.updateFormat(this._currentObject[index].weight, this._currentObject[index].label);
+console.log(index, labelType, this._currentObject[index].format);
+    this.updateCurrentObjectMaterial(index);
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setOpacity = function(to, duration) {
+  Vinyl.prototype.setOpacity = function(index, to, duration) {
+
     var self = this;
 
     duration = undefined !== duration ? duration : 500;
 
-    this._opacityTween
-      .stop()
-      .to({ _opacity: to }, duration)
-      .onUpdate(function() {
-        self._currentObject.first.scene.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            if (child.name === Vinyl.Part.VINYL) {
-              child.material.opacity = self._opacity;
-              child.material.needsUpdate = true;
-            }
-          }
-        });
+    // var tween = new TWEEN.Tween(this._currentObject[index]);
+    
+    // tween
+    //   .stop()
+    //   .to({ opacity: to }, duration)
+    //   .onUpdate(function(value) {
+    //     self._currentObject[index].scene.opacity = value;
+    //     self._currentObject[index].scene.traverse(function (child) {
+    //       if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
+    //         child.material.opacity = value;
+    //         child.material.needsUpdate = true;
+    //       }
+    //     });
+    //   })
+    //   .start();
 
-        if (self._currentObject.second.scene) {
-          self._currentObject.second.scene.traverse(function(child) {
-            if (child instanceof THREE.Mesh) {
-              if (child.name === Vinyl.Part.VINYL) {
-                child.material.opacity = self._opacity;
-                child.material.needsUpdate = true;
-              }
-            }
-          });
-        }
-      })
-      .start();
+    self._currentObject[index].scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
+        var tween = new TWEEN.Tween(child.material);
+        child.material.opacity = 0;
+        
+        tween
+          .stop()
+          .to({ opacity: to }, duration)
+          .onUpdate(function (value) {
+            // self._currentObject[index].scene.opacity = value;
+            // self._currentObject[index].scene.traverse(function (child) {
+            //   if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
+            //     child.material.opacity = value;
+            //     child.material.needsUpdate = true;
+            //   }
+            // });
+          })
+          .start();
+      }
+    });
   };
 
   //--------------------------------------------------------------
@@ -906,11 +924,10 @@
     if (this._currentObject[index].weight === weight) {
       return;
     }
-    console.log('setWeight', index, weight);
-    // this._weight = weight;
+
+    this._currentObject[index].weight = weight;
     this._currentObject[index].format = this.updateFormat(this._currentObject[index].weight, this._currentObject[index].label);
 
-    // this._format = this.updateFormat(this._weight, this._label);
     this.updateCurrentObjectMaterial(index);
   };
 
@@ -965,8 +982,8 @@
     if (this._currentObject.second.scene) {
       this._container.remove(this._currentObject.second.scene);      
     }
-
-    this._currentObject.second.scene = this._currentObject.first.scene.clone();
+    
+    this._currentObject.second.scene = this._models[this._size][this._currentObject.first.format].scene.clone();
     this._currentObject.second.assetName = this._currentObject.first.assetName;
 
     if (exports.world.Sleeve.Format.DOUBLE === this._sleeveFormat) {

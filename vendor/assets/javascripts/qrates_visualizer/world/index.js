@@ -1028,7 +1028,7 @@
   //--------------------------------------------------------------
   World.prototype.onLabelTypeChanged = function(value) {
     console.log('World::onLabelTypeChanged', value);
-    this._vinyl.setLabelType(value);
+    this._vinyl.setLabelType(value.index, value.label);
   };
 
   //--------------------------------------------------------------

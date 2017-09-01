@@ -374,8 +374,14 @@ form.show
   p: label: input type="checkbox" v-model="vinyl.heavy2" Heavy (Second Vinyl)
 
   p
-    label Label: 
-    select number="" v-model="vinyl.labelType"
+    label Label 1: 
+    select number="" v-model="vinyl.labelType1"
+      option value="none" None
+      option value="texture" Texture
+
+  p
+    label Label 2: 
+    select number="" v-model="vinyl.labelType2"
       option value="none" None
       option value="texture" Texture
 
