@@ -442,6 +442,7 @@
           self._bumpScale = 0.28;
         }
 
+        child.material = child.material.clone();
         child.material.bumpScale = self._bumpScale;
         child.material.combine = THREE.MultiplyOperation;
         child.material.color = self._material.color;
@@ -550,20 +551,31 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setTexture = function(textures /* = {} */) {
+  Vinyl.prototype.setTexture = function(index, textures /* = {} */) {
 
-    console.log('Vinyl.setTexture', textures);
+    console.log('Vinyl.setTexture', index, textures);
+
+    if (-1 === Object.values(Vinyl.Index).indexOf(index)) {
+      console.error('Vinyl.setTexture: invalid value "' + index + '" for index');
+      return;
+    }
+
+    if (Vinyl.Index.SECOND === index && !this._currentObject.second.scene) {
+      console.error('Vinyl.setTexture: second vinyl is not available');
+      return;
+    }
+
+    if (this._currentObject[index].colorFormat === Vinyl.ColorFormat.COLOR && textures.map) {
+      console.error('Vinyl.setTexture: color map is only available when color format is set to "texture"');
+      return;
+    }
 
     var self = this;
 
-    Object.values(self._currentObject).forEach(function (object) {
-      if (object.scene) {
-        object.scene.traverse(function (child) {
-          if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
-            Object.keys(textures).forEach(function(key) {
-              self.updateTexture(child.material[key], textures[key]);
-            });
-          }
+    self._currentObject[index].scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
+        Object.keys(textures).forEach(function (key) {
+          self.updateTexture(child.material[key], textures[key]);
         });
       }
     });
@@ -624,6 +636,7 @@
 
     self._currentObject[index].scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
+        child.material = child.material.clone();
         if (-1 < child.parent.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
           if (Vinyl.Part.VINYL === child.name) {
             child.material.bumpScale = self._bumpScale;
@@ -724,7 +737,7 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.setColorFormat = function(index, format) {
-
+    
     if (-1 === Object.values(Vinyl.Index).indexOf(index)) {
       console.error('Vinyl.setColorFormat: invalid value "' + index + '" for index');
       return;
@@ -754,17 +767,35 @@
 
     var self = this;
 
-    Object.keys(self._models).forEach(function (size) {
-      Object.keys(self._models[size]).forEach(function (type) {
+    // Object.keys(self._models).forEach(function (size) {
+    //   Object.keys(self._models[size]).forEach(function (type) {
 
-        if (self._models[size][type]) {
-          self.initMaterial(self._models[size][type]);
-        }
-      });
-    });
+    //     if (self._models[size][type]) {
+    //       self.initMaterial(self._models[size][type]);
+    //     }
+    //   });
+    // });
+
+    this.updateCurrentObjectMaterial(index);
 
     this._currentObject[index].opacity = 0;
     this.setOpacity(index, this._currentObject[index].material.opacity);
+
+    self._currentObject[Vinyl.Index.FIRST].scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        if (Vinyl.Part.VINYL === child.name) {
+          console.log('child.material', child.material);
+        }
+      }
+    });
+
+    self._currentObject[Vinyl.Index.SECOND].scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        if (Vinyl.Part.VINYL === child.name) {
+          console.log('child.material', child.material);
+        }
+      }
+    });
   };
 
   //--------------------------------------------------------------

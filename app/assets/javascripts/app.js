@@ -95,13 +95,13 @@ vv.on('ready', function() {
   vm.$watch('vinyl.colorFormat1', function(value) {
     vv.vinyl.colorFormat({
       index: qvv.VinylVisualizer.VinylIndex.FIRST,
-      heavy: value
+      format: value
     });
   });
   vm.$watch('vinyl.colorFormat2', function(value) {
     vv.vinyl.colorFormat({
       index: qvv.VinylVisualizer.VinylIndex.SECOND,
-      heavy: value
+      format: value
     });
   });
   vm.$watch('vinyl.size', function(value) { vv.vinyl.size(value); });
@@ -151,12 +151,12 @@ vv.on('ready', function() {
   // file watcher
   //
 
-  var vinylAoMap = document.querySelector('input[name=vinyl-ao]');
-  var vinylBumpMap = document.querySelector('input[name=vinyl-bump]');
-  var vinylColorMap = document.querySelector('input[name=vinyl-color]');
-  var labelAoMap = document.querySelector('input[name=label-ao]');
-  var labelBumpMap = document.querySelector('input[name=label-bump]');
-  var labelColorMap = document.querySelector('input[name=label-color]');
+  var vinylAoMap1 = document.querySelector('input[name=vinyl-ao1]');
+  var vinylBumpMap1 = document.querySelector('input[name=vinyl-bump1]');
+  var vinylColorMap1 = document.querySelector('input[name=vinyl-color1]');
+  var labelAoMap1 = document.querySelector('input[name=label-ao1]');
+  var labelBumpMap1 = document.querySelector('input[name=label-bump1]');
+  var labelColorMap1 = document.querySelector('input[name=label-color1]');
   var sleeveAoMap = document.querySelector('input[name=sleeve-ao]');
   var sleeveBumpMap = document.querySelector('input[name=sleeve-bump]');
   var sleeveColorMap = document.querySelector('input[name=sleeve-color]');
@@ -182,45 +182,63 @@ vv.on('ready', function() {
     reader.readAsDataURL(file);
   }
 
-  vinylAoMap.onchange = function(e) {
+  vinylAoMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.aoMap(img);
+      vv.vinyl.aoMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  vinylBumpMap.onchange = function(e) {
+  vinylBumpMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.bumpMap(img);
+      vv.vinyl.bumpMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  vinylColorMap.onchange = function(e) {
+  vinylColorMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.colorMap(img);
+      vv.vinyl.colorMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  labelAoMap.onchange = function(e) {
+  labelAoMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.labelAoMap(img);
+      vv.vinyl.labelAoMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  labelBumpMap.onchange = function(e) {
+  labelBumpMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.labelBumpMap(img);
+      vv.vinyl.labelBumpMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  labelColorMap.onchange = function(e) {
+  labelColorMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.labelColorMap(img);
+      vv.vinyl.labelColorMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
   

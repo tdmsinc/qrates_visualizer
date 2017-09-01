@@ -950,15 +950,15 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylColorFormatChanged = function(value) {
+  World.prototype.onVinylColorFormatChanged = function (value) {
     console.log('World.onVinylColorFormatChanged:', value);
 
-    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(value)) {
-      console.warn('World.onVinylColorFormatChanged: unknown value "' + value + '" for vinyl color format');
+    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(value.format)) {
+      console.warn('World.onVinylColorFormatChanged: unknown value "' + value.format + '" for vinyl color format');
       return;
     }
 
-    this._vinyl.setColorFormat(value.index, value.colorFormat);
+    this._vinyl.setColorFormat(value.index, value.format);
   };
 
   //--------------------------------------------------------------
@@ -1042,42 +1042,42 @@
   World.prototype.onVinylAoMapChanged = function(value) {
     console.log('World::onVinylAoMapChanged');
 
-    this._vinyl.setTexture({ aoMap: value });
+    this._vinyl.setTexture(value.index, { aoMap: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onVinylBumpMapChanged = function(value) {
     console.log('World::onVinylBumpMapChanged', value);
 
-    this._vinyl.setTexture({ bumpMap: value });
+    this._vinyl.setTexture(value.index, { bumpMap: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onVinylColorMapChanged = function(value) {
     console.log('World::onVinylColorMapChanged', value);
 
-    this._vinyl.setTexture({ map: value });
+    this._vinyl.setTexture(value.index, { map: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelAoMapChanged = function(value) {
     console.log('World::onVinylAoMapChanged');
 
-    this._vinyl.setLabelTexture({ aoMap: value });
+    this._vinyl.setLabelTexture(value.index, { aoMap: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelBumpMapChanged = function(value) {
     console.log('World::onVinylBumpMapChanged', value);
 
-    this._vinyl.setLabelTexture({ bumpMap: value });
+    this._vinyl.setLabelTexture(value.index, { bumpMap: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelColorMapChanged = function(value) {
     console.log('World::onLabelColorMapChanged', value);
 
-    this._vinyl.setLabelTexture({ map: value });
+    this._vinyl.setLabelTexture(value.index, { map: value.image });
   };
 
   //--------------------------------------------------------------
