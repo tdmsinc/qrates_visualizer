@@ -418,6 +418,12 @@
     this._currentObject.first.scene = this._models[this._size][this._currentObject.first.format].scene.clone();
     this._currentObject.first.assetName = this._models[this._size][this._currentObject.first.format].assetName;
 
+    this._currentObject.first.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = child.material.clone();
+      }
+    });
+
     this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.first.scene);
     console.log('current vinyl', this._currentObject);
     this._container.add(this._currentObject.first.scene);
@@ -575,7 +581,11 @@
     self._currentObject[index].scene.traverse(function (child) {
       if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
         Object.keys(textures).forEach(function (key) {
-          self.updateTexture(child.material[key], textures[key]);
+          if (!child.material[key]) {
+            child.material[key] = new THREE.Texture();
+          }
+          child.material[key].image = textures[key];
+          child.material[key].needsUpdate = true;
         });
       }
     });
@@ -993,6 +1003,12 @@ console.log(index, labelType, this._currentObject[index].format);
     
     this._currentObject.second.scene = this._models[this._size][this._currentObject.first.format].scene.clone();
     this._currentObject.second.assetName = this._currentObject.first.assetName;
+
+    this._currentObject.second.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = child.material.clone();
+      }
+    });
 
     if (exports.world.Sleeve.Format.DOUBLE === this._sleeveFormat) {
       var pos1 = this._currentObject.first.scene.position;
