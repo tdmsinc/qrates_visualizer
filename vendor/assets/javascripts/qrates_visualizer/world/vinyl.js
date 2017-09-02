@@ -318,8 +318,7 @@
           'label': {
             'ao': assets['assetsTextureVinylHeavyWithLabelAoForLabel-10'],
             'bump': assets['assetsTextureVinylHeavyWithLabelBumpmapForLabel-10'],
-            'color': assets['assetsTextureVinylHeavyWithLabelColorForLabel-10'],
-            'color-ao': assets['assetsTextureVinylHeavyWithLabelColorAoForLabel-10']
+            'color': assets['assetsTextureVinylHeavyWithLabelColorForLabel-10']
           }
         }
       },
@@ -339,8 +338,7 @@
           'label': {
             'ao': assets['assetsTextureVinylWithLabelAoForLabel-12'],
             'bump': assets['assetsTextureVinylWithLabelBumpmapForLabel-12'],
-            'color': assets['assetsTextureVinylWithLabelColorForLabel-12'],
-            'color-ao': assets['assetsTextureVinylWithLabelColorAoForLabel-12']
+            'color': assets['assetsTextureVinylWithLabelColorForLabel-12']
           }
         },
         'heavy': {
@@ -358,8 +356,7 @@
           'label': {
             'ao': assets['assetsTextureVinylHeavyWithLabelAoForLabel-12'],
             'bump': assets['assetsTextureVinylHeavyWithLabelBumpmapForLabel-12'],
-            'color': assets['assetsTextureVinylHeavyWithLabelColorForLabel-12'],
-            'color-ao': assets['assetsTextureVinylHeavyWithLabelColorAoForLabel-12']
+            'color': assets['assetsTextureVinylHeavyWithLabelColorForLabel-12']
           }
         }
       },
@@ -512,10 +509,10 @@
           child.material.shininess = self._material.shininess;
 
           if (textures) {
-            // child.material.alphaMap = textures[Vinyl.Map.ALPHA] || null;
-            // if (child.material.alphaMap) {
-            //   child.material.alphaMap.needsUpdate = true;
-            // }
+            child.material.alphaMap = textures[Vinyl.Map.ALPHA] || null;
+            if (child.material.alphaMap) {
+              child.material.alphaMap.needsUpdate = true;
+            }
 
             child.material.aoMap = textures[Vinyl.Map.AO] || null;
             if (child.material.aoMap) {
