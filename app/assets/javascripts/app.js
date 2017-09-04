@@ -10,9 +10,7 @@ var defaults = {
     size: qvv.VinylVisualizer.VinylSize.SIZE_12,
     weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
     label: qvv.VinylVisualizer.VinylLabel.COLOR_PRINT,
-    color: 0,
-    colorFormat: qvv.VinylVisualizer.VinylColorFormat.BLACK,
-    splatterColor: 0,
+    colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
     speed: 45
   },
   sleeve: {
@@ -94,14 +92,56 @@ vv.on('ready', function() {
     vv.view(value, {duration:0});
   });
 
-  vm.$watch('vinyl.type', function(value) { vv.vinyl.type(value); });
+  vm.$watch('vinyl.colorFormat1', function(value) {
+    vv.vinyl.colorFormat({
+      index: qvv.VinylVisualizer.VinylIndex.FIRST,
+      format: value
+    });
+  });
+  vm.$watch('vinyl.colorFormat2', function(value) {
+    vv.vinyl.colorFormat({
+      index: qvv.VinylVisualizer.VinylIndex.SECOND,
+      format: value
+    });
+  });
   vm.$watch('vinyl.size', function(value) { vv.vinyl.size(value); });
-  vm.$watch('vinyl.color', function(value) { vv.vinyl.color(value); });
-  vm.$watch('vinyl.splatter', function(value) { vv.vinyl.splatter(value); });
+  vm.$watch('vinyl.colors', function(value) {
+    vv.vinyl.color({
+      index: qvv.VinylVisualizer.VinylIndex.FIRST,
+      color: value
+    });
+
+    vv.vinyl.color({
+      index: qvv.VinylVisualizer.VinylIndex.SECOND,
+      color: value
+    });
+  });
   vm.$watch('vinyl.holeSize', function(value) { vv.vinyl.holeSize(value); });
-  vm.$watch('vinyl.heavy', function(value) { vv.vinyl.heavy(value); });
+  vm.$watch('vinyl.heavy1', function(value) {
+    vv.vinyl.heavy({
+      index: qvv.VinylVisualizer.VinylIndex.FIRST,
+      heavy: value
+    });
+  });
+  vm.$watch('vinyl.heavy2', function(value) {
+    vv.vinyl.heavy({
+      index: qvv.VinylVisualizer.VinylIndex.SECOND,
+      heavy: value
+    });
+  });
+  vm.$watch('vinyl.labelType1', function(value) { 
+    vv.vinyl.labelType({
+      index: qvv.VinylVisualizer.VinylIndex.FIRST,
+      label: value
+    });
+  });
+  vm.$watch('vinyl.labelType2', function(value) {
+    vv.vinyl.labelType({
+      index: qvv.VinylVisualizer.VinylIndex.SECOND,
+      label: value
+    });
+  });
   vm.$watch('vinyl.speed', function(value) { vv.vinyl.speed(value); });
-  vm.$watch('vinyl.labelType', function(value) { vv.vinyl.labelType(value); });
   vm.$watch('sleeve.type', function(value) { vv.sleeve.type(value); });
   vm.$watch('sleeve.colorFormat', function(value) { vv.sleeve.colorFormat(value); });
   vm.$watch('sleeve.hole', function(value) { vv.sleeve.hole(value); });
@@ -111,12 +151,12 @@ vv.on('ready', function() {
   // file watcher
   //
 
-  var vinylAoMap = document.querySelector('input[name=vinyl-ao]');
-  var vinylBumpMap = document.querySelector('input[name=vinyl-bump]');
-  var vinylColorMap = document.querySelector('input[name=vinyl-color]');
-  var labelAoMap = document.querySelector('input[name=label-ao]');
-  var labelBumpMap = document.querySelector('input[name=label-bump]');
-  var labelColorMap = document.querySelector('input[name=label-color]');
+  var vinylAoMap1 = document.querySelector('input[name=vinyl-ao1]');
+  var vinylBumpMap1 = document.querySelector('input[name=vinyl-bump1]');
+  var vinylColorMap1 = document.querySelector('input[name=vinyl-color1]');
+  var labelAoMap1 = document.querySelector('input[name=label-ao1]');
+  var labelBumpMap1 = document.querySelector('input[name=label-bump1]');
+  var labelColorMap1 = document.querySelector('input[name=label-color1]');
   var sleeveAoMap = document.querySelector('input[name=sleeve-ao]');
   var sleeveBumpMap = document.querySelector('input[name=sleeve-bump]');
   var sleeveColorMap = document.querySelector('input[name=sleeve-color]');
@@ -142,45 +182,63 @@ vv.on('ready', function() {
     reader.readAsDataURL(file);
   }
 
-  vinylAoMap.onchange = function(e) {
+  vinylAoMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.aoMap(img);
+      vv.vinyl.aoMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  vinylBumpMap.onchange = function(e) {
+  vinylBumpMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.bumpMap(img);
+      vv.vinyl.bumpMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  vinylColorMap.onchange = function(e) {
+  vinylColorMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.colorMap(img);
+      vv.vinyl.colorMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  labelAoMap.onchange = function(e) {
+  labelAoMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.labelAoMap(img);
+      vv.vinyl.labelAoMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  labelBumpMap.onchange = function(e) {
+  labelBumpMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.labelBumpMap(img);
+      vv.vinyl.labelBumpMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
 
-  labelColorMap.onchange = function(e) {
+  labelColorMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyl.labelColorMap(img);
+      vv.vinyl.labelColorMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
     });
   };
   
@@ -210,14 +268,17 @@ vv.on('ready', function() {
 // observers. (for internal use)
 //
 
-vv.vinyl.on('type', function(value) {
-  console.log('change vinyl.type', value);
+vv.vinyl.on('colorFormat', function(value) {
+  console.log('change vinyl.colorFormat', value);
+});
+vv.vinyl.on('color', function(value) {
+  console.log('change vinyl.color', value);
 });
 vv.vinyl.on('size', function(value) {
   console.log('change vinyl.size', value);
 });
-vv.vinyl.on('labelType', function(value) {
-  console.log('change vinyl.labelType', value);
+vv.vinyl.on('labelType1', function(value) {
+  console.log('change vinyl.labelType 1', value);
 });
 vv.sleeve.on('finish', function(value) {
   console.log('change sleeve.finish', value);

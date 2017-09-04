@@ -94,9 +94,9 @@ img src="" id="tableBanner"
   data-assets-texture-sleeve-double-color-12=asset_path('qrates_visualizer/sleeves/sleeve_12_double/5mm_sleeve_Color.jpg')
 
 
-  data-assets-texture-sleeve-double-holed-ao-7=asset_path('qrates_visualizer/sleeves/sleeve_7_double_holed/10inch_5mm_sleeve_hole_Amibient_Occlusion.jpg')
-  data-assets-texture-sleeve-double-holed-bumpmap-7=asset_path('qrates_visualizer/sleeves/sleeve_7_double_holed/10inch_5mm_sleeve_hole_Bump.png')
-  data-assets-texture-sleeve-double-holed-color-7=asset_path('qrates_visualizer/sleeves/sleeve_7_double_holed/10inch_5mm_sleeve_hole_Color.jpg')
+  data-assets-texture-sleeve-double-holed-ao-7=asset_path('qrates_visualizer/sleeves/sleeve_7_double_holed/7inch_5mm_sleeve_hole_Amibient_Occlusion.jpg')
+  data-assets-texture-sleeve-double-holed-bumpmap-7=asset_path('qrates_visualizer/sleeves/sleeve_7_double_holed/7inch_5mm_sleeve_hole_Bump.png')
+  data-assets-texture-sleeve-double-holed-color-7=asset_path('qrates_visualizer/sleeves/sleeve_7_double_holed/7inch_5mm_sleeve_hole_Color.jpg')
 
   data-assets-texture-sleeve-double-holed-ao-10=asset_path('qrates_visualizer/sleeves/sleeve_10_double_holed/10inch_5mm_sleeve_hole_Amibient_Occlusion.jpg')
   data-assets-texture-sleeve-double-holed-bumpmap-10=asset_path('qrates_visualizer/sleeves/sleeve_10_double_holed/10inch_5mm_sleeve_hole_Bump.png')
@@ -227,18 +227,17 @@ img src="" id="tableBanner"
   data-assets-texture-vinyl-with-label-bumpmap-10=asset_path('qrates_visualizer/vinyls/vinyl_10_with_labels/10inch_VINYL_normal_Bump.png')
   data-assets-texture-vinyl-with-label-color-10=asset_path('qrates_visualizer/vinyls/vinyl_10_with_labels/10inch_VINYL_normal_Color.jpg')
 
-  data-assets-texture-vinyl-with-label-ao-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_with_labels/12inch_LABEL_normal_AB_Amibient_Occlusion.jpg')
-  data-assets-texture-vinyl-with-label-bumpmap-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_with_labels/12inch_LABEL_normal_AB_Bump.jpg')
-  data-assets-texture-vinyl-with-label-color-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_with_labels/12inch_LABEL_normal_AB_Color.jpg')
+  data-assets-texture-vinyl-with-label-ao-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_with_labels/10inch_LABEL_normal_AB_Amibient_Occlusion.jpg')
+  data-assets-texture-vinyl-with-label-bumpmap-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_with_labels/10inch_LABEL_normal_AB_Bump.jpg')
+  data-assets-texture-vinyl-with-label-color-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_with_labels/10inch_LABEL_normal_AB_Color.jpg')
 
   data-assets-texture-vinyl-heavy-with-label-ao-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/10inch_VINYL_heavy_Amibient_Occlusion.jpg')
   data-assets-texture-vinyl-heavy-with-label-bumpmap-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/10inch_VINYL_heavy_Bump.png')
   data-assets-texture-vinyl-heavy-with-label-color-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/10inch_VINYL_heavy_Color.jpg')
 
-  data-assets-texture-vinyl-heavy-with-label-ao-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/12inch_LABEL_heavy_AB_Amibient_Occlusion.jpg')
-  data-assets-texture-vinyl-heavy-with-label-bumpmap-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/12inch_LABEL_heavy_AB_Bump.jpg')
-  data-assets-texture-vinyl-heavy-with-label-color-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/12inch_LABEL_heavy_AB_Color.jpg')
-  data-assets-texture-vinyl-heavy-with-label-color-ao-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/12inch_LABEL_heavy_AB_Color_and_AO.jpg')
+  data-assets-texture-vinyl-heavy-with-label-ao-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/10inch_LABEL_heavy_AB_Amibient_Occlusion.jpg')
+  data-assets-texture-vinyl-heavy-with-label-bumpmap-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/10inch_LABEL_heavy_AB_Bump.jpg')
+  data-assets-texture-vinyl-heavy-with-label-color-for-label-10=asset_path('qrates_visualizer/vinyls/vinyl_10_heavy_with_labels/10inch_LABEL_heavy_AB_Color.jpg')
 
 
   data-assets-texture-vinyl-alpha-12=asset_path('qrates_visualizer/vinyls/vinyl_12/12inch_VINYL_normal_picture_Alpha.jpg')
@@ -326,16 +325,20 @@ form.show
       option value="12" 12″
 
   p
-    label Type: 
-    select number="" v-model="vinyl.type"
-      option value="black" 1. Black
-      option value="color" 2. Color
-      option value="special" 3. Special
-      option value="picture" 4. Picture
+    label Color Format 1: 
+    select number="" v-model="vinyl.colorFormat1"
+      option value="color" Color
+      option value="texture" Texture
+
+  p
+    label Color Format 2: 
+    select number="" v-model="vinyl.colorFormat2"
+      option value="color" Color
+      option value="texture" Texture
 
   p
     label Color: 
-    select number="" v-model="vinyl.color"
+    select number="" v-model="vinyl.colors"
       option value="0" black
       option value="1" #1 white
       option value="2" #2 yellow
@@ -372,26 +375,20 @@ form.show
       option value="33" P19 SILVER
       option value="34" P20 MUSTARD
 
-  p
-    label Splatter color: 
-    select number="" v-model="vinyl.splatterColor"
-      option value="0" black
-      option value="1" white
-      option value="2" yellow
-      option value="3" red
-      option value="4" orange
-      option value="5" blue
-      option value="6" brown
-      option value="7" green
-      option value="8" gray
-      option value="9" transparent green
-      option value="10" transparent yellow
-      option value="11" transparent red
-      option value="12" transparent violet
-      option value="13" transparent blue
-      option value="14" transparent
+  p: label: input type="checkbox" v-model="vinyl.heavy1" Heavy (First Vinyl)
+  p: label: input type="checkbox" v-model="vinyl.heavy2" Heavy (Second Vinyl)
 
-  p: label: input type="checkbox" v-model="vinyl.heavy" Heavy
+  p
+    label Label 1: 
+    select number="" v-model="vinyl.labelType1"
+      option value="none" None
+      option value="texture" Texture
+
+  p
+    label Label 2: 
+    select number="" v-model="vinyl.labelType2"
+      option value="none" None
+      option value="texture" Texture
 
   p
     label RPM: 
@@ -400,47 +397,56 @@ form.show
       option value="45" 45rpm
 
   p
-    label AO Map
-    input type="file" name="vinyl-ao"
+    label AO Map 1
+    input type="file" name="vinyl-ao1"
 
   p
-    label Bump Map
-    input type="file" name="vinyl-bump"
+    label Bump Map 1
+    input type="file" name="vinyl-bump1"
 
   p
-    label Color Map (Picture)
-    input type="file" name="vinyl-color"
+    label Color Map 1 (Picture)
+    input type="file" name="vinyl-color1"
+
+  p
+    label AO Map 2
+    input type="file" name="vinyl-ao2"
+
+  p
+    label Bump Map 2
+    input type="file" name="vinyl-bump2"
+
+  p
+    label Color Map 2 (Picture)
+    input type="file" name="vinyl-color2"
 
   h1 Label options
 
-  p
-    label Type 
-    select number="" v-model="label.type"
-      option value="none" None
-      option value="blank" Blank
-      option value="mono print" Mono Print
-      option value="color print" Color Print
+  p 
+    label AO Map 1
+    input type="file" name="label-ao1"
 
   p 
-    label AO Map
-    input type="file" name="label-ao"
+    label Bump Map 1
+    input type="file" name="label-bump1"
 
   p 
-    label Bump Map
-    input type="file" name="label-bump"
+    label Color Map 1
+    input type="file" name="label-color1"
 
   p 
-    label Color Map
-    input type="file" name="label-color"
+    label AO Map 2
+    input type="file" name="label-ao2"
+
+  p 
+    label Bump Map 2
+    input type="file" name="label-bump2"
+
+  p 
+    label Color Map 2
+    input type="file" name="label-color2"
 
   h1 Sleeve options
-
-  p
-    label Color: 
-    select number="" v-model="sleeve.colorFormat"
-      option value="white" Whtie
-      option value="black" Black
-      option value="print" Print
 
   p
     label Type: 

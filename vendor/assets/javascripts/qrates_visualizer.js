@@ -64,6 +64,9 @@
   // vinyl の label -----------------------
   VinylVisualizer.VinylLabel = Vinyl.Label;
 
+  // vinyl の index -----------------------
+  VinylVisualizer.VinylIndex = Vinyl.Index;
+
   // sleeve のサイズ -----------------------
   VinylVisualizer.SleeveSize = Sleeve.Size;
 
@@ -326,11 +329,11 @@
    * @api public
    */
 
-  VinylVisualizer.prototype.vinylVisibility = function(value, opts, callback) {
+  VinylVisualizer.prototype.vinylVisibility = function(index, value, opts, callback) {
     if (!this.world) return this;
     opts = opts || {};
     callback = callback || noop;
-    this.world.setVinylVisibility(value, opts, callback);
+    this.world.setVinylVisibility(index, value, opts, callback);
     return this;
   };
 

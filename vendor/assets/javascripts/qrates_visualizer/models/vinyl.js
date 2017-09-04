@@ -32,7 +32,7 @@
    */
 
   var properties = [
-    'type',
+    'colorFormat',
     'size',
     'color',
     'splatterColor',

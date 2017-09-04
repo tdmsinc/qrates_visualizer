@@ -30,6 +30,14 @@
 
   //--------------------------------------------------------------
   function World(parent, assets, opts) {
+
+    if (window.Stats) {
+      this._stats = new window.Stats();
+      this._stats.domElement.setAttribute('class', 'stats');
+      document.body.appendChild(this._stats.domElement);
+      
+    }
+
     this._parent = parent;
     this._assets = assets;
     this._opts = opts || {
@@ -224,7 +232,8 @@
       render: true,
       rotate: false,
       'sleeve visibility': true,
-      'vinyl visibility': true,
+      'vinyl 1 visibility': true,
+      'vinyl 2 visibility': true,
       out: false,
       zoom: 1.0,
       'covered ratio 1': 1.0,
@@ -288,7 +297,8 @@
     var sleeveFrontRotationController = gui.add(props, 'sleeve front rot', 0, 90);
     var sleeveBackRotationController = gui.add(props, 'sleeve back rot', 0, 90);
     var sleeveVisibilityController = gui.add(props, 'sleeve visibility');
-    var vinylVisibilityController = gui.add(props, 'vinyl visibility');
+    var firstVinylVisibilityController = gui.add(props, 'vinyl 1 visibility');
+    var secondVinylVisibilityController = gui.add(props, 'vinyl 2 visibility');
     var captureController = gui.add(temp, 'capture');
     var zoomController = gui.add(props, 'zoom', 0, 400);
     var objXController = gui.add(objPosProps, 'posX', -1000.0, 1000.0);
@@ -349,8 +359,13 @@
       });
     });
 
-    vinylVisibilityController.onChange(function(value) {
-      self.setVinylVisibility(value, null, function() {
+    firstVinylVisibilityController.onChange(function(value) {
+      self.setVinylVisibility(Vinyl.Index.FIRST, value, null, function() {
+      });
+    });
+
+    secondVinylVisibilityController.onChange(function(value) {
+      self.setVinylVisibility(Vinyl.Index.SECOND, value, null, function() {
       });
     });
 
@@ -491,8 +506,8 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.setVinylVisibility = function(yn, opts, callback) {
-    this._vinyl.setVisibility(yn);
+  World.prototype.setVinylVisibility = function(index, yn, opts, callback) {
+    this._vinyl.setVisibility(index, yn);
   };
 
   //--------------------------------------------------------------
@@ -860,6 +875,11 @@
 
   //--------------------------------------------------------------
   World.prototype.draw = function() {
+
+    if (this._stats) {
+      this._stats.begin();
+    }
+
     if (!this._isRendering) {
       return;
     }
@@ -868,6 +888,10 @@
 
     this._renderer.clear();
     this._renderer.render(this._scene, this._camera);
+
+    if (this._stats) {
+      this._stats.end();
+    }
 
     this._request = requestAnimationFrame(this.draw.bind(this));
   };
@@ -891,12 +915,13 @@
   World.prototype.delegateEvents = function() {
     var parent = this._parent;
 
-    parent.vinyl.on('type', this.onVinylTypeChanged.bind(this));
+    parent.vinyl.on('colorFormat', this.onVinylColorFormatChanged.bind(this));
     parent.vinyl.on('size', this.onVinylSizeChanged.bind(this));
     parent.vinyl.on('color', this.onVinylColorChanged.bind(this));
     parent.vinyl.on('splatterColor', this.onVinylSplatterColorChanged.bind(this));
     parent.vinyl.on('holeSize', this.onVinylHoleSizeChanged.bind(this));
     parent.vinyl.on('heavy', this.onVinylHeavyChanged.bind(this));
+    parent.vinyl.on('labelType', this.onLabelTypeChanged.bind(this));
     parent.vinyl.on('speed', this.onVinylSpeedChanged.bind(this));
     parent.vinyl.on('aoMap', this.onVinylAoMapChanged.bind(this));
     parent.vinyl.on('bumpMap', this.onVinylBumpMapChanged.bind(this));
@@ -925,15 +950,15 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylTypeChanged = function(value) {
-    console.log('World.onVinylTypeChanged:', value);
+  World.prototype.onVinylColorFormatChanged = function (value) {
+    console.log('World.onVinylColorFormatChanged:', value);
 
-    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(value)) {
-      console.warn('World.onVinylTypeChanged: unknown value "' + value + '" for vinyl color format');
+    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(value.format)) {
+      console.warn('World.onVinylColorFormatChanged: unknown value "' + value.format + '" for vinyl color format');
       return;
     }
 
-    this._vinyl.setColorFormat(value);
+    this._vinyl.setColorFormat(value.index, value.format);
   };
 
   //--------------------------------------------------------------
@@ -978,14 +1003,14 @@
   World.prototype.onVinylColorChanged = function(value) {
     console.log('World::onVinylColorChanged', value);
 
-    this._vinyl.setColor(Object.keys(Vinyl.Color)[value]);
+    this._vinyl.setColor(value.index, Object.keys(Vinyl.Color)[value.color]);
   };
 
   //--------------------------------------------------------------
   World.prototype.onVinylSplatterColorChanged = function(value) {
     console.log('World::onVinylSplatterColorChanged', value);
 
-    this._vinyl.setColor(Object.keys(Vinyl.Color)[value]);
+    this._vinyl.setColor(value.index, Object.keys(Vinyl.Color)[value.color]);
   };
 
   //--------------------------------------------------------------
@@ -997,7 +1022,13 @@
   //--------------------------------------------------------------
   World.prototype.onVinylHeavyChanged = function(value) {
     console.log('World::onVinylHeavyChanged', value);
-    this._vinyl.setWeight(value ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
+    this._vinyl.setWeight(value.index, value.heavy ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onLabelTypeChanged = function(value) {
+    console.log('World::onLabelTypeChanged', value);
+    this._vinyl.setLabelType(value.index, value.label);
   };
 
   //--------------------------------------------------------------
@@ -1011,49 +1042,42 @@
   World.prototype.onVinylAoMapChanged = function(value) {
     console.log('World::onVinylAoMapChanged');
 
-    this._vinyl.setTexture({ aoMap: value });
+    this._vinyl.setTexture(value.index, { aoMap: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onVinylBumpMapChanged = function(value) {
     console.log('World::onVinylBumpMapChanged', value);
 
-    this._vinyl.setTexture({ bumpMap: value });
+    this._vinyl.setTexture(value.index, { bumpMap: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onVinylColorMapChanged = function(value) {
     console.log('World::onVinylColorMapChanged', value);
 
-    this._vinyl.setTexture({ map: value });
+    this._vinyl.setTexture(value.index, { map: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelAoMapChanged = function(value) {
     console.log('World::onVinylAoMapChanged');
 
-    this._vinyl.setLabelTexture({ aoMap: value });
+    this._vinyl.setLabelTexture(value.index, { aoMap: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelBumpMapChanged = function(value) {
     console.log('World::onVinylBumpMapChanged', value);
 
-    this._vinyl.setLabelTexture({ bumpMap: value });
+    this._vinyl.setLabelTexture(value.index, { bumpMap: value.image });
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelColorMapChanged = function(value) {
     console.log('World::onLabelColorMapChanged', value);
 
-    this._vinyl.setLabelTexture({ map: value });
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onLabelTypeChanged = function(value) {
-    console.log('World::onLabelTypeChanged', value);
-
-    this._vinyl.setLabelType(value);
+    this._vinyl.setLabelTexture(value.index, { map: value.image });
   };
 
   //--------------------------------------------------------------
