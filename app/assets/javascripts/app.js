@@ -151,9 +151,14 @@ vv.on('ready', function() {
   // file watcher
   //
 
+  var vinylAlphaMap1 = document.querySelector('input[name=vinyl-alpha1]');
   var vinylAoMap1 = document.querySelector('input[name=vinyl-ao1]');
   var vinylBumpMap1 = document.querySelector('input[name=vinyl-bump1]');
   var vinylColorMap1 = document.querySelector('input[name=vinyl-color1]');
+  var vinylAlphaMap2 = document.querySelector('input[name=vinyl-alpha2]');
+  var vinylAoMap2 = document.querySelector('input[name=vinyl-ao2]');
+  var vinylBumpMap2 = document.querySelector('input[name=vinyl-bump2]');
+  var vinylColorMap2 = document.querySelector('input[name=vinyl-color2]');
   var labelAoMap1 = document.querySelector('input[name=label-ao1]');
   var labelBumpMap1 = document.querySelector('input[name=label-bump1]');
   var labelColorMap1 = document.querySelector('input[name=label-color1]');
@@ -182,6 +187,16 @@ vv.on('ready', function() {
     reader.readAsDataURL(file);
   }
 
+  vinylAlphaMap1.onchange = function(e) {
+    load(e.target.files.item(0), function(err, img) {
+      if (err) return console.error(err);
+      vv.vinyl.alphaMap({
+        index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
+    });
+  };
+
   vinylAoMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
@@ -207,6 +222,46 @@ vv.on('ready', function() {
       if (err) return console.error(err);
       vv.vinyl.colorMap({
         index: qvv.VinylVisualizer.VinylIndex.FIRST,
+        image: img
+      });
+    });
+  };
+
+  vinylAlphaMap2.onchange = function(e) {
+    load(e.target.files.item(0), function(err, img) {
+      if (err) return console.error(err);
+      vv.vinyl.alphaMap({
+        index: qvv.VinylVisualizer.VinylIndex.SECOND,
+        image: img
+      });
+    });
+  };
+
+  vinylAoMap2.onchange = function(e) {
+    load(e.target.files.item(0), function(err, img) {
+      if (err) return console.error(err);
+      vv.vinyl.aoMap({
+        index: qvv.VinylVisualizer.VinylIndex.SECOND,
+        image: img
+      });
+    });
+  };
+
+  vinylBumpMap2.onchange = function(e) {
+    load(e.target.files.item(0), function(err, img) {
+      if (err) return console.error(err);
+      vv.vinyl.bumpMap({
+        index: qvv.VinylVisualizer.VinylIndex.SECOND,
+        image: img
+      });
+    });
+  };
+
+  vinylColorMap2.onchange = function(e) {
+    load(e.target.files.item(0), function(err, img) {
+      if (err) return console.error(err);
+      vv.vinyl.colorMap({
+        index: qvv.VinylVisualizer.VinylIndex.SECOND,
         image: img
       });
     });

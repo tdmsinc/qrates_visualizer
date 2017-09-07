@@ -923,6 +923,7 @@
     parent.vinyl.on('heavy', this.onVinylHeavyChanged.bind(this));
     parent.vinyl.on('labelType', this.onLabelTypeChanged.bind(this));
     parent.vinyl.on('speed', this.onVinylSpeedChanged.bind(this));
+    parent.vinyl.on('alphaMap', this.onVinylAlphaMapChanged.bind(this));
     parent.vinyl.on('aoMap', this.onVinylAoMapChanged.bind(this));
     parent.vinyl.on('bumpMap', this.onVinylBumpMapChanged.bind(this));
     parent.vinyl.on('colorMap', this.onVinylColorMapChanged.bind(this));
@@ -1036,6 +1037,13 @@
     console.log('World::onVinylSpeedChanged', value);
 
     this._vinyl.setRPM(value);
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onVinylAlphaMapChanged = function(value) {
+    console.log('World::onVinylAlphaMapChanged');
+
+    this._vinyl.setTexture(value.index, { alphaMap: value.image });
   };
 
   //--------------------------------------------------------------

@@ -360,7 +360,6 @@
           }
         }
       },
-      // envMap: cubeTexture
     };
 
     var self = this;
@@ -453,6 +452,7 @@
         child.material.specular = new THREE.Color(0x363636);
         child.material.transparent = true;
         child.material.shading = THREE.SmoothShading;
+        child.material.side = THREE.FrontSide;
         child.material.envMap = self._envMapTexture;
 
         if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {          
@@ -463,6 +463,11 @@
             child.material.shininess = self._material.shininess;
 
             if (textures) {
+              child.material.alphaMap = textures[Vinyl.Part.VINYL][Vinyl.Map.ALPHA] || null;
+              if (child.material.alphaMap) {
+                child.material.alphaMap.needsUpdate = true;
+              }
+
               child.material.aoMap = textures[Vinyl.Part.VINYL][Vinyl.Map.AO] || null;
               if (child.material.aoMap) {
                 child.material.aoMap.needsUpdate = true;
@@ -578,11 +583,10 @@
     self._currentObject[index].scene.traverse(function (child) {
       if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
         Object.keys(textures).forEach(function (key) {
-          if (!child.material[key]) {
-            child.material[key] = new THREE.Texture();
-          }
-          child.material[key].image = textures[key];
-          child.material[key].needsUpdate = true;
+          child.material.alphaTest = 0.5;
+          child.material[key] = new THREE.Texture();
+          self.updateTexture(child.material[key], textures[key]);
+          child.material.needsUpdate = true;
         });
       }
     });
@@ -644,6 +648,7 @@
     self._currentObject[index].scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material = child.material.clone();
+
         if (-1 < child.parent.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
           if (Vinyl.Part.VINYL === child.name) {
             child.material.bumpScale = self._bumpScale;
@@ -774,35 +779,10 @@
 
     var self = this;
 
-    // Object.keys(self._models).forEach(function (size) {
-    //   Object.keys(self._models[size]).forEach(function (type) {
-
-    //     if (self._models[size][type]) {
-    //       self.initMaterial(self._models[size][type]);
-    //     }
-    //   });
-    // });
-
     this.updateCurrentObjectMaterial(index);
 
     this._currentObject[index].opacity = 0;
     this.setOpacity(index, this._currentObject[index].material.opacity);
-
-    self._currentObject[Vinyl.Index.FIRST].scene.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        if (Vinyl.Part.VINYL === child.name) {
-          console.log('child.material', child.material);
-        }
-      }
-    });
-
-    self._currentObject[Vinyl.Index.SECOND].scene.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        if (Vinyl.Part.VINYL === child.name) {
-          console.log('child.material', child.material);
-        }
-      }
-    });
   };
 
   //--------------------------------------------------------------
@@ -859,7 +839,7 @@
 
     this._currentObject[index].label = labelType;
     this._currentObject[index].format = this.updateFormat(this._currentObject[index].weight, this._currentObject[index].label);
-console.log(index, labelType, this._currentObject[index].format);
+
     this.updateCurrentObjectMaterial(index);
   };
 

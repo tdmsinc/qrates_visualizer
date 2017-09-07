@@ -39,6 +39,7 @@
     'holeSize',
     'heavy',
     'speed',
+    'alphaMap',
     'aoMap',
     'bumpMap',
     'colorMap',
