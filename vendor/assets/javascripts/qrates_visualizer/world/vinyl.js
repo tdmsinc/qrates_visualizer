@@ -1007,18 +1007,20 @@ console.log(index, labelType, this._currentObject[index].format);
       }
     });
 
+    var offsetY = 0.6;
+
     if (exports.world.Sleeve.Format.DOUBLE === this._sleeveFormat) {
       var pos1 = this._currentObject.first.scene.position;
-      this._currentObject.first.scene.position.set(pos1.x, 1, pos1.z);
+      this._currentObject.first.scene.position.set(pos1.x, offsetY, pos1.z);
 
       var pos2 = this._currentObject.second.scene.position;
-      this._currentObject.second.scene.position.set(pos2.x, -1, pos2.z);
+      this._currentObject.second.scene.position.set(pos2.x, -offsetY, pos2.z);
     } else if (exports.world.Sleeve.Format.GATEFOLD === this._sleeveFormat) {
       var pos1 = this._currentObject.first.scene.position;
-      this._currentObject.first.scene.position.set(pos1.x, 1, pos1.z);
+      this._currentObject.first.scene.position.set(pos1.x, offsetY, pos1.z);
 
       var pos2 = this._currentObject.second.scene.position;
-      this._currentObject.second.scene.position.set(pos2.x, -1, pos2.z);
+      this._currentObject.second.scene.position.set(pos2.x, -offsetY, pos2.z);
     }
 
     this._container.add(this._currentObject.second.scene);
