@@ -1095,19 +1095,13 @@
   //--------------------------------------------------------------
   Vinyl.prototype.setRotationZ = function (degree) {
 
-    console.log('Vinyl.setRotationZ: angle ', degree);
-
     var rad = degree * (Math.PI / 180);
 
-    console.log('x', this._currentObject[Vinyl.Index.FIRST].scene.position.x, 'bounds.x', this._boundingBox.max.x);
     var rotation = this._currentObject[Vinyl.Index.FIRST].scene.rotation;
     var offsetX = this._boundingBox.max.x + this._currentObject[Vinyl.Index.FIRST].offsetX;
     this._currentObject[Vinyl.Index.FIRST].scene.translateX(-offsetX);
     this._currentObject[Vinyl.Index.FIRST].scene.rotation.set(rotation.x, rotation.y, rad);
     this._currentObject[Vinyl.Index.FIRST].scene.translateX(offsetX);
-
-    // var rot = this._currentObject.first.rotation;
-    // this._currentObject.first.rotation.set(rot.x, rot.y, rad);
   };
 
   //--------------------------------------------------------------

@@ -859,7 +859,16 @@
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('front')) {
           var rotation = child.rotation;
-          child.rotation.set(rotation.x, rotation.y, rad);
+          // child.rotation.set(rotation.x, rotation.y, rad);
+
+          new TWEEN.Tween(child.rotation.clone())
+            .stop()
+            .to({ z: rad }, 500)
+            .easing(TWEEN.Easing.Quartic.Out)
+            .onUpdate(function () {
+              child.rotation.set(this.x, this.y, this.z);
+            })
+            .start();
         } else if (-1 < child.name.toLowerCase().indexOf('back')) {
           var rotation = child.rotation;
           child.rotation.set(rotation.x, rotation.y, -rad);
@@ -871,9 +880,6 @@
     this._currentObject.scene.translateX(-offsetX);
     this._currentObject.scene.rotation.set(0, 0, rad);
     this._currentObject.scene.translateX(offsetX);
-
-    // var pos = this._currentObject.scene.position;
-    // this._currentObject.scene.position.set(0, pos.y, pos.z);
   };
 
   //--------------------------------------------------------------
