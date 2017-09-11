@@ -512,8 +512,16 @@
 
   //--------------------------------------------------------------
   World.prototype.setSleeveRotation = function (degree) {
+
+    var sleeveFormat = this._sleeve.getFormat();
+
+    if (Sleeve.Format.GATEFOLD !== sleeveFormat) {
+      console.warn('World.setSleeveRotation: changing rotation is not aveilable for "' + sleeveFormat + '"');
+      return;
+    }
+
     this._sleeve.setGatefoldRotation(degree);
-    this._vinyl.setRotationZ(degree);
+    this._vinyl.setRotationZ(degree * 2);
   };
   
   //--------------------------------------------------------------

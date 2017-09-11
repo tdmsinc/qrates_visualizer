@@ -420,7 +420,12 @@
       }
     });
 
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.first.scene);
+    if (Vinyl.Weight.HEAVY === this._weight) {
+      this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.HEAVY].scene);
+    } else {
+      this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.NORMAL].scene);
+    }
+    
     console.log('current vinyl', this._currentObject);
     this._container.add(this._currentObject.first.scene);
   };
@@ -679,8 +684,6 @@
     self._container.add(self._currentObject[index].scene);
     self._currentObject[index].scene.position.set(pos.x, pos.y, pos.z);
 
-    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject[index].scene);
-
     self._currentObject[index].scene.opacity = 0;
     self.setOpacity(index, self._currentObject[index].material.opacity);
   }
@@ -924,10 +927,20 @@
     this._currentObject[index].format = this.updateFormat(this._currentObject[index].weight, this._currentObject[index].label);
 
     this.updateCurrentObjectMaterial(index);
+
+    if (Vinyl.Index.FIRST !== index) {
+      return;
+    }
+
+    if (Vinyl.Weight.HEAVY === weight) {
+      this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.HEAVY].scene);
+    } else {
+      this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.NORMAL].scene);
+    }
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setHeavy = function(yn) {
+  Vinyl.prototype.setHeavy = function (yn) {
     
     if (this._heavy === yn) {
       console.warn('heavy オプションはすでに有効です');
@@ -1082,7 +1095,11 @@
 
     var rad = degree * (Math.PI / 180);
 
-    this._rotation.z = rad;
+    var rotation = this._currentObject[Vinyl.Index.FIRST].scene.rotation;
+    var offsetX = this._boundingBox.max.x + 0.5;
+    this._currentObject[Vinyl.Index.FIRST].scene.translateX(-offsetX);
+    this._currentObject[Vinyl.Index.FIRST].scene.rotation.set(rotation.x, rotation.y, rad);
+    this._currentObject[Vinyl.Index.FIRST].scene.translateX(offsetX);
 
     // var rot = this._currentObject.first.rotation;
     // this._currentObject.first.rotation.set(rot.x, rot.y, rad);
