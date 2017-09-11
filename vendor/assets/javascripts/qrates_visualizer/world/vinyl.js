@@ -150,7 +150,8 @@
         label: this._label,
         material: this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE,
         opacity: 1,
-        weight: this._weight
+        weight: this._weight,
+        offsetX: 0
       },
       second: {
         assetName: '',
@@ -160,7 +161,8 @@
         label: this._label,
         material: this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE,
         opacity: 1,
-        weight: this._weight
+        weight: this._weight,
+        offsetX: 0
       }
     }
 
@@ -1074,10 +1076,12 @@
       .delay(delay)
       .to({ x: ratio * offset }, duration)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function() {
+      .onUpdate(function(value) {
+        self._currentObject[index].offsetX = this.x;
         if (updateCallback) updateCallback();
       })
-      .onComplete(function() {
+      .onComplete(function(value) {
+        self._currentObject[index].offsetX = this.x;
         if (completeCallback) completeCallback();
       })
       .onStop(function() {
@@ -1095,8 +1099,9 @@
 
     var rad = degree * (Math.PI / 180);
 
+    console.log('x', this._currentObject[Vinyl.Index.FIRST].scene.position.x, 'bounds.x', this._boundingBox.max.x);
     var rotation = this._currentObject[Vinyl.Index.FIRST].scene.rotation;
-    var offsetX = this._boundingBox.max.x + 0.5;
+    var offsetX = this._boundingBox.max.x + this._currentObject[Vinyl.Index.FIRST].offsetX;
     this._currentObject[Vinyl.Index.FIRST].scene.translateX(-offsetX);
     this._currentObject[Vinyl.Index.FIRST].scene.rotation.set(rotation.x, rotation.y, rad);
     this._currentObject[Vinyl.Index.FIRST].scene.translateX(offsetX);

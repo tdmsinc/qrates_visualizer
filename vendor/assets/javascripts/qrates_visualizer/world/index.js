@@ -1102,6 +1102,9 @@
 
     this._sleeve.setFormat(value);
 
+    this._vinyl.setCoveredRatio(Vinyl.Index.FIRST, 0);
+    this._vinyl.setCoveredRatio(Vinyl.Index.SECOND, 0);
+
     if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
       this._vinyl.enableDoubleVinyl(value);
     } else {
