@@ -858,9 +858,6 @@
     this._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('front')) {
-          var rotation = child.rotation;
-          // child.rotation.set(rotation.x, rotation.y, rad);
-
           new TWEEN.Tween(child.rotation.clone())
             .stop()
             .to({ z: rad }, 500)
