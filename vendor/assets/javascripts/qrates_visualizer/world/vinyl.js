@@ -1095,13 +1095,20 @@
       return;
     }
 
-    var amount = this._enableRotate ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
-    this._rotation.y -= amount;
+    if (this._enableRotate) {
+      var amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
+      var self = this;
 
-    this._currentObject[Vinyl.Index.FIRST].scene.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
-    
-    if (this._currentObject[Vinyl.Index.SECOND].scene) {
-      this._currentObject[Vinyl.Index.SECOND].scene.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
+      Object.values(Vinyl.Index).forEach(function (index) {
+        if (Vinyl.Index.SECOND === index && !self._currentObject[Vinyl.Index.SECOND].scene) {
+          return;
+        }
+
+        var rotation = self._currentObject[index].scene.rotation;
+
+        rotation.y -= amount;
+        self._currentObject[index].scene.rotation.set(rotation.x, rotation.y, rotation.z);
+      });
     }
   };
 

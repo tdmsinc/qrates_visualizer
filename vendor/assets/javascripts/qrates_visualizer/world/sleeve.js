@@ -867,13 +867,13 @@
       }
     });
 
-    var offsetX = this._boundingBox.max.x - 0.5;
+    var offsetX = this._boundingBox.max.x + 0.5;
     this._currentObject.scene.translateX(-offsetX);
     this._currentObject.scene.rotation.set(0, 0, rad);
     this._currentObject.scene.translateX(offsetX);
 
-    var pos = this._currentObject.scene.position;
-    this._currentObject.scene.position.set(0, pos.y, pos.z);
+    // var pos = this._currentObject.scene.position;
+    // this._currentObject.scene.position.set(0, pos.y, pos.z);
   };
 
   //--------------------------------------------------------------
