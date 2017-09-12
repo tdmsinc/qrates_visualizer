@@ -420,6 +420,9 @@
     this._container.add(this._currentObject.scene);
     console.log('this._currentObject.scene', this._currentObject.scene);
 
+    this._coveredRatio = 0;
+    this.setCoveredRatio(this._coveredRatio, { duration: 0 });
+
     this._opacity = 0;
     this.setOpacity(1);
   };

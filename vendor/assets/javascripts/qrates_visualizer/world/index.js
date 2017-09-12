@@ -872,8 +872,6 @@
       this._vinyl.update();
     }
 
-    TWEEN.update();
-
     this._controls.update();
 
     this._lights.position.copy(this._camera.position);
@@ -882,7 +880,7 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.draw = function() {
+  World.prototype.draw = function(time) {
 
     if (this._stats) {
       this._stats.begin();
@@ -902,6 +900,8 @@
     }
 
     this._request = requestAnimationFrame(this.draw.bind(this));
+
+    TWEEN.update(time);
   };
 
   //--------------------------------------------------------------

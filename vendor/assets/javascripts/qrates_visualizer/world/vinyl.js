@@ -1097,11 +1097,23 @@
 
     var rad = degree * (Math.PI / 180);
 
-    var rotation = this._currentObject[Vinyl.Index.FIRST].scene.rotation;
     var offsetX = this._boundingBox.max.x + this._currentObject[Vinyl.Index.FIRST].offsetX;
-    this._currentObject[Vinyl.Index.FIRST].scene.translateX(-offsetX);
-    this._currentObject[Vinyl.Index.FIRST].scene.rotation.set(rotation.x, rotation.y, rad);
-    this._currentObject[Vinyl.Index.FIRST].scene.translateX(offsetX);
+    var self = this;
+
+    new TWEEN.Tween(this._currentObject[Vinyl.Index.FIRST].scene.rotation.clone())
+      .stop()
+      .to({ z: rad }, 500)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function () {
+        self._currentObject[Vinyl.Index.FIRST].scene.translateX(-offsetX);
+        self._currentObject[Vinyl.Index.FIRST].scene.rotation.set(this.x, this.y, this.z);
+        self._currentObject[Vinyl.Index.FIRST].scene.translateX(offsetX);
+      })
+      .start();
+    
+    // this._currentObject[Vinyl.Index.FIRST].scene.translateX(-offsetX);
+    // this._currentObject[Vinyl.Index.FIRST].scene.rotation.set(rotation.x, rotation.y, rad);
+    // this._currentObject[Vinyl.Index.FIRST].scene.translateX(offsetX);
   };
 
   //--------------------------------------------------------------
