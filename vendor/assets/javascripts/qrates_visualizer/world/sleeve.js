@@ -404,6 +404,7 @@
 
 
     // currentObject = ステージに配置されるオブジェクト
+    console.log('size', this._size, 'format', this._format, 'hole', this._hole);
     this._currentObject = this._models[this._size][this._format][this._hole];
     this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.scene);
 

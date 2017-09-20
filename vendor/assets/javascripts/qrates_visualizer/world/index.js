@@ -4,7 +4,7 @@
 //= require_tree .
 //= require_self
 
-(function(global, exports) {
+(function (global, exports) {
   var gui, axes;
 
   /**
@@ -12,8 +12,8 @@
    */
 
   var Emitter = exports.Emitter;
-  var Vinyl   = exports.world.Vinyl;
-  var Sleeve  = exports.world.Sleeve;
+  var Vinyl = exports.world.Vinyl;
+  var Sleeve = exports.world.Sleeve;
 
   /**
    * Expose `World`.
@@ -35,7 +35,7 @@
       this._stats = new window.Stats();
       this._stats.domElement.setAttribute('class', 'stats');
       document.body.appendChild(this._stats.domElement);
-      
+
     }
 
     this._parent = parent;
@@ -47,7 +47,7 @@
       }
     };
     this._objectScales = {
-      '7' : 1,
+      '7': 1,
       '10': 0.6890566038,
       '12': 0.5833865815
     };
@@ -90,18 +90,28 @@
     this._flip = false;
 
     // copy sizes
-    opts.defaults.sleeve.size = opts.defaults.vinyl.size;
+    opts.defaults.sleeve.size = opts.defaults.vinyl[0].size;
 
+    // sleeve と vinyl がぶら下がるコンテナ
     this._object = new THREE.Object3D();
     this._object.name = 'container';
 
+    // sleeve
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._object);
 
-    this._vinyl = new Vinyl();
-    this._vinyl.setup(this._scene, assets, opts.defaults.vinyl, this._object);
+    // vinyl
+    this._vinyls = [];
 
-    var scale = this._objectScales[this._vinyl._size];
+    for (var i in opts.defaults.vinyl) {
+      opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
+
+      this._vinyls.push(new Vinyl());
+      this._vinyls[i].setup(this._scene, assets, opts.defaults.vinyl[i], this._object);
+    }
+
+    // scale を設定
+    var scale = this._objectScales[this._vinyls[0]._size];
     this._object.scale.set(scale, scale, scale);
 
     this._flipRotation = 0;
@@ -118,13 +128,12 @@
     this.initGui();
 
     if (opts.defaults.hasOwnProperty('view')) {
-      this.updateView(opts.defaults.view, {duration:0});
+      this.updateView(opts.defaults.view, { duration: 0 });
     }
 
     var sleeveFormat = this._sleeve.getFormat();
-    if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
-      this._vinyl.enableDoubleVinyl(sleeveFormat);
 
+    if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
       this.cover(0.5, {
         delay: 3000,
         duration: 2000,
@@ -150,12 +159,12 @@
    */
 
   //--------------------------------------------------------------
-  World.prototype.getRenderer = function() {
+  World.prototype.getRenderer = function () {
     return this._renderer;
   };
 
   //--------------------------------------------------------------
-  World.prototype.createLights = function() {
+  World.prototype.createLights = function () {
     var lights = new THREE.Object3D();
     lights.name = 'lights';
 
@@ -198,10 +207,10 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.registerPresets = function() {
+  World.prototype.registerPresets = function () {
     // TODO: register preset parameters
 
-    this.registerPreset(1, function() {
+    this.registerPreset(1, function () {
       return {
         camera: null,
         lights: null,
@@ -209,7 +218,7 @@
       };
     });
 
-    this.registerPreset(2, function() {
+    this.registerPreset(2, function () {
       return {
         camera: null,
         lights: null,
@@ -219,7 +228,7 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.initGui = function() {
+  World.prototype.initGui = function () {
     if (!window.dat) {
       console.warn('dat.GUI is not loaded');
       this._sleeve.setCoveredRatio(0.8, { duration: 1 });
@@ -237,7 +246,7 @@
       out: false,
       zoom: 1.0,
       'covered ratio 1': 1.0,
-      'covered ratio 2' : 0.5,
+      'covered ratio 2': 0.5,
       'sleeve rot': 60,
       'sleeve front rot': 0,
       'sleeve back rot': 0,
@@ -249,11 +258,11 @@
     };
 
     var cameraProps = {
-      x:0.0, y: 17.0, z: 30.0,
+      x: 0.0, y: 17.0, z: 30.0,
     };
 
     var objPosProps = {
-      posX:0.0, posY: 0.0, posZ: 0.0,
+      posX: 0.0, posY: 0.0, posZ: 0.0,
     };
 
     var self = this;
@@ -261,25 +270,25 @@
     var camera = this._camera;
 
     var temp = {
-      capture: function() {
+      capture: function () {
         self.capture();
       },
-      'zoom in': function() {
+      'zoom in': function () {
         self.zoomIn(1);
       },
-      'zoom out': function() {
+      'zoom out': function () {
         self.zoomOut(1);
       },
-      'rotate horizontal': function() {
+      'rotate horizontal': function () {
         self.rotateHorizontal(30);
       },
-      'rotate vertical': function() {
+      'rotate vertical': function () {
         self.rotateVertical(30);
       },
-      'reset': function() {
+      'reset': function () {
         self.resetCamera();
       },
-      'toggle camera': function() {
+      'toggle camera': function () {
         if (self._camera.getType() === self._camera.TYPE_PERSPECTIVE) {
           self.setOrthographic();
         } else {
@@ -321,7 +330,7 @@
     gui.add(temp, 'reset');
     gui.add(temp, 'toggle camera');
 
-    renderController.onChange(function(value) {
+    renderController.onChange(function (value) {
       if (value) {
         self.startRender();
       } else {
@@ -329,16 +338,19 @@
       }
     });
 
-    rotationController.onChange(function(value) {
+    rotationController.onChange(function (value) {
       self.enableRotate = value;
-      self._vinyl.setEnableRotate(value);
+      
+      self._vinyls.forEach(function (vinyl) {
+        vinyl.setEnableRotate(value);
+      });
     });
 
-    coveredRatioController.onChange(function(value) {
+    coveredRatioController.onChange(function (value) {
       self.cover(value, { duration: 2000, index: Vinyl.Index.FIRST });
     });
 
-    secondCoveredRatioController.onChange(function(value) {
+    secondCoveredRatioController.onChange(function (value) {
       self.cover(value, { duration: 2000, index: Vinyl.Index.SECOND });
     });
 
@@ -354,49 +366,49 @@
       self.setSleeveBackRotation(value);
     });
 
-    sleeveVisibilityController.onChange(function(value) {
-      self.setSleeveVisibility(value, null, function() {
+    sleeveVisibilityController.onChange(function (value) {
+      self.setSleeveVisibility(value, null, function () {
       });
     });
 
-    firstVinylVisibilityController.onChange(function(value) {
-      self.setVinylVisibility(Vinyl.Index.FIRST, value, null, function() {
+    firstVinylVisibilityController.onChange(function (value) {
+      self.setVinylVisibility(Vinyl.Index.FIRST, value, null, function () {
       });
     });
 
-    secondVinylVisibilityController.onChange(function(value) {
-      self.setVinylVisibility(Vinyl.Index.SECOND, value, null, function() {
+    secondVinylVisibilityController.onChange(function (value) {
+      self.setVinylVisibility(Vinyl.Index.SECOND, value, null, function () {
       });
     });
 
-    zoomController.onChange(function(value) {
+    zoomController.onChange(function (value) {
       self.zoom(value);
     });
 
-    objXController.onChange(function(value) {
+    objXController.onChange(function (value) {
       self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
       self._controls.update();
     });
-    objYController.onChange(function(value) {
+    objYController.onChange(function (value) {
       self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
       self._controls.update();
     });
-    objZController.onChange(function(value) {
+    objZController.onChange(function (value) {
       self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
       self._controls.update();
     });
 
-    cameraXController.onChange(function(value) {
-      self.setCameraPosition( cameraProps.x, cameraProps.y, cameraProps.z, {duration:0});
+    cameraXController.onChange(function (value) {
+      self.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
     });
-    cameraYController.onChange(function(value) {
-      self.setCameraPosition( cameraProps.x, cameraProps.y, cameraProps.z, {duration:0});
+    cameraYController.onChange(function (value) {
+      self.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
     });
-    cameraZController.onChange(function(value) {
-      self.setCameraPosition( cameraProps.x, cameraProps.y, cameraProps.z, {duration:0});
+    cameraZController.onChange(function (value) {
+      self.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
     });
 
-    sleeveBumpScaleController.onChange(function(value) {
+    sleeveBumpScaleController.onChange(function (value) {
       if (!self._vinyl) {
         return;
       }
@@ -404,7 +416,7 @@
       self._sleeve.setBumpScale(value);
     });
 
-    vinylBumpScaleController.onChange(function(value) {
+    vinylBumpScaleController.onChange(function (value) {
       if (!self._vinyl) {
         return;
       }
@@ -422,7 +434,7 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.setCameraPosition = function(tx, ty, tz, opts, callback) {
+  World.prototype.setCameraPosition = function (tx, ty, tz, opts, callback) {
     if (!callback) {
       callback = null;
     }
@@ -442,18 +454,18 @@
     new TWEEN.Tween(this._camera.position)
       .to({ x: tx, y: ty, z: tz }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function() {
+      .onUpdate(function () {
         self._camera.lookAt(new THREE.Vector3(0, 0, 0));
         // self._vinyl.setBumpScale(Math.max(Math.abs(self._camera.position.z) / 4000, self._vinyl.getBumpScale()));
       })
-      .onComplete(function() {
+      .onComplete(function () {
         if (callback) callback();
       })
       .start();
   };
 
   //--------------------------------------------------------------
-  World.prototype.setCameraRotation = function(tx, ty, tz, opts, callback) {
+  World.prototype.setCameraRotation = function (tx, ty, tz, opts, callback) {
     if (!callback) {
       callback = null;
     }
@@ -473,7 +485,7 @@
     new TWEEN.Tween(this._camera.rotation)
       .to({ x: tx, y: ty, z: tz }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onComplete(function() {
+      .onComplete(function () {
         console.log(self._camera);
         console.log(self._controls);
         if (callback) callback();
@@ -482,7 +494,7 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.resetCamera = function() {
+  World.prototype.resetCamera = function () {
     this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
     this._camera.position.set(212, 288, 251);
     this._camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -494,20 +506,20 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.setPerspective = function() {
+  World.prototype.setPerspective = function () {
     this._camera.toPerspective();
     this._camera.setZoom(1);
   };
 
   //--------------------------------------------------------------
-  World.prototype.setOrthographic = function() {
+  World.prototype.setOrthographic = function () {
     this._camera.toOrthographic();
     this._camera.setZoom(this._orthographicZoom);
   };
 
   //--------------------------------------------------------------
-  World.prototype.setVinylVisibility = function(index, yn, opts, callback) {
-    this._vinyl.setVisibility(index, yn);
+  World.prototype.setVinylVisibility = function (index, yn, opts, callback) {
+    this._vinyls[0].setVisibility(index, yn);
   };
 
   //--------------------------------------------------------------
@@ -521,9 +533,9 @@
     }
 
     this._sleeve.setGatefoldRotation(degree);
-    this._vinyl.setRotationZ(degree * 2);
+    this._vinyls[0].setRotationZ(degree * 2);
   };
-  
+
   //--------------------------------------------------------------
   World.prototype.setSleeveFrontRotation = function (degree) {
     this._sleeve.setGatefoldFrontRotation(degree);
@@ -535,12 +547,12 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.setSleeveVisibility = function(yn, opts, callback) {
+  World.prototype.setSleeveVisibility = function (yn, opts, callback) {
     this._sleeve.setVisibility(yn);
   };
 
   //--------------------------------------------------------------
-  World.prototype.flip = function(value) {
+  World.prototype.flip = function (value) {
     console.log('World::flip', value);
 
     this._flip = !this._flip;
@@ -551,14 +563,14 @@
       .stop()
       .to({ _flipRotation: this._flip ? -Math.PI : 0 })
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function() {
+      .onUpdate(function () {
         self._object.rotation.z = self._flipRotation;
       })
       .start();
   };
 
   //--------------------------------------------------------------
-  World.prototype.rotateHorizontal = function(degrees) {
+  World.prototype.rotateHorizontal = function (degrees) {
     console.log('World::rotateHorizontal', degrees);
 
     // this._controls.rotateLeft(degrees * (Math.PI / 180));
@@ -567,7 +579,7 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.rotateVertical = function(degrees) {
+  World.prototype.rotateVertical = function (degrees) {
     console.log('World::rotateVertical', degrees);
 
     // this._controls.rotateUp(degrees * (Math.PI / 180));
@@ -576,21 +588,30 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.cover = function(value, opts) {
+  World.prototype.cover = function (value, opts) {
     var self = this;
 
     var sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
       this._sleeve.setCoveredRatio(0, opts);
-      this._vinyl.setCoveredRatio(opts.index || Vinyl.Index.FIRST, value);
+
+      var index;
+
+      if (Vinyl.Index.SECOND === opts.index) {
+        index = 1;
+      } else {
+        index = 0;
+      }
+
+      this._vinyls[index].setCoveredRatio(value);
     } else {
       this._sleeve.setCoveredRatio(value, opts);
     }
   };
 
   //--------------------------------------------------------------
-  World.prototype.zoomIn = function(step) {
+  World.prototype.zoomIn = function (step) {
     if (this._camera.type === this._camera.TYPE_PERSPECTIVE) {
       this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
       this._controls._zoomEnd.copy(this._controls.getMouseOnScreen(0, -20 * (step || 1)));
@@ -602,7 +623,7 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.zoomOut = function(step) {
+  World.prototype.zoomOut = function (step) {
     if (this._camera.type === this._camera.TYPE_PERSPECTIVE) {
       this._controls._zoomStart.copy(this._controls.getMouseOnScreen(0, 0));
       this._controls._zoomEnd.copy(this._controls.getMouseOnScreen(0, 20 * (step || 1)));
@@ -614,18 +635,18 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.capture = function(callback) {
+  World.prototype.capture = function (callback) {
     console.log('World::capture');
     var image = new Image();
     image.src = this._renderer.domElement.toDataURL('image/png');
-    image.onload = function() {
+    image.onload = function () {
       if (callback) callback(null, this);
     };
   };
 
   //--------------------------------------------------------------
-  World.prototype.resize = function(width, height) {
-    console.log('World::resize');
+  World.prototype.resize = function (width, height) {
+
     this.stopRender();
 
     this._width = width;
@@ -646,22 +667,27 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.play = function() {
-    console.log('World::play');
+  World.prototype.play = function () {
+
     this._enableRotate = true;
-    this._vinyl.setEnableRotate(true);
+
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.setEnableRotate(true);
+    });
   };
 
   //--------------------------------------------------------------
-  World.prototype.pause = function() {
-    console.log('World::pause');
+  World.prototype.pause = function () {
+
     this._enableRotate = false;
-    this._vinyl.setEnableRotate(false);
+    
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.setEnableRotate(false);
+    });
   };
 
   //--------------------------------------------------------------
-  World.prototype.updateView = function(type, opts, callback) {
-    console.log('World::updateView', type);
+  World.prototype.updateView = function (type, opts, callback) {
 
     opts = opts || {
       duration: 2000
@@ -675,95 +701,95 @@
     switch (Number(type)) {
       case 0:  // for capture rendered image
         var rate = 0.9;
-        this.setCameraPosition( 212 * rate, 288 * rate, 251 * rate, opts, callback);
+        this.setCameraPosition(212 * rate, 288 * rate, 251 * rate, opts, callback);
         this._flip = true;
         this.flip();
         this.cover(0.5, { duration: opts.duration });
         this._controls.reset();
         break;
       case 1:
-        this.setCameraPosition(  62,  94, 105, opts, callback); // item detail rotation 1
+        this.setCameraPosition(62, 94, 105, opts, callback); // item detail rotation 1
         this._flip = true;
         this.flip();
         this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 2:
-        this.setCameraPosition( 0.01, 365, 10, opts, callback); // item detail rotation 2
+        this.setCameraPosition(0.01, 365, 10, opts, callback); // item detail rotation 2
         this._flip = true;
         this.flip();
         this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 3:
-        this.setCameraPosition( 0.01, 365, 50, opts, callback); // item detail rotation 3
+        this.setCameraPosition(0.01, 365, 50, opts, callback); // item detail rotation 3
         this._flip = false;
         this.flip();
         this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 4:
-        this.setCameraPosition( 0.01, 345, 400, opts, callback); // item detail rotation 4
+        this.setCameraPosition(0.01, 345, 400, opts, callback); // item detail rotation 4
         this._flip = false;
         this.flip();
         this.cover(0.0, { duration: opts.duration });
         this._controls.reset();
         break;
       case 5:
-        this.setCameraPosition( 0.01, 345, 400, opts, callback); // item detail rotation 5
+        this.setCameraPosition(0.01, 345, 400, opts, callback); // item detail rotation 5
         this._flip = true;
         this.flip();
         this.cover(0.0, { duration: opts.duration });
         this._controls.reset();
         break;
       case 6:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 6
+        this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation 6
         this._controls.reset();
         break;
       case 7:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 7
+        this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation 7
         this._controls.reset();
         break;
       case 8:
-        this.setCameraPosition( 212, 288, 251, opts, callback); // item detail rotation 8
+        this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation 8
         this._controls.reset();
         break;
       case 9:
-        this.setCameraPosition( 148, 201, 175, opts, callback); // item detail rotation 9
+        this.setCameraPosition(148, 201, 175, opts, callback); // item detail rotation 9
         this._flip = true;
         this.flip();
         this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 10:
-        this.setCameraPosition(   0, 436,   1, opts, callback); // vinyl Side A
+        this.setCameraPosition(0, 436, 1, opts, callback); // vinyl Side A
         this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 11:
-        this.setCameraPosition(   0, 170,   1, opts, callback); // label Side A
+        this.setCameraPosition(0, 170, 1, opts, callback); // label Side A
         this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 12:
-        this.setCameraPosition(   0,-170,  -1, opts, callback); // label Side B
+        this.setCameraPosition(0, -170, -1, opts, callback); // label Side B
         this.cover(0.8, { duration: opts.duration });
         this._controls.reset();
         break;
       case 13:
-        this.setCameraPosition(   0, 400,   1, opts, callback); // sleeve Front
+        this.setCameraPosition(0, 400, 1, opts, callback); // sleeve Front
         this.cover(0.0, { duration: opts.duration });
         this._controls.reset();
         break;
       case 14:
-        this.setCameraPosition(   0,-400,  -1, opts, callback); // sleeve Back
+        this.setCameraPosition(0, -400, -1, opts, callback); // sleeve Back
         this.cover(0.0, { duration: opts.duration });
         this._controls.reset();
         break;
       case 21:
         this.setPerspective();
         this.setSleeveVisibility(true);
-        this.setCameraPosition( 190 * 0.8, 259 * 0.8, 226 * 0.8, {duration:opts.duration});
+        this.setCameraPosition(190 * 0.8, 259 * 0.8, 226 * 0.8, { duration: opts.duration });
         this.cover(0.5, { duration: opts.duration });
         this._controls.target = new THREE.Vector3(-30, 0, 24);
         this._controls.update();
@@ -771,7 +797,7 @@
       case 22:
         this.setPerspective();
         this.setSleeveVisibility(true);
-        this.setCameraPosition( -250, 260, 260, {duration:opts.duration});
+        this.setCameraPosition(-250, 260, 260, { duration: opts.duration });
         this.cover(0.8, { duration: opts.duration });
         this._controls.target = new THREE.Vector3(-30, -210, -140);
         this._controls.update();
@@ -811,7 +837,7 @@
       case 27:
         this.setOrthographic();
         this.setSleeveVisibility(false);
-        this.cover(0, { duration: opts.duration});
+        this.cover(0, { duration: opts.duration });
         this._camera.position.set(0, 400, 10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
@@ -820,7 +846,7 @@
       case 28:
         this.setOrthographic();
         this.setSleeveVisibility(false);
-        this.cover(0, { duration: opts.duration});
+        this.cover(0, { duration: opts.duration });
         this._camera.position.set(0, -328, -10);
         this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
@@ -841,18 +867,18 @@
 
   //--------------------------------------------------------------
   World.prototype.startRender =
-  World.prototype.resumeRender = function() {
-    console.log('World::startRender', this._request);
-    if (!this._request) {
-      this._isRendering = true;
-      this._request = requestAnimationFrame(this.draw.bind(this));
-    }
+    World.prototype.resumeRender = function () {
+      console.log('World::startRender', this._request);
+      if (!this._request) {
+        this._isRendering = true;
+        this._request = requestAnimationFrame(this.draw.bind(this));
+      }
 
-    return this;
-  };
+      return this;
+    };
 
   //--------------------------------------------------------------
-  World.prototype.stopRender = function() {
+  World.prototype.stopRender = function () {
     console.log('World::stopRender', this._request);
     if (this._request) {
       this._isRendering = false;
@@ -863,13 +889,13 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.update = function() {
+  World.prototype.update = function () {
     if (this._sleeve) {
       this._sleeve.update();
     }
 
     if (this._vinyl) {
-      this._vinyl.update();
+      this._vinyls[0].update();
     }
 
     this._controls.update();
@@ -880,7 +906,7 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.draw = function(time) {
+  World.prototype.draw = function (time) {
 
     if (this._stats) {
       this._stats.begin();
@@ -911,34 +937,37 @@
    * @return {World}
    */
 
-  World.prototype.registerPreset = function(type, fn) {
+  World.prototype.registerPreset = function (type, fn) {
     if (this._presets[type]) {
       console.warn('Preset %s is already registered. Overwritten.', type);
-    }console.log('registerPreset');
+    } console.log('registerPreset');
     this._presets[type] = fn;
     return this;
   };
 
   //--------------------------------------------------------------
-  World.prototype.delegateEvents = function() {
+  World.prototype.delegateEvents = function () {
+
     var parent = this._parent;
 
-    parent.vinyl.on('colorFormat', this.onVinylColorFormatChanged.bind(this));
-    parent.vinyl.on('size', this.onVinylSizeChanged.bind(this));
-    parent.vinyl.on('color', this.onVinylColorChanged.bind(this));
-    parent.vinyl.on('splatterColor', this.onVinylSplatterColorChanged.bind(this));
-    parent.vinyl.on('holeSize', this.onVinylHoleSizeChanged.bind(this));
-    parent.vinyl.on('heavy', this.onVinylHeavyChanged.bind(this));
-    parent.vinyl.on('labelType', this.onLabelTypeChanged.bind(this));
-    parent.vinyl.on('speed', this.onVinylSpeedChanged.bind(this));
-    parent.vinyl.on('alphaMap', this.onVinylAlphaMapChanged.bind(this));
-    parent.vinyl.on('aoMap', this.onVinylAoMapChanged.bind(this));
-    parent.vinyl.on('bumpMap', this.onVinylBumpMapChanged.bind(this));
-    parent.vinyl.on('colorMap', this.onVinylColorMapChanged.bind(this));
-    parent.vinyl.on('labelType', this.onLabelTypeChanged.bind(this));
-    parent.vinyl.on('labelAoMap', this.onLabelAoMapChanged.bind(this));
-    parent.vinyl.on('labelBumpMap', this.onLabelBumpMapChanged.bind(this));
-    parent.vinyl.on('labelColorMap', this.onLabelColorMapChanged.bind(this));
+    for (var i in parent.vinyls) {
+      parent.vinyls[i].on('colorFormat', this.onVinylColorFormatChanged.bind(this));
+      parent.vinyls[i].on('size', this.onVinylSizeChanged.bind(this));
+      parent.vinyls[i].on('color', this.onVinylColorChanged.bind(this));
+      parent.vinyls[i].on('splatterColor', this.onVinylSplatterColorChanged.bind(this));
+      parent.vinyls[i].on('holeSize', this.onVinylHoleSizeChanged.bind(this));
+      parent.vinyls[i].on('heavy', this.onVinylHeavyChanged.bind(this));
+      parent.vinyls[i].on('labelType', this.onLabelTypeChanged.bind(this));
+      parent.vinyls[i].on('speed', this.onVinylSpeedChanged.bind(this));
+      parent.vinyls[i].on('alphaMap', this.onVinylAlphaMapChanged.bind(this));
+      parent.vinyls[i].on('aoMap', this.onVinylAoMapChanged.bind(this));
+      parent.vinyls[i].on('bumpMap', this.onVinylBumpMapChanged.bind(this));
+      parent.vinyls[i].on('colorMap', this.onVinylColorMapChanged.bind(this));
+      parent.vinyls[i].on('labelType', this.onLabelTypeChanged.bind(this));
+      parent.vinyls[i].on('labelAoMap', this.onLabelAoMapChanged.bind(this));
+      parent.vinyls[i].on('labelBumpMap', this.onLabelBumpMapChanged.bind(this));
+      parent.vinyls[i].on('labelColorMap', this.onLabelColorMapChanged.bind(this));
+    }
 
     parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
     parent.sleeve.on('colorFormat', this.onSleeveColorFormatChanged.bind(this));
@@ -952,7 +981,7 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.undelegateEvents = function() {
+  World.prototype.undelegateEvents = function () {
     var parent = this._parent;
 
     return this;
@@ -967,11 +996,13 @@
       return;
     }
 
-    this._vinyl.setColorFormat(value.index, value.format);
+    console.log('onVinylColorFormatChanged', this);
+
+    this._vinyls[0].setColorFormat(value.format);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylSizeChanged = function(size) {
+  World.prototype.onVinylSizeChanged = function (size) {
     console.log('World::onVinylSizeChanged', size);
 
     // to string
@@ -1005,164 +1036,164 @@
     this._object.scale.set(scale, scale, scale);
 
     this._sleeve.setSize(sleeveSize);
-    this._vinyl.setSize(size);
+    this._vinyls[0].setSize(size);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylColorChanged = function(value) {
+  World.prototype.onVinylColorChanged = function (value) {
     console.log('World::onVinylColorChanged', value);
 
-    this._vinyl.setColor(value.index, Object.keys(Vinyl.Color)[value.color]);
+    this._vinyls[0].setColor(Object.keys(Vinyl.Color)[value.color]);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylSplatterColorChanged = function(value) {
+  World.prototype.onVinylSplatterColorChanged = function (value) {
     console.log('World::onVinylSplatterColorChanged', value);
 
-    this._vinyl.setColor(value.index, Object.keys(Vinyl.Color)[value.color]);
+    this._vinyls[0].setColor(Object.keys(Vinyl.Color)[value.color]);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylHoleSizeChanged = function(value) {
+  World.prototype.onVinylHoleSizeChanged = function (value) {
     console.log('World::onVinylHoleSizeChanged', value);
 
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylHeavyChanged = function(value) {
+  World.prototype.onVinylHeavyChanged = function (value) {
     console.log('World::onVinylHeavyChanged', value);
-    this._vinyl.setWeight(value.index, value.heavy ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
+    this._vinyls[0].setWeight(value.heavy ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onLabelTypeChanged = function(value) {
+  World.prototype.onLabelTypeChanged = function (value) {
     console.log('World::onLabelTypeChanged', value);
-    this._vinyl.setLabelType(value.index, value.label);
+    this._vinyls[0].setLabelType(value.label);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylSpeedChanged = function(value) {
+  World.prototype.onVinylSpeedChanged = function (value) {
     console.log('World::onVinylSpeedChanged', value);
 
-    this._vinyl.setRPM(value);
+    this._vinyls[0].setRPM(value);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylAlphaMapChanged = function(value) {
+  World.prototype.onVinylAlphaMapChanged = function (value) {
     console.log('World::onVinylAlphaMapChanged');
 
-    this._vinyl.setTexture(value.index, { alphaMap: value.image });
+    this._vinyls[0].setTexture({ alphaMap: value.image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylAoMapChanged = function(value) {
+  World.prototype.onVinylAoMapChanged = function (value) {
     console.log('World::onVinylAoMapChanged');
 
-    this._vinyl.setTexture(value.index, { aoMap: value.image });
+    this._vinyls[0].setTexture({ aoMap: value.image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylBumpMapChanged = function(value) {
+  World.prototype.onVinylBumpMapChanged = function (value) {
     console.log('World::onVinylBumpMapChanged', value);
 
-    this._vinyl.setTexture(value.index, { bumpMap: value.image });
+    this._vinyls[0].setTexture({ bumpMap: value.image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylColorMapChanged = function(value) {
+  World.prototype.onVinylColorMapChanged = function (value) {
     console.log('World::onVinylColorMapChanged', value);
 
-    this._vinyl.setTexture(value.index, { map: value.image });
+    this._vinyls[0].setTexture({ map: value.image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onLabelAoMapChanged = function(value) {
+  World.prototype.onLabelAoMapChanged = function (value) {
     console.log('World::onVinylAoMapChanged');
 
-    this._vinyl.setLabelTexture(value.index, { aoMap: value.image });
+    this._vinyls[0].setLabelTexture({ aoMap: value.image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onLabelBumpMapChanged = function(value) {
+  World.prototype.onLabelBumpMapChanged = function (value) {
     console.log('World::onVinylBumpMapChanged', value);
 
-    this._vinyl.setLabelTexture(value.index, { bumpMap: value.image });
+    this._vinyls[0].setLabelTexture({ bumpMap: value.image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onLabelColorMapChanged = function(value) {
+  World.prototype.onLabelColorMapChanged = function (value) {
     console.log('World::onLabelColorMapChanged', value);
 
-    this._vinyl.setLabelTexture(value.index, { map: value.image });
+    this._vinyls[0].setLabelTexture({ map: value.image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onSleeveTypeChanged = function(value) {
+  World.prototype.onSleeveTypeChanged = function (value) {
     console.log('World::onSleeveTypeChanged', value);
 
     this._sleeve.setFormat(value);
 
-    this._vinyl.setCoveredRatio(Vinyl.Index.FIRST, 0);
-    this._vinyl.setCoveredRatio(Vinyl.Index.SECOND, 0);
+    this._vinyls[0].setCoveredRatio(Vinyl.Index.FIRST, 0);
+    this._vinyls[0].setCoveredRatio(Vinyl.Index.SECOND, 0);
 
     if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
-      this._vinyl.enableDoubleVinyl(value);
+      this._vinyls[0].enableDoubleVinyl(value);
     } else {
-      this._vinyl.disableDoubleVinyl();
+      this._vinyls[0].disableDoubleVinyl();
     }
   };
 
   //--------------------------------------------------------------
-  World.prototype.onSleeveColorFormatChanged = function(value) {
+  World.prototype.onSleeveColorFormatChanged = function (value) {
     console.log('World::onSleeveColorFormatChanged', value);
 
     this._sleeve.setColorFormat(value);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onSleeveHoleChanged = function(value) {
+  World.prototype.onSleeveHoleChanged = function (value) {
     console.log('World::onSleeveHoleChanged', value);
 
     this._sleeve.setHole(value ? Sleeve.Hole.HOLED : Sleeve.Hole.NO_HOLE);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onSleeveFinishChanged = function(value) {
+  World.prototype.onSleeveFinishChanged = function (value) {
     console.log(value);
 
     this._sleeve.setFinish(value);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onSleeveColorMapChanged = function(value) {
+  World.prototype.onSleeveColorMapChanged = function (value) {
     console.log('World::onSleeveColorMapChanged');
 
     if (!value) {
       return;
     }
-    
+
     this._sleeve.setColorMap(value);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onSleeveAoMapChanged = function(value) {
+  World.prototype.onSleeveAoMapChanged = function (value) {
     console.log('World::onSleeveAoMapChanged');
 
     if (!value) {
       return;
     }
-    
+
     this._sleeve.setAoMap(value);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onSleeveBumpMapChanged = function(value) {
+  World.prototype.onSleeveBumpMapChanged = function (value) {
     console.log('World::onSleeveBumpMapChanged');
-    
+
     if (!value) {
       return;
     }
-    
+
     this._sleeve.setBumpMap(value);
   };
 })(this, (this.qvv = (this.qvv || {})));

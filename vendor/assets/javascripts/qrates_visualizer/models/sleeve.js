@@ -31,6 +31,7 @@
    */
 
   var properties = [
+    'size',
     'type',
     'colorFormat',
     'hole',

@@ -38,7 +38,13 @@
     this.opts = opts = opts || {};
     var defaults = opts.defaults || {};
     this.el = el;
-    this.vinyl = new Vinyl({ defaults: defaults.vinyl });
+
+    this.vinyls = [];
+
+    for (var i in opts.defaults.vinyl) {
+      this.vinyls.push(new Vinyl({ defaults: defaults.vinyl[i] }));
+    }
+
     this.sleeve = new Sleeve({ defaults: defaults.sleeve });
     this.setup();
   }
