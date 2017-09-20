@@ -484,11 +484,6 @@
       console.error('Sleeve.updateTexture: texture is not instance of THREE.Texture');
       return;
     }
-    
-    if (!(image instanceof Image)) {
-      console.error('Sleeve.updateTexture: image is not instance of Image');
-      return;
-    }
 
     texture.image = image;
     texture.minFilter = THREE.LinearFilter;
@@ -505,11 +500,6 @@
       return;
     }
 
-    if (!(image instanceof Image)) {
-      console.error('Sleeve.updateTexture: image is not instance of Image');
-      return;
-    }
-
     this.updateTexture(this._textures[this._size][this._format][this._hole]['color'], image);
   }
 
@@ -520,11 +510,6 @@
       return;
     }
 
-    if (!(image instanceof Image)) {
-      console.error('Sleeve.setAoMap: image is not instance of Image');
-      return;
-    }
-
     this.updateTexture(this._textures[this._size][this._format][this._hole]['ao'], image);
   }
 
@@ -532,11 +517,6 @@
   Sleeve.prototype.setBumpMap = function(image) {
     
     if (!image) {
-      return;
-    }
-
-    if (!(image instanceof Image)) {
-      console.error('Sleeve.setBumpMap: image is not instance of Image');
       return;
     }
 
@@ -553,11 +533,6 @@
     }
     
     if (!image) {
-      return;
-    }
-
-    if (!(image instanceof Image)) {
-      console.error('Sleeve.setFrontColorMap: image is not instance of Image');
       return;
     }
 
