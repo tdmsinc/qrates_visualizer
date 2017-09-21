@@ -35,17 +35,18 @@
       this._stats = new window.Stats();
       this._stats.domElement.setAttribute('class', 'stats');
       document.body.appendChild(this._stats.domElement);
-
     }
 
     this._parent = parent;
     this._assets = assets;
+
     this._opts = opts || {
       renderer: {
         antialias: true,
         preserveDrawingBuffer: true,
       }
     };
+
     this._objectScales = {
       '7': 1,
       '10': 0.6890566038,
@@ -89,9 +90,6 @@
     this._enableRotate = false;
     this._flip = false;
 
-    // copy sizes
-    opts.defaults.sleeve.size = opts.defaults.vinyl[0].size;
-
     // sleeve と vinyl がぶら下がるコンテナ
     this._object = new THREE.Object3D();
     this._object.name = 'container';
@@ -103,6 +101,14 @@
     // vinyl
     this._vinyls = [];
 
+    // sleeve が single で複数の vinyl オプションが渡された場合は2つ目以降のオプションを削除して single フォーマットを採用する
+    if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format) && 1 < opts.defaults.vinyl.length) {
+      console.warn('World: too many options for vinyl');
+
+      opts.defaults.vinyl.length = 1;
+    }
+
+    // vinyl オプションから vinyl を生成
     for (var i in opts.defaults.vinyl) {
       opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
 
