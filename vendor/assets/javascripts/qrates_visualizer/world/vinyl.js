@@ -699,6 +699,7 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.setSize = function(size) {
+
     if (!size) {
       console.warn('Vinyl.setSize: no size specified');
       return;
@@ -716,6 +717,12 @@
 
     this._size = size;
     this.updateCurrentObjectMaterial();
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.getSize = function () {
+
+    return this._size;
   };
 
   //--------------------------------------------------------------

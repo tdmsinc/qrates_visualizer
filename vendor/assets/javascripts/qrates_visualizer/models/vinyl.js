@@ -37,7 +37,7 @@
     'color',
     'splatterColor',
     'holeSize',
-    'heavy',
+    'weight',
     'speed',
     'alphaMap',
     'aoMap',

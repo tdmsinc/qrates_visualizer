@@ -315,8 +315,16 @@ form.show
   h1 Vinyl options
 
   p
-    label Size: 
-    select number="" v-model="vinyl.size"
+    label Size 1: 
+    select number="" v-model="vinyl.size1"
+      option value="7S" 7 (small hole)″
+      option value="7L" 7 (large hole)″
+      option value="10" 10″
+      option value="12" 12″
+
+  p
+    label Size 2: 
+    select number="" v-model="vinyl.size2"
       option value="7S" 7 (small hole)″
       option value="7L" 7 (large hole)″
       option value="10" 10″

@@ -695,6 +695,12 @@
   };
 
   //--------------------------------------------------------------
+  Sleeve.prototype.getSize = function () {
+
+    return this._size;
+  };
+
+  //--------------------------------------------------------------
   Sleeve.prototype.setOpacity = function(to, duration) {
     var self = this;
 
