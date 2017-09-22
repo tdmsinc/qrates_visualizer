@@ -38,14 +38,6 @@
     HEAVY_WITH_LABEL: 'heavy-with-label'
   };
 
-  Vinyl.Label = {
-    NONE: 'none',
-    BLANK: 'blank',
-    MONO_PRINT: 'mono print',
-    COLOR_PRINT: 'color print',
-    TEXTURE: 'texture'
-  };
-
   Vinyl.Part = {
     VINYL: 'vinyl',
     LABEL: 'label'
@@ -109,7 +101,7 @@
       size: Vinyl.Size.SIZE_7_SMALL_HOLE,
       color: Vinyl.Color.CLASSIC_BLACK,
       speed: 45,
-      label: Vinyl.Label.BLANK
+      isEnableLabel: false
     };
 
     opts.color = opts.color || 0;
