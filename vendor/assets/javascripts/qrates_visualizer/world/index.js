@@ -976,7 +976,6 @@
     }
 
     parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
-    parent.sleeve.on('colorFormat', this.onSleeveColorFormatChanged.bind(this));
     parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
     parent.sleeve.on('finish', this.onSleeveFinishChanged.bind(this));
     parent.sleeve.on('colorMap', this.onSleeveColorMapChanged.bind(this));
@@ -1137,12 +1136,6 @@
     } else {
       this._vinyls[0].disableDoubleVinyl();
     }
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onSleeveColorFormatChanged = function (value) {
-
-    this._sleeve.setColorFormat(value);
   };
 
   //--------------------------------------------------------------

@@ -623,43 +623,6 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setColorFormat = function(format) {
-
-    if (!format) {
-      return;
-    }
-
-    var self = this;
-
-    if (-1 === Object.values(Sleeve.ColorFormat).indexOf(format)) {
-      console.error('Sleeve.setColorFormat: unknown color format "' + format + '"');
-      return;
-    }
-
-    if (self._colorFormat === format) {
-      console.info('Sleeve.setColorFormat: specified color format "' + format + '" is already applied');
-      return;
-    }
-
-    var self = this;
-    self._colorFormat = format;
-
-    if (self._colorFormat === Sleeve.ColorFormat.WHITE || self._colorFormat === Sleeve.ColorFormat.BLACK) {
-      self._finish = Sleeve.Finish.NORMAL;
-      self._shininess = Sleeve.Shininess[Sleeve.Finish.NORMAL];
-    }
-    
-    // TODO: Sleeve.ColorFormat.WHITE || Sleeve.ColorFormat.BLACK の場合に
-    // テクスチャをクリアする
-    self._currentObject.scene.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        child.material.shininess = self._shininess;
-        child.material.needsUpdate = true;
-      }
-    });
-  }
-
-  //--------------------------------------------------------------
   Sleeve.prototype.setSize = function(size) {
     if (!size) {
       console.warn('Sleeve.setSize: no size specified');
@@ -758,7 +721,7 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setFinish = function(finish) {
+  Sleeve.prototype.setFinish = function (finish) {
 
     if (!finish) {
       return;
@@ -773,16 +736,8 @@
       return;
     }
 
-    if (Sleeve.Finish.GLOSS === finish) {
-      if (Sleeve.ColorFormat.WHITE === this._colorFormat || Sleeve.ColorFormat.BLACK === this._colorFormat) {
-        console.error('Sleeve.setFinish: gloss lamination is only valid for print sleeve');
-        return;
-      }
-    }
-
     var self = this;
     self._finish = finish;
-
     self._shininess = Sleeve.Shininess[self._finish];
 
     self._currentObject.scene.traverse(function (child) {
