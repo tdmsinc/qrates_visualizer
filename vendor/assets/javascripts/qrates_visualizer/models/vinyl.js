@@ -43,7 +43,7 @@
     'aoMap',
     'bumpMap',
     'colorMap',
-    'labelType',
+    'label',
     'labelAoMap',
     'labelBumpMap',
     'labelColorMap'

@@ -126,7 +126,7 @@
     this._container = container;
     this._size = opts.size || Vinyl.Size.SIZE_12;
     this._weight = opts.weight || Vinyl.Weight.NORMAL;
-    this._label = opts.label || Vinyl.Label.BLANK;
+    this._isEnableLabel = opts.isEnableLabel || false;
     this._colorFormat = opts.colorFormat || Vinyl.ColorFormat.BLACK;
     this._material = this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE;
     this._format = Vinyl.Format.NORMAL;
@@ -146,7 +146,7 @@
       colorFormat: this._colorFormat,
       scene: null,
       format: '',
-      label: this._label,
+      label: this._isEnableLabel,
       material: this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE,
       opacity: 1,
       weight: this._weight,
@@ -156,7 +156,7 @@
 
     // weight と label の組み合わせで format を決定する
     this._currentObject.format = this.updateFormat(this._currentObject.weight, this._currentObject.label);
-    this._format = this.updateFormat(this._weight, this._label);
+    this._format = this.updateFormat(this._weight, this._isEnableLabel);
 
     // this._currentObject が変更される度に反映する必要があるプロパティ
     this._bumpScale = 0.17;
@@ -592,19 +592,19 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.updateFormat = function(weight, label) {
-
+  Vinyl.prototype.updateFormat = function(weight, isEnableLabel) {
+    console.log(weight, isEnableLabel);
     if (weight === Vinyl.Weight.NORMAL) {
-      if (label === Vinyl.Label.NONE) {
-        return Vinyl.Format.NORMAL;
-      } else {
+      if (isEnableLabel) {
         return Vinyl.Format.WITH_LABEL;
+      } else {
+        return Vinyl.Format.NORMAL;
       }
     } else if (weight === Vinyl.Weight.HEAVY) {
-      if (label === Vinyl.Label.NONE) {
-        return Vinyl.Format.HEAVY;
-      } else {
+      if (isEnableLabel) {
         return Vinyl.Format.HEAVY_WITH_LABEL;
+      } else {
+        return Vinyl.Format.HEAVY;
       }
     }
   }
@@ -630,7 +630,7 @@
       if (child instanceof THREE.Mesh) {
         child.material = child.material.clone();
 
-        if (-1 < child.parent.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
+        if (self._currentObject.format === Vinyl.Format.WITH_LABEL || self._currentObject.format === Vinyl.Format.HEAVY_WITH_LABEL) {
           if (Vinyl.Part.VINYL === child.name) {
             child.material.bumpScale = self._bumpScale;
             child.material.color = self._currentObject.material.color;
@@ -646,7 +646,7 @@
           }
         } else {
           child.material.bumpScale = self._bumpScale;
-          child.material.color = Vinyl.Color.WHITE.color;
+          child.material.color = self._currentObject.material.color;
           child.material.reflectivity = self._currentObject.material.reflectivity;
           child.material.refractionRatio = self._currentObject.material.refractionRatio;
           child.material.shininess = self._currentObject.material.shininess;
@@ -777,16 +777,20 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setLabelType = function (labelType) {
+  Vinyl.prototype.enableLabel = function () {
 
-    if (-1 === Object.values(Vinyl.Label).indexOf(labelType)) {
-      console.error('Vinyl.setLabelType: invalid value "' + labelType + '" for label type');
-      return;
-    }
+    this._currentObject.isEnableLabel = true;
+    this._currentObject.format = this.updateFormat(this._currentObject.weight, this._currentObject.isEnableLabel);
+    
+    this.updateCurrentObjectMaterial();
+  };
 
-    this._currentObject.label = labelType;
-    this._currentObject.format = this.updateFormat(this._currentObject.weight, this._currentObject.label);
-
+  //--------------------------------------------------------------
+  Vinyl.prototype.disableLabel = function () {
+    
+    this._currentObject.isEnableLabel = false;
+    this._currentObject.format = this.updateFormat(this._currentObject.weight, this._currentObject.isEnableLabel);
+    
     this.updateCurrentObjectMaterial();
   };
 

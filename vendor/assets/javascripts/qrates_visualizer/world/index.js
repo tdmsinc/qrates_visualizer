@@ -963,13 +963,12 @@
       parent.vinyls[i].on('splatterColor', this.onVinylSplatterColorChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('holeSize', this.onVinylHoleSizeChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('weight', this.onVinylWeightChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('labelType', this.onLabelTypeChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('speed', this.onVinylSpeedChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('alphaMap', this.onVinylAlphaMapChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('aoMap', this.onVinylAoMapChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('bumpMap', this.onVinylBumpMapChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('colorMap', this.onVinylColorMapChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('labelType', this.onLabelTypeChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('label', this.onLabelOptionChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('labelAoMap', this.onLabelAoMapChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('labelBumpMap', this.onLabelBumpMapChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('labelColorMap', this.onLabelColorMapChanged.bind(this, this._vinyls[i]));
@@ -1070,9 +1069,14 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.onLabelTypeChanged = function (target, value) {
+  World.prototype.onLabelOptionChanged = function (target, value) {
 
-    target.setLabelType(value.label);
+    console.log('onLabelOptionChanged', target, value);
+    if (value === true) {
+      target.enableLabel();
+    } else {
+      target.disableLabel();
+    }
   };
 
   //--------------------------------------------------------------

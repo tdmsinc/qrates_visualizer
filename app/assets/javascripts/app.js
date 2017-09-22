@@ -10,21 +10,21 @@ var defaults = {
     {
       size: qvv.VinylVisualizer.VinylSize.SIZE_12,
       weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
-      label: qvv.VinylVisualizer.VinylLabel.COLOR_PRINT,
+      isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
       speed: 45
     },
     {
       size: qvv.VinylVisualizer.VinylSize.SIZE_12,
       weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
-      label: qvv.VinylVisualizer.VinylLabel.COLOR_PRINT,
+      isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
       speed: 45
     }
   ],
   sleeve: {
     size: qvv.VinylVisualizer.SleeveSize.SIZE_12,
-    format: qvv.VinylVisualizer.SleeveFormat.SINGLE,
+    format: qvv.VinylVisualizer.SleeveFormat.DOUBLE,
     hole: qvv.VinylVisualizer.SleeveHole.HOLED,
     finish: qvv.VinylVisualizer.SleeveFinish.NORMAL
   }
@@ -173,18 +173,12 @@ vv.on('ready', function() {
     });
   });
 
-  vm.$watch('vinyl.labelType1', function(value) { 
-    vv.vinyls[0].labelType({
-      index: qvv.VinylVisualizer.VinylIndex.FIRST,
-      label: value
-    });
+  vm.$watch('vinyl.label1', function(value) { 
+    vv.vinyls[0].label(value);
   });
 
-  vm.$watch('vinyl.labelType2', function(value) {
-    vv.vinyls[1].labelType({
-      index: qvv.VinylVisualizer.VinylIndex.SECOND,
-      label: value
-    });
+  vm.$watch('vinyl.label2', function(value) {
+    vv.vinyls[1].label(value);
   });
 
   vm.$watch('vinyl.speed', function(value) {

@@ -67,9 +67,6 @@
   // vinyl のフォーマット -----------------------
   VinylVisualizer.VinylFormat = Vinyl.Format;
 
-  // vinyl の label -----------------------
-  VinylVisualizer.VinylLabel = Vinyl.Label;
-
   // vinyl の index -----------------------
   VinylVisualizer.VinylIndex = Vinyl.Index;
 
@@ -78,9 +75,6 @@
 
   // sleeve のフォーマット -----------------------
   VinylVisualizer.SleeveFormat = Sleeve.Format;
-
-  // sleeve のカラーフォーマット -----------------------
-  VinylVisualizer.SleeveColorFormat = Sleeve.ColorFormat;
 
   // sleeve のホールオプション -----------------------
   VinylVisualizer.SleeveHole = Sleeve.Hole;
