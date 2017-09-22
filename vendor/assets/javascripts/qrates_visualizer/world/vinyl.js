@@ -128,7 +128,6 @@
     this._weight = opts.weight || Vinyl.Weight.NORMAL;
     this._label = opts.label || Vinyl.Label.BLANK;
     this._colorFormat = opts.colorFormat || Vinyl.ColorFormat.BLACK;
-    this._heavy = opts.heavy || Vinyl.Weight.NORMAL;
     this._material = this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE;
     this._format = Vinyl.Format.NORMAL;
     this._defaultColor = 0x000000;
@@ -852,22 +851,6 @@
     } else {
       this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.NORMAL].scene);
     }
-  };
-
-  //--------------------------------------------------------------
-  Vinyl.prototype.setHeavy = function (yn) {
-    
-    if (this._heavy === yn) {
-      console.warn('heavy オプションはすでに有効です');
-      return;
-    }
-
-    if (-1 !== this._format.indexOf('heavy')) {
-      console.warn('heavy オプションはすでに有効です');
-      return;
-    }
-
-    this._heavy = yn;
   };
 
   //--------------------------------------------------------------
