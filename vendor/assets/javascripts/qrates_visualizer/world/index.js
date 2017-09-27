@@ -539,8 +539,24 @@
       return;
     }
 
-    this._sleeve.setGatefoldRotation(degree);
-    this._vinyls[0].setRotationZ(degree * 2);
+    var param = {
+      rotation: 0
+    };
+
+    var self = this;
+    var currentAngle = this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI);
+    var radians;
+
+    new TWEEN.Tween({ rotation: currentAngle })
+      .stop()
+      .to({ rotation: degree }, 500)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function () {
+        angle = this.rotation * (Math.PI / 180);
+        self._sleeve.setGatefoldRotation(angle);
+        self._vinyls[0].setRotationZ(angle * 2);
+      })
+      .start();
   };
 
   //--------------------------------------------------------------

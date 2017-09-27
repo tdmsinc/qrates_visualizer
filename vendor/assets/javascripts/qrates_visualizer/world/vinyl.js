@@ -901,23 +901,14 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setRotationZ = function (degree) {
+  Vinyl.prototype.setRotationZ = function (angle /* in radians */) {
 
-    var rad = degree * (Math.PI / 180);
-
+    var rotation = this._currentObject.scene.rotation.clone();
     var offsetX = this._boundingBox.max.x + this._currentObject.offsetX;
-    var self = this;
 
-    new TWEEN.Tween(this._currentObject.scene.rotation.clone())
-      .stop()
-      .to({ z: rad }, 500)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function () {
-        self._currentObject.scene.translateX(-offsetX);
-        self._currentObject.scene.rotation.set(this.x, this.y, this.z);
-        self._currentObject.scene.translateX(offsetX);
-      })
-      .start();
+    this._currentObject.scene.translateX(-offsetX);
+    this._currentObject.scene.rotation.set(rotation.x, rotation.y, angle);
+    this._currentObject.scene.translateX(offsetX);
   };
 
   //--------------------------------------------------------------

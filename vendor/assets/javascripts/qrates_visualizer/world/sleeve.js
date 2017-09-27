@@ -100,6 +100,7 @@
     this._shininess = Sleeve.Shininess[this._finish];
     this._opacityTweenDuration = 300;
     this._boundingBox = null;
+    this._gatefoldAngle = 0;
 
     this._models = {
       '7': {
@@ -390,6 +391,7 @@
             self._models[size][type][opt].scene.scale.set(scale, scale, scale);
 
             self.initMaterial(self._models[size][type][opt], self._textures[size][type][opt]);
+          }
         });
       });
     });
@@ -777,36 +779,30 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setGatefoldRotation = function (degree) {
+  Sleeve.prototype.setGatefoldRotation = function (angle) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
       console.error('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
       return;
     }
 
-    var rad = degree * (Math.PI / 180);
+    this._gatefoldAngle = angle;
 
     this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('front')) {
-          new TWEEN.Tween(child.rotation.clone())
-            .stop()
-            .to({ z: rad }, 500)
-            .easing(TWEEN.Easing.Quartic.Out)
-            .onUpdate(function () {
-              child.rotation.set(this.x, this.y, this.z);
-            })
-            .start();
+          var rotation = child.rotation;
+          child.rotation.set(rotation.x, rotation.y, angle);
         } else if (-1 < child.name.toLowerCase().indexOf('back')) {
           var rotation = child.rotation;
-          child.rotation.set(rotation.x, rotation.y, -rad);
+          child.rotation.set(rotation.x, rotation.y, -angle);
         }
       }
     });
 
     var offsetX = this._boundingBox.max.x + 0.5;
     this._currentObject.translateX(-offsetX);
-    this._currentObject.rotation.set(0, 0, rad);
+    this._currentObject.rotation.set(0, 0, angle);
     this._currentObject.translateX(offsetX);
   };
 
@@ -889,6 +885,12 @@
   //--------------------------------------------------------------
   Sleeve.prototype.setVisibility = function(yn, opts, callback) {
     this._currentObject.visible = yn;
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.getCurrentGatefoldAngle = function () {
+    
+    return this._gatefoldAngle;
   };
 
   //--------------------------------------------------------------
