@@ -131,6 +131,8 @@
     this._boundingBox = null;
     this._sleeveFormat;
     this._index = opts.index || Vinyl.Index.FIRST;
+    this._assetName = '';
+    this._offsetY = Vinyl.Index.FIRST === this._index ? 0.6 : -0.6;
 
     // current object
     this._currentObject = {
@@ -142,8 +144,7 @@
       material: this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE,
       opacity: 1,
       weight: this._weight,
-      offsetX: 0,
-      offsetY: Vinyl.Index.FIRST === this._index ? 0.6 : -0.6
+      offsetX: 0
     }
 
     // weight と label の組み合わせで format を決定する
@@ -400,7 +401,7 @@
     });
 
     var pos = this._currentObject.scene.position;
-    this._currentObject.scene.position.set(pos.x, this._currentObject.offsetY, pos.z);
+    this._currentObject.scene.position.set(pos.x, this._offsetY, pos.z);
 
     if (Vinyl.Weight.HEAVY === this._weight) {
       this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.HEAVY].scene);
@@ -408,7 +409,6 @@
       this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.NORMAL].scene);
     }
     
-    console.log('current vinyl', this._currentObject);
     this._container.add(this._currentObject.scene);
   };
 
@@ -917,6 +917,38 @@
         self._currentObject.scene.translateX(offsetX);
       })
       .start();
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setOffsetY = function (value) {
+
+    this._offsetY = value;
+
+    var pos = this._currentObject.scene.position;
+    this._currentObject.scene.position.set(pos.x, this._offsetY, pos.z);
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.getCurrentProperties = function () {
+
+    return {
+      size: this._size,
+      weight: this._weight,
+      isEnableLabel: this._isEnableLabel,
+      colorFormat: this._colorFormat,
+      rpm: this._rpm
+    };
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.removeFromContainer = function () {
+    
+    this._container.remove(this._currentObject.scene);
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.dispose = function () {
+
   };
 
   //--------------------------------------------------------------

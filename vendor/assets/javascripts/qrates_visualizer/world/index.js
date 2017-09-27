@@ -1142,10 +1142,22 @@
         return;
       }
 
+      var opts = this._vinyls[0].getCurrentProperties();
+      opts.index = Vinyl.Index.SECOND;
+
       this._vinyls.push(new Vinyl());
-      this._vinyls[1].setup(this._scene, this._assets, opts.defaults.vinyl[i], this._object);
+      this._vinyls[1].setup(this._scene, this._assets, opts, this._object);
     } else {
+      if (1 === this._vinyls.length) {
+        return;
+      }
+      
+      this._vinyls[1].removeFromContainer();
+      // TODO: オブジェクトの解放
+      this._vinyls.pop();
       this._vinyls.length = 1;
+
+      this._vinyls[0].setOffsetY(0);
     }
 
     this._vinyls.forEach(function (vinyl) {
