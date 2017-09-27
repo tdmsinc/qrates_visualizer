@@ -595,19 +595,21 @@
 
   //--------------------------------------------------------------
   World.prototype.cover = function (value, opts) {
+
     var self = this;
 
     var sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
-      this._sleeve.setCoveredRatio(0, opts);
+      this._sleeve.setCoveredRatio(0, { duration: 0, delay: 0 });
 
-      var index;
-
+      var index = 0;
       if (Vinyl.Index.SECOND === opts.index) {
+        if (1 === this._vinyls.length) {
+          return;
+        }
+
         index = 1;
-      } else {
-        index = 0;
       }
 
       this._vinyls[index].setCoveredRatio(value);
@@ -1147,6 +1149,16 @@
 
       this._vinyls.push(new Vinyl());
       this._vinyls[1].setup(this._scene, this._assets, opts, this._containerObject);
+
+      var offsetY;
+      if (Sleeve.Format.GATEFOLD === value) {
+        offsetY = 0.82;
+      } else {
+        offsetY = 0.6;
+      }
+
+      this._vinyls[0].setOffsetY(offsetY);
+      this._vinyls[1].setOffsetY(-offsetY);
     } else {
       if (1 === this._vinyls.length) {
         return;
