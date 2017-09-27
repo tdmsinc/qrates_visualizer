@@ -90,7 +90,7 @@
 
     this._container = container;
     this._size = opts.size;
-    this._hole = opts.hole;
+    this._hole = Sleeve.Format.GATEFOLD === opts.format ? Sleeve.Hole.NO_HOLE : opts.hole;
     this._format = opts.format;
     this._finish = opts.finish || Sleeve.Finish.NORMAL;
     this._currentTextures = opts.textures;
@@ -572,9 +572,6 @@
     }
 
     self._format = format;
-
-    var isOpaque = false;
-
     self.removeFromContainer();
     self.dispose();
     
@@ -628,7 +625,7 @@
 
     self.removeFromContainer();
     self.dispose();
-
+    console.log('Sleeve.setSize', self._size, self._format, self._hole);
     self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
     self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
     this.updateBoundingBoxMesh();
