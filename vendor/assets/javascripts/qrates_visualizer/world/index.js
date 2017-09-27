@@ -91,12 +91,12 @@
     this._flip = false;
 
     // sleeve と vinyl がぶら下がるコンテナ
-    this._object = new THREE.Object3D();
-    this._object.name = 'container';
+    this._containerObject = new THREE.Object3D();
+    this._containerObject.name = 'container';
 
     // sleeve
     this._sleeve = new Sleeve();
-    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._object);
+    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._containerObject);
 
     // vinyl
     this._vinyls = [];
@@ -113,12 +113,12 @@
       opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
 
       this._vinyls.push(new Vinyl());
-      this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._object);
+      this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject);
     }
 
     // scale を設定
     var scale = this._objectScales[this._vinyls[0]._size];
-    this._object.scale.set(scale, scale, scale);
+    this._containerObject.scale.set(scale, scale, scale);
 
     this._flipRotation = 0;
     this._flipTween = new TWEEN.Tween(this);
@@ -127,7 +127,7 @@
     this.registerPresets();
 
     this._scene.add(this._lights);
-    this._scene.add(this._object);
+    this._scene.add(this._containerObject);
 
     var self = this;
 
@@ -570,7 +570,7 @@
       .to({ _flipRotation: this._flip ? -Math.PI : 0 })
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function () {
-        self._object.rotation.z = self._flipRotation;
+        self._containerObject.rotation.z = self._flipRotation;
       })
       .start();
   };
@@ -1046,7 +1046,7 @@
         break;
     }
 
-    this._object.scale.set(scale, scale, scale);
+    this._containerObject.scale.set(scale, scale, scale);
     this._sleeve.setSize(sleeveSize);
   };
 
@@ -1146,12 +1146,12 @@
       opts.index = Vinyl.Index.SECOND;
 
       this._vinyls.push(new Vinyl());
-      this._vinyls[1].setup(this._scene, this._assets, opts, this._object);
+      this._vinyls[1].setup(this._scene, this._assets, opts, this._containerObject);
     } else {
       if (1 === this._vinyls.length) {
         return;
       }
-      
+
       this._vinyls[1].removeFromContainer();
       // TODO: オブジェクトの解放
       this._vinyls.pop();
