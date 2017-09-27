@@ -614,6 +614,7 @@
     var format = self._currentObject.format;
 
     self._container.remove(self._currentObject.scene);
+    self.dispose();
 
     self._currentObject.scene = self._models[self._size][format].scene.clone();
     self._currentObject.scene.assetName = self._models[self._size][format].assetName;
@@ -949,6 +950,19 @@
   //--------------------------------------------------------------
   Vinyl.prototype.dispose = function () {
 
+    this._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+
+        // dispose textures
+        if (child.material.alphaMap) child.material.alphaMap.dispose();
+        if (child.material.aoMap) child.material.aoMap.dispose();
+        if (child.material.bumpMap) child.material.bumpMap.dispose();
+        if (child.material.map) child.material.map.dispose();
+        if (child.material.envMap) child.material.envMap.dispose();
+      }
+    });
   };
 
   //--------------------------------------------------------------

@@ -1153,7 +1153,7 @@
       }
 
       this._vinyls[1].removeFromContainer();
-      // TODO: オブジェクトの解放
+      this._vinyls[1].dispose();
       this._vinyls.pop();
       this._vinyls.length = 1;
 
