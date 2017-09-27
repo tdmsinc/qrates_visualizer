@@ -404,9 +404,8 @@
 
 
     // currentObject = ステージに配置されるオブジェクト
-    console.log('size', this._size, 'format', this._format, 'hole', this._hole);
-    this._currentObject = this._models[this._size][this._format][this._hole];
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.scene);
+    this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
 
     this._position = new THREE.Vector3(0, 0, 0);
     this._rotation = new THREE.Vector3(0, 0, 0);
@@ -418,8 +417,8 @@
 
     this._currentObject.name = 'sleeve';
 
-    this._container.add(this._currentObject.scene);
-    console.log('this._currentObject.scene', this._currentObject.scene);
+    this._container.add(this._currentObject);
+    console.log('this._currentObject', this._currentObject);
 
     this._coveredRatio = 0;
     this.setCoveredRatio(this._coveredRatio, { duration: 0 });
@@ -594,19 +593,20 @@
 
     // }
 
-    self._container.remove(self._currentObject.scene);
+    self.removeFromContainer();
+    self.dispose();
     
-    self._currentObject = self._models[self._size][self._format][self._hole];
-    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.scene);
+    self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
+    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
 
-    self._currentObject.scene.traverse(function (child) {
+    self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.shininess = self._shininess;
         child.material.needsUpdate = true;
       }
     });
 
-    self._container.add(self._currentObject.scene);
+    self._container.add(self._currentObject);
 
     self.setOpacity(1.0, 0);
   };
@@ -643,15 +643,16 @@
 
     self._size = size;
 
-    self._container.remove(self._currentObject.scene);
-    console.log('size:', self._size, 'format:', self._format, 'hole:', self._hole);
-    self._currentObject = self._models[self._size][self._format][self._hole];
-    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.scene);
+    self.removeFromContainer();
+    self.dispose();
+
+    self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
+    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
 
     console.log('new object', self._currentObject);
 
     self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
-      self._container.add(self._currentObject.scene);
+      self._container.add(self._currentObject);
 
       self.setOpacity(1.0, 0);
     });
@@ -673,7 +674,7 @@
       .stop()
       .to({ _opacity: to }, duration)
       .onUpdate(function() {
-        self._currentObject.scene.traverse(function(child) {
+        self._currentObject.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
             child.material.opacity = self._opacity;
             child.material.needsUpdate = true;
@@ -710,12 +711,13 @@
 
     this._hole = value;
 
-    this._container.remove(this._currentObject.scene);
+    this.removeFromContainer();
+    this.dispose();
     
-    this._currentObject = this._models[this._size][this._format][this._hole];
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.scene);
+    this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
 
-    this._container.add(this._currentObject.scene);
+    this._container.add(this._currentObject);
 
     this.setOpacity(1.0, 0);
   };
@@ -740,7 +742,7 @@
     self._finish = finish;
     self._shininess = Sleeve.Shininess[self._finish];
 
-    self._currentObject.scene.traverse(function (child) {
+    self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.shininess = self._shininess;
         child.material.needsUpdate = true;
@@ -756,7 +758,7 @@
 
     var self = this;
 
-    var tempObj = self._currentObject.scene.clone();
+    var tempObj = self._currentObject.clone();
     tempObj.scale = 1.0;
 
     // var offset = new THREE.Box3().setFromObject(tempObj).getSize().x;
@@ -764,7 +766,7 @@
 
     self._coveredRatio = Math.max(0, Math.min(1.0, ratio));
 
-    var tween = new TWEEN.Tween(this._currentObject.scene.position);
+    var tween = new TWEEN.Tween(this._currentObject.position);
 
     tween
       .stop()
@@ -795,7 +797,7 @@
 
     var rad = degree * (Math.PI / 180);
 
-    this._currentObject.scene.traverse(function (child) {
+    this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('front')) {
           new TWEEN.Tween(child.rotation.clone())
@@ -814,9 +816,9 @@
     });
 
     var offsetX = this._boundingBox.max.x + 0.5;
-    this._currentObject.scene.translateX(-offsetX);
-    this._currentObject.scene.rotation.set(0, 0, rad);
-    this._currentObject.scene.translateX(offsetX);
+    this._currentObject.translateX(-offsetX);
+    this._currentObject.rotation.set(0, 0, rad);
+    this._currentObject.translateX(offsetX);
   };
 
   //--------------------------------------------------------------
@@ -829,7 +831,7 @@
 
     var rad = value * (Math.PI / 180);
 
-    this._currentObject.scene.traverse(function (child) {
+    this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('front')) {
           var rotation = child.rotation;
@@ -842,12 +844,12 @@
     });
 
     var offsetX = this._boundingBox.max.x - 0.5;
-    this._currentObject.scene.translateX(-offsetX);
-    this._currentObject.scene.rotation.set(0, 0, rad);
-    this._currentObject.scene.translateX(offsetX);
+    this._currentObject.translateX(-offsetX);
+    this._currentObject.rotation.set(0, 0, rad);
+    this._currentObject.translateX(offsetX);
 
-    var pos = this._currentObject.scene.position;
-    this._currentObject.scene.position.set(0, pos.y, pos.z);
+    var pos = this._currentObject.position;
+    this._currentObject.position.set(0, pos.y, pos.z);
   };
 
   //--------------------------------------------------------------
@@ -860,7 +862,7 @@
 
     var rad = value * (Math.PI / 180);
 
-    this._currentObject.scene.traverse(function (child) {
+    this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('back')) {
           var rotation = child.rotation;
@@ -875,7 +877,7 @@
     var self = this;
     self._bumpScale = value;
 
-    self._currentObject.scene.traverse(function(child) {
+    self._currentObject.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material.bumpScale = self._bumpScale;
         child.material.needsUpdate = true;
@@ -887,7 +889,7 @@
   Sleeve.prototype.setAoMapIntensity = function(value) {
     var self = this;
 
-    self._currentObject.scene.traverse(function (child) {
+    self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.aoMapIntensity = value;
         child.material.needsUpdate = true;
@@ -897,15 +899,40 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setVisibility = function(yn, opts, callback) {
-    this._currentObject.scene.visible = yn;
+    this._currentObject.visible = yn;
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.removeFromContainer = function () {
+    
+    this._container.remove(this._currentObject);
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.dispose = function () {
+
+    this._currentObject.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+        child.parent = null;
+
+        // dispose textures
+        if (child.material.alphaMap) child.material.alphaMap.dispose();
+        if (child.material.aoMap) child.material.aoMap.dispose();
+        if (child.material.bumpMap) child.material.bumpMap.dispose();
+        if (child.material.map) child.material.map.dispose();
+        if (child.material.envMap) child.material.envMap.dispose();
+      }
+    });
   };
 
   //--------------------------------------------------------------
   Sleeve.prototype.update = function() {
     var self = this;
 
-    // this._currentObject.scene.position.set(this._position.x, this._position.y, this._position.z);
-    // this._currentObject.scene.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
+    // this._currentObject.position.set(this._position.x, this._position.y, this._position.z);
+    // this._currentObject.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
   };
 
 })(this, (this.qvv = (this.qvv || {})));

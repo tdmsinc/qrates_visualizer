@@ -954,6 +954,7 @@
       if (child instanceof THREE.Mesh) {
         child.geometry.dispose();
         child.material.dispose();
+        child.parent = null;
 
         // dispose textures
         if (child.material.alphaMap) child.material.alphaMap.dispose();
