@@ -979,8 +979,6 @@
       parent.vinyls[i].on('colorFormat', this.onVinylColorFormatChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('size', this.onVinylSizeChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('color', this.onVinylColorChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('splatterColor', this.onVinylSplatterColorChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('holeSize', this.onVinylHoleSizeChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('weight', this.onVinylWeightChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('speed', this.onVinylSpeedChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('alphaMap', this.onVinylAlphaMapChanged.bind(this, this._vinyls[i]));
@@ -1011,14 +1009,14 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylColorFormatChanged = function (target, value) {
+  World.prototype.onVinylColorFormatChanged = function (target, colorFormat) {
 
-    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(value.format)) {
-      console.warn('World.onVinylColorFormatChanged: unknown value "' + value.format + '" for vinyl color format');
+    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(colorFormat)) {
+      console.warn('World.onVinylColorFormatChanged: unknown value "' + colorFormat + '" for vinyl color format');
       return;
     }
 
-    target.setColorFormat(value.format);
+    target.setColorFormat(colorFormat);
   };
 
   //--------------------------------------------------------------
@@ -1070,26 +1068,15 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylColorChanged = function (target, value) {
+  World.prototype.onVinylColorChanged = function (target, color) {
 
-    target.setColor(Object.keys(Vinyl.Color)[value.color]);
+    target.setColor(Object.keys(Vinyl.Color)[color]);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylSplatterColorChanged = function (target, value) {
+  World.prototype.onVinylWeightChanged = function (target, weight) {
 
-    target.setColor(Object.keys(Vinyl.Color)[value.color]);
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onVinylHoleSizeChanged = function (value) {
-
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onVinylWeightChanged = function (target, value) {
-
-    target.setWeight(value.weight);
+    target.setWeight(weight);
   };
 
   //--------------------------------------------------------------
@@ -1104,51 +1091,51 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylSpeedChanged = function (target, value) {
+  World.prototype.onVinylSpeedChanged = function (target, rpm) {
 
-    target.setRPM(value);
+    target.setRPM(rpm);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylAlphaMapChanged = function (target, value) {
+  World.prototype.onVinylAlphaMapChanged = function (target, image) {
 
-    target.setTexture({ alphaMap: value.image });
+    target.setTexture({ alphaMap: image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylAoMapChanged = function (target, value) {
+  World.prototype.onVinylAoMapChanged = function (target, image) {
 
-    target.setTexture({ aoMap: value.image });
+    target.setTexture({ aoMap: image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylBumpMapChanged = function (target, value) {
+  World.prototype.onVinylBumpMapChanged = function (target, image) {
 
-    target.setTexture({ bumpMap: value.image });
+    target.setTexture({ bumpMap: image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylColorMapChanged = function (target, value) {
+  World.prototype.onVinylColorMapChanged = function (target, image) {
 
-    target.setTexture({ map: value.image });
+    target.setTexture({ map: image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onLabelAoMapChanged = function (target, value) {
+  World.prototype.onLabelAoMapChanged = function (target, image) {
 
-    target.setLabelTexture({ aoMap: value.image });
+    target.setLabelTexture({ aoMap: image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onLabelBumpMapChanged = function (target, value) {
+  World.prototype.onLabelBumpMapChanged = function (target, image) {
 
-    target.setLabelTexture({ bumpMap: value.image });
+    target.setLabelTexture({ bumpMap: image });
   };
 
   //--------------------------------------------------------------
-  World.prototype.onLabelColorMapChanged = function (target, value) {
+  World.prototype.onLabelColorMapChanged = function (target, image) {
 
-    target.setLabelTexture({ map: value.image });
+    target.setLabelTexture({ map: image });
   };
 
   //--------------------------------------------------------------
