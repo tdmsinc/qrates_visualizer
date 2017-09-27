@@ -34,7 +34,6 @@ var defaults = {
 // initialize vinyl visualizer.
 //
 var el = document.querySelector('.vinyl-visualizer-container');
-console.log('defaults', defaults);
 var vv = new qvv.VinylVisualizer(el, {
   width: canvas_width,
   height: canvas_height,

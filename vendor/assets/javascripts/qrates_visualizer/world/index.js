@@ -113,7 +113,7 @@
       opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
 
       this._vinyls.push(new Vinyl());
-      this._vinyls[i].setup(this._scene, assets, opts.defaults.vinyl[i], this._object);
+      this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._object);
     }
 
     // scale を設定
@@ -1020,7 +1020,12 @@
     target.setSize(size);
 
     var firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
-    var secondVinylSize = this._convertSizeToNumber(this._vinyls[1].getSize());
+    var secondVinylSize = firstVinylSize;
+
+    if (1 < this._vinyls.length) {
+      secondVinylSize = this._convertSizeToNumber(this._vinyls[1].getSize());
+    }
+
     var largerSize = Math.max(firstVinylSize, secondVinylSize);
 
     var sleeveSize;
@@ -1132,14 +1137,20 @@
 
     this._sleeve.setFormat(value);
 
-    this._vinyls[0].setCoveredRatio(Vinyl.Index.FIRST, 0);
-    this._vinyls[0].setCoveredRatio(Vinyl.Index.SECOND, 0);
-
     if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
-      this._vinyls[0].enableDoubleVinyl(value);
+      if (2 === this._vinyls.length) {
+        return;
+      }
+
+      this._vinyls.push(new Vinyl());
+      this._vinyls[1].setup(this._scene, this._assets, opts.defaults.vinyl[i], this._object);
     } else {
-      this._vinyls[0].disableDoubleVinyl();
+      this._vinyls.length = 1;
     }
+
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.setCoveredRatio(0);
+    });
   };
 
   //--------------------------------------------------------------
