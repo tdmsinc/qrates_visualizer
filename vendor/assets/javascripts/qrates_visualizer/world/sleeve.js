@@ -94,11 +94,9 @@
     this._format = opts.format;
     this._finish = opts.finish || Sleeve.Finish.NORMAL;
     this._currentTextures = opts.textures;
-    this._opacity = 0.0;
     this._coveredRatio = 0.0;
     this._bumpScale = 0.3;
     this._shininess = Sleeve.Shininess[this._finish];
-    this._opacityTweenDuration = 300;
     this._boundingBox = null;
     this._gatefoldAngle = 0;
 
@@ -404,9 +402,6 @@
     this._position = new THREE.Vector3(0, 0, 0);
     this._rotation = new THREE.Vector3(0, 0, 0);
 
-    this._positionTween = new TWEEN.Tween(this._position);
-    this._opacityTween = new TWEEN.Tween(this);
-
     this.setFormat(this._format);
 
     this._currentObject.name = 'sleeve';
@@ -416,8 +411,7 @@
     this._coveredRatio = 0;
     this.setCoveredRatio(this._coveredRatio, { duration: 0 });
 
-    this._opacity = 0;
-    this.setOpacity(1);
+    this.setOpacity(1, 0);
   };
 
   //--------------------------------------------------------------
@@ -578,14 +572,6 @@
 
     var isOpaque = false;
 
-    // TODO: 無地の指定はテクスチャーでおこなう
-    // if (this.TYPE_BLACK === this._format || this.TYPE_WHITE === this._format) {
-
-    //   this._glossFinish = false;
-    //   isOpaque = true;
-
-    // }
-
     self.removeFromContainer();
     self.dispose();
     
@@ -656,32 +642,28 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setOpacity = function(to, duration) {
+  Sleeve.prototype.setOpacity = function(to, duration, delay) {
+
     var self = this;
 
-    duration = undefined !== duration ? duration : 300;
+    duration = undefined !== duration ? duration : 1000;
+    delay = undefined !== delay ? delay : 0;
 
-    this._opacityTween
-      .stop()
-      .to({ _opacity: to }, duration)
-      .onUpdate(function() {
-        self._currentObject.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            child.material.opacity = self._opacity;
+    this._currentObject.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        var tween = new TWEEN.Tween(child.material);
+        child.material.opacity = 0;
+        
+        tween
+          .stop()
+          .delay(delay)
+          .to({ opacity: to }, duration)
+          .onUpdate(function (value) {
             child.material.needsUpdate = true;
-          }
-
-          if (child instanceof THREE.Object3D) {
-            child.traverse(function(nextChild) {
-              if (nextChild instanceof THREE.Mesh) {
-                nextChild.material.opacity = self._opacity;
-                nextChild.material.needsUpdate = true;
-              }
-            });
-          }
-        });
-      })
-      .start();
+          })
+          .start();
+      }
+    });
   };
 
   //--------------------------------------------------------------
@@ -920,10 +902,7 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.update = function() {
-    var self = this;
-
-    // this._currentObject.position.set(this._position.x, this._position.y, this._position.z);
-    // this._currentObject.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
+    
   };
 
 })(this, (this.qvv = (this.qvv || {})));

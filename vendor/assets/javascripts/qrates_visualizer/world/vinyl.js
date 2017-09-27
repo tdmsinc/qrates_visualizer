@@ -613,6 +613,8 @@
     var pos = self._currentObject.scene.position;
     var format = self._currentObject.format;
 
+    self._currentObject.scene.opacity = 0;
+
     self._container.remove(self._currentObject.scene);
     self.dispose();
 
@@ -650,11 +652,17 @@
       }
     });
 
+    self._currentObject.scene.opacity = 0;
+    self._currentObject.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.needsUpdate = true;
+      }
+    });
+    
     self._container.add(self._currentObject.scene);
     self._currentObject.scene.position.set(pos.x, pos.y, pos.z);
 
-    self._currentObject.scene.opacity = 0;
-    self.setOpacity(self._currentObject.material.opacity);
+    self.setOpacity(self._currentObject.material.opacity, 1000, 250);
   }
 
   //--------------------------------------------------------------
@@ -741,7 +749,6 @@
 
     this.updateCurrentObjectMaterial();
 
-    this._currentObject.opacity = 0;
     this.setOpacity(this._currentObject.material.opacity);
   };
 
@@ -788,28 +795,24 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setOpacity = function(to, duration) {
+  Vinyl.prototype.setOpacity = function(to, duration, delay) {
 
     var self = this;
 
-    duration = undefined !== duration ? duration : 500;
+    duration = undefined !== duration ? duration : 1000;
+    delay = undefined !== delay ? delay : 0;
 
     self._currentObject.scene.traverse(function (child) {
-      if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
+      if (child instanceof THREE.Mesh) {
         var tween = new TWEEN.Tween(child.material);
         child.material.opacity = 0;
         
         tween
           .stop()
+          .delay(delay)
           .to({ opacity: to }, duration)
           .onUpdate(function (value) {
-            // self._currentObject[index].scene.opacity = value;
-            // self._currentObject[index].scene.traverse(function (child) {
-            //   if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
-            //     child.material.opacity = value;
-            //     child.material.needsUpdate = true;
-            //   }
-            // });
+            child.material.needsUpdate = true;
           })
           .start();
       }
