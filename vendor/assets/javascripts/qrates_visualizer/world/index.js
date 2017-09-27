@@ -141,6 +141,15 @@
     var sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
+
+      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+        this._vinyls[0].setOffsetY(1.1276275379911005);
+        this._vinyls[1].setOffsetY(-1.1276275379911005);
+      } else {
+        this._vinyls[0].setOffsetY(0.6);
+        this._vinyls[1].setOffsetY(-0.6);
+      }
+
       this.cover(0.5, {
         delay: 3000,
         duration: 2000,
@@ -261,15 +270,12 @@
       'vinyl bump': 0.3,
       'sleeve ao': 1.0,
       'vinyl ao': 1.0,
-      sleeveX: -15
+      sleeveX: -15,
+      'vinyl offsetY': 0
     };
 
     var cameraProps = {
       x: 0.0, y: 17.0, z: 30.0,
-    };
-
-    var objPosProps = {
-      posX: 0.0, posY: 0.0, posZ: 0.0,
     };
 
     var self = this;
@@ -317,9 +323,7 @@
     var secondVinylVisibilityController = gui.add(props, 'vinyl 2 visibility');
     var captureController = gui.add(temp, 'capture');
     var zoomController = gui.add(props, 'zoom', 0, 400);
-    var objXController = gui.add(objPosProps, 'posX', -1000.0, 1000.0);
-    var objYController = gui.add(objPosProps, 'posY', -1000.0, 1000.0);
-    var objZController = gui.add(objPosProps, 'posZ', -1000.0, 1000.0);
+    var vinylOffsetYController = gui.add(props, 'vinyl offsetY', 0.0, 2.0);
     var cameraXController = gui.add(cameraProps, 'x', -1000.0, 1000.0);
     var cameraYController = gui.add(cameraProps, 'y', -1000.0, 1000.0);
     var cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
@@ -392,17 +396,15 @@
       self.zoom(value);
     });
 
-    objXController.onChange(function (value) {
-      self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
-      self._controls.update();
-    });
-    objYController.onChange(function (value) {
-      self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
-      self._controls.update();
-    });
-    objZController.onChange(function (value) {
-      self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
-      self._controls.update();
+    vinylOffsetYController.onChange(function (value) {
+      console.log(value);
+      self._vinyls[0].setOffsetY(value);
+
+      if (1 === self._vinyls.length) {
+        return;
+      }
+
+      self._vinyls[1].setOffsetY(-value);
     });
 
     cameraXController.onChange(function (value) {
@@ -1156,13 +1158,12 @@
 
       var offsetY;
       if (Sleeve.Format.GATEFOLD === value) {
-        offsetY = 0.82;
+        this._vinyls[0].setOffsetY(1.1276275379911005);
+        this._vinyls[1].setOffsetY(-1.1276275379911005);
       } else {
-        offsetY = 0.6;
+        this._vinyls[0].setOffsetY(0.6);
+        this._vinyls[1].setOffsetY(-0.6);
       }
-
-      this._vinyls[0].setOffsetY(offsetY);
-      this._vinyls[1].setOffsetY(-offsetY);
     } else {
       if (1 === this._vinyls.length) {
         return;

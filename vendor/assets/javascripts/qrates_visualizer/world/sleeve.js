@@ -151,7 +151,8 @@
           'holed': assets['assetsModelSleeveDoubleHoled-12']
         },
         'gatefold': {
-          'normal': assets['assetsModelSleeveGatefold-12']
+          'normal': assets['assetsModelSleeveGatefold-12'],
+          'holed': assets['assetsModelSleeveGatefold-12']
         }
       }
     };
@@ -399,6 +400,8 @@
     this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
     this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
 
+    this.updateBoundingBoxMesh();
+
     this._position = new THREE.Vector3(0, 0, 0);
     this._rotation = new THREE.Vector3(0, 0, 0);
 
@@ -577,6 +580,7 @@
     
     self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
     self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
+    this.updateBoundingBoxMesh();
 
     self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
@@ -627,6 +631,7 @@
 
     self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
     self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
+    this.updateBoundingBoxMesh();
 
     self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
       self._container.add(self._currentObject);
@@ -689,6 +694,7 @@
     
     this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
     this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
+    this.updateBoundingBoxMesh();
 
     this._container.add(this._currentObject);
 
@@ -782,9 +788,12 @@
       }
     });
 
-    var offsetX = this._boundingBox.max.x + 0.5;
+    var offsetX = this._boundingBox.max.x;
+    var offsetY = this._boundingBox.max.y * 0.5;
     this._currentObject.translateX(-offsetX);
+    this._currentObject.translateY(-offsetY);
     this._currentObject.rotation.set(0, 0, angle);
+    this._currentObject.translateY(offsetY);
     this._currentObject.translateX(offsetX);
   };
 
@@ -898,6 +907,35 @@
         if (child.material.envMap) child.material.envMap.dispose();
       }
     });
+  };
+
+  Sleeve.prototype.updateBoundingBoxMesh = function () {
+
+    return;
+
+    var name = 'bounding box';
+    var mesh = this._container.getObjectByName(name);
+    if (mesh) {
+      this._container.remove(mesh);
+
+      mesh.geometry.dispose();
+      mesh.material.dispose();
+    }
+
+    var geometry = new THREE.BoxGeometry(
+      this._boundingBox.getSize().x,
+      this._boundingBox.getSize().y,
+      this._boundingBox.getSize().z
+    );
+
+    var material = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      wireframe: true
+    });
+
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.name = name;
+    this._container.add(mesh);
   };
 
   //--------------------------------------------------------------
