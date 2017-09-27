@@ -105,6 +105,7 @@
     if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format) && 1 < opts.defaults.vinyl.length) {
       console.warn('World: too many options for vinyl');
 
+      opts.defaults.vinyl.pop();
       opts.defaults.vinyl.length = 1;
     }
 

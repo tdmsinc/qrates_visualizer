@@ -88,8 +88,6 @@
       }
     };
 
-    console.log('opts', opts);
-
     this._container = container;
     this._size = opts.size;
     this._hole = opts.hole;
@@ -389,15 +387,9 @@
             self._models[size][type][opt].scene.assetName = assetName;
 
             var scale = 5.5;
-            console.log('sleeve original scale', self._models[size][type][opt].scene.scale);
             self._models[size][type][opt].scene.scale.set(scale, scale, scale);
 
             self.initMaterial(self._models[size][type][opt], self._textures[size][type][opt]);
-          }
-
-          console.log('------------------' + assetName + '-------------------');
-          console.log('model', self._models[size][type][opt]);
-          console.log('textures', self._textures[size][type][opt]);
         });
       });
     });
@@ -418,7 +410,6 @@
     this._currentObject.name = 'sleeve';
 
     this._container.add(this._currentObject);
-    console.log('this._currentObject', this._currentObject);
 
     this._coveredRatio = 0;
     this.setCoveredRatio(this._coveredRatio, { duration: 0 });
@@ -649,8 +640,6 @@
     self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
     self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
 
-    console.log('new object', self._currentObject);
-
     self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
       self._container.add(self._currentObject);
 
@@ -791,7 +780,7 @@
   Sleeve.prototype.setGatefoldRotation = function (degree) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
-      console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
+      console.error('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
       return;
     }
 
@@ -856,7 +845,7 @@
   Sleeve.prototype.setGatefoldBackRotation = function (value) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
-      console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
+      console.error('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
       return;
     }
 
