@@ -120,6 +120,7 @@
     // scale を設定
     var scale = this._objectScales[this._vinyls[0]._size];
     this._containerObject.scale.set(scale, scale, scale);
+    this._containerObject.position.set(0, 0, 0);
 
     this._flipRotation = 0;
     this._flipTween = new TWEEN.Tween(this);
@@ -129,6 +130,12 @@
 
     this._scene.add(this._lights);
     this._scene.add(this._containerObject);
+
+    // let geometry = new THREE.BoxGeometry(50, 50, 50);
+    // let material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+    // let mesh = new THREE.Mesh(geometry, material);
+    // mesh.position.set(0, 0, 0);
+    // this._scene.add(mesh);
 
     var self = this;
 
@@ -555,7 +562,7 @@
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function () {
         angle = this.rotation * (Math.PI / 180);
-        self._sleeve.setGatefoldRotation(angle);
+        self._sleeve.setAngleForGatefold(angle);
         self._vinyls[0].setRotationZ(angle * 2);
       })
       .start();
@@ -620,7 +627,7 @@
     var sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
-      this._sleeve.setCoveredRatio(0, { duration: 0, delay: 0 });
+      this._sleeve.resetCoveredRatio();
 
       var index = 0;
       if (Vinyl.Index.SECOND === opts.index) {
@@ -631,6 +638,10 @@
         index = 1;
       }
 
+      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+        // value += 0.5;
+      }
+      
       this._vinyls[index].setCoveredRatio(value);
     } else {
       this._sleeve.setCoveredRatio(value, opts);

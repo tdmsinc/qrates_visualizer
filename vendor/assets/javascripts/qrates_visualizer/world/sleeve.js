@@ -576,6 +576,10 @@
     self.dispose();
     
     self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
+    
+    var position = self._currentObject.position;
+    self._currentObject.position.set(0, position.y, position.z);
+    
     self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
     this.updateBoundingBoxMesh();
 
@@ -733,11 +737,6 @@
     opts.delay    = undefined !== opts.delay    ? opts.delay    : 0;
 
     var self = this;
-
-    var tempObj = self._currentObject.clone();
-    tempObj.scale = 1.0;
-
-    // var offset = new THREE.Box3().setFromObject(tempObj).getSize().x;
     var offset = this._boundingBox.getSize().x;
 
     self._coveredRatio = Math.max(0, Math.min(1.0, ratio));
@@ -759,15 +758,20 @@
         if (completeCallback) completeCallback();
       })
       .start();
-
-    tempObj = null;
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setGatefoldRotation = function (angle) {
+  Sleeve.prototype.resetCoveredRatio = function () {
+
+    var position = this._currentObject.position;
+    this._currentObject.position.set(position.x, position.y, position.z);
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setAngleForGatefold = function (angle) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
-      console.error('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
+      console.error('Sleeve.setAngleForGatefold: not viable for sleeve type "' + this._format + '"');
       return;
     }
 
