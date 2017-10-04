@@ -654,14 +654,18 @@
         ratio: this._sleeve.getCoveredRatio()
       }
 
+      this._vinyls.forEach(function (vinyl) {
+        vinyl.setCoveredRatio(0);
+      });
+
       new TWEEN.Tween(param)
-      .stop()
-      .to({ ratio: value })
-      .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function () {
-        self._sleeve.setCoveredRatio(this.ratio, opts);
-      })
-      .start();
+        .stop()
+        .to({ ratio: value })
+        .easing(TWEEN.Easing.Quartic.Out)
+        .onUpdate(function () {
+          self._sleeve.setCoveredRatio(this.ratio, opts);
+        })
+        .start();
     }
   };
 
