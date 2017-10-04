@@ -532,6 +532,12 @@
   };
 
   //--------------------------------------------------------------
+  Vinyl.prototype.updateBoundingBox = function () {
+
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.scene);
+  };
+
+  //--------------------------------------------------------------
   Vinyl.prototype.updateTexture = function(texture, image) {
     if (!texture || !image) {
       return;

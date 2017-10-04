@@ -408,7 +408,7 @@
 
     // currentObject = ステージに配置されるオブジェクト
     this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
+    this.updateBoundingBox();
 
     this.updateBoundingBoxMesh();
 
@@ -422,7 +422,7 @@
     this._container.add(this._currentObject);
 
     this._coveredRatio = 0;
-    this.setCoveredRatio(this._coveredRatio, { duration: 0 });
+    this.setCoveredRatio(this._coveredRatio);
 
     this.setOpacity(1, 0);
   };
@@ -471,6 +471,12 @@
     }
 
     return model;
+  };
+  
+  //--------------------------------------------------------------
+  Sleeve.prototype.updateBoundingBox = function () {
+
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
   };
 
   //--------------------------------------------------------------
@@ -590,7 +596,7 @@
     var position = self._currentObject.position;
     self._currentObject.position.set(0, position.y, position.z);
     
-    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
+    this.updateBoundingBox();
     this.updateBoundingBoxMesh();
 
     self._currentObject.traverse(function (child) {
@@ -640,7 +646,7 @@
     this.dispose();
 
     this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
+    this.updateBoundingBox();
     this.updateBoundingBoxMesh();
 
     this.setCoveredRatio(0);
@@ -701,7 +707,7 @@
     this.dispose();
     
     this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
+    this.updateBoundingBox();
     this.updateBoundingBoxMesh();
 
     this._container.add(this._currentObject);
