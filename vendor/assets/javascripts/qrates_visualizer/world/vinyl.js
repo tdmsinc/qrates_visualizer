@@ -137,7 +137,6 @@
 
     // current object
     this._currentObject = {
-      assetName: '',
       colorFormat: this._colorFormat,
       scene: null,
       format: '',
@@ -391,7 +390,7 @@
     });
 
     this._currentObject.scene = this._models[this._size][this._currentObject.format].scene.clone();
-    this._currentObject.assetName = this._models[this._size][this._currentObject.format].assetName;
+    this.assetName = this._models[this._size][this._currentObject.format].assetName;
 
     this._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
@@ -584,7 +583,7 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.updateFormat = function(weight, isEnableLabel) {
-    console.log(weight, isEnableLabel);
+
     if (weight === Vinyl.Weight.NORMAL) {
       if (isEnableLabel) {
         return Vinyl.Format.WITH_LABEL;
@@ -618,7 +617,7 @@
     self.dispose();
 
     self._currentObject.scene = self._models[self._size][format].scene.clone();
-    self._currentObject.scene.assetName = self._models[self._size][format].assetName;
+    self.assetName = self._models[self._size][format].assetName;
 
     self._currentObject.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
@@ -918,6 +917,18 @@
       colorFormat: this._colorFormat,
       rpm: this._rpm
     };
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.getFormat = function () {
+    
+    return this._format;
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.getAssetName = function () {
+
+    return this._assetName;
   };
 
   //--------------------------------------------------------------

@@ -618,6 +618,7 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setSize = function(size) {
+
     if (!size) {
       console.warn('Sleeve.setSize: no size specified');
       return;
@@ -633,22 +634,18 @@
       return;
     }
 
-    var self = this;
+    this._size = size;
 
-    self._size = size;
+    this.removeFromContainer();
+    this.dispose();
 
-    self.removeFromContainer();
-    self.dispose();
-    console.log('Sleeve.setSize', self._size, self._format, self._hole);
-    self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
-    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
+    this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
     this.updateBoundingBoxMesh();
 
-    self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
-      self._container.add(self._currentObject);
-
-      self.setOpacity(1.0, 0);
-    });
+    this.setCoveredRatio(0);
+    this._container.add(this._currentObject);
+    this.setOpacity(1.0, 0);
   };
 
   //--------------------------------------------------------------
@@ -741,16 +738,13 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setCoveredRatio = function(ratio, opts, updateCallback, completeCallback) {
+  Sleeve.prototype.setCoveredRatio = function(ratio) {
     
     if (Sleeve.Format.GATEFOLD === this._format || Sleeve.Format.DOUBLE === this._format) {
       return;
     }
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
-
-    opts.duration = undefined !== opts.duration ? opts.duration : 500;
-    opts.delay    = undefined !== opts.delay    ? opts.delay    : 0;
 
     const offset = this._coveredRatio * -this._boundingBox.getSize().x;
     const position = this._currentObject.position;
