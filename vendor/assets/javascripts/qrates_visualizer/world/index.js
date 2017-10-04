@@ -149,25 +149,16 @@
 
     if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
 
+      var offsetY;
       if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-        this._vinyls[0].setOffsetY(1.1276275379911005);
-        this._vinyls[1].setOffsetY(-1.1276275379911005);
+        offsetY = 1.08390626812156;
+        this._vinyls[0].setOffsetY(offsetY);
+        this._vinyls[1].setOffsetY(-offsetY);
       } else {
-        this._vinyls[0].setOffsetY(0.6);
-        this._vinyls[1].setOffsetY(-0.6);
+        offsetY = 0.6;
+        this._vinyls[0].setOffsetY(offsetY);
+        this._vinyls[1].setOffsetY(-offsetY);
       }
-
-      this.cover(0.5, {
-        delay: 3000,
-        duration: 2000,
-        index: Vinyl.Index.FIRST
-      });
-
-      this.cover(1.0, {
-        delay: 3000,
-        duration: 2000,
-        index: Vinyl.Index.SECOND
-      });
     }
   }
 
@@ -635,6 +626,14 @@
         }
 
         index = 1;
+      }
+
+      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+        this._vinyls[0].setOffsetY(1.1965015565108743);
+        this._vinyls[1].setOffsetY(-1.1965015565108743);
+      } else {
+        this._vinyls[0].setOffsetY(0.6);
+        this._vinyls[1].setOffsetY(-0.6);
       }
 
       const param = {
@@ -1190,8 +1189,9 @@
 
       var offsetY;
       if (Sleeve.Format.GATEFOLD === value) {
-        this._vinyls[0].setOffsetY(1.1276275379911005);
-        this._vinyls[1].setOffsetY(-1.1276275379911005);
+        offsetY = 1.1965015565108743;
+        this._vinyls[0].setOffsetY(offsetY);
+        this._vinyls[1].setOffsetY(-offsetY);
       } else {
         this._vinyls[0].setOffsetY(0.6);
         this._vinyls[1].setOffsetY(-0.6);

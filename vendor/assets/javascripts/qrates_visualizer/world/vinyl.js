@@ -854,7 +854,8 @@
   //--------------------------------------------------------------
   Vinyl.prototype.setCoveredRatio = function (ratio, duration, delay, updateCallback, completeCallback) {
 
-    this._coveredRatio = Math.max(0, Math.min(1.0, ratio));;
+    this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
+    this._offsetX = this._boundingBox.getSize().x * this._coveredRatio;
 
     if (undefined === duration) {
       duration = 500;
@@ -868,9 +869,18 @@
       delay = Math.max(0, delay);
     }
 
-    const offset = ratio * this._boundingBox.getSize().x
     const position = this._currentObject.position;
-    this._currentObject.position.set(offset, position.y, position.z);
+
+    const offset = this._offsetX + this._boundingBox.max.x;
+
+    const x = this._offsetX * Math.cos(this._gatefoldAngle);
+    const y = this._offsetY * Math.sin(this._gatefoldAngle);
+    
+    if (0 === this._gatefoldAngle) {
+      this._currentObject.position.set(x, position.y, position.z);
+    } else {
+      this._currentObject.position.set(x, y, position.z);
+    }
   };
 
   //--------------------------------------------------------------
@@ -884,12 +894,12 @@
 
     this._gatefoldAngle = angle;
 
-    var rotation = this._currentObject.rotation.clone();
-    var offsetX = this._boundingBox.max.x + this._offsetX;
+    const rotation = this._currentObject.rotation.clone();
+    const offset = this._offsetX + this._boundingBox.max.x;
 
-    this._currentObject.translateX(-offsetX);
-    this._currentObject.rotation.set(rotation.x, rotation.y, angle);
-    this._currentObject.translateX(offsetX);
+    this._currentObject.translateX(-offset);
+    this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
+    this._currentObject.translateX(offset);
   };
 
   //--------------------------------------------------------------
