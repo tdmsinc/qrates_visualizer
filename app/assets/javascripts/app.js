@@ -25,7 +25,7 @@ var defaults = {
   sleeve: {
     size: qvv.VinylVisualizer.SleeveSize.SIZE_12,
     format: qvv.VinylVisualizer.SleeveFormat.GATEFOLD,
-    hole: qvv.VinylVisualizer.SleeveHole.HOLED,
+    hole: true,
     finish: qvv.VinylVisualizer.SleeveFinish.NORMAL
   }
 };

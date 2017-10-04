@@ -90,7 +90,6 @@
 
     this._container = container;
     this._size = opts.size;
-    this._hole = Sleeve.Format.GATEFOLD === opts.format ? Sleeve.Hole.NO_HOLE : opts.hole;
     this._format = opts.format;
     this._finish = opts.finish || Sleeve.Finish.NORMAL;
     this._currentTextures = opts.textures;
@@ -99,6 +98,17 @@
     this._shininess = Sleeve.Shininess[this._finish];
     this._boundingBox = null;
     this._gatefoldAngle = 0;
+
+    // hole
+    if (Sleeve.Format.GATEFOLD === opts.format) {
+      this._hole = Sleeve.Hole.NO_HOLE;
+    } else  {
+      if (opts.hole) {
+        this._hole = Sleeve.Hole.HOLED;
+      } else {
+        this._hole = Sleeve.Hole.NO_HOLE;
+      }
+    }
 
     this._models = {
       '7': {
