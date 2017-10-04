@@ -622,14 +622,13 @@
   //--------------------------------------------------------------
   World.prototype.cover = function (value, opts) {
 
-    var self = this;
-
-    var sleeveFormat = this._sleeve.getFormat();
+    const self = this;
+    const sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
       this._sleeve.resetCoveredRatio();
 
-      var index = 0;
+      let index = 0;
       if (Vinyl.Index.SECOND === opts.index) {
         if (1 === this._vinyls.length) {
           return;
@@ -638,13 +637,31 @@
         index = 1;
       }
 
-      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-        // value += 0.5;
-      }
+      const param = {
+        ratio: this._vinyls[index].getCoveredRatio()
+      };
       
-      this._vinyls[index].setCoveredRatio(value);
+      new TWEEN.Tween(param)
+        .stop()
+        .to({ ratio: value })
+        .easing(TWEEN.Easing.Quartic.Out)
+        .onUpdate(function () {
+          self._vinyls[index].setCoveredRatio(this.ratio);
+        })
+        .start();
     } else {
-      this._sleeve.setCoveredRatio(value, opts);
+      const param = {
+        ratio: this._sleeve.getCoveredRatio()
+      }
+
+      new TWEEN.Tween(param)
+      .stop()
+      .to({ ratio: value })
+      .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function () {
+        self._sleeve.setCoveredRatio(this.ratio, opts);
+      })
+      .start();
     }
   };
 

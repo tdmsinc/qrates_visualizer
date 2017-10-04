@@ -733,31 +733,24 @@
   //--------------------------------------------------------------
   Sleeve.prototype.setCoveredRatio = function(ratio, opts, updateCallback, completeCallback) {
     
+    if (Sleeve.Format.GATEFOLD === this._format || Sleeve.Format.DOUBLE === this._format) {
+      return;
+    }
+
+    this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
+
     opts.duration = undefined !== opts.duration ? opts.duration : 500;
     opts.delay    = undefined !== opts.delay    ? opts.delay    : 0;
 
-    var self = this;
-    var offset = this._boundingBox.getSize().x;
+    const offset = this._coveredRatio * -this._boundingBox.getSize().x;
+    const position = this._currentObject.position;
+    this._currentObject.position.set(offset, position.y, position.z);
+  };
 
-    self._coveredRatio = Math.max(0, Math.min(1.0, ratio));
+  //--------------------------------------------------------------
+  Sleeve.prototype.getCoveredRatio = function () {
 
-    var tween = new TWEEN.Tween(this._currentObject.position);
-
-    tween
-      .stop()
-      .delay(opts.delay)
-      .to({ x: self._coveredRatio * -offset }, opts.duration)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function() {
-        if (updateCallback) updateCallback();
-      })
-      .onComplete(function() {
-        if (completeCallback) completeCallback();
-      })
-      .onStop(function() {
-        if (completeCallback) completeCallback();
-      })
-      .start();
+    return this._coveredRatio;
   };
 
   //--------------------------------------------------------------
@@ -768,7 +761,7 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setAngleForGatefold = function (angle) {
+  Sleeve.prototype.setAngleForGatefold = function (angle /* in radians */) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
       console.error('Sleeve.setAngleForGatefold: not viable for sleeve type "' + this._format + '"');

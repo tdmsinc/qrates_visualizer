@@ -126,13 +126,14 @@
     this._opacity = 0;
     this._rpm = opts.speed;
     this._enableRotate = false;
-    this._opacityTweenDuration = 300;
     this._clock = new THREE.Clock();
     this._boundingBox = null;
     this._sleeveFormat;
     this._index = opts.index || Vinyl.Index.FIRST;
     this._assetName = '';
     this._offsetY = Vinyl.Index.FIRST === this._index ? 0.6 : -0.6;
+    this._gatefoldAngle = 0;
+    this._coveredRatio = 0;
 
     // current object
     this._currentObject = {
@@ -366,8 +367,6 @@
 
     this._position = new THREE.Vector3(0, 0, 0);
     this._rotation = new THREE.Vector3(0, 0, 0);
-
-    this._opacityTween = new TWEEN.Tween(this);
 
     // マテリアルを初期化
     Object.keys(self._models).forEach(function(size) {
@@ -862,6 +861,8 @@
   //--------------------------------------------------------------
   Vinyl.prototype.setCoveredRatio = function (ratio, duration, delay, updateCallback, completeCallback) {
 
+    this._coveredRatio = Math.max(0, Math.min(1.0, ratio));;
+
     if (undefined === duration) {
       duration = 500;
     } else {
@@ -874,37 +875,21 @@
       delay = Math.max(0, delay);
     }
 
-    var self = this;
-    console.log('self._currentObject', self._currentObject);
-    var tempObj = self._currentObject.scene.clone();
-    tempObj.scale = 1.0;
+    const offset = ratio * this._boundingBox.getSize().x
+    const position = this._currentObject.scene.position;
+    this._currentObject.scene.position.set(offset, position.y, position.z);
+  };
 
-    var offset = new THREE.Box3().setFromObject(tempObj).getSize().x;
-    var tween = new TWEEN.Tween(this._currentObject.scene.position);
+  //--------------------------------------------------------------
+  Vinyl.prototype.getCoveredRatio = function () {
 
-    tween
-      .stop()
-      .delay(delay)
-      .to({ x: ratio * offset }, duration)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function(value) {
-        self._currentObject.offsetX = this.x;
-        if (updateCallback) updateCallback();
-      })
-      .onComplete(function(value) {
-        self._currentObject.offsetX = this.x;
-        if (completeCallback) completeCallback();
-      })
-      .onStop(function() {
-        if (completeCallback) completeCallback();
-      })
-      .start();
-
-    tempObj = null;
+    return this._coveredRatio;
   };
 
   //--------------------------------------------------------------
   Vinyl.prototype.setRotationZ = function (angle /* in radians */) {
+
+    this._gatefoldAngle = angle;
 
     var rotation = this._currentObject.scene.rotation.clone();
     var offsetX = this._boundingBox.max.x + this._currentObject.offsetX;
