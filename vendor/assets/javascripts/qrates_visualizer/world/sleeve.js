@@ -83,6 +83,7 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setup = function(scene, assets, opts, container) {
+
     opts = opts || {
       format: Sleeve.Format.SINGLE_WITHOUT_SPINE,
       ColorFormat: Sleeve.ColorFormat.WHITE,
@@ -93,28 +94,6 @@
 
       }
     };
-
-    this._container = container;
-    this._size = opts.size;
-    this._format = opts.format;
-    this._finish = opts.finish || Sleeve.Finish.NORMAL;
-    this._currentTextures = opts.textures;
-    this._coveredRatio = 0.0;
-    this._bumpScale = 0.3;
-    this._shininess = Sleeve.Shininess[this._finish];
-    this._boundingBox = null;
-    this._gatefoldAngle = 0;
-
-    // hole
-    if (Sleeve.Format.GATEFOLD === opts.format) {
-      this._hole = Sleeve.Hole.NO_HOLE;
-    } else  {
-      if (opts.hole) {
-        this._hole = Sleeve.Hole.HOLED;
-      } else {
-        this._hole = Sleeve.Hole.NO_HOLE;
-      }
-    }
 
     this._models = {
       '7': {
@@ -354,9 +333,28 @@
       }
     };
 
-    this._defaultTexture = assets['assetsTextureSleeveDefault'];
+    const self = this;
 
-    var self = this;
+    this._container = container;
+    this._size = opts.size;
+    this._finish = opts.finish || Sleeve.Finish.NORMAL;
+    this._currentTextures = opts.textures;
+    this._coveredRatio = 0.0;
+    this._bumpScale = 0.3;
+    this._shininess = Sleeve.Shininess[this._finish];
+    this._boundingBox = null;
+    this._gatefoldAngle = 0;
+
+    // hole
+    if (Sleeve.Format.GATEFOLD === opts.format) {
+      this._hole = Sleeve.Hole.NO_HOLE;
+    } else  {
+      if (opts.hole) {
+        this._hole = Sleeve.Hole.HOLED;
+      } else {
+        this._hole = Sleeve.Hole.NO_HOLE;
+      }
+    }
 
     // Image として読み込まれたテクスチャを THREE.Texture に変換する
     (function initTextures (obj) {
@@ -374,25 +372,20 @@
       });
     })(this._textures);
 
-    // プリントスリーブとしてテクスチャーが渡された場合
-    if (opts.textures) {
-      this.updateTexture(this._textures[this._size][this._format][this._hole], opts.textures);
-    }
-
     // モデルのマテリアルを初期化
     Object.keys(self._models).forEach(function(size) {
       Object.keys(self._models[size]).forEach(function(type) {
         Object.keys(self._models[size][type]).forEach(function(opt) {
           if (!self._models[size][type][opt]) {
-            console.warn('model is ' + self._models[size][type][opt]);
+            console.warn('model["' + size + '"]["' + type + '"]["' + opt + '"] is ' + self._models[size][type][opt]);
             return;
           }
 
           if (!self._textures[size][type][opt]) {
-            console.warn('textures are ' + self._textures[size][type][opt]);
+            console.warn('textures["' + size + '"]["' + type + '"]["' + opt + '"] are ' + self._textures[size][type][opt]);
           }
 
-          var assetName = size + '-' + type + '-' + opt;
+          let assetName = size + '-' + type + '-' + opt;
 
           if (self._textures[size][type][opt]) { 
             self._textures[size][type][opt].assetName = assetName;
@@ -402,7 +395,7 @@
             self._models[size][type][opt].assetName = assetName;
             self._models[size][type][opt].scene.assetName = assetName;
 
-            var scale = 5.5;
+            let scale = 5.5;
             self._models[size][type][opt].scene.scale.set(scale, scale, scale);
 
             self.initMaterial(self._models[size][type][opt], self._textures[size][type][opt]);
@@ -411,25 +404,27 @@
       });
     });
 
-
-    // currentObject = ステージに配置されるオブジェクト
-    this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
+    this.setFormat(opts.format);
     this.updateBoundingBox();
-
     this.updateBoundingBoxMesh();
 
-    this._position = new THREE.Vector3(0, 0, 0);
-    this._rotation = new THREE.Vector3(0, 0, 0);
-
-    this.setFormat(this._format);
-
-    this._currentObject.name = 'sleeve';
-
-    this._container.add(this._currentObject);
+    // set initial textures
+    if (opts.textures) {
+      if (Sleeve.Format.GATEFOLD === this._format) {
+        Object.keys(opts.textures).forEach(function (side) {
+          Object.keys(opts.textures[side]).forEach(function (type) {
+            self._setTexture(type, opts.textures[side][type], side);
+          });
+        });
+      } else {
+        Object.keys(opts.textures).forEach(function (type) {
+          self._setTexture(type, opts.textures[type]);
+        });
+      }
+    }
 
     this._coveredRatio = 0;
     this.setCoveredRatio(this._coveredRatio);
-
     this.setOpacity(1, 0);
   };
 
@@ -487,6 +482,7 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.updateTexture = function(texture, image) {
+
     if (!texture || !image) {
       return;
     }
@@ -550,12 +546,13 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setFormat = function(format) {
+
     if (!format) {
       console.warn('Sleeve.setFormat: no format specified');
       return;
     }
 
-    var self = this;
+    const self = this;
 
     if (-1 === Object.values(Sleeve.Format).indexOf(format)) {
       console.error('Sleeve.setFormat: unknown format "' + format + '"');
@@ -574,16 +571,20 @@
     }
 
     self._format = format;
-    self.removeFromContainer();
-    self.dispose();
+
+    if (self._currentObject) {
+      self.removeFromContainer();
+      self.dispose();
+    }
     
     self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
-    
-    var position = self._currentObject.position;
+    self._currentObject.name = 'sleeve';
+
+    let position = self._currentObject.position;
     self._currentObject.position.set(0, position.y, position.z);
     
-    this.updateBoundingBox();
-    this.updateBoundingBoxMesh();
+    self.updateBoundingBox();
+    self.updateBoundingBoxMesh();
 
     self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
@@ -599,12 +600,14 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setType = function(format) {
+
     console.warn('Sleeve.setType(format) is deprecated. use Sleeve.setFormat(format) instead.');
     this.setFormat(format);
   };
 
   //--------------------------------------------------------------
   Sleeve.prototype.getFormat = function () {
+
     return this._format;
   };
 
@@ -673,6 +676,7 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setHole = function(value) {
+
     if (!(value === Sleeve.Hole.NO_HOLE || value === Sleeve.Hole.HOLED)) {
       console.warn('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
       return;
@@ -840,6 +844,7 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setBumpScale = function(value) {
+
     var self = this;
     self._bumpScale = value;
 
@@ -853,6 +858,7 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setAoMapIntensity = function(value) {
+
     var self = this;
 
     self._currentObject.traverse(function (child) {
@@ -865,6 +871,7 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setVisibility = function(yn, opts, callback) {
+
     this._currentObject.visible = yn;
   };
 
