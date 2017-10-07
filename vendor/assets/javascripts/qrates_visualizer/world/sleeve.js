@@ -75,6 +75,12 @@
     'gloss': 15
   };
 
+  Sleeve.GatefoldSide = {
+    FRONT: 'front',
+    BACK: 'back',
+    SPINE: 'spine'
+  };
+
   //--------------------------------------------------------------
   Sleeve.prototype.setup = function(scene, assets, opts, container) {
     opts = opts || {
@@ -499,68 +505,48 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setColorMap = function(image) {
-    
-    if (!image) {
-      return;
-    }
+  Sleeve.prototype._setTexture = function (type, image, side) { // for internal use
 
-    this.updateTexture(this._textures[this._size][this._format][this._hole]['color'], image);
-  }
+    if (undefined === side) {
+      this.updateTexture(this._textures[this._size][this._format][this._hole][type], image);
+    } else {
+      if (-1 === Object.values(Sleeve.GatefoldSide).indexOf(side)) {
+        return;
+      }
 
-  //--------------------------------------------------------------
-  Sleeve.prototype.setAoMap = function(image) {
-    
-    if (!image) {
-      return;
-    }
-
-    this.updateTexture(this._textures[this._size][this._format][this._hole]['ao'], image);
-  }
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setBumpMap = function(image) {
-    
-    if (!image) {
-      return;
-    }
-
-    this.updateTexture(this._textures[this._size][this._format][this._hole]['bumpmap'], image);
-  }
-
-  // TODO: gatefold のテクスチャ変更メソッド
-  //--------------------------------------------------------------
-  Sleeve.prototype.setFrontColorMap = function(image) {
-
-    if (this._format !== Sleeve.Format.GATEFOLD) {
-      console.error('Sleeve.setFrontColorMap: this function is only valid for gatefold format');
-      return;
-    }
-    
-    if (!image) {
-      return;
-    }
-
-    this.updateTexture(this._textures[this._size][Sleeve.Format.GATEFOLD][this._hole]['front']['color'], image);
-  }
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setTexture = function(sideA, sideB, spine) {
-    
-    console.warn('Sleeve.setTexture is deprecated. use setColorMap/setAoMap/setBumpMap to set each texture.');
-  };
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.clearTexture = function(side) {
-    switch(side){
-      case 'sideA':
-        this.updateTexture(this._textures.front, this._defaultTexture);
-        break;
-      case 'sideB':
-        this.updateTexture(this._textures.back, this._defaultTexture);
-        break;
+      this.updateTexture(this._textures[this._size][this._format][this._hole][side][type], image);
     }
   };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setColorMap = function(image, side) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture('color', image, side);
+  }
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setAoMap = function(image, side) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture('ao', image, side);
+  }
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setBumpMap = function(image, side) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture('bumpmap', image, side);
+  }
 
   //--------------------------------------------------------------
   Sleeve.prototype.setFormat = function(format) {
