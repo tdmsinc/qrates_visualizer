@@ -535,7 +535,7 @@
     var sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.GATEFOLD !== sleeveFormat) {
-      console.warn('World.setSleeveRotation: changing rotation is not aveilable for "' + sleeveFormat + '"');
+      console.warn('World.setSleeveRotation: changing rotation is not available for "' + sleeveFormat + '"');
       return;
     }
 
@@ -544,29 +544,18 @@
     };
 
     var self = this;
-    var currentAngle = this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI);
-    var radians;
+    var currentAngleInDegrees = this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI);
 
-    new TWEEN.Tween({ rotation: currentAngle })
+    new TWEEN.Tween({ rotation: currentAngleInDegrees })
       .stop()
       .to({ rotation: degree }, 500)
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function () {
-        angle = this.rotation * (Math.PI / 180);
-        self._sleeve.setAngleForGatefold(angle);
-        self._vinyls[0].setRotationZ(angle * 2);
+        angleInRadians = this.rotation * (Math.PI / 180);
+        self._sleeve.setAngleForGatefold(angleInRadians);
+        self._vinyls[0].setRotationZ(angleInRadians * 2);
       })
       .start();
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.setSleeveFrontRotation = function (degree) {
-    this._sleeve.setGatefoldFrontRotation(degree);
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.setSleeveBackRotation = function (degree) {
-    this._sleeve.setGatefoldBackRotation(degree);
   };
 
   //--------------------------------------------------------------
@@ -628,18 +617,18 @@
         index = 1;
       }
 
-      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-        this._vinyls[0].setOffsetY(1.1965015565108743);
-        this._vinyls[1].setOffsetY(-1.1965015565108743);
-      } else {
-        this._vinyls[0].setOffsetY(0.6);
-        this._vinyls[1].setOffsetY(-0.6);
-      }
+      // if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+      //   this._vinyls[0].setOffsetY(1.1965015565108743);
+      //   this._vinyls[1].setOffsetY(-1.1965015565108743);
+      // } else {
+      //   this._vinyls[0].setOffsetY(0.6);
+      //   this._vinyls[1].setOffsetY(-0.6);
+      // }
 
       const param = {
         ratio: this._vinyls[index].getCoveredRatio()
       };
-      
+
       new TWEEN.Tween(param)
         .stop()
         .to({ ratio: value })
@@ -1064,10 +1053,13 @@
     }
 
     if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
-      throw new TypeError('Unknown vinyl size error. Size ' + size + ' is not expected.');
+      console.error('Unknown vinyl size "' + size + '"');
+      return;
     }
 
     target.setSize(size);
+
+    this._resetFirstVinylRotation();
 
     var firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
     var secondVinylSize = firstVinylSize;
@@ -1110,17 +1102,20 @@
   World.prototype.onVinylWeightChanged = function (target, weight) {
 
     target.setWeight(weight);
+
+    this._resetFirstVinylRotation();
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelOptionChanged = function (target, value) {
 
-    console.log('onLabelOptionChanged', target, value);
     if (value === true) {
       target.enableLabel();
     } else {
       target.disableLabel();
     }
+
+    this._resetFirstVinylRotation();
   };
 
   //--------------------------------------------------------------
@@ -1212,6 +1207,8 @@
     this._vinyls.forEach(function (vinyl) {
       vinyl.setCoveredRatio(0);
     });
+
+    this._resetFirstVinylRotation();
   };
 
   //--------------------------------------------------------------
@@ -1268,4 +1265,14 @@
       return 12;
     }
   };
+
+  //--------------------------------------------------------------
+  World.prototype._resetFirstVinylRotation = function () {
+
+    if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
+      this._vinyls[0].setRotationZ(this._sleeve.getCurrentGatefoldAngle() * 2);
+    } else {
+      this._vinyls[0].setRotationZ(0);
+    }
+  }
 })(this, (this.qvv = (this.qvv || {})));

@@ -869,18 +869,14 @@
       delay = Math.max(0, delay);
     }
 
+    const offset = this._offsetX + this._boundingBox.max.x;
+    
+    const x = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.cos(this._gatefoldAngle) - this._boundingBox.max.x;
+    const y = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.sin(this._gatefoldAngle);
+
     const position = this._currentObject.position;
 
-    const offset = this._offsetX + this._boundingBox.max.x;
-
-    const x = this._offsetX * Math.cos(this._gatefoldAngle);
-    const y = this._offsetY * Math.sin(this._gatefoldAngle);
-    
-    if (0 === this._gatefoldAngle) {
-      this._currentObject.position.set(x, position.y, position.z);
-    } else {
-      this._currentObject.position.set(x, y, position.z);
-    }
+    this._currentObject.position.set(x, y, position.z);
   };
 
   //--------------------------------------------------------------
@@ -894,12 +890,14 @@
 
     this._gatefoldAngle = angle;
 
-    const rotation = this._currentObject.rotation.clone();
-    const offset = this._offsetX + this._boundingBox.max.x;
+    const x = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.cos(this._gatefoldAngle) - this._boundingBox.max.x;
+    const y = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.sin(this._gatefoldAngle);
 
-    this._currentObject.translateX(-offset);
+    const position = this._currentObject.position;
+    const rotation = this._currentObject.rotation
+
+    this._currentObject.position.set(x, y, position.z);
     this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
-    this._currentObject.translateX(offset);
   };
 
   //--------------------------------------------------------------
