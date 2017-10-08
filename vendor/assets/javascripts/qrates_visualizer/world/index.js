@@ -941,9 +941,9 @@
       this._sleeve.update();
     }
 
-    if (this._vinyl) {
-      this._vinyls[0].update();
-    }
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.update();
+    });
 
     this._controls.update();
 

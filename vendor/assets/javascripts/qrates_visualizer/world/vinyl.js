@@ -106,7 +106,7 @@
 
     opts.color = opts.color || 0;
 
-    var images = [];
+    let images = [];
     this._envMapTexture = new THREE.CubeTexture(images);
     this._envMapTexture.flipY = false;
 
@@ -332,7 +332,7 @@
       },
     };
 
-    var self = this;
+    const self = this;
 
     // Image として読み込まれたテクスチャを THREE.Texture に変換する
     (function initTextures (obj, parentKey) {
@@ -352,14 +352,14 @@
       });
     })(this._textures);
 
-    this._position = new THREE.Vector3(0, 0, 0);
-    this._rotation = new THREE.Vector3(0, 0, 0);
-
     // マテリアルを初期化
+    let assetName = '';
+    let scale = 5.5;
+
     Object.keys(self._models).forEach(function(size) {
       Object.keys(self._models[size]).forEach(function(type) {
 
-        var assetName = 'vinyl-' + size + '-' + type;
+        assetName = 'vinyl-' + size + '-' + type;
 
         if (self._textures[size][type]) {
           self._textures[size][type].assetName = assetName;
@@ -369,7 +369,6 @@
           self._models[size][type].assetName = assetName;
           self._models[size][type].scene.assetName = assetName;
 
-          var scale = 5.5;
           self._models[size][type].scene.scale.set(scale, scale, scale);
 
           self.initMaterial(self._models[size][type], self._textures[size][type]);
@@ -386,7 +385,7 @@
       }
     });
 
-    var pos = this._currentObject.position;
+    const pos = this._currentObject.position;
     this._currentObject.position.set(pos.x, this._offsetY, pos.z);
 
     if (Vinyl.Weight.HEAVY === this._weight) {
@@ -405,7 +404,7 @@
       return false;
     }
 
-    var self = this;
+    const self = this;
 
     model.scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
@@ -547,7 +546,7 @@
       return;
     }
 
-    var self = this;
+    const self = this;
 
     self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
@@ -564,7 +563,7 @@
   //--------------------------------------------------------------
   Vinyl.prototype.setLabelTexture = function(textures /* = {} */) {
 
-    var self = this;
+    const self = this;
 
     self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh && child.name === Vinyl.Part.LABEL) {
@@ -596,14 +595,14 @@
   //--------------------------------------------------------------
   Vinyl.prototype.updateCurrentObjectMaterial = function() {
 
-    var self = this;
+    const self = this;
 
     if (!self._currentObject) {
       return;
     }
 
-    var pos = self._currentObject.position;
-    var format = self._format;
+    const position = self._currentObject.position;
+    const format = self._format;
 
     self._opacity = 0;
 
@@ -652,7 +651,7 @@
     });
     
     self._container.add(self._currentObject);
-    self._currentObject.position.set(pos.x, pos.y, pos.z);
+    self._currentObject.position.set(position.x, position.y, position.z);
 
     self.setOpacity(self._material.opacity, 1000, 250);
   }
@@ -660,7 +659,7 @@
   //--------------------------------------------------------------
   Vinyl.prototype.setBumpScale = function(value) {
 
-    var self = this;
+    const self = this;
     self._bumpScale = value;
 
     self._currentObject.traverse(function (child) {
@@ -674,7 +673,7 @@
   //--------------------------------------------------------------
   Vinyl.prototype.setAoMapIntensity = function(value) {
 
-    var self = this;
+    const self = this;
 
     self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
@@ -686,6 +685,7 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.getBumpScale = function() {
+
     return this._bumpScale;
   };
 
@@ -737,10 +737,7 @@
       this._material = Vinyl.Color.WHITE;
     } 
 
-    var self = this;
-
     this.updateCurrentObjectMaterial();
-
     this.setOpacity(this._material.opacity);
   };
 
@@ -789,12 +786,10 @@
   //--------------------------------------------------------------
   Vinyl.prototype.setOpacity = function(to, duration, delay) {
 
-    var self = this;
-
     duration = undefined !== duration ? duration : 1000;
     delay = undefined !== delay ? delay : 0;
 
-    self._currentObject.traverse(function (child) {
+    this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         var tween = new TWEEN.Tween(child.material);
         child.material.opacity = 0;
@@ -813,11 +808,13 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.setEnableRotate = function(yn) {
+
     this._enableRotate = yn;
   };
 
   //--------------------------------------------------------------
   Vinyl.prototype.setRPM = function(rpm) {
+
     this._rpm = rpm;
   };
 
@@ -905,7 +902,7 @@
 
     this._offsetY = value;
 
-    var pos = this._currentObject.position;
+    const pos = this._currentObject.position;
     this._currentObject.position.set(pos.x, this._offsetY, pos.z);
   };
 
@@ -966,10 +963,10 @@
     }
 
     if (this._enableRotate) {
-      var amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
-      var rotation = this._currentObject.rotation;
+      let amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
+      let rotation = this._currentObject.children[0].rotation.clone();
       rotation.y -= amount;
-      this._currentObject.rotation.set(rotation.x, rotation.y, rotation.z);
+      this._currentObject.children[0].rotation.set(rotation.x, rotation.y, rotation.z);
     }
   };
 
