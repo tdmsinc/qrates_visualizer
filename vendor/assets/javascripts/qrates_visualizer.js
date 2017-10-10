@@ -281,6 +281,13 @@
     return this;
   };
 
+  VinylVisualizer.prototype.gatefoldCoverAngle = function (degree) {
+
+    if (!this.world) return this;
+    this.world.setGatefoldCoverAngle(degree);
+    return this;
+  };
+
   /**
    * @param {Number} step
    * @param {Object} opts [optional]

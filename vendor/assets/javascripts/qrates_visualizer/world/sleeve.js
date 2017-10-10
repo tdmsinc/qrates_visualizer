@@ -761,10 +761,10 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setAngleForGatefold = function (angle /* in radians */) {
+  Sleeve.prototype.setGatefoldCoverAngle = function (angle /* in radians */) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
-      console.error('Sleeve.setAngleForGatefold: not viable for sleeve type "' + this._format + '"');
+      console.error('Sleeve.setGatefoldCoverAngle: not viable for sleeve type "' + this._format + '"');
       return;
     }
 

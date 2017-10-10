@@ -364,7 +364,7 @@
     });
 
     sleeveRotationController.onChange(function (value) {
-      self.setSleeveRotation(value);
+      self.setGatefoldCoverAngle(value);
     });
 
     sleeveFrontRotationController.onChange(function (value) {
@@ -530,18 +530,14 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.setSleeveRotation = function (degree) {
+  World.prototype.setGatefoldCoverAngle = function (degree) {
 
     var sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.GATEFOLD !== sleeveFormat) {
-      console.warn('World.setSleeveRotation: changing rotation is not available for "' + sleeveFormat + '"');
+      console.warn('World.setGatefoldCoverAngle: changing rotation is not available for "' + sleeveFormat + '"');
       return;
     }
-
-    var param = {
-      rotation: 0
-    };
 
     var self = this;
     var currentAngleInDegrees = this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI);
@@ -552,7 +548,7 @@
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function () {
         angleInRadians = this.rotation * (Math.PI / 180);
-        self._sleeve.setAngleForGatefold(angleInRadians);
+        self._sleeve.setGatefoldCoverAngle(angleInRadians);
         self._vinyls[0].setRotationZ(angleInRadians * 2);
       })
       .start();
