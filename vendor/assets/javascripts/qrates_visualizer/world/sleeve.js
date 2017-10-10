@@ -619,6 +619,8 @@
       return;
     }
 
+    size += '';
+
     if (-1 === Object.values(Sleeve.Size).indexOf(size)) {
       console.error('Sleeve.setSize: specified size "' + size + '" not found');
       return;

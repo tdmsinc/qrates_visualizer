@@ -1009,6 +1009,7 @@
       parent.vinyls[i].on('labelColorMap', this.onLabelColorMapChanged.bind(this, this._vinyls[i]));
     }
 
+    parent.sleeve.on('size', this.onSleeveSizeChanged.bind(this));
     parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
     parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
     parent.sleeve.on('finish', this.onSleeveFinishChanged.bind(this));
@@ -1160,6 +1161,12 @@
   World.prototype.onLabelColorMapChanged = function (target, image) {
 
     target.setLabelTexture({ map: image });
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onSleeveSizeChanged = function (value) {
+
+    this._sleeve.setSize(value);
   };
 
   //--------------------------------------------------------------

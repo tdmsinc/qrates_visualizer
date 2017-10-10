@@ -167,6 +167,7 @@ vv.on('ready', function() {
     });
   });
 
+  vm.$watch('sleeve.size', function(value) { vv.sleeve.size(value); });
   vm.$watch('sleeve.type', function(value) { vv.sleeve.type(value); });
   vm.$watch('sleeve.colorFormat', function(value) { vv.sleeve.colorFormat(value); });
   vm.$watch('sleeve.hole', function(value) { vv.sleeve.hole(value); });
