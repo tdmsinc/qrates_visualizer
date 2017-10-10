@@ -612,6 +612,8 @@
     self._currentObject = self._models[self._size][format].scene.clone();
     self.assetName = self._models[self._size][format].assetName;
 
+    this.updateBoundingBox();
+
     self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material = child.material.clone();
@@ -696,6 +698,8 @@
       console.warn('Vinyl.setSize: no size specified');
       return;
     }
+
+    size += '';
 
     if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
       console.warn('Vinyl.setSize: invalid size "' + size + '"');

@@ -556,7 +556,69 @@
 
   //--------------------------------------------------------------
   World.prototype.setSleeveVisibility = function (yn, opts, callback) {
+
     this._sleeve.setVisibility(yn);
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.setSize = function (size, opts, callback) {
+
+    if (!size) {
+      console.warn('World.onVinylSizeChanged: no size value passed');
+      return;
+    }
+
+    // to string
+    size += '';
+
+    if ('7' === size) {
+      size = '7S';
+    }
+
+    if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
+      console.error('Unknown vinyl size "' + size + '"');
+      return;
+    }
+    
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.setSize(size);
+    });
+
+    this._resetFirstVinylRotation();
+
+    var firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
+    var secondVinylSize = firstVinylSize;
+
+    if (1 < this._vinyls.length) {
+      secondVinylSize = this._convertSizeToNumber(this._vinyls[1].getSize());
+    }
+
+    var largerSize = Math.max(firstVinylSize, secondVinylSize);
+
+    var sleeveSize;
+    var scale;
+
+    switch (largerSize) {
+      case 7:
+        sleeveSize = Sleeve.Size.SIZE_7;
+        scale = 1;
+        break;
+      case 10:
+        sleeveSize = Sleeve.Size.SIZE_10;
+        scale = 0.6890566038;
+        break;
+      case 12:
+        sleeveSize = Sleeve.Size.SIZE_12;
+        scale = 0.5833865815;
+        break;
+    }
+
+    this._containerObject.scale.set(scale, scale, scale);
+    this._sleeve.setSize(sleeveSize);
+
+    if (callback) {
+      callback();
+    }
   };
 
   //--------------------------------------------------------------
@@ -1273,7 +1335,7 @@
   World.prototype._resetFirstVinylRotation = function () {
 
     if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
-      this._vinyls[0].setRotationZ(this._sleeve.getCurrentGatefoldAngle() * 2);
+      this._vinyls[0].setRotationZ(0);
     } else {
       this._vinyls[0].setRotationZ(0);
     }

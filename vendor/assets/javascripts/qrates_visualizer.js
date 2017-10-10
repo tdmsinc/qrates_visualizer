@@ -360,4 +360,13 @@
     return this;
   };
 
+  VinylVisualizer.prototype.setSize = function (value, opts, callback) {
+
+    if (!this.world) return this;
+    opts = opts || {};
+    callback = callback || noop;
+    this.world.setSize(value, opts, callback);
+    return this;
+  };
+
 })(this, (this.qvv = (this.qvv || {})));
