@@ -1166,7 +1166,7 @@
 
     target.setWeight(weight);
 
-    this._resetFirstVinylRotation();
+    // this._resetFirstVinylRotation();
   };
 
   //--------------------------------------------------------------
@@ -1178,7 +1178,7 @@
       target.disableLabel();
     }
 
-    this._resetFirstVinylRotation();
+    // this._resetFirstVinylRotation();
   };
 
   //--------------------------------------------------------------

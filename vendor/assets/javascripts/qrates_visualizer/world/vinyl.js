@@ -615,6 +615,7 @@
     self.assetName = self._models[self._size][format].assetName;
 
     this.updateBoundingBox();
+    this.setOffsetY(this._offsetY);
 
     self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
@@ -875,7 +876,7 @@
     const offset = this._offsetX + this._boundingBox.max.x;
     
     const x = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.cos(this._gatefoldAngle) - this._boundingBox.max.x;
-    const y = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.sin(this._gatefoldAngle);
+    const y = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.sin(this._gatefoldAngle) + this._offsetY;
 
     const position = this._currentObject.position;
 

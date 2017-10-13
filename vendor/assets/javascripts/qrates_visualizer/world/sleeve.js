@@ -791,11 +791,12 @@
         if (-1 < child.name.toLowerCase().indexOf('front')) {
           var rotation = child.rotation;
           child.rotation.set(rotation.x, rotation.y, angle);
+          child.updateMatrix();
+          console.log('getPositionFromMatrix', child.getWorldPosition().x);
         } else if (-1 < child.name.toLowerCase().indexOf('back')) {
           var rotation = child.rotation;
           child.rotation.set(rotation.x, rotation.y, -angle);
           child.updateMatrix();
-          console.log('getPositionFromMatrix', child.getWorldPosition().y);
         }
       }
     });
@@ -948,12 +949,12 @@
 
     // const bounds = this._boundingBox;
 
-    if (!this._container.getObjectByName('Back')) {
+    if (!this._container.getObjectByName('Front')) {
       return;
     }
 
-    const bounds = new THREE.Box3().setFromBufferAttribute(this._container.getObjectByName('Back').geometry.attributes.position);
-    console.log(this._container.getObjectByName('Back'), bounds, bounds.getSize());
+    const bounds = new THREE.Box3().setFromBufferAttribute(this._container.getObjectByName('Front').geometry.attributes.position);
+    console.log(this._container.getObjectByName('Front'), bounds, bounds.getSize());
 
     var geometry = new THREE.BoxGeometry(
       bounds.getSize().x * 5.5,
