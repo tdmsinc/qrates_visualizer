@@ -344,6 +344,7 @@
     this._shininess = Sleeve.Shininess[this._finish];
     this._boundingBox = null;
     this._gatefoldAngle = 0;
+    this._globalObjectScale = 1.0;
 
     // hole
     if (Sleeve.Format.GATEFOLD === opts.format) {
@@ -407,6 +408,10 @@
     this.setFormat(opts.format);
     this.updateBoundingBox();
     this.updateBoundingBoxMesh();
+
+    let bounds = new THREE.Box3().setFromObject(this._models['12']['gatefold']['normal'].scene);
+    console.log('bounds original', bounds);
+    console.log('bounds cloned', this._boundingBox);
 
     // set initial textures
     if (opts.textures) {
@@ -772,6 +777,15 @@
 
     this._gatefoldAngle = angle;
 
+    var offsetX = this._boundingBox.max.x;
+    var offsetY = this._boundingBox.max.y * 0.1;
+    // var offsetY = this._boundingBox.getSize().y;
+    this._currentObject.translateX(-offsetX);
+    // this._currentObject.translateY(-offsetY);
+    this._currentObject.rotation.set(0, 0, angle);
+    this._currentObject.translateX(offsetX);
+    // this._currentObject.translateY(offsetY);
+
     this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('front')) {
@@ -780,17 +794,22 @@
         } else if (-1 < child.name.toLowerCase().indexOf('back')) {
           var rotation = child.rotation;
           child.rotation.set(rotation.x, rotation.y, -angle);
+          child.updateMatrix();
+          console.log('getPositionFromMatrix', child.getWorldPosition().y);
         }
       }
     });
+    // console.log('position', this._container.getObjectByName('Back').getWorldPosition().y);
+    this.updateBoundingBoxMesh();
 
-    var offsetX = this._boundingBox.max.x;
-    var offsetY = this._boundingBox.max.y * 0.5;
-    this._currentObject.translateX(-offsetX);
-    this._currentObject.translateY(-offsetY);
-    this._currentObject.rotation.set(0, 0, angle);
-    this._currentObject.translateY(offsetY);
-    this._currentObject.translateX(offsetX);
+    // var offsetX = this._boundingBox.max.x + 0.85;
+    // var offsetY = this._boundingBox.max.y * 0.5;
+    // // var offsetY = this._boundingBox.getSize().y;
+    // this._currentObject.translateX(-offsetX);
+    // this._currentObject.translateY(-offsetY);
+    // this._currentObject.rotation.set(0, 0, angle);
+    // this._currentObject.translateX(offsetX);
+    // this._currentObject.translateY(offsetY);
   };
 
   //--------------------------------------------------------------
@@ -878,6 +897,12 @@
   };
 
   //--------------------------------------------------------------
+  Sleeve.prototype.setObjectScale = function (scale) {
+
+    this._globalObjectScale = scale;
+  };
+
+  //--------------------------------------------------------------
   Sleeve.prototype.getCurrentGatefoldAngle = function () {
     
     return this._gatefoldAngle;
@@ -921,10 +946,19 @@
       mesh.material.dispose();
     }
 
+    // const bounds = this._boundingBox;
+
+    if (!this._container.getObjectByName('Back')) {
+      return;
+    }
+
+    const bounds = new THREE.Box3().setFromBufferAttribute(this._container.getObjectByName('Back').geometry.attributes.position);
+    console.log(this._container.getObjectByName('Back'), bounds, bounds.getSize());
+
     var geometry = new THREE.BoxGeometry(
-      this._boundingBox.getSize().x,
-      this._boundingBox.getSize().y,
-      this._boundingBox.getSize().z
+      bounds.getSize().x * 5.5,
+      bounds.getSize().y * 5.5,
+      bounds.getSize().z * 5.5
     );
 
     var material = new THREE.MeshBasicMaterial({

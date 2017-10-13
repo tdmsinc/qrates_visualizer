@@ -97,6 +97,7 @@
     // sleeve
     this._sleeve = new Sleeve();
     this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._containerObject);
+    this._sleeve.setObjectScale(this._objectScales['12']);
 
     // vinyl
     this._vinyls = [];
@@ -140,6 +141,8 @@
     var self = this;
 
     this.initGui();
+
+    // this._scene.add(new THREE.GridHelper(200, 100));
 
     if (opts.defaults.hasOwnProperty('view')) {
       this.updateView(opts.defaults.view, { duration: 0 });
@@ -372,7 +375,7 @@
     });
 
     sleeveBackRotationController.onChange(function (value) {
-      self.setSleeveBackRotation(value);
+      self._sleeve.setGatefoldBackRotation(value);
     });
 
     sleeveVisibilityController.onChange(function (value) {
@@ -550,6 +553,7 @@
         angleInRadians = this.rotation * (Math.PI / 180);
         self._sleeve.setGatefoldCoverAngle(angleInRadians);
         self._vinyls[0].setRotationZ(angleInRadians * 2);
+        self._vinyls[1].setOffsetY(self._containerObject.getObjectByName('Back').getWorldPosition().y);
       })
       .start();
   };

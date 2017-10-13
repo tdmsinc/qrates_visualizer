@@ -377,6 +377,7 @@
     });
 
     this._currentObject = this._models[this._size][this._format].scene.clone();
+    this._currentObject.scale.y = 0.99;
     this.assetName = this._models[this._size][this._format].assetName;
 
     this._currentObject.traverse(function (child) {
@@ -610,6 +611,7 @@
     self.dispose();
 
     self._currentObject = self._models[self._size][format].scene.clone();
+    self._currentObject.scale.y = 0.99;
     self.assetName = self._models[self._size][format].assetName;
 
     this.updateBoundingBox();
@@ -892,7 +894,7 @@
     this._gatefoldAngle = angle;
 
     const x = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.cos(this._gatefoldAngle) - this._boundingBox.max.x;
-    const y = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.sin(this._gatefoldAngle);
+    const y = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.sin(this._gatefoldAngle) + (3.3 * 0.5);
 
     const position = this._currentObject.position;
     const rotation = this._currentObject.rotation
@@ -905,7 +907,7 @@
   Vinyl.prototype.setOffsetY = function (value) {
 
     this._offsetY = value;
-
+    
     const pos = this._currentObject.position;
     this._currentObject.position.set(pos.x, this._offsetY, pos.z);
   };
