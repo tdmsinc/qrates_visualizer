@@ -859,14 +859,15 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setCoveredRatio = function (ratio, duration, delay, updateCallback, completeCallback) {
+  Vinyl.prototype.setCoveredRatio = function (ratio, offsetX, offsetY) {
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
-    this._offsetX = this._boundingBox.getSize().x * this._coveredRatio;
+    this._offsetX = offsetX || 0;
+    this._offsetY = offsetY || 0;
     
     const dist = this._boundingBox.max.x * (2 * this._coveredRatio + 1) - this._boundingBox.max.x;
-    const x = this._basePosition.x + 0.08 + dist * Math.cos(this._gatefoldAngle);
-    const y = this._basePosition.y + dist * Math.sin(this._gatefoldAngle);
+    const x = this._basePosition.x + this._offsetX + dist * Math.cos(this._gatefoldAngle);
+    const y = this._basePosition.y + this._offsetY + dist * Math.sin(this._gatefoldAngle);
 
     this._currentObject.position.set(x, y, this._basePosition.z);
   };
@@ -897,8 +898,10 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setFrontSleevePositionAndAngle = function (vector, angle) {
+  Vinyl.prototype.setFrontSleevePositionAndAngle = function (vector, angle, offsetX) {
 
+    offsetX = offsetX || 0;
+    
     this._basePosition = vector;
     this._gatefoldAngle = angle;
 

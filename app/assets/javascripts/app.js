@@ -112,11 +112,11 @@ vv.on('ready', function() {
   });
 
   vm.$watch('vinyl.size1', function(value) { 
-    vv.vinyls[0].size(value);
+    vv.setSize(value)
   });
 
   vm.$watch('vinyl.size2', function(value) { 
-    vv.vinyls[1].size(value);
+    vv.setSize(value)
   });
 
   vm.$watch('vinyl.colors', function(color) {

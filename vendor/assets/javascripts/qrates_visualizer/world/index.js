@@ -547,7 +547,6 @@
         angleInRadians = this.rotation * (Math.PI / 180);
         self._sleeve.setGatefoldCoverAngle(angleInRadians);
         self._vinyls[0].setFrontSleevePositionAndAngle(self._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
-        // self._vinyls[0].setRotationZ(angleInRadians * 2);
         self._vinyls[1].setOffsetY(self._containerObject.getObjectByName('Back').getWorldPosition().y);
       })
       .start();
@@ -579,42 +578,37 @@
       return;
     }
     
-    this._vinyls.forEach(function (vinyl) {
-      vinyl.setSize(size);
-    });
-
-    this._resetFirstVinylRotation();
-
-    var firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
-    var secondVinylSize = firstVinylSize;
-
-    if (1 < this._vinyls.length) {
-      secondVinylSize = this._convertSizeToNumber(this._vinyls[1].getSize());
-    }
-
-    var largerSize = Math.max(firstVinylSize, secondVinylSize);
-
-    var sleeveSize;
-    var scale;
-
-    switch (largerSize) {
-      case 7:
+    switch (size) {
+      case '7':
+      case '7S':
+      case '7L':
         sleeveSize = Sleeve.Size.SIZE_7;
         scale = this._objectScales['7'];
         break;
-      case 10:
+      case '10':
         sleeveSize = Sleeve.Size.SIZE_10;
         scale = this._objectScales['10'];
         break;
-      case 12:
+      case '12':
         sleeveSize = Sleeve.Size.SIZE_12;
         scale = this._objectScales['12'];
         break;
     }
 
     this._containerObject.scale.set(scale, scale, scale);
-    this._sleeve.setSize(sleeveSize);
-    this._sleeve.setObjectScale(scale);
+    this._sleeve.setSize(sleeveSize, scale);
+
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.setSize(size);
+    });
+
+    if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
+      this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
+
+      this._vinyls.forEach(function (vinyl) {
+        vinyl.setCoveredRatio(vinyl.getCoveredRatio());
+      });
+    }
 
     if (callback) {
       callback();
@@ -667,21 +661,18 @@
       this._sleeve.resetCoveredRatio();
 
       let index = 0;
+      let offsetX = 0.08;
+      let offsetY = 0;
+
       if (Vinyl.Index.SECOND === opts.index) {
         if (1 === this._vinyls.length) {
           return;
         }
 
         index = 1;
+        offsetX = 0;
+        offsetY = self._containerObject.getObjectByName('Back').getWorldPosition().y;
       }
-
-      // if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-      //   this._vinyls[0].setOffsetY(1.1965015565108743);
-      //   this._vinyls[1].setOffsetY(-1.1965015565108743);
-      // } else {
-      //   this._vinyls[0].setOffsetY(0.6);
-      //   this._vinyls[1].setOffsetY(-0.6);
-      // }
 
       const param = {
         ratio: this._vinyls[index].getCoveredRatio()
@@ -692,7 +683,7 @@
         .to({ ratio: value })
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(function () {
-          self._vinyls[index].setCoveredRatio(this.ratio);
+          self._vinyls[index].setCoveredRatio(this.ratio, offsetX, offsetY);
         })
         .start();
     } else {
@@ -1229,6 +1220,12 @@
   World.prototype.onSleeveSizeChanged = function (value) {
 
     this._sleeve.setSize(value);
+    console.log(this._sleeve.getFormat());
+    if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
+      console.log('gatefold!!!!!!!!!!!!');
+      this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), this._sleeve.getCurrentGatefoldAngle() * 2);
+      this._vinyls[1].setOffsetY(this._containerObject.getObjectByName('Back').getWorldPosition().y);
+    }
   };
 
   //--------------------------------------------------------------

@@ -617,7 +617,7 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setSize = function(size) {
+  Sleeve.prototype.setSize = function(size, scale) {
 
     if (!size) {
       console.warn('Sleeve.setSize: no size specified');
@@ -637,13 +637,13 @@
     }
 
     this._size = size;
+    this._globalObjectScale = scale;
 
     this.removeFromContainer();
     this.dispose();
 
     this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
     this.updateBoundingBox();
-    this.updateBoundingBoxMesh();
 
     if (Sleeve.Format.GATEFOLD === this._format) {
       this.setGatefoldCoverAngle(this._gatefoldAngle);
