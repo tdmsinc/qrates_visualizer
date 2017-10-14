@@ -132,12 +132,6 @@
     this._scene.add(this._lights);
     this._scene.add(this._containerObject);
 
-    // let geometry = new THREE.BoxGeometry(50, 50, 50);
-    // let material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-    // let mesh = new THREE.Mesh(geometry, material);
-    // mesh.position.set(0, 0, 0);
-    // this._scene.add(mesh);
-
     var self = this;
 
     this.initGui();
@@ -552,7 +546,8 @@
       .onUpdate(function () {
         angleInRadians = this.rotation * (Math.PI / 180);
         self._sleeve.setGatefoldCoverAngle(angleInRadians);
-        self._vinyls[0].setRotationZ(angleInRadians * 2);
+        self._vinyls[0].setFrontSleevePositionAndAngle(self._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
+        // self._vinyls[0].setRotationZ(angleInRadians * 2);
         self._vinyls[1].setOffsetY(self._containerObject.getObjectByName('Back').getWorldPosition().y);
       })
       .start();
@@ -605,20 +600,21 @@
     switch (largerSize) {
       case 7:
         sleeveSize = Sleeve.Size.SIZE_7;
-        scale = 1;
+        scale = this._objectScales['7'];
         break;
       case 10:
         sleeveSize = Sleeve.Size.SIZE_10;
-        scale = 0.6890566038;
+        scale = this._objectScales['10'];
         break;
       case 12:
         sleeveSize = Sleeve.Size.SIZE_12;
-        scale = 0.5833865815;
+        scale = this._objectScales['12'];
         break;
     }
 
     this._containerObject.scale.set(scale, scale, scale);
     this._sleeve.setSize(sleeveSize);
+    this._sleeve.setObjectScale(scale);
 
     if (callback) {
       callback();
@@ -1338,10 +1334,6 @@
   //--------------------------------------------------------------
   World.prototype._resetFirstVinylRotation = function () {
 
-    if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
-      this._vinyls[0].setRotationZ(0);
-    } else {
-      this._vinyls[0].setRotationZ(0);
-    }
+    // this._vinyls[0].setFrontSleevePositionAndAngle(self._sleeve.getGatefoldFrontCoverPosition(), 0);
   }
 })(this, (this.qvv = (this.qvv || {})));

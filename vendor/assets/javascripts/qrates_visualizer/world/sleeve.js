@@ -645,7 +645,10 @@
     this.updateBoundingBox();
     this.updateBoundingBoxMesh();
 
-    this.setCoveredRatio(0);
+    if (Sleeve.Format.GATEFOLD === this._format) {
+      this.setGatefoldCoverAngle(this._gatefoldAngle);
+    }
+
     this._container.add(this._currentObject);
     this.setOpacity(1.0, 0);
   };
@@ -792,7 +795,6 @@
           var rotation = child.rotation;
           child.rotation.set(rotation.x, rotation.y, angle);
           child.updateMatrix();
-          console.log('getPositionFromMatrix', child.getWorldPosition().x);
         } else if (-1 < child.name.toLowerCase().indexOf('back')) {
           var rotation = child.rotation;
           child.rotation.set(rotation.x, rotation.y, -angle);
@@ -800,7 +802,7 @@
         }
       }
     });
-    // console.log('position', this._container.getObjectByName('Back').getWorldPosition().y);
+
     this.updateBoundingBoxMesh();
 
     // var offsetX = this._boundingBox.max.x + 0.85;
@@ -948,18 +950,30 @@
     }
 
     // const bounds = this._boundingBox;
-
-    if (!this._container.getObjectByName('Front')) {
+    
+    const targetName = 'Front';
+    if (!this._container.getObjectByName(targetName)) {
       return;
     }
+    this._container.getObjectByName('spine').visible = false;
+    this._container.updateMatrix();
+    this._container.updateMatrixWorld();
+    this._currentObject.updateMatrix();
+    this._currentObject.updateMatrixWorld();
 
-    const bounds = new THREE.Box3().setFromBufferAttribute(this._container.getObjectByName('Front').geometry.attributes.position);
-    console.log(this._container.getObjectByName('Front'), bounds, bounds.getSize());
+    const object = this._container.getObjectByName(targetName);
+    object.updateMatrixWorld();
+    const bounds = new THREE.Box3().setFromBufferAttribute(object.geometry.attributes.position);
+    console.log('------------------------------------');
+    // console.log('position', object.position);
+    // console.log('world position', object.getWorldPosition());
+    // console.log('bounding box', bounds);
 
     var geometry = new THREE.BoxGeometry(
       bounds.getSize().x * 5.5,
       bounds.getSize().y * 5.5,
-      bounds.getSize().z * 5.5
+      bounds.getSize().z * 5.5,
+      2, 2, 2
     );
 
     var material = new THREE.MeshBasicMaterial({
@@ -969,7 +983,51 @@
 
     mesh = new THREE.Mesh(geometry, material);
     mesh.name = name;
+
+    let vec = object.getWorldPosition();
+    vec.divideScalar(this._globalObjectScale);
+    let ratio = this._gatefoldAngle / (Math.PI * 0.5);
+    let size = bounds.getSize();
+    size.multiplyScalar(5.5);
+
+    console.log(vec);
+
+    let x = vec.x + (size.x * 0.5) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
+    let y = (vec.y + ((size.y * 0.15) * (ratio * 2 - 1))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
+    // mesh.position.set(vec.x + (size.x * 0.5) - ((size.x) * ratio), vec.y, vec.z);
+    mesh.position.set(x, y, vec.z);
+    // mesh.rotation.set(object.rotation.x * 2, object.rotation.y * 2, object.rotation.z * 2);
     this._container.add(mesh);
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.getGatefoldFrontCoverPosition = function () {
+
+    if (Sleeve.Format.GATEFOLD !== this._format) {
+      return new THREE.Vector3(0, 0, 0);
+    }
+
+    if (!this._container.getObjectByName('Front')) {
+      return new THREE.Vector3(0, 0, 0);;
+    }
+
+    const object = this._container.getObjectByName('Front');
+    const bounds = new THREE.Box3().setFromBufferAttribute(object.geometry.attributes.position);
+    
+    const size = bounds.getSize();
+    size.multiplyScalar(5.5);
+
+    const worldPosition = object.getWorldPosition();
+    worldPosition.divideScalar(this._globalObjectScale);
+
+    const ratio = this._gatefoldAngle / (Math.PI * 0.5);
+
+    let vector = new THREE.Vector3();
+    
+    vector.x = (worldPosition.x + (size.x * 0.5)) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
+    vector.y = (worldPosition.y + (size.y * (0.15 * (ratio * 2 - 1)))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
+
+    return vector;
   };
 
   //--------------------------------------------------------------

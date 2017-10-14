@@ -135,6 +135,7 @@
     this._offsetY = Vinyl.Index.FIRST === this._index ? 0.6 : -0.6;
     this._gatefoldAngle = 0;
     this._coveredRatio = 0;
+    this._basePosition = new THREE.Vector3();
 
     // weight と label の組み合わせで format を決定する
     this._format = this.updateFormat(this._weight, this._isEnableLabel);
@@ -654,6 +655,8 @@
         child.material.needsUpdate = true;
       }
     });
+
+    self.setFrontSleevePositionAndAngle(this._basePosition, this._gatefoldAngle);
     
     self._container.add(self._currentObject);
     self._currentObject.position.set(position.x, position.y, position.z);
@@ -860,27 +863,12 @@
 
     this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
     this._offsetX = this._boundingBox.getSize().x * this._coveredRatio;
-
-    if (undefined === duration) {
-      duration = 500;
-    } else {
-      duration = Math.max(0, duration);
-    }
-
-    if (undefined === delay) {
-      delay = 0;
-    } else {
-      delay = Math.max(0, delay);
-    }
-
-    const offset = this._offsetX + this._boundingBox.max.x;
     
-    const x = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.cos(this._gatefoldAngle) - this._boundingBox.max.x;
-    const y = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.sin(this._gatefoldAngle) + this._offsetY;
+    const dist = this._boundingBox.max.x * (2 * this._coveredRatio + 1) - this._boundingBox.max.x;
+    const x = this._basePosition.x + 0.08 + dist * Math.cos(this._gatefoldAngle);
+    const y = this._basePosition.y + dist * Math.sin(this._gatefoldAngle);
 
-    const position = this._currentObject.position;
-
-    this._currentObject.position.set(x, y, position.z);
+    this._currentObject.position.set(x, y, this._basePosition.z);
   };
 
   //--------------------------------------------------------------
@@ -890,17 +878,12 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setRotationZ = function (angle /* in radians */) {
+  Vinyl.prototype.setRotationZ = function (angle /* in radians */, offsetX, offsetY) {
 
     this._gatefoldAngle = angle;
 
-    const x = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.cos(this._gatefoldAngle) - this._boundingBox.max.x;
-    const y = this._boundingBox.max.x * (2 * this._coveredRatio + 1) * Math.sin(this._gatefoldAngle) + (3.3 * 0.5);
-
-    const position = this._currentObject.position;
     const rotation = this._currentObject.rotation
 
-    this._currentObject.position.set(x, y, position.z);
     this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
   };
 
@@ -912,6 +895,31 @@
     const pos = this._currentObject.position;
     this._currentObject.position.set(pos.x, this._offsetY, pos.z);
   };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setFrontSleevePositionAndAngle = function (vector, angle) {
+
+    this._basePosition = vector;
+    this._gatefoldAngle = angle;
+
+    const dist = this._boundingBox.max.x * (2 * this._coveredRatio + 1) - this._boundingBox.max.x;
+    const x = this._basePosition.x + 0.08 + dist * Math.cos(this._gatefoldAngle);
+    const y = this._basePosition.y + dist * Math.sin(this._gatefoldAngle);
+    const rotation = this._currentObject.rotation
+    
+    this._currentObject.position.set(x, y, this._basePosition.z);
+    this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.resetRotation = function (angle /* in radians */, offsetX, offsetY) {
+    
+        this._gatefoldAngle = 0;
+    
+        const rotation = this._currentObject.rotation
+    
+        this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
+      };
 
   //--------------------------------------------------------------
   Vinyl.prototype.getCurrentProperties = function () {
