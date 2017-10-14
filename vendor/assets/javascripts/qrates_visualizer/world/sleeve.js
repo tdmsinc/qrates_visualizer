@@ -409,10 +409,6 @@
     this.updateBoundingBox();
     this.updateBoundingBoxMesh();
 
-    let bounds = new THREE.Box3().setFromObject(this._models['12']['gatefold']['normal'].scene);
-    console.log('bounds original', bounds);
-    console.log('bounds cloned', this._boundingBox);
-
     // set initial textures
     if (opts.textures) {
       if (Sleeve.Format.GATEFOLD === this._format) {
@@ -782,12 +778,9 @@
 
     var offsetX = this._boundingBox.max.x;
     var offsetY = this._boundingBox.max.y * 0.1;
-    // var offsetY = this._boundingBox.getSize().y;
     this._currentObject.translateX(-offsetX);
-    // this._currentObject.translateY(-offsetY);
     this._currentObject.rotation.set(0, 0, angle);
     this._currentObject.translateX(offsetX);
-    // this._currentObject.translateY(offsetY);
 
     this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
@@ -802,17 +795,6 @@
         }
       }
     });
-
-    this.updateBoundingBoxMesh();
-
-    // var offsetX = this._boundingBox.max.x + 0.85;
-    // var offsetY = this._boundingBox.max.y * 0.5;
-    // // var offsetY = this._boundingBox.getSize().y;
-    // this._currentObject.translateX(-offsetX);
-    // this._currentObject.translateY(-offsetY);
-    // this._currentObject.rotation.set(0, 0, angle);
-    // this._currentObject.translateX(offsetX);
-    // this._currentObject.translateY(offsetY);
   };
 
   //--------------------------------------------------------------
@@ -994,9 +976,7 @@
 
     let x = vec.x + (size.x * 0.5) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
     let y = (vec.y + ((size.y * 0.15) * (ratio * 2 - 1))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
-    // mesh.position.set(vec.x + (size.x * 0.5) - ((size.x) * ratio), vec.y, vec.z);
     mesh.position.set(x, y, vec.z);
-    // mesh.rotation.set(object.rotation.x * 2, object.rotation.y * 2, object.rotation.z * 2);
     this._container.add(mesh);
   };
 

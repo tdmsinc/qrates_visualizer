@@ -547,7 +547,14 @@
         angleInRadians = this.rotation * (Math.PI / 180);
         self._sleeve.setGatefoldCoverAngle(angleInRadians);
         self._vinyls[0].setFrontSleevePositionAndAngle(self._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
-        self._vinyls[1].setOffsetY(self._containerObject.getObjectByName('Back').getWorldPosition().y);
+
+        let offsetY = self._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+        if (Sleeve.Size.SIZE_7 === self._sleeve.getSize()) {
+          offsetY += 0.15;
+        }
+
+        self._vinyls[1].setOffsetY(offsetY);
       })
       .start();
   };
@@ -660,18 +667,38 @@
     if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
       this._sleeve.resetCoveredRatio();
 
-      let index = 0;
-      let offsetX = 0.08;
-      let offsetY = 0;
-
       if (Vinyl.Index.SECOND === opts.index) {
         if (1 === this._vinyls.length) {
           return;
         }
+      }
 
+      let index, offsetX, offsetY;
+
+      if (Vinyl.Index.FIRST === opts.index) {
+        index = 0;
+        
+        if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+          offsetX = 0;
+          offsetY = 0.08;
+        } else {
+          offsetX = 0;
+          offsetY = 0.6;
+        }
+      } else if (Vinyl.Index.SECOND === opts.index) {
         index = 1;
-        offsetX = 0;
-        offsetY = self._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+        if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+          offsetX = 0;
+          offsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+          if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
+            offsetY += 0.15;
+          }
+        } else {
+          offsetX = 0;
+          offsetY = -0.6;
+        }
       }
 
       const param = {
@@ -692,7 +719,7 @@
       }
 
       this._vinyls.forEach(function (vinyl) {
-        vinyl.setCoveredRatio(0);
+        vinyl.setCoveredRatio(0, 0, 0);
       });
 
       new TWEEN.Tween(param)
@@ -1109,8 +1136,6 @@
 
     target.setSize(size);
 
-    this._resetFirstVinylRotation();
-
     var firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
     var secondVinylSize = firstVinylSize;
 
@@ -1152,8 +1177,6 @@
   World.prototype.onVinylWeightChanged = function (target, weight) {
 
     target.setWeight(weight);
-
-    // this._resetFirstVinylRotation();
   };
 
   //--------------------------------------------------------------
@@ -1164,8 +1187,6 @@
     } else {
       target.disableLabel();
     }
-
-    // this._resetFirstVinylRotation();
   };
 
   //--------------------------------------------------------------
@@ -1220,9 +1241,8 @@
   World.prototype.onSleeveSizeChanged = function (value) {
 
     this._sleeve.setSize(value);
-    console.log(this._sleeve.getFormat());
+
     if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
-      console.log('gatefold!!!!!!!!!!!!');
       this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), this._sleeve.getCurrentGatefoldAngle() * 2);
       this._vinyls[1].setOffsetY(this._containerObject.getObjectByName('Back').getWorldPosition().y);
     }
@@ -1231,46 +1251,32 @@
   //--------------------------------------------------------------
   World.prototype.onSleeveTypeChanged = function (value) {
 
+    const lastFormat = this._sleeve.getFormat();
+
     this._sleeve.setFormat(value);
+    this._sleeve.setCoveredRatio(0);
 
-    if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
-      if (2 === this._vinyls.length) {
-        return;
+    if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
+      if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
+        var opts = this._vinyls[0].getCurrentProperties();
+        opts.index = Vinyl.Index.SECOND;
+
+        this._vinyls.push(new Vinyl());
+        this._vinyls[1].setup(this._scene, this._assets, opts, this._containerObject);
       }
-
-      var opts = this._vinyls[0].getCurrentProperties();
-      opts.index = Vinyl.Index.SECOND;
-
-      this._vinyls.push(new Vinyl());
-      this._vinyls[1].setup(this._scene, this._assets, opts, this._containerObject);
-
-      var offsetY;
-      if (Sleeve.Format.GATEFOLD === value) {
-        offsetY = 1.1965015565108743;
-        this._vinyls[0].setOffsetY(offsetY);
-        this._vinyls[1].setOffsetY(-offsetY);
-      } else {
-        this._vinyls[0].setOffsetY(0.6);
-        this._vinyls[1].setOffsetY(-0.6);
+    } else if (Sleeve.Format.GATEFOLD === lastFormat || Sleeve.Format.DOUBLE === lastFormat) {
+      if (Sleeve.Format.SINGLE_WITHOUT_SPINE === value || Sleeve.Format.SINGLE === value) {
+        this._vinyls[1].removeFromContainer();
+        this._vinyls[1].dispose();
+        this._vinyls.pop();
+        this._vinyls.length = 1;
       }
-    } else {
-      if (1 === this._vinyls.length) {
-        return;
-      }
-
-      this._vinyls[1].removeFromContainer();
-      this._vinyls[1].dispose();
-      this._vinyls.pop();
-      this._vinyls.length = 1;
-
-      this._vinyls[0].setOffsetY(0);
     }
-
+    
     this._vinyls.forEach(function (vinyl) {
+      vinyl.setFrontSleevePositionAndAngle(new THREE.Vector3(), 0);
       vinyl.setCoveredRatio(0);
     });
-
-    this._resetFirstVinylRotation();
   };
 
   //--------------------------------------------------------------
@@ -1281,7 +1287,6 @@
 
   //--------------------------------------------------------------
   World.prototype.onSleeveFinishChanged = function (value) {
-    console.log(value);
 
     this._sleeve.setFinish(value);
   };
@@ -1327,10 +1332,4 @@
       return 12;
     }
   };
-
-  //--------------------------------------------------------------
-  World.prototype._resetFirstVinylRotation = function () {
-
-    // this._vinyls[0].setFrontSleevePositionAndAngle(self._sleeve.getGatefoldFrontCoverPosition(), 0);
-  }
 })(this, (this.qvv = (this.qvv || {})));

@@ -844,12 +844,6 @@
     this._format = this.updateFormat(this._weight, this._label);
 
     this.updateCurrentObjectMaterial();
-
-    if (Vinyl.Weight.HEAVY === weight) {
-      this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.HEAVY].scene);
-    } else {
-      this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.NORMAL].scene);
-    }
   };
 
   //--------------------------------------------------------------
