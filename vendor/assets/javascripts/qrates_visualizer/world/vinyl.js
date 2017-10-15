@@ -841,7 +841,7 @@
     }
 
     this._weight = weight;
-    this._format = this.updateFormat(this._weight, this._label);
+    this._format = this.updateFormat(this._weight, this._isEnableLabel);
 
     this.updateCurrentObjectMaterial();
   };
