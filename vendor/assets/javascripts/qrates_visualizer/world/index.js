@@ -523,7 +523,14 @@
 
   //--------------------------------------------------------------
   World.prototype.setVinylVisibility = function (index, yn, opts, callback) {
-    this._vinyls[0].setVisibility(index, yn);
+
+    let idx = 0;
+
+    if (Vinyl.Index.SECOND === index) {
+      idx = 1;
+    }
+
+    this._vinyls[idx].setVisibility(yn);
   };
 
   //--------------------------------------------------------------
