@@ -971,14 +971,26 @@
   Vinyl.prototype.update = function() {
 
     if (!(this._models && this._models[this._size][this._format])) {
+      console.log('size', this._size, 'format', this._format);
       return;
     }
 
     if (this._enableRotate) {
+      let target = this._currentObject;
       let amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
-      let rotation = this._currentObject.children[0].rotation.clone();
-      rotation.y -= amount;
-      this._currentObject.children[0].rotation.set(rotation.x, rotation.y, rotation.z);
+
+      this._currentObject.children.forEach(function (child) {
+        let rotation = child.rotation.clone();
+        
+        if ('label' == child.name) {
+          rotation.y += amount;
+        } else {
+          rotation.y -= amount;
+        }
+        
+        child.rotation.set(rotation.x, rotation.y, rotation.z);
+      });
+      
     }
   };
 
