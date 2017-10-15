@@ -345,11 +345,12 @@
     });
 
     rotationController.onChange(function (value) {
-      self.enableRotate = value;
       
-      self._vinyls.forEach(function (vinyl) {
-        vinyl.setEnableRotate(value);
-      });
+      if (value) {
+        self.play();
+      } else {
+        self.pause();
+      }
     });
 
     coveredRatioController.onChange(function (value) {
@@ -531,10 +532,12 @@
     }
 
     this._vinyls[idx].setVisibility(yn);
+
+    if (callback) callback();
   };
 
   //--------------------------------------------------------------
-  World.prototype.setGatefoldCoverAngle = function (degree) {
+  World.prototype.setGatefoldCoverAngle = function (degree, opts, callback) {
 
     var sleeveFormat = this._sleeve.getFormat();
 
@@ -563,6 +566,9 @@
 
         self._vinyls[1].setOffsetY(offsetY);
       })
+      .onComplete(function () {
+        if (callback) callback();
+      })
       .start();
   };
 
@@ -570,6 +576,8 @@
   World.prototype.setSleeveVisibility = function (yn, opts, callback) {
 
     this._sleeve.setVisibility(yn);
+
+    if (callback) callback();
   };
 
   //--------------------------------------------------------------
@@ -624,9 +632,7 @@
       });
     }
 
-    if (callback) {
-      callback();
-    }
+    if (callback) callback();
   };
 
   //--------------------------------------------------------------

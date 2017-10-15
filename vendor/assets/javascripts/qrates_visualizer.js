@@ -281,13 +281,6 @@
     return this;
   };
 
-  VinylVisualizer.prototype.gatefoldCoverAngle = function (degree) {
-
-    if (!this.world) return this;
-    this.world.setGatefoldCoverAngle(degree);
-    return this;
-  };
-
   /**
    * @param {Number} step
    * @param {Object} opts [optional]
@@ -366,6 +359,15 @@
     opts = opts || {};
     callback = callback || noop;
     this.world.setSize(value, opts, callback);
+    return this;
+  };
+
+  VinylVisualizer.prototype.setGatefoldCoverAngle = function (degree, opts, callback) {
+
+    if (!this.world) return this;
+    opts = opts || {};
+    callback = callback || noop;
+    this.world.setGatefoldCoverAngle(degree, opts, callback);
     return this;
   };
 
