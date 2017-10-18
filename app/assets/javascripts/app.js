@@ -10,23 +10,22 @@ var defaults = {
     {
       size: qvv.VinylVisualizer.VinylSize.SIZE_12,
       weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
-      label: qvv.VinylVisualizer.VinylLabel.COLOR_PRINT,
+      isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
       speed: 45
     },
     {
       size: qvv.VinylVisualizer.VinylSize.SIZE_12,
       weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
-      label: qvv.VinylVisualizer.VinylLabel.COLOR_PRINT,
+      isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
       speed: 45
     }
   ],
   sleeve: {
     size: qvv.VinylVisualizer.SleeveSize.SIZE_12,
-    format: qvv.VinylVisualizer.SleeveFormat.DOUBLE,
-    colorFormat: qvv.VinylVisualizer.SleeveColorFormat.WHITE,
-    hole: qvv.VinylVisualizer.SleeveHole.HOLED,
+    format: qvv.VinylVisualizer.SleeveFormat.GATEFOLD,
+    hole: true,
     finish: qvv.VinylVisualizer.SleeveFinish.NORMAL
   }
 };
@@ -35,7 +34,6 @@ var defaults = {
 // initialize vinyl visualizer.
 //
 var el = document.querySelector('.vinyl-visualizer-container');
-console.log('defaults', defaults);
 var vv = new qvv.VinylVisualizer(el, {
   width: canvas_width,
   height: canvas_height,
@@ -87,12 +85,15 @@ vv.on('ready', function() {
   vm.$watch('visualizer.width', function(value) {
     vv.resize(value, vm.$get('visualizer.height'));
   });
+
   vm.$watch('visualizer.height', function(value) {
     vv.resize(vm.$get('visualizer.width'), value);
   });
+
   vm.$watch('visualizer.view', function(value) {
     vv.view(value, { transition: vm.$get('visualizer.transition') });
   });
+
   vm.$watch('visualizer.capture', function(value) {
     var opts = {
       canvas_width: 1280,
@@ -102,61 +103,71 @@ vv.on('ready', function() {
     vv.view(value, {duration:0});
   });
 
-  vm.$watch('vinyl.colorFormat1', function(value) {
-    vv.vinyls[0].colorFormat({
-      index: qvv.VinylVisualizer.VinylIndex.FIRST,
-      format: value
-    });
+  vm.$watch('vinyl.colorFormat1', function(colorFormat) {
+    vv.vinyls[0].colorFormat(colorFormat);
   });
-  vm.$watch('vinyl.colorFormat2', function(value) {
-    vv.vinyl[1].colorFormat({
-      index: qvv.VinylVisualizer.VinylIndex.SECOND,
-      format: value
-    });
+
+  vm.$watch('vinyl.colorFormat2', function(colorFormat) {
+    vv.vinyl[1].colorFormat(colorFormat);
   });
-  vm.$watch('vinyl.size', function(value) { 
-    vv.vinyls.forEach(function (vinyl) {
-      vinyl.size(valeu);
-    });
+
+  vm.$watch('vinyl.size1', function(value) { 
+    vv.setSize(value)
   });
-  vm.$watch('vinyl.colors', function(value) {
-    vv.vinyls.forEach(function (vinyl) {
-      vinyl.color({
-        color: value
-      });
-    });
+
+  vm.$watch('vinyl.size2', function(value) { 
+    vv.setSize(value)
   });
+
+  vm.$watch('vinyl.colors', function(color) {
+
+    vv.vinyls[0].color(color);
+    vv.vinyls[1].color(color);
+  });
+
   vm.$watch('vinyl.holeSize', function(value) { vv.vinyl.holeSize(value); });
+
   vm.$watch('vinyl.heavy1', function(value) {
-    vv.vinyls[0].heavy({
-      index: qvv.VinylVisualizer.VinylIndex.FIRST,
-      heavy: value
-    });
+
+    var weight;
+
+    if (!value) {
+      weight = qvv.VinylVisualizer.VinylWeight.NORMAL;
+    } else {
+      weight = qvv.VinylVisualizer.VinylWeight.HEAVY;
+    }
+
+    vv.vinyls[0].weight(weight);
   });
+
   vm.$watch('vinyl.heavy2', function(value) {
-    vv.vinyls[1].heavy({
-      index: qvv.VinylVisualizer.VinylIndex.SECOND,
-      heavy: value
-    });
+
+    var weight;
+
+    if (!value) {
+      weight = qvv.VinylVisualizer.VinylWeight.NORMAL;
+    } else {
+      weight = qvv.VinylVisualizer.VinylWeight.HEAVY;
+    }
+
+    vv.vinyls[1].weight(weight);
   });
-  vm.$watch('vinyl.labelType1', function(value) { 
-    vv.vinyls[0].labelType({
-      index: qvv.VinylVisualizer.VinylIndex.FIRST,
-      label: value
-    });
+
+  vm.$watch('vinyl.label1', function(value) { 
+    vv.vinyls[0].label(value);
   });
-  vm.$watch('vinyl.labelType2', function(value) {
-    vv.vinyls[1].labelType({
-      index: qvv.VinylVisualizer.VinylIndex.SECOND,
-      label: value
-    });
+
+  vm.$watch('vinyl.label2', function(value) {
+    vv.vinyls[1].label(value);
   });
+
   vm.$watch('vinyl.speed', function(value) {
     vv.vinyls.forEach(function (vinyl) {
       vinyl.speed(value);
     });
   });
 
+  vm.$watch('sleeve.size', function(value) { vv.setSize(value) });
   vm.$watch('sleeve.type', function(value) { vv.sleeve.type(value); });
   vm.$watch('sleeve.colorFormat', function(value) { vv.sleeve.colorFormat(value); });
   vm.$watch('sleeve.hole', function(value) { vv.sleeve.hole(value); });
@@ -205,110 +216,77 @@ vv.on('ready', function() {
   vinylAlphaMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].alphaMap({
-        index: qvv.VinylVisualizer.VinylIndex.FIRST,
-        image: img
-      });
+      vv.vinyls[0].alphaMap(img);
     });
   };
 
   vinylAoMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].aoMap({
-        index: qvv.VinylVisualizer.VinylIndex.FIRST,
-        image: img
-      });
+      vv.vinyls[0].aoMap(img);
     });
   };
 
   vinylBumpMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].bumpMap({
-        index: qvv.VinylVisualizer.VinylIndex.FIRST,
-        image: img
-      });
+      vv.vinyls[0].bumpMap(img);
     });
   };
 
   vinylColorMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].colorMap({
-        index: qvv.VinylVisualizer.VinylIndex.FIRST,
-        image: img
-      });
+      vv.vinyls[0].colorMap(img);
     });
   };
 
   vinylAlphaMap2.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[1].alphaMap({
-        index: qvv.VinylVisualizer.VinylIndex.SECOND,
-        image: img
-      });
+      vv.vinyls[1].alphaMap(img);
     });
   };
 
   vinylAoMap2.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[1].aoMap({
-        index: qvv.VinylVisualizer.VinylIndex.SECOND,
-        image: img
-      });
+      vv.vinyls[1].aoMap(img);
     });
   };
 
   vinylBumpMap2.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[1].bumpMap({
-        index: qvv.VinylVisualizer.VinylIndex.SECOND,
-        image: img
-      });
+      vv.vinyls[1].bumpMap(img);
     });
   };
 
   vinylColorMap2.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[1].colorMap({
-        index: qvv.VinylVisualizer.VinylIndex.SECOND,
-        image: img
-      });
+      vv.vinyls[1].colorMap(img);
     });
   };
 
   labelAoMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].labelAoMap({
-        index: qvv.VinylVisualizer.VinylIndex.FIRST,
-        image: img
-      });
+      vv.vinyls[0].labelAoMap(img);
     });
   };
 
   labelBumpMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].labelBumpMap({
-        index: qvv.VinylVisualizer.VinylIndex.FIRST,
-        image: img
-      });
+      vv.vinyls[0].labelBumpMap(img);
     });
   };
 
   labelColorMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].labelColorMap({
-        index: qvv.VinylVisualizer.VinylIndex.FIRST,
-        image: img
-      });
+      vv.vinyls[0].labelColorMap(img);
     });
   };
   

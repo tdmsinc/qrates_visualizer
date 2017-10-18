@@ -23,7 +23,6 @@
   Vinyl.Size = exports.world.Vinyl.Size;
   Vinyl.ColorFormat = exports.world.Vinyl.ColorFormat;
   Vinyl.Weight = exports.world.Vinyl.Weight;
-  Vinyl.Label = exports.world.Vinyl.Label;
   Vinyl.Color = exports.world.Vinyl.Color;
   Vinyl.Index = exports.world.Vinyl.Index;
 
@@ -37,13 +36,13 @@
     'color',
     'splatterColor',
     'holeSize',
-    'heavy',
+    'weight',
     'speed',
     'alphaMap',
     'aoMap',
     'bumpMap',
     'colorMap',
-    'labelType',
+    'label',
     'labelAoMap',
     'labelBumpMap',
     'labelColorMap'

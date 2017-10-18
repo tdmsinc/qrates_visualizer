@@ -75,8 +75,15 @@
     'gloss': 15
   };
 
+  Sleeve.GatefoldSide = {
+    FRONT: 'front',
+    BACK: 'back',
+    SPINE: 'spine'
+  };
+
   //--------------------------------------------------------------
   Sleeve.prototype.setup = function(scene, assets, opts, container) {
+
     opts = opts || {
       format: Sleeve.Format.SINGLE_WITHOUT_SPINE,
       ColorFormat: Sleeve.ColorFormat.WHITE,
@@ -87,21 +94,6 @@
 
       }
     };
-
-    console.log('opts', opts);
-
-    this._container = container;
-    this._size = opts.size;
-    this._hole = opts.hole;
-    this._format = opts.format;
-    this._finish = opts.finish || Sleeve.Finish.NORMAL;
-    this._currentTextures = opts.textures;
-    this._opacity = 0.0;
-    this._coveredRatio = 0.0;
-    this._bumpScale = 0.3;
-    this._shininess = Sleeve.Shininess[this._finish];
-    this._opacityTweenDuration = 300;
-    this._boundingBox = null;
 
     this._models = {
       '7': {
@@ -154,7 +146,8 @@
           'holed': assets['assetsModelSleeveDoubleHoled-12']
         },
         'gatefold': {
-          'normal': assets['assetsModelSleeveGatefold-12']
+          'normal': assets['assetsModelSleeveGatefold-12'],
+          'holed': assets['assetsModelSleeveGatefold-12']
         }
       }
     };
@@ -340,9 +333,29 @@
       }
     };
 
-    this._defaultTexture = assets['assetsTextureSleeveDefault'];
+    const self = this;
 
-    var self = this;
+    this._container = container;
+    this._size = opts.size;
+    this._finish = opts.finish || Sleeve.Finish.NORMAL;
+    this._currentTextures = opts.textures;
+    this._coveredRatio = 0.0;
+    this._bumpScale = 0.3;
+    this._shininess = Sleeve.Shininess[this._finish];
+    this._boundingBox = null;
+    this._gatefoldAngle = 0;
+    this._globalObjectScale = 1.0;
+
+    // hole
+    if (Sleeve.Format.GATEFOLD === opts.format) {
+      this._hole = Sleeve.Hole.NO_HOLE;
+    } else  {
+      if (opts.hole) {
+        this._hole = Sleeve.Hole.HOLED;
+      } else {
+        this._hole = Sleeve.Hole.NO_HOLE;
+      }
+    }
 
     // Image として読み込まれたテクスチャを THREE.Texture に変換する
     (function initTextures (obj) {
@@ -360,25 +373,20 @@
       });
     })(this._textures);
 
-    // プリントスリーブとしてテクスチャーが渡された場合
-    if (opts.textures) {
-      this.updateTexture(this._textures[this._size][this._format][this._hole], opts.textures);
-    }
-
     // モデルのマテリアルを初期化
     Object.keys(self._models).forEach(function(size) {
       Object.keys(self._models[size]).forEach(function(type) {
         Object.keys(self._models[size][type]).forEach(function(opt) {
           if (!self._models[size][type][opt]) {
-            console.warn('model is ' + self._models[size][type][opt]);
+            console.warn('model["' + size + '"]["' + type + '"]["' + opt + '"] is ' + self._models[size][type][opt]);
             return;
           }
 
           if (!self._textures[size][type][opt]) {
-            console.warn('textures are ' + self._textures[size][type][opt]);
+            console.warn('textures["' + size + '"]["' + type + '"]["' + opt + '"] are ' + self._textures[size][type][opt]);
           }
 
-          var assetName = size + '-' + type + '-' + opt;
+          let assetName = size + '-' + type + '-' + opt;
 
           if (self._textures[size][type][opt]) { 
             self._textures[size][type][opt].assetName = assetName;
@@ -388,44 +396,37 @@
             self._models[size][type][opt].assetName = assetName;
             self._models[size][type][opt].scene.assetName = assetName;
 
-            var scale = 5.5;
-            console.log('sleeve original scale', self._models[size][type][opt].scene.scale);
+            let scale = 5.5;
             self._models[size][type][opt].scene.scale.set(scale, scale, scale);
 
             self.initMaterial(self._models[size][type][opt], self._textures[size][type][opt]);
           }
-
-          console.log('------------------' + assetName + '-------------------');
-          console.log('model', self._models[size][type][opt]);
-          console.log('textures', self._textures[size][type][opt]);
         });
       });
     });
 
+    this.setFormat(opts.format);
+    this.updateBoundingBox();
+    this.updateBoundingBoxMesh();
 
-    // currentObject = ステージに配置されるオブジェクト
-    console.log('size', this._size, 'format', this._format, 'hole', this._hole);
-    this._currentObject = this._models[this._size][this._format][this._hole];
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.scene);
-
-    this._position = new THREE.Vector3(0, 0, 0);
-    this._rotation = new THREE.Vector3(0, 0, 0);
-
-    this._positionTween = new TWEEN.Tween(this._position);
-    this._opacityTween = new TWEEN.Tween(this);
-
-    this.setFormat(this._format);
-
-    this._currentObject.name = 'sleeve';
-
-    this._container.add(this._currentObject.scene);
-    console.log('this._currentObject.scene', this._currentObject.scene);
+    // set initial textures
+    if (opts.textures) {
+      if (Sleeve.Format.GATEFOLD === this._format) {
+        Object.keys(opts.textures).forEach(function (side) {
+          Object.keys(opts.textures[side]).forEach(function (type) {
+            self._setTexture(type, opts.textures[side][type], side);
+          });
+        });
+      } else {
+        Object.keys(opts.textures).forEach(function (type) {
+          self._setTexture(type, opts.textures[type]);
+        });
+      }
+    }
 
     this._coveredRatio = 0;
-    this.setCoveredRatio(this._coveredRatio, { duration: 0 });
-
-    this._opacity = 0;
-    this.setOpacity(1);
+    this.setCoveredRatio(this._coveredRatio);
+    this.setOpacity(1, 0);
   };
 
   //--------------------------------------------------------------
@@ -473,9 +474,16 @@
 
     return model;
   };
+  
+  //--------------------------------------------------------------
+  Sleeve.prototype.updateBoundingBox = function () {
+
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
+  };
 
   //--------------------------------------------------------------
   Sleeve.prototype.updateTexture = function(texture, image) {
+
     if (!texture || !image) {
       return;
     }
@@ -494,77 +502,58 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setColorMap = function(image) {
-    
-    if (!image) {
-      return;
-    }
+  Sleeve.prototype._setTexture = function (type, image, side) { // for internal use
 
-    this.updateTexture(this._textures[this._size][this._format][this._hole]['color'], image);
-  }
+    if (undefined === side) {
+      this.updateTexture(this._textures[this._size][this._format][this._hole][type], image);
+    } else {
+      if (-1 === Object.values(Sleeve.GatefoldSide).indexOf(side)) {
+        return;
+      }
 
-  //--------------------------------------------------------------
-  Sleeve.prototype.setAoMap = function(image) {
-    
-    if (!image) {
-      return;
-    }
-
-    this.updateTexture(this._textures[this._size][this._format][this._hole]['ao'], image);
-  }
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setBumpMap = function(image) {
-    
-    if (!image) {
-      return;
-    }
-
-    this.updateTexture(this._textures[this._size][this._format][this._hole]['bumpmap'], image);
-  }
-
-  // TODO: gatefold のテクスチャ変更メソッド
-  //--------------------------------------------------------------
-  Sleeve.prototype.setFrontColorMap = function(image) {
-
-    if (this._format !== Sleeve.Format.GATEFOLD) {
-      console.error('Sleeve.setFrontColorMap: this function is only valid for gatefold format');
-      return;
-    }
-    
-    if (!image) {
-      return;
-    }
-
-    this.updateTexture(this._textures[this._size][Sleeve.Format.GATEFOLD][this._hole]['front']['color'], image);
-  }
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setTexture = function(sideA, sideB, spine) {
-    
-    console.warn('Sleeve.setTexture is deprecated. use setColorMap/setAoMap/setBumpMap to set each texture.');
-  };
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.clearTexture = function(side) {
-    switch(side){
-      case 'sideA':
-        this.updateTexture(this._textures.front, this._defaultTexture);
-        break;
-      case 'sideB':
-        this.updateTexture(this._textures.back, this._defaultTexture);
-        break;
+      this.updateTexture(this._textures[this._size][this._format][this._hole][side][type], image);
     }
   };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setColorMap = function(image, side) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture('color', image, side);
+  }
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setAoMap = function(image, side) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture('ao', image, side);
+  }
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setBumpMap = function(image, side) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture('bumpmap', image, side);
+  }
 
   //--------------------------------------------------------------
   Sleeve.prototype.setFormat = function(format) {
+
     if (!format) {
       console.warn('Sleeve.setFormat: no format specified');
       return;
     }
 
-    var self = this;
+    const self = this;
 
     if (-1 === Object.values(Sleeve.Format).indexOf(format)) {
       console.error('Sleeve.setFormat: unknown format "' + format + '"');
@@ -584,87 +573,54 @@
 
     self._format = format;
 
-    var isOpaque = false;
-
-    // TODO: 無地の指定はテクスチャーでおこなう
-    // if (this.TYPE_BLACK === this._format || this.TYPE_WHITE === this._format) {
-
-    //   this._glossFinish = false;
-    //   isOpaque = true;
-
-    // }
-
-    self._container.remove(self._currentObject.scene);
+    if (self._currentObject) {
+      self.removeFromContainer();
+      self.dispose();
+    }
     
-    self._currentObject = self._models[self._size][self._format][self._hole];
-    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.scene);
+    self._currentObject = self._models[self._size][self._format][self._hole].scene.clone();
+    self._currentObject.name = 'sleeve';
 
-    self._currentObject.scene.traverse(function (child) {
+    let position = self._currentObject.position;
+    self._currentObject.position.set(0, position.y, position.z);
+    
+    self.updateBoundingBox();
+    self.updateBoundingBoxMesh();
+
+    self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.shininess = self._shininess;
         child.material.needsUpdate = true;
       }
     });
 
-    self._container.add(self._currentObject.scene);
+    self._container.add(self._currentObject);
 
     self.setOpacity(1.0, 0);
   };
 
   //--------------------------------------------------------------
   Sleeve.prototype.setType = function(format) {
+
     console.warn('Sleeve.setType(format) is deprecated. use Sleeve.setFormat(format) instead.');
     this.setFormat(format);
   };
 
   //--------------------------------------------------------------
   Sleeve.prototype.getFormat = function () {
+
     return this._format;
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setColorFormat = function(format) {
+  Sleeve.prototype.setSize = function(size, scale) {
 
-    if (!format) {
-      return;
-    }
-
-    var self = this;
-
-    if (-1 === Object.values(Sleeve.ColorFormat).indexOf(format)) {
-      console.error('Sleeve.setColorFormat: unknown color format "' + format + '"');
-      return;
-    }
-
-    if (self._colorFormat === format) {
-      console.info('Sleeve.setColorFormat: specified color format "' + format + '" is already applied');
-      return;
-    }
-
-    var self = this;
-    self._colorFormat = format;
-
-    if (self._colorFormat === Sleeve.ColorFormat.WHITE || self._colorFormat === Sleeve.ColorFormat.BLACK) {
-      self._finish = Sleeve.Finish.NORMAL;
-      self._shininess = Sleeve.Shininess[Sleeve.Finish.NORMAL];
-    }
-    
-    // TODO: Sleeve.ColorFormat.WHITE || Sleeve.ColorFormat.BLACK の場合に
-    // テクスチャをクリアする
-    self._currentObject.scene.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        child.material.shininess = self._shininess;
-        child.material.needsUpdate = true;
-      }
-    });
-  }
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setSize = function(size) {
     if (!size) {
       console.warn('Sleeve.setSize: no size specified');
       return;
     }
+
+    size += '';
 
     if (-1 === Object.values(Sleeve.Size).indexOf(size)) {
       console.error('Sleeve.setSize: specified size "' + size + '" not found');
@@ -676,55 +632,57 @@
       return;
     }
 
+    this._size = size;
+    this._globalObjectScale = scale;
+
+    this.removeFromContainer();
+    this.dispose();
+
+    this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
+    this.updateBoundingBox();
+
+    if (Sleeve.Format.GATEFOLD === this._format) {
+      this.setGatefoldCoverAngle(this._gatefoldAngle);
+    }
+
+    this._container.add(this._currentObject);
+    this.setOpacity(1.0, 0);
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.getSize = function () {
+
+    return this._size;
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setOpacity = function(to, duration, delay) {
+
     var self = this;
 
-    self._size = size;
+    duration = undefined !== duration ? duration : 1000;
+    delay = undefined !== delay ? delay : 0;
 
-    self._container.remove(self._currentObject.scene);
-    console.log('size:', self._size, 'format:', self._format, 'hole:', self._hole);
-    self._currentObject = self._models[self._size][self._format][self._hole];
-    self._boundingBox = new THREE.Box3().setFromObject(self._currentObject.scene);
-
-    console.log('new object', self._currentObject);
-
-    self.setCoveredRatio(self._coveredRatio, { duration: 1 }, null, function() {
-      self._container.add(self._currentObject.scene);
-
-      self.setOpacity(1.0, 0);
+    this._currentObject.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        var tween = new TWEEN.Tween(child.material);
+        child.material.opacity = 0;
+        
+        tween
+          .stop()
+          .delay(delay)
+          .to({ opacity: to }, duration)
+          .onUpdate(function (value) {
+            child.material.needsUpdate = true;
+          })
+          .start();
+      }
     });
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setOpacity = function(to, duration) {
-    var self = this;
-
-    duration = undefined !== duration ? duration : 300;
-
-    this._opacityTween
-      .stop()
-      .to({ _opacity: to }, duration)
-      .onUpdate(function() {
-        self._currentObject.scene.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            child.material.opacity = self._opacity;
-            child.material.needsUpdate = true;
-          }
-
-          if (child instanceof THREE.Object3D) {
-            child.traverse(function(nextChild) {
-              if (nextChild instanceof THREE.Mesh) {
-                nextChild.material.opacity = self._opacity;
-                nextChild.material.needsUpdate = true;
-              }
-            });
-          }
-        });
-      })
-      .start();
-  };
-
-  //--------------------------------------------------------------
   Sleeve.prototype.setHole = function(value) {
+
     if (!(value === Sleeve.Hole.NO_HOLE || value === Sleeve.Hole.HOLED)) {
       console.warn('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
       return;
@@ -741,18 +699,20 @@
 
     this._hole = value;
 
-    this._container.remove(this._currentObject.scene);
+    this.removeFromContainer();
+    this.dispose();
     
-    this._currentObject = this._models[this._size][this._format][this._hole];
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject.scene);
+    this._currentObject = this._models[this._size][this._format][this._hole].scene.clone();
+    this.updateBoundingBox();
+    this.updateBoundingBoxMesh();
 
-    this._container.add(this._currentObject.scene);
+    this._container.add(this._currentObject);
 
     this.setOpacity(1.0, 0);
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setFinish = function(finish) {
+  Sleeve.prototype.setFinish = function (finish) {
 
     if (!finish) {
       return;
@@ -767,19 +727,11 @@
       return;
     }
 
-    if (Sleeve.Finish.GLOSS === finish) {
-      if (Sleeve.ColorFormat.WHITE === this._colorFormat || Sleeve.ColorFormat.BLACK === this._colorFormat) {
-        console.error('Sleeve.setFinish: gloss lamination is only valid for print sleeve');
-        return;
-      }
-    }
-
     var self = this;
     self._finish = finish;
-
     self._shininess = Sleeve.Shininess[self._finish];
 
-    self._currentObject.scene.traverse(function (child) {
+    self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.shininess = self._shininess;
         child.material.needsUpdate = true;
@@ -788,74 +740,61 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setCoveredRatio = function(ratio, opts, updateCallback, completeCallback) {
+  Sleeve.prototype.setCoveredRatio = function(ratio) {
     
-    opts.duration = undefined !== opts.duration ? opts.duration : 500;
-    opts.delay    = undefined !== opts.delay    ? opts.delay    : 0;
-
-    var self = this;
-
-    var tempObj = self._currentObject.scene.clone();
-    tempObj.scale = 1.0;
-
-    // var offset = new THREE.Box3().setFromObject(tempObj).getSize().x;
-    var offset = this._boundingBox.getSize().x;
-
-    self._coveredRatio = Math.max(0, Math.min(1.0, ratio));
-
-    var tween = new TWEEN.Tween(this._currentObject.scene.position);
-
-    tween
-      .stop()
-      .delay(opts.delay)
-      .to({ x: self._coveredRatio * -offset }, opts.duration)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function() {
-        if (updateCallback) updateCallback();
-      })
-      .onComplete(function() {
-        if (completeCallback) completeCallback();
-      })
-      .onStop(function() {
-        if (completeCallback) completeCallback();
-      })
-      .start();
-
-    tempObj = null;
-  };
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setGatefoldRotation = function (degree) {
-
-    if (Sleeve.Format.GATEFOLD !== this._format) {
-      console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
+    if (Sleeve.Format.GATEFOLD === this._format || Sleeve.Format.DOUBLE === this._format) {
       return;
     }
 
-    var rad = degree * (Math.PI / 180);
+    this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
 
-    this._currentObject.scene.traverse(function (child) {
+    const offset = this._coveredRatio * -this._boundingBox.getSize().x;
+    const position = this._currentObject.position;
+    this._currentObject.position.set(offset, position.y, position.z);
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.getCoveredRatio = function () {
+
+    return this._coveredRatio;
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.resetCoveredRatio = function () {
+
+    var position = this._currentObject.position;
+    this._currentObject.position.set(position.x, position.y, position.z);
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setGatefoldCoverAngle = function (angle /* in radians */) {
+
+    if (Sleeve.Format.GATEFOLD !== this._format) {
+      console.error('Sleeve.setGatefoldCoverAngle: not viable for sleeve type "' + this._format + '"');
+      return;
+    }
+
+    this._gatefoldAngle = angle;
+
+    var offsetX = this._boundingBox.max.x;
+    var offsetY = this._boundingBox.max.y * 0.1;
+    this._currentObject.translateX(-offsetX);
+    this._currentObject.rotation.set(0, 0, angle);
+    this._currentObject.translateX(offsetX);
+
+    this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('front')) {
-          new TWEEN.Tween(child.rotation.clone())
-            .stop()
-            .to({ z: rad }, 500)
-            .easing(TWEEN.Easing.Quartic.Out)
-            .onUpdate(function () {
-              child.rotation.set(this.x, this.y, this.z);
-            })
-            .start();
+          var rotation = child.rotation;
+          child.rotation.set(rotation.x, rotation.y, angle);
+          child.updateMatrix();
         } else if (-1 < child.name.toLowerCase().indexOf('back')) {
           var rotation = child.rotation;
-          child.rotation.set(rotation.x, rotation.y, -rad);
+          child.rotation.set(rotation.x, rotation.y, -angle);
+          child.updateMatrix();
         }
       }
     });
-
-    var offsetX = this._boundingBox.max.x + 0.5;
-    this._currentObject.scene.translateX(-offsetX);
-    this._currentObject.scene.rotation.set(0, 0, rad);
-    this._currentObject.scene.translateX(offsetX);
   };
 
   //--------------------------------------------------------------
@@ -868,7 +807,7 @@
 
     var rad = value * (Math.PI / 180);
 
-    this._currentObject.scene.traverse(function (child) {
+    this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('front')) {
           var rotation = child.rotation;
@@ -881,25 +820,25 @@
     });
 
     var offsetX = this._boundingBox.max.x - 0.5;
-    this._currentObject.scene.translateX(-offsetX);
-    this._currentObject.scene.rotation.set(0, 0, rad);
-    this._currentObject.scene.translateX(offsetX);
+    this._currentObject.translateX(-offsetX);
+    this._currentObject.rotation.set(0, 0, rad);
+    this._currentObject.translateX(offsetX);
 
-    var pos = this._currentObject.scene.position;
-    this._currentObject.scene.position.set(0, pos.y, pos.z);
+    var pos = this._currentObject.position;
+    this._currentObject.position.set(0, pos.y, pos.z);
   };
 
   //--------------------------------------------------------------
   Sleeve.prototype.setGatefoldBackRotation = function (value) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
-      console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
+      console.error('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
       return;
     }
 
     var rad = value * (Math.PI / 180);
 
-    this._currentObject.scene.traverse(function (child) {
+    this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         if (-1 < child.name.toLowerCase().indexOf('back')) {
           var rotation = child.rotation;
@@ -911,10 +850,11 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setBumpScale = function(value) {
+
     var self = this;
     self._bumpScale = value;
 
-    self._currentObject.scene.traverse(function(child) {
+    self._currentObject.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         child.material.bumpScale = self._bumpScale;
         child.material.needsUpdate = true;
@@ -924,9 +864,10 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setAoMapIntensity = function(value) {
+
     var self = this;
 
-    self._currentObject.scene.traverse(function (child) {
+    self._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material.aoMapIntensity = value;
         child.material.needsUpdate = true;
@@ -936,15 +877,142 @@
 
   //--------------------------------------------------------------
   Sleeve.prototype.setVisibility = function(yn, opts, callback) {
-    this._currentObject.scene.visible = yn;
+
+    this._currentObject.visible = yn;
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setObjectScale = function (scale) {
+
+    this._globalObjectScale = scale;
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.getCurrentGatefoldAngle = function () {
+    
+    return this._gatefoldAngle;
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.removeFromContainer = function () {
+    
+    this._container.remove(this._currentObject);
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.dispose = function () {
+
+    this._currentObject.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+        child.parent = null;
+
+        // dispose textures
+        if (child.material.alphaMap) child.material.alphaMap.dispose();
+        if (child.material.aoMap) child.material.aoMap.dispose();
+        if (child.material.bumpMap) child.material.bumpMap.dispose();
+        if (child.material.map) child.material.map.dispose();
+        if (child.material.envMap) child.material.envMap.dispose();
+      }
+    });
+  };
+
+  Sleeve.prototype.updateBoundingBoxMesh = function () {
+
+    return;
+
+    var name = 'bounding box';
+    var mesh = this._container.getObjectByName(name);
+    if (mesh) {
+      this._container.remove(mesh);
+
+      mesh.geometry.dispose();
+      mesh.material.dispose();
+    }
+
+    // const bounds = this._boundingBox;
+    
+    const targetName = 'Front';
+    if (!this._container.getObjectByName(targetName)) {
+      return;
+    }
+    this._container.getObjectByName('spine').visible = false;
+    this._container.updateMatrix();
+    this._container.updateMatrixWorld();
+    this._currentObject.updateMatrix();
+    this._currentObject.updateMatrixWorld();
+
+    const object = this._container.getObjectByName(targetName);
+    object.updateMatrixWorld();
+    const bounds = new THREE.Box3().setFromBufferAttribute(object.geometry.attributes.position);
+    console.log('------------------------------------');
+    // console.log('position', object.position);
+    // console.log('world position', object.getWorldPosition());
+    // console.log('bounding box', bounds);
+
+    var geometry = new THREE.BoxGeometry(
+      bounds.getSize().x * 5.5,
+      bounds.getSize().y * 5.5,
+      bounds.getSize().z * 5.5,
+      2, 2, 2
+    );
+
+    var material = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      wireframe: true
+    });
+
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.name = name;
+
+    let vec = object.getWorldPosition();
+    vec.divideScalar(this._globalObjectScale);
+    let ratio = this._gatefoldAngle / (Math.PI * 0.5);
+    let size = bounds.getSize();
+    size.multiplyScalar(5.5);
+
+    console.log(vec);
+
+    let x = vec.x + (size.x * 0.5) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
+    let y = (vec.y + ((size.y * 0.15) * (ratio * 2 - 1))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
+    mesh.position.set(x, y, vec.z);
+    this._container.add(mesh);
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.getGatefoldFrontCoverPosition = function () {
+
+    if (Sleeve.Format.GATEFOLD !== this._format) {
+      return new THREE.Vector3(0, 0, 0);
+    }
+
+    if (!this._container.getObjectByName('Front')) {
+      return new THREE.Vector3(0, 0, 0);;
+    }
+
+    const object = this._container.getObjectByName('Front');
+    const bounds = new THREE.Box3().setFromBufferAttribute(object.geometry.attributes.position);
+    
+    const size = bounds.getSize();
+    size.multiplyScalar(5.5);
+
+    const worldPosition = object.getWorldPosition();
+    worldPosition.divideScalar(this._globalObjectScale);
+
+    const ratio = this._gatefoldAngle / (Math.PI * 0.5);
+
+    let vector = new THREE.Vector3();
+    
+    vector.x = (worldPosition.x + (size.x * 0.5)) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
+    vector.y = (worldPosition.y + (size.y * (0.15 * (ratio * 2 - 1)))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
+
+    return vector;
   };
 
   //--------------------------------------------------------------
   Sleeve.prototype.update = function() {
-    var self = this;
-
-    // this._currentObject.scene.position.set(this._position.x, this._position.y, this._position.z);
-    // this._currentObject.scene.rotation.set(this._rotation.x, this._rotation.y, this._rotation.z);
+    
   };
 
 })(this, (this.qvv = (this.qvv || {})));

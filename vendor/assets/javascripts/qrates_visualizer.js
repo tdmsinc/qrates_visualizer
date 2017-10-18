@@ -67,9 +67,6 @@
   // vinyl のフォーマット -----------------------
   VinylVisualizer.VinylFormat = Vinyl.Format;
 
-  // vinyl の label -----------------------
-  VinylVisualizer.VinylLabel = Vinyl.Label;
-
   // vinyl の index -----------------------
   VinylVisualizer.VinylIndex = Vinyl.Index;
 
@@ -78,9 +75,6 @@
 
   // sleeve のフォーマット -----------------------
   VinylVisualizer.SleeveFormat = Sleeve.Format;
-
-  // sleeve のカラーフォーマット -----------------------
-  VinylVisualizer.SleeveColorFormat = Sleeve.ColorFormat;
 
   // sleeve のホールオプション -----------------------
   VinylVisualizer.SleeveHole = Sleeve.Hole;
@@ -356,6 +350,24 @@
     opts = opts || {};
     callback = callback || noop;
     this.world.setSleeveVisibility(value, opts, callback);
+    return this;
+  };
+
+  VinylVisualizer.prototype.setSize = function (value, opts, callback) {
+
+    if (!this.world) return this;
+    opts = opts || {};
+    callback = callback || noop;
+    this.world.setSize(value, opts, callback);
+    return this;
+  };
+
+  VinylVisualizer.prototype.setGatefoldCoverAngle = function (degree, opts, callback) {
+
+    if (!this.world) return this;
+    opts = opts || {};
+    callback = callback || noop;
+    this.world.setGatefoldCoverAngle(degree, opts, callback);
     return this;
   };
 

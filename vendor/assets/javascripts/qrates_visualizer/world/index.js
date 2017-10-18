@@ -35,17 +35,18 @@
       this._stats = new window.Stats();
       this._stats.domElement.setAttribute('class', 'stats');
       document.body.appendChild(this._stats.domElement);
-
     }
 
     this._parent = parent;
     this._assets = assets;
+
     this._opts = opts || {
       renderer: {
         antialias: true,
         preserveDrawingBuffer: true,
       }
     };
+
     this._objectScales = {
       '7': 1,
       '10': 0.6890566038,
@@ -89,30 +90,38 @@
     this._enableRotate = false;
     this._flip = false;
 
-    // copy sizes
-    opts.defaults.sleeve.size = opts.defaults.vinyl[0].size;
-
     // sleeve と vinyl がぶら下がるコンテナ
-    this._object = new THREE.Object3D();
-    this._object.name = 'container';
+    this._containerObject = new THREE.Object3D();
+    this._containerObject.name = 'container';
 
     // sleeve
     this._sleeve = new Sleeve();
-    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._object);
+    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._containerObject);
+    this._sleeve.setObjectScale(this._objectScales['12']);
 
     // vinyl
     this._vinyls = [];
 
+    // sleeve が single で複数の vinyl オプションが渡された場合は2つ目以降のオプションを削除して single フォーマットを採用する
+    if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format) && 1 < opts.defaults.vinyl.length) {
+      console.warn('World: too many options for vinyl');
+
+      opts.defaults.vinyl.pop();
+      opts.defaults.vinyl.length = 1;
+    }
+
+    // vinyl オプションから vinyl を生成
     for (var i in opts.defaults.vinyl) {
       opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
 
       this._vinyls.push(new Vinyl());
-      this._vinyls[i].setup(this._scene, assets, opts.defaults.vinyl[i], this._object);
+      this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject);
     }
 
     // scale を設定
     var scale = this._objectScales[this._vinyls[0]._size];
-    this._object.scale.set(scale, scale, scale);
+    this._containerObject.scale.set(scale, scale, scale);
+    this._containerObject.position.set(0, 0, 0);
 
     this._flipRotation = 0;
     this._flipTween = new TWEEN.Tween(this);
@@ -121,11 +130,13 @@
     this.registerPresets();
 
     this._scene.add(this._lights);
-    this._scene.add(this._object);
+    this._scene.add(this._containerObject);
 
     var self = this;
 
     this.initGui();
+
+    // this._scene.add(new THREE.GridHelper(200, 100));
 
     if (opts.defaults.hasOwnProperty('view')) {
       this.updateView(opts.defaults.view, { duration: 0 });
@@ -134,17 +145,17 @@
     var sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
-      this.cover(0.5, {
-        delay: 3000,
-        duration: 2000,
-        index: Vinyl.Index.FIRST
-      });
 
-      this.cover(1.0, {
-        delay: 3000,
-        duration: 2000,
-        index: Vinyl.Index.SECOND
-      });
+      var offsetY;
+      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+        offsetY = 1.08390626812156;
+        this._vinyls[0].setOffsetY(offsetY);
+        this._vinyls[1].setOffsetY(-offsetY);
+      } else {
+        offsetY = 0.6;
+        this._vinyls[0].setOffsetY(offsetY);
+        this._vinyls[1].setOffsetY(-offsetY);
+      }
     }
   }
 
@@ -254,15 +265,12 @@
       'vinyl bump': 0.3,
       'sleeve ao': 1.0,
       'vinyl ao': 1.0,
-      sleeveX: -15
+      sleeveX: -15,
+      'vinyl offsetY': 0
     };
 
     var cameraProps = {
       x: 0.0, y: 17.0, z: 30.0,
-    };
-
-    var objPosProps = {
-      posX: 0.0, posY: 0.0, posZ: 0.0,
     };
 
     var self = this;
@@ -310,9 +318,7 @@
     var secondVinylVisibilityController = gui.add(props, 'vinyl 2 visibility');
     var captureController = gui.add(temp, 'capture');
     var zoomController = gui.add(props, 'zoom', 0, 400);
-    var objXController = gui.add(objPosProps, 'posX', -1000.0, 1000.0);
-    var objYController = gui.add(objPosProps, 'posY', -1000.0, 1000.0);
-    var objZController = gui.add(objPosProps, 'posZ', -1000.0, 1000.0);
+    var vinylOffsetYController = gui.add(props, 'vinyl offsetY', 0.0, 2.0);
     var cameraXController = gui.add(cameraProps, 'x', -1000.0, 1000.0);
     var cameraYController = gui.add(cameraProps, 'y', -1000.0, 1000.0);
     var cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
@@ -339,11 +345,12 @@
     });
 
     rotationController.onChange(function (value) {
-      self.enableRotate = value;
       
-      self._vinyls.forEach(function (vinyl) {
-        vinyl.setEnableRotate(value);
-      });
+      if (value) {
+        self.play();
+      } else {
+        self.pause();
+      }
     });
 
     coveredRatioController.onChange(function (value) {
@@ -355,7 +362,7 @@
     });
 
     sleeveRotationController.onChange(function (value) {
-      self.setSleeveRotation(value);
+      self.setGatefoldCoverAngle(value);
     });
 
     sleeveFrontRotationController.onChange(function (value) {
@@ -363,7 +370,7 @@
     });
 
     sleeveBackRotationController.onChange(function (value) {
-      self.setSleeveBackRotation(value);
+      self._sleeve.setGatefoldBackRotation(value);
     });
 
     sleeveVisibilityController.onChange(function (value) {
@@ -385,17 +392,15 @@
       self.zoom(value);
     });
 
-    objXController.onChange(function (value) {
-      self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
-      self._controls.update();
-    });
-    objYController.onChange(function (value) {
-      self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
-      self._controls.update();
-    });
-    objZController.onChange(function (value) {
-      self._controls.target = new THREE.Vector3(objPosProps.posX, objPosProps.posY, objPosProps.posZ);
-      self._controls.update();
+    vinylOffsetYController.onChange(function (value) {
+      console.log(value);
+      self._vinyls[0].setOffsetY(value);
+
+      if (1 === self._vinyls.length) {
+        return;
+      }
+
+      self._vinyls[1].setOffsetY(-value);
     });
 
     cameraXController.onChange(function (value) {
@@ -519,36 +524,115 @@
 
   //--------------------------------------------------------------
   World.prototype.setVinylVisibility = function (index, yn, opts, callback) {
-    this._vinyls[0].setVisibility(index, yn);
+
+    let idx = 0;
+
+    if (Vinyl.Index.SECOND === index) {
+      idx = 1;
+    }
+
+    this._vinyls[idx].setVisibility(yn);
+
+    if (callback) callback();
   };
 
   //--------------------------------------------------------------
-  World.prototype.setSleeveRotation = function (degree) {
+  World.prototype.setGatefoldCoverAngle = function (degree, opts, callback) {
 
     var sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.GATEFOLD !== sleeveFormat) {
-      console.warn('World.setSleeveRotation: changing rotation is not aveilable for "' + sleeveFormat + '"');
+      console.warn('World.setGatefoldCoverAngle: changing rotation is not available for "' + sleeveFormat + '"');
       return;
     }
 
-    this._sleeve.setGatefoldRotation(degree);
-    this._vinyls[0].setRotationZ(degree * 2);
-  };
+    var self = this;
+    var currentAngleInDegrees = this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI);
 
-  //--------------------------------------------------------------
-  World.prototype.setSleeveFrontRotation = function (degree) {
-    this._sleeve.setGatefoldFrontRotation(degree);
-  };
+    new TWEEN.Tween({ rotation: currentAngleInDegrees })
+      .stop()
+      .to({ rotation: degree }, 500)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function () {
+        angleInRadians = this.rotation * (Math.PI / 180);
+        self._sleeve.setGatefoldCoverAngle(angleInRadians);
+        self._vinyls[0].setFrontSleevePositionAndAngle(self._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
 
-  //--------------------------------------------------------------
-  World.prototype.setSleeveBackRotation = function (degree) {
-    this._sleeve.setGatefoldBackRotation(degree);
+        let offsetY = self._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+        if (Sleeve.Size.SIZE_7 === self._sleeve.getSize()) {
+          offsetY += 0.15;
+        }
+
+        self._vinyls[1].setOffsetY(offsetY);
+      })
+      .onComplete(function () {
+        if (callback) callback();
+      })
+      .start();
   };
 
   //--------------------------------------------------------------
   World.prototype.setSleeveVisibility = function (yn, opts, callback) {
+
     this._sleeve.setVisibility(yn);
+
+    if (callback) callback();
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.setSize = function (size, opts, callback) {
+
+    if (!size) {
+      console.warn('World.onVinylSizeChanged: no size value passed');
+      return;
+    }
+
+    // to string
+    size += '';
+
+    if ('7' === size) {
+      size = '7S';
+    }
+
+    if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
+      console.error('Unknown vinyl size "' + size + '"');
+      return;
+    }
+    
+    switch (size) {
+      case '7':
+      case '7S':
+      case '7L':
+        sleeveSize = Sleeve.Size.SIZE_7;
+        scale = this._objectScales['7'];
+        break;
+      case '10':
+        sleeveSize = Sleeve.Size.SIZE_10;
+        scale = this._objectScales['10'];
+        break;
+      case '12':
+        sleeveSize = Sleeve.Size.SIZE_12;
+        scale = this._objectScales['12'];
+        break;
+    }
+
+    this._containerObject.scale.set(scale, scale, scale);
+    this._sleeve.setSize(sleeveSize, scale);
+
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.setSize(size);
+    });
+
+    if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
+      this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
+
+      this._vinyls.forEach(function (vinyl) {
+        vinyl.setCoveredRatio(vinyl.getCoveredRatio());
+      });
+    }
+
+    if (callback) callback();
   };
 
   //--------------------------------------------------------------
@@ -564,7 +648,7 @@
       .to({ _flipRotation: this._flip ? -Math.PI : 0 })
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(function () {
-        self._object.rotation.z = self._flipRotation;
+        self._containerObject.rotation.z = self._flipRotation;
       })
       .start();
   };
@@ -589,24 +673,76 @@
 
   //--------------------------------------------------------------
   World.prototype.cover = function (value, opts) {
-    var self = this;
 
-    var sleeveFormat = this._sleeve.getFormat();
+    const self = this;
+    const sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
-      this._sleeve.setCoveredRatio(0, opts);
-
-      var index;
+      this._sleeve.resetCoveredRatio();
 
       if (Vinyl.Index.SECOND === opts.index) {
-        index = 1;
-      } else {
-        index = 0;
+        if (1 === this._vinyls.length) {
+          return;
+        }
       }
 
-      this._vinyls[index].setCoveredRatio(value);
+      let index, offsetX, offsetY;
+
+      if (Vinyl.Index.FIRST === opts.index) {
+        index = 0;
+        
+        if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+          offsetX = 0;
+          offsetY = 0.08;
+        } else {
+          offsetX = 0;
+          offsetY = 0.6;
+        }
+      } else if (Vinyl.Index.SECOND === opts.index) {
+        index = 1;
+
+        if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+          offsetX = 0;
+          offsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+          if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
+            offsetY += 0.15;
+          }
+        } else {
+          offsetX = 0;
+          offsetY = -0.6;
+        }
+      }
+
+      const param = {
+        ratio: this._vinyls[index].getCoveredRatio()
+      };
+
+      new TWEEN.Tween(param)
+        .stop()
+        .to({ ratio: value })
+        .easing(TWEEN.Easing.Quartic.Out)
+        .onUpdate(function () {
+          self._vinyls[index].setCoveredRatio(this.ratio, offsetX, offsetY);
+        })
+        .start();
     } else {
-      this._sleeve.setCoveredRatio(value, opts);
+      const param = {
+        ratio: this._sleeve.getCoveredRatio()
+      }
+
+      this._vinyls.forEach(function (vinyl) {
+        vinyl.setCoveredRatio(0, 0, 0);
+      });
+
+      new TWEEN.Tween(param)
+        .stop()
+        .to({ ratio: value })
+        .easing(TWEEN.Easing.Quartic.Out)
+        .onUpdate(function () {
+          self._sleeve.setCoveredRatio(this.ratio, opts);
+        })
+        .start();
     }
   };
 
@@ -894,9 +1030,9 @@
       this._sleeve.update();
     }
 
-    if (this._vinyl) {
-      this._vinyls[0].update();
-    }
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.update();
+    });
 
     this._controls.update();
 
@@ -951,26 +1087,23 @@
     var parent = this._parent;
 
     for (var i in parent.vinyls) {
-      parent.vinyls[i].on('colorFormat', this.onVinylColorFormatChanged.bind(this));
-      parent.vinyls[i].on('size', this.onVinylSizeChanged.bind(this));
-      parent.vinyls[i].on('color', this.onVinylColorChanged.bind(this));
-      parent.vinyls[i].on('splatterColor', this.onVinylSplatterColorChanged.bind(this));
-      parent.vinyls[i].on('holeSize', this.onVinylHoleSizeChanged.bind(this));
-      parent.vinyls[i].on('heavy', this.onVinylHeavyChanged.bind(this));
-      parent.vinyls[i].on('labelType', this.onLabelTypeChanged.bind(this));
-      parent.vinyls[i].on('speed', this.onVinylSpeedChanged.bind(this));
-      parent.vinyls[i].on('alphaMap', this.onVinylAlphaMapChanged.bind(this));
-      parent.vinyls[i].on('aoMap', this.onVinylAoMapChanged.bind(this));
-      parent.vinyls[i].on('bumpMap', this.onVinylBumpMapChanged.bind(this));
-      parent.vinyls[i].on('colorMap', this.onVinylColorMapChanged.bind(this));
-      parent.vinyls[i].on('labelType', this.onLabelTypeChanged.bind(this));
-      parent.vinyls[i].on('labelAoMap', this.onLabelAoMapChanged.bind(this));
-      parent.vinyls[i].on('labelBumpMap', this.onLabelBumpMapChanged.bind(this));
-      parent.vinyls[i].on('labelColorMap', this.onLabelColorMapChanged.bind(this));
+      parent.vinyls[i].on('colorFormat', this.onVinylColorFormatChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('size', this.onVinylSizeChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('color', this.onVinylColorChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('weight', this.onVinylWeightChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('speed', this.onVinylSpeedChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('alphaMap', this.onVinylAlphaMapChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('aoMap', this.onVinylAoMapChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('bumpMap', this.onVinylBumpMapChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('colorMap', this.onVinylColorMapChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('label', this.onLabelOptionChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('labelAoMap', this.onLabelAoMapChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('labelBumpMap', this.onLabelBumpMapChanged.bind(this, this._vinyls[i]));
+      parent.vinyls[i].on('labelColorMap', this.onLabelColorMapChanged.bind(this, this._vinyls[i]));
     }
 
+    parent.sleeve.on('size', this.onSleeveSizeChanged.bind(this));
     parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
-    parent.sleeve.on('colorFormat', this.onSleeveColorFormatChanged.bind(this));
     parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
     parent.sleeve.on('finish', this.onSleeveFinishChanged.bind(this));
     parent.sleeve.on('colorMap', this.onSleeveColorMapChanged.bind(this));
@@ -988,22 +1121,18 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylColorFormatChanged = function (value) {
-    console.log('World.onVinylColorFormatChanged:', value);
+  World.prototype.onVinylColorFormatChanged = function (target, colorFormat) {
 
-    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(value.format)) {
-      console.warn('World.onVinylColorFormatChanged: unknown value "' + value.format + '" for vinyl color format');
+    if (-1 === Object.values(Vinyl.ColorFormat).indexOf(colorFormat)) {
+      console.warn('World.onVinylColorFormatChanged: unknown value "' + colorFormat + '" for vinyl color format');
       return;
     }
 
-    console.log('onVinylColorFormatChanged', this);
-
-    this._vinyls[0].setColorFormat(value.format);
+    target.setColorFormat(colorFormat);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylSizeChanged = function (size) {
-    console.log('World::onVinylSizeChanged', size);
+  World.prototype.onVinylSizeChanged = function (target, size) {
 
     // to string
     size += '';
@@ -1014,159 +1143,169 @@
     }
 
     if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
-      throw new TypeError('Unknown vinyl size error. Size ' + size + ' is not expected.');
+      console.error('Unknown vinyl size "' + size + '"');
+      return;
     }
 
-    var sleeveSize = size;
-    var scale = 1;
+    target.setSize(size);
 
-    switch (size) {
-      case Vinyl.Size.SIZE_7_SMALL_HOLE:
-      case Vinyl.Size.SIZE_7_LARGE_HOLE:
+    var firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
+    var secondVinylSize = firstVinylSize;
+
+    if (1 < this._vinyls.length) {
+      secondVinylSize = this._convertSizeToNumber(this._vinyls[1].getSize());
+    }
+
+    var largerSize = Math.max(firstVinylSize, secondVinylSize);
+
+    var sleeveSize;
+    var scale;
+
+    switch (largerSize) {
+      case 7:
         sleeveSize = Sleeve.Size.SIZE_7;
+        scale = 1;
         break;
-      case Vinyl.Size.SIZE_10:
+      case 10:
+        sleeveSize = Sleeve.Size.SIZE_10;
         scale = 0.6890566038;
         break;
-      case Vinyl.Size.SIZE_12:
+      case 12:
+        sleeveSize = Sleeve.Size.SIZE_12;
         scale = 0.5833865815;
         break;
     }
 
-    this._object.scale.set(scale, scale, scale);
-
+    this._containerObject.scale.set(scale, scale, scale);
     this._sleeve.setSize(sleeveSize);
-    this._vinyls[0].setSize(size);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylColorChanged = function (value) {
-    console.log('World::onVinylColorChanged', value);
+  World.prototype.onVinylColorChanged = function (target, color) {
 
-    this._vinyls[0].setColor(Object.keys(Vinyl.Color)[value.color]);
+    target.setColor(Object.keys(Vinyl.Color)[color]);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylSplatterColorChanged = function (value) {
-    console.log('World::onVinylSplatterColorChanged', value);
+  World.prototype.onVinylWeightChanged = function (target, weight) {
 
-    this._vinyls[0].setColor(Object.keys(Vinyl.Color)[value.color]);
+    target.setWeight(weight);
   };
 
   //--------------------------------------------------------------
-  World.prototype.onVinylHoleSizeChanged = function (value) {
-    console.log('World::onVinylHoleSizeChanged', value);
+  World.prototype.onLabelOptionChanged = function (target, value) {
 
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onVinylHeavyChanged = function (value) {
-    console.log('World::onVinylHeavyChanged', value);
-    this._vinyls[0].setWeight(value.heavy ? Vinyl.Weight.HEAVY : Vinyl.Weight.NORMAL);
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onLabelTypeChanged = function (value) {
-    console.log('World::onLabelTypeChanged', value);
-    this._vinyls[0].setLabelType(value.label);
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onVinylSpeedChanged = function (value) {
-    console.log('World::onVinylSpeedChanged', value);
-
-    this._vinyls[0].setRPM(value);
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onVinylAlphaMapChanged = function (value) {
-    console.log('World::onVinylAlphaMapChanged');
-
-    this._vinyls[0].setTexture({ alphaMap: value.image });
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onVinylAoMapChanged = function (value) {
-    console.log('World::onVinylAoMapChanged');
-
-    this._vinyls[0].setTexture({ aoMap: value.image });
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onVinylBumpMapChanged = function (value) {
-    console.log('World::onVinylBumpMapChanged', value);
-
-    this._vinyls[0].setTexture({ bumpMap: value.image });
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onVinylColorMapChanged = function (value) {
-    console.log('World::onVinylColorMapChanged', value);
-
-    this._vinyls[0].setTexture({ map: value.image });
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onLabelAoMapChanged = function (value) {
-    console.log('World::onVinylAoMapChanged');
-
-    this._vinyls[0].setLabelTexture({ aoMap: value.image });
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onLabelBumpMapChanged = function (value) {
-    console.log('World::onVinylBumpMapChanged', value);
-
-    this._vinyls[0].setLabelTexture({ bumpMap: value.image });
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onLabelColorMapChanged = function (value) {
-    console.log('World::onLabelColorMapChanged', value);
-
-    this._vinyls[0].setLabelTexture({ map: value.image });
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onSleeveTypeChanged = function (value) {
-    console.log('World::onSleeveTypeChanged', value);
-
-    this._sleeve.setFormat(value);
-
-    this._vinyls[0].setCoveredRatio(Vinyl.Index.FIRST, 0);
-    this._vinyls[0].setCoveredRatio(Vinyl.Index.SECOND, 0);
-
-    if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
-      this._vinyls[0].enableDoubleVinyl(value);
+    if (value === true) {
+      target.enableLabel();
     } else {
-      this._vinyls[0].disableDoubleVinyl();
+      target.disableLabel();
     }
   };
 
   //--------------------------------------------------------------
-  World.prototype.onSleeveColorFormatChanged = function (value) {
-    console.log('World::onSleeveColorFormatChanged', value);
+  World.prototype.onVinylSpeedChanged = function (target, rpm) {
 
-    this._sleeve.setColorFormat(value);
+    target.setRPM(rpm);
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onVinylAlphaMapChanged = function (target, image) {
+
+    target.setTexture({ alphaMap: image });
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onVinylAoMapChanged = function (target, image) {
+
+    target.setTexture({ aoMap: image });
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onVinylBumpMapChanged = function (target, image) {
+
+    target.setTexture({ bumpMap: image });
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onVinylColorMapChanged = function (target, image) {
+
+    target.setTexture({ map: image });
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onLabelAoMapChanged = function (target, image) {
+
+    target.setLabelTexture({ aoMap: image });
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onLabelBumpMapChanged = function (target, image) {
+
+    target.setLabelTexture({ bumpMap: image });
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onLabelColorMapChanged = function (target, image) {
+
+    target.setLabelTexture({ map: image });
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onSleeveSizeChanged = function (value) {
+
+    this._sleeve.setSize(value);
+
+    if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
+      this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), this._sleeve.getCurrentGatefoldAngle() * 2);
+      this._vinyls[1].setOffsetY(this._containerObject.getObjectByName('Back').getWorldPosition().y);
+    }
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.onSleeveTypeChanged = function (value) {
+
+    const lastFormat = this._sleeve.getFormat();
+
+    this._sleeve.setFormat(value);
+    this._sleeve.setCoveredRatio(0);
+
+    if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
+      if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
+        var opts = this._vinyls[0].getCurrentProperties();
+        opts.index = Vinyl.Index.SECOND;
+
+        this._vinyls.push(new Vinyl());
+        this._vinyls[1].setup(this._scene, this._assets, opts, this._containerObject);
+      }
+    } else if (Sleeve.Format.GATEFOLD === lastFormat || Sleeve.Format.DOUBLE === lastFormat) {
+      if (Sleeve.Format.SINGLE_WITHOUT_SPINE === value || Sleeve.Format.SINGLE === value) {
+        this._vinyls[1].removeFromContainer();
+        this._vinyls[1].dispose();
+        this._vinyls.pop();
+        this._vinyls.length = 1;
+      }
+    }
+    
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.setFrontSleevePositionAndAngle(new THREE.Vector3(), 0);
+      vinyl.setCoveredRatio(0);
+    });
   };
 
   //--------------------------------------------------------------
   World.prototype.onSleeveHoleChanged = function (value) {
-    console.log('World::onSleeveHoleChanged', value);
 
     this._sleeve.setHole(value ? Sleeve.Hole.HOLED : Sleeve.Hole.NO_HOLE);
   };
 
   //--------------------------------------------------------------
   World.prototype.onSleeveFinishChanged = function (value) {
-    console.log(value);
 
     this._sleeve.setFinish(value);
   };
 
   //--------------------------------------------------------------
   World.prototype.onSleeveColorMapChanged = function (value) {
-    console.log('World::onSleeveColorMapChanged');
 
     if (!value) {
       return;
@@ -1177,7 +1316,6 @@
 
   //--------------------------------------------------------------
   World.prototype.onSleeveAoMapChanged = function (value) {
-    console.log('World::onSleeveAoMapChanged');
 
     if (!value) {
       return;
@@ -1188,12 +1326,23 @@
 
   //--------------------------------------------------------------
   World.prototype.onSleeveBumpMapChanged = function (value) {
-    console.log('World::onSleeveBumpMapChanged');
 
     if (!value) {
       return;
     }
 
     this._sleeve.setBumpMap(value);
+  };
+
+  //--------------------------------------------------------------
+  World.prototype._convertSizeToNumber = function (size) {
+
+    if (Vinyl.Size.SIZE_7_SMALL_HOLE === size || Vinyl.Size.SIZE_7_LARGE_HOLE === size || Sleeve.Size.SIZE_7 === size) {
+      return 7;
+    } else if (Vinyl.Size.SIZE_10 === size) {
+      return 10;
+    } else if (Vinyl.Size.SIZE_12 === size) {
+      return 12;
+    }
   };
 })(this, (this.qvv = (this.qvv || {})));

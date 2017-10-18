@@ -315,8 +315,16 @@ form.show
   h1 Vinyl options
 
   p
-    label Size: 
-    select number="" v-model="vinyl.size"
+    label Size 1: 
+    select number="" v-model="vinyl.size1"
+      option value="7S" 7 (small hole)″
+      option value="7L" 7 (large hole)″
+      option value="10" 10″
+      option value="12" 12″
+
+  p
+    label Size 2: 
+    select number="" v-model="vinyl.size2"
       option value="7S" 7 (small hole)″
       option value="7L" 7 (large hole)″
       option value="10" 10″
@@ -373,20 +381,11 @@ form.show
       option value="33" P19 SILVER
       option value="34" P20 MUSTARD
 
-  p: label: input type="checkbox" v-model="vinyl.heavy1" Heavy (First Vinyl)
-  p: label: input type="checkbox" v-model="vinyl.heavy2" Heavy (Second Vinyl)
+  p: label: input type="checkbox" v-model="vinyl.heavy1" Heavy 1
+  p: label: input type="checkbox" v-model="vinyl.heavy2" Heavy 2
 
-  p
-    label Label 1: 
-    select number="" v-model="vinyl.labelType1"
-      option value="none" None
-      option value="texture" Texture
-
-  p
-    label Label 2: 
-    select number="" v-model="vinyl.labelType2"
-      option value="none" None
-      option value="texture" Texture
+  p: label: input type="checkbox" v-model="vinyl.label1" Label 1
+  p: label: input type="checkbox" v-model="vinyl.label2" Label 2
 
   p
     label RPM: 
@@ -453,6 +452,13 @@ form.show
     input type="file" name="label-color2"
 
   h1 Sleeve options
+
+  p
+    label Size: 
+    select number="" v-model="sleeve.size"
+      option value="7" 7″
+      option value="10" 10″
+      option value="12" 12″
 
   p
     label Type: 
