@@ -307,7 +307,9 @@ vv.on('ready', function() {
   sleeveColorMap.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.sleeve.colorMap(img);
+      vv.world._sleeve.setColorMap(img, 'front');
+      vv.world._sleeve.setColorMap(img, 'back');
+      vv.world._sleeve.setColorMap(img, 'spine');
     });
   };
 });

@@ -324,9 +324,8 @@
   VinylVisualizer.prototype.setSleeveFormat = function (format, callback) {
 
     if (!this.world) return this;
-    opts = opts || {};
     callback = callback || noop;
-    this.world.setVinylVisibility(index, value, opts, callback);
+    // this.world.setVinylVisibility(index, value, opts, callback);
     return this;
   };
 

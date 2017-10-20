@@ -498,7 +498,7 @@
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.needsUpdate = true;
-
+    
     return texture;
   };
 
@@ -512,7 +512,25 @@
         return;
       }
 
+      console.log(this._textures[this._size][this._format][this._hole][side][type].image);
       this.updateTexture(this._textures[this._size][this._format][this._hole][side][type], image);
+      console.log(this._textures[this._size][this._format][this._hole][side][type].image);
+
+      const self = this;
+      this._currentObject.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          if (-1 < child.name.toLowerCase().indexOf(side)) {
+            if ('ao' === type) {
+              child.material.aoMap = self._textures[self._size][self._format][self._hole][side][type];
+            } else if ('bumpmap' === type) {
+              child.material.bumpMap = self._textures[self._size][self._format][self._hole][side][type];
+            } else if ('color' == type) {
+              child.material.map = self._textures[self._size][self._format][self._hole][side][type];
+            }
+          }
+          child.material.needsUpdate = true;
+        }
+      });
     }
   };
 
