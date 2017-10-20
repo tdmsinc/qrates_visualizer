@@ -189,7 +189,13 @@ vv.on('ready', function() {
   });
 
   vm.$watch('sleeve.size', function(value) { vv.setSize(value) });
-  vm.$watch('sleeve.type', function(value) { vv.sleeve.type(value); });
+
+  vm.$watch('sleeve.type', function (value) {
+    vv.world._sleeve.setFormat(value, function () {
+      console.log('sleeve format chaged');
+    });
+  });
+
   vm.$watch('sleeve.colorFormat', function(value) { vv.sleeve.colorFormat(value); });
   vm.$watch('sleeve.hole', function(value) { vv.sleeve.hole(value); });
   vm.$watch('sleeve.finish', function(value) { vv.sleeve.finish(value); });

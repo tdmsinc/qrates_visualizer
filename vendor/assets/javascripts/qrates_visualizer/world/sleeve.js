@@ -565,7 +565,7 @@
   }
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setFormat = function(format) {
+  Sleeve.prototype.setFormat = function(format, callback) {
 
     if (!format) {
       console.warn('Sleeve.setFormat: no format specified');
@@ -616,6 +616,10 @@
     self._container.add(self._currentObject);
 
     self.setOpacity(1.0, 0);
+
+    if (callback) {
+      callback();
+    }
   };
 
   //--------------------------------------------------------------

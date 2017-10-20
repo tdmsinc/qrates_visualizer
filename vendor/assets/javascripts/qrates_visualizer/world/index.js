@@ -100,22 +100,31 @@
     this._sleeve.setObjectScale(this._objectScales['12']);
 
     // vinyl
-    this._vinyls = [];
+    this._vinyls = [
+      new Vinyl(),
+      new Vinyl()
+    ];
 
     // sleeve が single で複数の vinyl オプションが渡された場合は2つ目以降のオプションを削除して single フォーマットを採用する
-    if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format) && 1 < opts.defaults.vinyl.length) {
-      console.warn('World: too many options for vinyl');
-
-      opts.defaults.vinyl.pop();
-      opts.defaults.vinyl.length = 1;
+    if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
+      if (1 < opts.defaults.vinyl.length) {
+        console.warn('World: too many options for vinyl');
+        
+        opts.defaults.vinyl.pop();
+        opts.defaults.vinyl.length = 1;
+      }
     }
 
     // vinyl オプションから vinyl を生成
-    for (var i in opts.defaults.vinyl) {
-      opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
-
-      this._vinyls.push(new Vinyl());
-      this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject);
+    if (1 == opts.defaults.vinyl.length) {
+      this._vinyls[0].setup(this._scene, this._assets, this._opts.defaults.vinyl[0], this._containerObject);
+      this._vinyls[1].setup(this._scene, this._assets, this._opts.defaults.vinyl[0], this._containerObject);
+    } else {
+      for (let i in opts.defaults.vinyl) {
+        opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
+  
+        this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject);
+      }
     }
 
     // scale を設定
@@ -142,20 +151,24 @@
       this.updateView(opts.defaults.view, { duration: 0 });
     }
 
+    // sleeve format に応じて vinyl の位置をオフセット
     var sleeveFormat = this._sleeve.getFormat();
+    let offsetY = 0.0;
 
     if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
-
-      var offsetY;
       if (Sleeve.Format.GATEFOLD === sleeveFormat) {
         offsetY = 1.08390626812156;
-        this._vinyls[0].setOffsetY(offsetY);
-        this._vinyls[1].setOffsetY(-offsetY);
       } else {
         offsetY = 0.6;
-        this._vinyls[0].setOffsetY(offsetY);
-        this._vinyls[1].setOffsetY(-offsetY);
       }
+    }
+
+    this._vinyls[0].setOffsetY(offsetY);
+    this._vinyls[1].setOffsetY(-offsetY);
+
+    // シングルスリーブの場合は2枚目の vinyl を表示しない
+    if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
+      this._vinyls[1].setVisibility(false);
     }
   }
 
