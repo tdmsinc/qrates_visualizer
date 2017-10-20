@@ -361,8 +361,9 @@
     (function initTextures (obj) {
       Object.keys(obj).forEach(function(key) {
         if (obj[key] instanceof Image || obj[key] === undefined) {
-          if (!obj[key]) {
-            console.error('texture ' + obj + ':' + key + ' is ' + obj[key]);
+          if (obj[key] === undefined) {
+            // console.error('texture', obj, ':' + key + ' is ' + obj[key]);
+            obj[key] = new THREE.Texture();
           }
 
           texture = new THREE.Texture();
