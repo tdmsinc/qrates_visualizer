@@ -1281,21 +1281,24 @@
 
     this._sleeve.setFormat(value);
     this._sleeve.setCoveredRatio(0);
-
+    console.log('hoge');
     if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
       if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
         var opts = this._vinyls[0].getCurrentProperties();
         opts.index = Vinyl.Index.SECOND;
 
-        this._vinyls.push(new Vinyl());
-        this._vinyls[1].setup(this._scene, this._assets, opts, this._containerObject);
+        this._vinyls[1].setVisibility(true);
+
+        // this._vinyls.push(new Vinyl());
+        // this._vinyls[1].setup(this._scene, this._assets, opts, this._containerObject);
       }
     } else if (Sleeve.Format.GATEFOLD === lastFormat || Sleeve.Format.DOUBLE === lastFormat) {
       if (Sleeve.Format.SINGLE_WITHOUT_SPINE === value || Sleeve.Format.SINGLE === value) {
-        this._vinyls[1].removeFromContainer();
-        this._vinyls[1].dispose();
-        this._vinyls.pop();
-        this._vinyls.length = 1;
+        this._vinyls[1].setVisibility(false);
+        // this._vinyls[1].removeFromContainer();
+        // this._vinyls[1].dispose();
+        // this._vinyls.pop();
+        // this._vinyls.length = 1;
       }
     }
     
@@ -1345,6 +1348,33 @@
     }
 
     this._sleeve.setBumpMap(value);
+  };
+
+  //--------------------------------------------------------------
+  World.prototype.setSleeveFormat = function (format) {
+
+    const lastFormat = this._sleeve.getFormat();
+    
+    this._sleeve.setFormat(format);
+    this._sleeve.setCoveredRatio(0);
+    
+    if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
+      if (Sleeve.Format.GATEFOLD === format || Sleeve.Format.DOUBLE === format) {
+        var opts = this._vinyls[0].getCurrentProperties();
+        opts.index = Vinyl.Index.SECOND;
+        // TODO: プロパティをコピー
+        this._vinyls[1].setVisibility(true);
+      }
+    } else if (Sleeve.Format.GATEFOLD === lastFormat || Sleeve.Format.DOUBLE === lastFormat) {
+      if (Sleeve.Format.SINGLE_WITHOUT_SPINE === format || Sleeve.Format.SINGLE === format) {
+        this._vinyls[1].setVisibility(false);
+      }
+    }
+    
+    this._vinyls.forEach(function (vinyl) {
+      vinyl.setFrontSleevePositionAndAngle(new THREE.Vector3(), 0);
+      vinyl.setCoveredRatio(0);
+    });
   };
 
   //--------------------------------------------------------------

@@ -191,9 +191,7 @@ vv.on('ready', function() {
   vm.$watch('sleeve.size', function(value) { vv.setSize(value) });
 
   vm.$watch('sleeve.type', function (value) {
-    vv.world._sleeve.setFormat(value, function () {
-      console.log('sleeve format chaged');
-    });
+    vv.world.setSleeveFormat(value);
   });
 
   vm.$watch('sleeve.colorFormat', function(value) { vv.sleeve.colorFormat(value); });
