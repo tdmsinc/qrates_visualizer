@@ -363,10 +363,10 @@
         if (obj[key] instanceof Image || obj[key] === undefined) {
           if (obj[key] === undefined) {
             // console.error('texture', obj, ':' + key + ' is ' + obj[key]);
-            obj[key] = new THREE.Texture();
+            obj[key] = new Image();
           }
 
-          texture = new THREE.Texture();
+          let texture = new THREE.Texture();
           obj[key] = self.updateTexture(texture, obj[key]);
         } else if (obj[key] instanceof Object) {
           initTextures(obj[key]);
