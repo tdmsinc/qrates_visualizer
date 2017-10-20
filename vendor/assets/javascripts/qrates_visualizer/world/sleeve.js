@@ -512,11 +512,10 @@
         return;
       }
 
-      console.log(this._textures[this._size][this._format][this._hole][side][type].image);
       this.updateTexture(this._textures[this._size][this._format][this._hole][side][type], image);
-      console.log(this._textures[this._size][this._format][this._hole][side][type].image);
 
       const self = this;
+
       this._currentObject.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
           if (-1 < child.name.toLowerCase().indexOf(side)) {
@@ -528,21 +527,12 @@
               child.material.map = self._textures[self._size][self._format][self._hole][side][type];
             }
           }
+
           child.material.needsUpdate = true;
         }
       });
     }
   };
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setColorMap = function(image, side) {
-    
-    if (!image) {
-      return;
-    }
-
-    this._setTexture('color', image, side);
-  }
 
   //--------------------------------------------------------------
   Sleeve.prototype.setAoMap = function(image, side) {
@@ -562,6 +552,16 @@
     }
 
     this._setTexture('bumpmap', image, side);
+  }
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.setColorMap = function(image, side) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture('color', image, side);
   }
 
   //--------------------------------------------------------------

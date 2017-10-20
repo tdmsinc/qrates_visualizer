@@ -104,11 +104,15 @@ vv.on('ready', function() {
   });
 
   vm.$watch('vinyl.colorFormat1', function(colorFormat) {
-    vv.vinyls[0].colorFormat(colorFormat);
+    vv.world._vinyls[0].setColorFormat(colorFormat);
   });
 
   vm.$watch('vinyl.colorFormat2', function(colorFormat) {
-    vv.vinyl[1].colorFormat(colorFormat);
+    if (1 == vv.world._vinyls.length) {
+      return;
+    }
+
+    vv.world._vinyls[1].setColorFormat(colorFormat);
   });
 
   vm.$watch('vinyl.size1', function(value) { 
@@ -122,7 +126,12 @@ vv.on('ready', function() {
   vm.$watch('vinyl.colors', function(color) {
 
     vv.vinyls[0].color(color);
-    vv.vinyls[1].color(color);
+
+    if (1 == vv.world._vinyls.length) {
+      return;
+    }
+
+    vv.world._vinyls[1].setColor(color);
   });
 
   vm.$watch('vinyl.holeSize', function(value) { vv.vinyl.holeSize(value); });
@@ -137,7 +146,7 @@ vv.on('ready', function() {
       weight = qvv.VinylVisualizer.VinylWeight.HEAVY;
     }
 
-    vv.vinyls[0].weight(weight);
+    vv.world._vinyls[0].setWeight(weight);
   });
 
   vm.$watch('vinyl.heavy2', function(value) {
@@ -150,15 +159,27 @@ vv.on('ready', function() {
       weight = qvv.VinylVisualizer.VinylWeight.HEAVY;
     }
 
-    vv.vinyls[1].weight(weight);
+    vv.world._vinyls[1].setWeight(weight);
   });
 
   vm.$watch('vinyl.label1', function(value) { 
-    vv.vinyls[0].label(value);
+    if (value === false) {
+      vv.world._vinyls[0].disableLabel();
+    } else {
+      vv.world._vinyls[0].enableLabel();
+    }
   });
 
   vm.$watch('vinyl.label2', function(value) {
-    vv.vinyls[1].label(value);
+    if (1 == vv.world._vinyls.length) {
+      return;
+    }
+
+    if (value === false) {
+      vv.world._vinyls[1].disableLabel();
+    } else {
+      vv.world._vinyls[1].enableLabel();
+    }
   });
 
   vm.$watch('vinyl.speed', function(value) {
@@ -216,91 +237,111 @@ vv.on('ready', function() {
   vinylAlphaMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].alphaMap(img);
+      vv.world._vinyls[0].setAlphaMap(img);
     });
   };
 
   vinylAoMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].aoMap(img);
+      vv.world._vinyls[0].setAoMap(img);
     });
   };
 
   vinylBumpMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].bumpMap(img);
+      vv.world._vinyls[0].setBumpMap(img);
     });
   };
 
   vinylColorMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].colorMap(img);
+      vv.world._vinyls[0].setColorMap(img);
     });
   };
 
   vinylAlphaMap2.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[1].alphaMap(img);
+
+      if (1 == vv.world._vinyls.length) {
+        return;
+      }
+
+      vv.world._vinyls[1].setAlphaMap(img);
     });
   };
 
   vinylAoMap2.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[1].aoMap(img);
+
+      if (1 == vv.world._vinyls.length) {
+        return;
+      }
+
+      vv.world._vinyls[1].setAoMap(img);
     });
   };
 
   vinylBumpMap2.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[1].bumpMap(img);
+
+      if (1 == vv.world._vinyls.length) {
+        return;
+      }
+
+      vv.world._vinyls[1].setBumpMap(img);
     });
   };
 
   vinylColorMap2.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[1].colorMap(img);
+
+      if (1 == vv.world._vinyls.length) {
+        return;
+      }
+
+      vv.world._vinyls[1].setColorMap(img);
     });
   };
 
   labelAoMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].labelAoMap(img);
+      vv.world._vinyls[0].setLabelAoMap(img);
     });
   };
 
   labelBumpMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].labelBumpMap(img);
+      vv.world._vinyls[0].setLabelBumpMap(img);
     });
   };
 
   labelColorMap1.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.vinyls[0].labelColorMap(img);
+      vv.world._vinyls[0].setLabelColorMap(img);
     });
   };
   
   sleeveAoMap.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.sleeve.aoMap(img);
+      vv.world._sleeve.setAoMap(img);
     });
   };
 
   sleeveBumpMap.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.sleeve.bumpMap(img);
+      vv.world._sleeve.setBumpMap(img);
     });
   };
 

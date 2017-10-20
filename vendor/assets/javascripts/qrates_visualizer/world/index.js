@@ -1211,43 +1211,43 @@
   //--------------------------------------------------------------
   World.prototype.onVinylAlphaMapChanged = function (target, image) {
 
-    target.setTexture({ alphaMap: image });
+    target.setAlphaMap(image);
   };
 
   //--------------------------------------------------------------
   World.prototype.onVinylAoMapChanged = function (target, image) {
 
-    target.setTexture({ aoMap: image });
+    target.setAoMap(image);
   };
 
   //--------------------------------------------------------------
   World.prototype.onVinylBumpMapChanged = function (target, image) {
 
-    target.setTexture({ bumpMap: image });
+    target.setBumpMap(image);
   };
 
   //--------------------------------------------------------------
   World.prototype.onVinylColorMapChanged = function (target, image) {
 
-    target.setTexture({ map: image });
+    target.setColorMap(image);
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelAoMapChanged = function (target, image) {
 
-    target.setLabelTexture({ aoMap: image });
+    target.setLabelAoMap(image);
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelBumpMapChanged = function (target, image) {
 
-    target.setLabelTexture({ bumpMap: image });
+    target.setLabelBumpMap(image);
   };
 
   //--------------------------------------------------------------
   World.prototype.onLabelColorMapChanged = function (target, image) {
 
-    target.setLabelTexture({ map: image });
+    target.setLabelColorMap(image);
   };
 
   //--------------------------------------------------------------

@@ -528,6 +528,7 @@
 
   //--------------------------------------------------------------
   Vinyl.prototype.updateTexture = function(texture, image) {
+
     if (!texture || !image) {
       return;
     }
@@ -536,45 +537,112 @@
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.needsUpdate = true;
+
+    return texture;
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setTexture = function(textures /* = {} */) {
+  Vinyl.prototype._setTexture = function(part, type, image) {
 
-    console.log('Vinyl.setTexture', textures);
-
-    if (this._colorFormat === Vinyl.ColorFormat.COLOR && textures.map) {
-      console.error('Vinyl.setTexture: color map is only available when color format is set to "texture"');
+    if (this._colorFormat === Vinyl.ColorFormat.COLOR && 'color' == type) {
+      console.error('Vinyl.setTexture: colormap is only available when color format is set to "texture"');
       return;
     }
 
     const self = this;
 
     self._currentObject.traverse(function (child) {
-      if (child instanceof THREE.Mesh && child.name === Vinyl.Part.VINYL) {
-        Object.keys(textures).forEach(function (key) {
+      if (child instanceof THREE.Mesh) {
+        if (-1 < child.name.toLowerCase().indexOf(part)) {
           child.material.alphaTest = 0.5;
-          child.material[key] = new THREE.Texture();
-          self.updateTexture(child.material[key], textures[key]);
+          
+          if ('alpha' == type) {
+            child.material.alphaMap = self.updateTexture(new THREE.Texture(), image);
+          } else if ('ao' === type) {
+            child.material.aoMap = self.updateTexture(new THREE.Texture(), image);
+          } else if ('bumpmap' === type) {
+            child.material.bumpMap = self.updateTexture(new THREE.Texture(), image);
+          } else if ('color' == type) {
+            child.material.map = self.updateTexture(new THREE.Texture(), image);
+          } else {
+            return;
+          }
+  
           child.material.needsUpdate = true;
-        });
+        }
       }
     });
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setLabelTexture = function(textures /* = {} */) {
+  Vinyl.prototype.setAlphaMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
 
-    const self = this;
+    this._setTexture(Vinyl.Part.VINYL, 'alpha', image);
+  }
 
-    self._currentObject.traverse(function (child) {
-      if (child instanceof THREE.Mesh && child.name === Vinyl.Part.LABEL) {
-        Object.keys(textures).forEach(function(key) {
-          self.updateTexture(child.material[key], textures[key]);
-        });
-      }
-    });
-  };
+  //--------------------------------------------------------------
+  Vinyl.prototype.setAoMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture(Vinyl.Part.VINYL, 'ao', image);
+  }
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setBumpMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture(Vinyl.Part.VINYL, 'bumpmap', image);
+  }
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setColorMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture(Vinyl.Part.VINYL, 'color', image);
+  }
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setLabelAoMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture(Vinyl.Part.LABEL, 'ao', image);
+  }
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setLabelBumpMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture(Vinyl.Part.LABEL, 'bumpmap', image);
+  }
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.setLabelColorMap = function(image) {
+    
+    if (!image) {
+      return;
+    }
+
+    this._setTexture(Vinyl.Part.LABEL, 'color', image);
+  }
 
   //--------------------------------------------------------------
   Vinyl.prototype.updateFormat = function(weight, isEnableLabel) {
