@@ -378,7 +378,7 @@
     });
 
     this._currentObject = this._models[this._size][this._format].scene.clone();
-    this._currentObject.scale.y = 0.99;
+    this._setVinylScale(0.99);
     this.assetName = this._models[this._size][this._format].assetName;
 
     this._currentObject.traverse(function (child) {
@@ -612,7 +612,7 @@
     self.dispose();
 
     self._currentObject = self._models[self._size][format].scene.clone();
-    self._currentObject.scale.y = 0.99;
+    this._setVinylScale(0.99);
     self.assetName = self._models[self._size][format].assetName;
 
     this.updateBoundingBox();
@@ -940,6 +940,24 @@
   Vinyl.prototype.getAssetName = function () {
 
     return this._assetName;
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype._setVinylScale = function (scale) {
+
+    this._currentObject.scale.y = scale;
+
+    if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
+      return;
+    }
+
+    this._currentObject.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        if (-1 < child.name.toLowerCase().indexOf('label')) {
+          child.scale.set(1.0, 2.5, 1.0);
+        }
+      }
+    });
   };
 
   //--------------------------------------------------------------
