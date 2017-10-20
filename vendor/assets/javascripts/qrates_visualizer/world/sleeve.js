@@ -360,7 +360,7 @@
     // Image として読み込まれたテクスチャを THREE.Texture に変換する
     (function initTextures (obj) {
       Object.keys(obj).forEach(function(key) {
-        if (obj[key] instanceof Image) {
+        if (obj[key] instanceof Image || obj[key] === undefined) {
           if (!obj[key]) {
             console.error('texture ' + obj + ':' + key + ' is ' + obj[key]);
           }
