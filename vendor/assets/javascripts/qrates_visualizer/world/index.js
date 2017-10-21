@@ -1116,7 +1116,6 @@
     }
 
     parent.sleeve.on('size', this.onSleeveSizeChanged.bind(this));
-    parent.sleeve.on('type', this.onSleeveTypeChanged.bind(this));
     parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
     parent.sleeve.on('finish', this.onSleeveFinishChanged.bind(this));
     parent.sleeve.on('colorMap', this.onSleeveColorMapChanged.bind(this));
@@ -1272,40 +1271,6 @@
       this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), this._sleeve.getCurrentGatefoldAngle() * 2);
       this._vinyls[1].setOffsetY(this._containerObject.getObjectByName('Back').getWorldPosition().y);
     }
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onSleeveTypeChanged = function (value) {
-
-    const lastFormat = this._sleeve.getFormat();
-
-    this._sleeve.setFormat(value);
-    this._sleeve.setCoveredRatio(0);
-    console.log('hoge');
-    if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
-      if (Sleeve.Format.GATEFOLD === value || Sleeve.Format.DOUBLE === value) {
-        var opts = this._vinyls[0].getCurrentProperties();
-        opts.index = Vinyl.Index.SECOND;
-
-        this._vinyls[1].setVisibility(true);
-
-        // this._vinyls.push(new Vinyl());
-        // this._vinyls[1].setup(this._scene, this._assets, opts, this._containerObject);
-      }
-    } else if (Sleeve.Format.GATEFOLD === lastFormat || Sleeve.Format.DOUBLE === lastFormat) {
-      if (Sleeve.Format.SINGLE_WITHOUT_SPINE === value || Sleeve.Format.SINGLE === value) {
-        this._vinyls[1].setVisibility(false);
-        // this._vinyls[1].removeFromContainer();
-        // this._vinyls[1].dispose();
-        // this._vinyls.pop();
-        // this._vinyls.length = 1;
-      }
-    }
-    
-    this._vinyls.forEach(function (vinyl) {
-      vinyl.setFrontSleevePositionAndAngle(new THREE.Vector3(), 0);
-      vinyl.setCoveredRatio(0);
-    });
   };
 
   //--------------------------------------------------------------

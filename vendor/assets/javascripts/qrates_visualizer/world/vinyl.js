@@ -340,7 +340,7 @@
       Object.keys(obj).forEach(function(key) {
         
         if (obj[key] instanceof Image) {
-          if (!obj[key]) {
+          if (!obj[key] || obj[key] === undefined) {
             console.error('texture ' + obj + ':' + key + ' is ' + obj[key]);
           }
 

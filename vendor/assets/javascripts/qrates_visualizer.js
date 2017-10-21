@@ -38,6 +38,7 @@
     this.opts = opts = opts || {};
     var defaults = opts.defaults || {};
     this.el = el;
+    this.loadTextures = opts.loadTextures || false;
 
     this.vinyls = [];
 
@@ -97,7 +98,7 @@
       loader.add(key, el.dataset[key]);
     }, this);
 
-    loader.load(function(err, assets) {
+    loader.load(this.loadTextures, function(err, assets) {
       var world = self.world = new World(self, assets, self.opts);
       world.delegateEvents();
       world.startRender();
