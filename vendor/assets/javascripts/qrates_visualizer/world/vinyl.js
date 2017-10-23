@@ -544,9 +544,11 @@
   //--------------------------------------------------------------
   Vinyl.prototype._setTexture = function(part, type, image) {
 
-    if (this._colorFormat === Vinyl.ColorFormat.COLOR && 'color' == type) {
-      console.error('Vinyl.setTexture: colormap is only available when color format is set to "texture"');
-      return;
+    if (Vinyl.Part.VINYL === part) {
+      if (Vinyl.ColorFormat.COLOR === this._colorFormat && 'color' === type) {
+        console.error('Vinyl.setTexture: colormap is only available when color format is set to "texture"');
+        return;
+      }
     }
 
     const self = this;
@@ -621,6 +623,11 @@
       return;
     }
 
+    if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
+      console.error('Vinyl.setLabelAoMap: label texture is only available for formats with labels. current format is "' + this._format + '"');
+      return;
+    }
+
     this._setTexture(Vinyl.Part.LABEL, 'ao', image);
   }
 
@@ -631,6 +638,11 @@
       return;
     }
 
+    if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
+      console.error('Vinyl.setLabelBumpMap: label texture is only available for formats with labels. current format is "' + this._format + '"');
+      return;
+    }
+
     this._setTexture(Vinyl.Part.LABEL, 'bumpmap', image);
   }
 
@@ -638,6 +650,11 @@
   Vinyl.prototype.setLabelColorMap = function(image) {
     
     if (!image) {
+      return;
+    }
+
+    if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
+      console.error('Vinyl.setLabelColorMap: label texture is only available for formats with labels. current format is "' + this._format + '"');
       return;
     }
 

@@ -359,7 +359,7 @@
 
     // Image として読み込まれたテクスチャを THREE.Texture に変換する
     (function initTextures (obj) {
-      Object.keys(obj).forEach(function(key) {
+      Object.keys(obj).forEach(function  (key) {
         if (obj[key] instanceof Image || obj[key] === undefined) {
           if (obj[key] === undefined) {
             // console.error('texture', obj, ':' + key + ' is ' + obj[key]);
@@ -375,9 +375,9 @@
     })(this._textures);
 
     // モデルのマテリアルを初期化
-    Object.keys(self._models).forEach(function(size) {
-      Object.keys(self._models[size]).forEach(function(type) {
-        Object.keys(self._models[size][type]).forEach(function(opt) {
+    Object.keys(self._models).forEach(function (size) {
+      Object.keys(self._models[size]).forEach(function (type) {
+        Object.keys(self._models[size][type]).forEach(function (opt) {
           if (!self._models[size][type][opt]) {
             console.warn('model["' + size + '"]["' + type + '"]["' + opt + '"] is ' + self._models[size][type][opt]);
             return;
