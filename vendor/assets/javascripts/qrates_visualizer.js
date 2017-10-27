@@ -39,6 +39,7 @@
 
     var defaults = opts.defaults || {};
     this.el = el;
+    this.loader = new Loader();
     this.loadModels = opts.loadModels !== undefined ? opts.loadModels : true;
     this.loadTextures = opts.loadTextures !== undefined ? opts.loadTextures : true;
     
@@ -49,6 +50,9 @@
     }
 
     this.sleeve = new Sleeve({ defaults: defaults.sleeve });
+
+    this.opts.loader = this.loader;
+
     this.setup();
   }
 
@@ -94,13 +98,12 @@
   VinylVisualizer.prototype.setup = function() {
     var self = this;
     var el = this.el;
-    var loader = new Loader();
 
     Object.keys(el.dataset).forEach(function(key) {
-      loader.add(key, el.dataset[key]);
+      self.loader.add(key, el.dataset[key]);
     }, this);
     
-    loader.load({
+    self.loader.load({
       loadModels: this.loadModels,
       loadTextures: this.loadTextures
     }, function(err, assets) {

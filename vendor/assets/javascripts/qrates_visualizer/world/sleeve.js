@@ -82,7 +82,7 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setup = function(scene, assets, opts, container) {
+  Sleeve.prototype.setup = function(scene, assets, opts, container, loader) {
 
     opts = opts || {
       format: Sleeve.Format.SINGLE_WITHOUT_SPINE,
@@ -94,7 +94,7 @@
 
       }
     };
-
+console.log('Sleeve.setup:', loader);
     this._models = {
       '7': {
         'no-spine': {
@@ -335,6 +335,7 @@
 
     const self = this;
 
+    this._loader = opts.loader;
     this._container = container;
     this._size = opts.size;
     this._finish = opts.finish || Sleeve.Finish.NORMAL;

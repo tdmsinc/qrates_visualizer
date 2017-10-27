@@ -94,7 +94,7 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype.setup = function(scene, assets, opts, container) {
+  Vinyl.prototype.setup = function(scene, assets, opts, container, loader, offsetY) {
 
     opts = opts || {
       format: Vinyl.Format.NORMAL,
@@ -103,7 +103,7 @@
       speed: 45,
       isEnableLabel: false
     };
-
+    console.log('Vinyl.setup:', loader);
     opts.color = opts.color || 0;
 
     let images = [];
@@ -115,13 +115,13 @@
     }
     this._envMapTexture.needsUpdate = true;
 
+    this._loader = loader;
     this._container = container;
     this._size = opts.size || Vinyl.Size.SIZE_12;
     this._weight = opts.weight || Vinyl.Weight.NORMAL;
     this._isEnableLabel = opts.isEnableLabel || false;
     this._colorFormat = opts.colorFormat || Vinyl.ColorFormat.BLACK;
     this._material = this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE;
-    this._format = Vinyl.Format.NORMAL;
     this._defaultColor = 0x000000;
     this._opacity = 0;
     this._rpm = opts.speed;
@@ -132,7 +132,8 @@
     this._index = opts.index || Vinyl.Index.FIRST;
     this._assetName = '';
     this._offsetX = 0;
-    this._offsetY = Vinyl.Index.FIRST === this._index ? 0.6 : -0.6;
+    this._offsetY = opts.offsetY;
+    this._visibility = opts.visibility;
     this._gatefoldAngle = 0;
     this._coveredRatio = 0;
     this._basePosition = new THREE.Vector3();
@@ -150,6 +151,35 @@
     this._color = this._material.color;
 
     // モデル
+    this._paths = {
+      models: {
+        '7S': {
+          'normal': 'assetsModelVinylSmallHole-7',
+          'with-label': 'assetsModelVinylSmallHoleWithLabel-7',
+          'heavy': 'assetsModelVinylSmallHoleHeavy-7',
+          'heavy-with-label': 'assetsModelVinylSmallHoleHeavyWithLabel-7'
+        },
+        '7L': {
+          'normal': 'assetsModelVinylLargeHole-7',
+          'with-label': 'assetsModelVinylLargeHoleWithLabel-7',
+          'heavy': 'assetsModelVinylLargeHoleHeavy-7',
+          'heavy-with-label': 'assetsModelVinylLargeHoleHeavyWithLabel-7'
+        },
+        '10': {
+          'normal': 'assetsModelVinyl-10',
+          'with-label': 'assetsModelVinylWithLabel-10',
+          'heavy': 'assetsModelVinylHeavy-10',
+          'heavy-with-label': 'assetsModelVinylHeavyWithLabel-10'
+        },
+        '12': {
+          'normal': 'assetsModelVinyl-12',
+          'with-label': 'assetsModelVinylWithLabel-12',
+          'heavy': 'assetsModelVinylHeavy-12',
+          'heavy-with-label': 'assetsModelVinylHeavyWithLabel-12'
+        }
+      }
+    };
+
     this._models = {
       '7S': {
         'normal': assets['assetsModelVinylSmallHole-7'],
@@ -353,33 +383,40 @@
       });
     })(this._textures);
 
-    // マテリアルを初期化
-    let assetName = '';
-    let scale = 5.5;
+    // モデルをロード
+    this._loadModel(this._size, this._format);
+  };
 
-    Object.keys(self._models).forEach(function(size) {
-      Object.keys(self._models[size]).forEach(function(type) {
+  //--------------------------------------------------------------
+  Vinyl.prototype._loadModel = function (size, format) {
 
-        assetName = 'vinyl-' + size + '-' + type;
-
-        if (self._textures[size][type]) {
-          self._textures[size][type].assetName = assetName;
-        }
-
-        if (self._models[size][type]) {
-          self._models[size][type].assetName = assetName;
-          self._models[size][type].scene.assetName = assetName;
-
-          self._models[size][type].scene.scale.set(scale, scale, scale);
-
-          self.initMaterial(self._models[size][type], self._textures[size][type]);
-        }
-      });
+    this._loader.loadAsset(this._paths.models[size][format], this._onModelLoaded.bind(this), function (progress) {
+      console.log('Vinyl.setup: onProgress', progress);
+    }, function (error) {
+      console.log('Vinyl.setup: onError', error);
     });
+  };
 
-    this._currentObject = this._models[this._size][this._format].scene.clone();
-    this._setVinylScale(0.99);
-    this.assetName = this._models[this._size][this._format].assetName;
+  //--------------------------------------------------------------
+  Vinyl.prototype._onModelLoaded = function (key, obj) {
+
+    console.log('Vinyl.setup: asset loaded', key, obj);
+
+    // マテリアルを初期化
+    const scale = 5.5;  
+    const assetName = 'vinyl-' + this._size + '-' + this._format;
+
+    obj.assetName = assetName;
+    obj.scene.assetName = assetName;
+
+    if (this._textures[this._size][this._format]) {
+      this._textures[this._size][this._format].assetName = assetName;
+    }
+
+    this.initMaterial(obj, this._textures[this._size][this._format]);
+
+    this._currentObject = obj.scene.clone();
+    this._currentObject.scale.set(scale, scale, scale);
 
     this._currentObject.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
@@ -387,15 +424,15 @@
       }
     });
 
+    this._setVinylScale(0.99);
+
     const pos = this._currentObject.position;
     this._currentObject.position.set(pos.x, this._offsetY, pos.z);
 
-    if (Vinyl.Weight.HEAVY === this._weight) {
-      this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.HEAVY].scene);
-    } else {
-      this._boundingBox = new THREE.Box3().setFromObject(this._models[Vinyl.Size.SIZE_12][Vinyl.Format.NORMAL].scene);
-    }
+    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
     
+    this.setOffsetY(this._offsetY);
+    this.setVisibility(this._visibility);
     this._container.add(this._currentObject);
   };
 
@@ -688,65 +725,147 @@
       return;
     }
 
-    const position = self._currentObject.position;
-    const format = self._format;
+    // モデルをロード
+    this._loader.loadAsset(this._paths.models[self._size][self._format], function (key, obj) {
 
-    self._opacity = 0;
+      const position = self._currentObject.position;
+      const format = self._format;
+      const scale = 5.5;  
+      const assetName = 'vinyl-' + self._size + '-' + self._format;
 
-    self._container.remove(self._currentObject);
-    self.dispose();
+      console.log('Vinyl.updateCurrentObjectMaterial: model loaded. asset name = ' + assetName);
+  
+      self._opacity = 0;
 
-    self._currentObject = self._models[self._size][format].scene.clone();
-    this._setVinylScale(0.99);
-    self.assetName = self._models[self._size][format].assetName;
+      self.removeFromContainer();
+      self.dispose();
+      
+      obj.assetName = assetName;
+      obj.scene.assetName = assetName;
+  
+      if (self._textures[self._size][self._format]) {
+        self._textures[self._size][self._format].assetName = assetName;
+      }
+  
+      self.initMaterial(obj, self._textures[self._size][self._format]);
+  
+      self._currentObject = obj.scene.clone();
+      self._currentObject.scale.set(scale, scale, scale);
+  
+      self._currentObject.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.material = child.material.clone();
+        }
+      });
+  
+      self._setVinylScale(0.99);
 
-    this.updateBoundingBox();
-    this.setOffsetY(this._offsetY);
-
-    self._currentObject.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        child.material = child.material.clone();
-
-        if (self._format === Vinyl.Format.WITH_LABEL || self._format === Vinyl.Format.HEAVY_WITH_LABEL) {
-          if (Vinyl.Part.VINYL === child.name) {
+      self.updateBoundingBox();
+      self.setOffsetY(self._offsetY);
+      self.setVisibility(self._visibility);
+            
+      self._currentObject.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.material = child.material.clone();
+  
+          if (self._format === Vinyl.Format.WITH_LABEL || self._format === Vinyl.Format.HEAVY_WITH_LABEL) {
+            if (Vinyl.Part.VINYL === child.name) {
+              child.material.bumpScale = self._bumpScale;
+              child.material.color = self._material.color;
+              child.material.reflectivity = self._material.reflectivity;
+              child.material.refractionRatio = self._material.refractionRatio;
+              child.material.shininess = self._material.shininess;
+            } else if (Vinyl.Part.LABEL === child.name) { 
+              child.material.bumpScale = self._bumpScale;
+              child.material.color = Vinyl.Color.WHITE.color;
+              child.material.reflectivity = 0;
+              child.material.refractionRatio = 0;
+              child.material.shininess = 5;
+            }
+          } else {
             child.material.bumpScale = self._bumpScale;
             child.material.color = self._material.color;
             child.material.reflectivity = self._material.reflectivity;
             child.material.refractionRatio = self._material.refractionRatio;
             child.material.shininess = self._material.shininess;
-          } else if (Vinyl.Part.LABEL === child.name) { 
-            child.material.bumpScale = self._bumpScale;
-            child.material.color = Vinyl.Color.WHITE.color;
-            child.material.reflectivity = 0;
-            child.material.refractionRatio = 0;
-            child.material.shininess = 5;
           }
-        } else {
-          child.material.bumpScale = self._bumpScale;
-          child.material.color = self._material.color;
-          child.material.reflectivity = self._material.reflectivity;
-          child.material.refractionRatio = self._material.refractionRatio;
-          child.material.shininess = self._material.shininess;
+          
+          
+          child.material.needsUpdate = true;
         }
-        
-        
-        child.material.needsUpdate = true;
-      }
+      });
+  
+      self._opacity = 0;
+      self._currentObject.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.needsUpdate = true;
+        }
+      });
+  
+      self.setFrontSleevePositionAndAngle(self._basePosition, self._gatefoldAngle);
+      
+      self._container.add(self._currentObject);
+      self._currentObject.position.set(position.x, position.y, position.z);
+  
+      self.setOpacity(self._material.opacity, 1000, 250);
+
+    }, function (progress) {
+      console.log('Vinyl.setup: onProgress', progress);
+    }, function (error) {
+      console.log('Vinyl.setup: onError', error);
     });
 
-    self._opacity = 0;
-    self._currentObject.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        child.material.needsUpdate = true;
-      }
-    });
+    // self._currentObject = self._models[self._size][format].scene.clone();
+    // self._setVinylScale(0.99);
+    // self.assetName = self._models[self._size][format].assetName;
 
-    self.setFrontSleevePositionAndAngle(this._basePosition, this._gatefoldAngle);
+    // self.updateBoundingBox();
+    // self.setOffsetY(self._offsetY);
+
+    // self._currentObject.traverse(function (child) {
+    //   if (child instanceof THREE.Mesh) {
+    //     child.material = child.material.clone();
+
+    //     if (self._format === Vinyl.Format.WITH_LABEL || self._format === Vinyl.Format.HEAVY_WITH_LABEL) {
+    //       if (Vinyl.Part.VINYL === child.name) {
+    //         child.material.bumpScale = self._bumpScale;
+    //         child.material.color = self._material.color;
+    //         child.material.reflectivity = self._material.reflectivity;
+    //         child.material.refractionRatio = self._material.refractionRatio;
+    //         child.material.shininess = self._material.shininess;
+    //       } else if (Vinyl.Part.LABEL === child.name) { 
+    //         child.material.bumpScale = self._bumpScale;
+    //         child.material.color = Vinyl.Color.WHITE.color;
+    //         child.material.reflectivity = 0;
+    //         child.material.refractionRatio = 0;
+    //         child.material.shininess = 5;
+    //       }
+    //     } else {
+    //       child.material.bumpScale = self._bumpScale;
+    //       child.material.color = self._material.color;
+    //       child.material.reflectivity = self._material.reflectivity;
+    //       child.material.refractionRatio = self._material.refractionRatio;
+    //       child.material.shininess = self._material.shininess;
+    //     }
+        
+        
+    //     child.material.needsUpdate = true;
+    //   }
+    // });
+
+    // self._opacity = 0;
+    // self._currentObject.traverse(function (child) {
+    //   if (child instanceof THREE.Mesh) {
+    //     child.material.needsUpdate = true;
+    //   }
+    // });
+
+    // self.setFrontSleevePositionAndAngle(this._basePosition, this._gatefoldAngle);
     
-    self._container.add(self._currentObject);
-    self._currentObject.position.set(position.x, position.y, position.z);
+    // self._container.add(self._currentObject);
+    // self._currentObject.position.set(position.x, position.y, position.z);
 
-    self.setOpacity(self._material.opacity, 1000, 250);
+    // self.setOpacity(self._material.opacity, 1000, 250);
   }
 
   //--------------------------------------------------------------
@@ -935,6 +1054,7 @@
   Vinyl.prototype.setVisibility = function(visibility) {
 
     this._currentObject.visible = visibility;
+    this._visibility = visibility;
   };
 
   //--------------------------------------------------------------
@@ -1073,8 +1193,7 @@
   //--------------------------------------------------------------
   Vinyl.prototype.update = function() {
 
-    if (!(this._models && this._models[this._size][this._format])) {
-      console.log('size', this._size, 'format', this._format);
+    if (!this._currentObject) {
       return;
     }
 
