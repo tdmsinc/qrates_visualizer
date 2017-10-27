@@ -363,8 +363,6 @@
       },
     };
 
-    const self = this;
-
     // Image として読み込まれたテクスチャを THREE.Texture に変換する
     (function initTextures (obj, parentKey) {
       Object.keys(obj).forEach(function(key) {
@@ -383,57 +381,50 @@
       });
     })(this._textures);
 
+    const self = this;
+    
     // モデルをロード
-    this._loadModel(this._size, this._format);
-  };
-
-  //--------------------------------------------------------------
-  Vinyl.prototype._loadModel = function (size, format) {
-
-    this._loader.loadAsset(this._paths.models[size][format], this._onModelLoaded.bind(this), function (progress) {
+    this._loader.loadAsset(this._paths.models[this._size][this._format], function (key, obj) {
+      
+      console.log('Vinyl.setup: asset loaded', key, obj);
+  
+      // マテリアルを初期化
+      const scale = 5.5;  
+      const assetName = 'vinyl-' + self._size + '-' + self._format;
+  
+      obj.assetName = assetName;
+      obj.scene.assetName = assetName;
+  
+      if (self._textures[self._size][self._format]) {
+        self._textures[self._size][self._format].assetName = assetName;
+      }
+  
+      self.initMaterial(obj, self._textures[self._size][self._format]);
+  
+      self._currentObject = obj.scene.clone();
+      self._currentObject.scale.set(scale, scale, scale);
+  
+      self._currentObject.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.material = child.material.clone();
+        }
+      });
+  
+      self._setVinylScale(0.99);
+  
+      const pos = self._currentObject.position;
+      self._currentObject.position.set(pos.x, self._offsetY, pos.z);
+  
+      self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
+      
+      self.setOffsetY(self._offsetY);
+      self.setVisibility(self._visibility);
+      self._container.add(self._currentObject);
+    }, function (progress) {
       console.log('Vinyl.setup: onProgress', progress);
     }, function (error) {
       console.log('Vinyl.setup: onError', error);
     });
-  };
-
-  //--------------------------------------------------------------
-  Vinyl.prototype._onModelLoaded = function (key, obj) {
-
-    console.log('Vinyl.setup: asset loaded', key, obj);
-
-    // マテリアルを初期化
-    const scale = 5.5;  
-    const assetName = 'vinyl-' + this._size + '-' + this._format;
-
-    obj.assetName = assetName;
-    obj.scene.assetName = assetName;
-
-    if (this._textures[this._size][this._format]) {
-      this._textures[this._size][this._format].assetName = assetName;
-    }
-
-    this.initMaterial(obj, this._textures[this._size][this._format]);
-
-    this._currentObject = obj.scene.clone();
-    this._currentObject.scale.set(scale, scale, scale);
-
-    this._currentObject.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        child.material = child.material.clone();
-      }
-    });
-
-    this._setVinylScale(0.99);
-
-    const pos = this._currentObject.position;
-    this._currentObject.position.set(pos.x, this._offsetY, pos.z);
-
-    this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
-    
-    this.setOffsetY(this._offsetY);
-    this.setVisibility(this._visibility);
-    this._container.add(this._currentObject);
   };
 
   //--------------------------------------------------------------
