@@ -36,10 +36,12 @@
 
   function VinylVisualizer(el, opts) {
     this.opts = opts = opts || {};
+
     var defaults = opts.defaults || {};
     this.el = el;
-    this.loadTextures = opts.loadTextures || false;
-
+    this.loadAllModels = opts.loadAllModels !== undefined ? opts.loadAllModels : true;
+    this.loadTextures = opts.loadTextures !== undefined ? opts.loadTextures : true;
+    
     this.vinyls = [];
 
     for (var i in opts.defaults.vinyl) {
@@ -97,8 +99,11 @@
     Object.keys(el.dataset).forEach(function(key) {
       loader.add(key, el.dataset[key]);
     }, this);
-
-    loader.load(this.loadTextures, function(err, assets) {
+    
+    loader.load({
+      loadTextures: this.loadTextures,
+      loadAllModels: this.loadAllModels
+    }, function(err, assets) {
       var world = self.world = new World(self, assets, self.opts);
       world.delegateEvents();
       world.startRender();

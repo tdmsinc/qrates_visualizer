@@ -55,9 +55,11 @@
    * @api public
    */
 
-  Loader.prototype.load = function(loadTextures, callback) {
+  Loader.prototype.load = function(opts, callback) {
 
-    loadTextures = (loadTextures !== undefined) ? loadTextures : true;
+    console.log('Loader.load:', opts, callback);
+    
+    opts.loadTextures = (opts.loadTextures !== undefined) ? opts.loadTextures : true;
 
     var self = this;
     var assets = {};
@@ -69,11 +71,12 @@
     };
 
     Object.keys(this.targets).forEach(function(key) {
+
       var loader;
       var path = this.targets[key];
       var ext = extname(path);
 
-      if ('.dae' === ext) loader = new THREE.ColladaLoader(manager, loadTextures);
+      if ('.dae' === ext) loader = new THREE.ColladaLoader(manager, opts.loadTextures);
       if ('.png' === ext || '.jpg' === ext) loader = new THREE.ImageLoader(manager);
 
       if (!loader) return;
