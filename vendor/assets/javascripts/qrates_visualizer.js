@@ -39,7 +39,7 @@
 
     var defaults = opts.defaults || {};
     this.el = el;
-    this.loadAllModels = opts.loadAllModels !== undefined ? opts.loadAllModels : true;
+    this.loadModels = opts.loadModels !== undefined ? opts.loadModels : true;
     this.loadTextures = opts.loadTextures !== undefined ? opts.loadTextures : true;
     
     this.vinyls = [];
@@ -101,8 +101,8 @@
     }, this);
     
     loader.load({
-      loadTextures: this.loadTextures,
-      loadAllModels: this.loadAllModels
+      loadModels: this.loadModels,
+      loadTextures: this.loadTextures
     }, function(err, assets) {
       var world = self.world = new World(self, assets, self.opts);
       world.delegateEvents();

@@ -56,10 +56,10 @@
    */
 
   Loader.prototype.load = function(opts, callback) {
-
-    console.log('Loader.load:', opts, callback);
     
+    opts.loadModels = (opts.loadModels !== undefined) ? opts.loadModels : true;
     opts.loadTextures = (opts.loadTextures !== undefined) ? opts.loadTextures : true;
+    console.log('Loader.load:', opts.loadModels, opts.loadTextures);
 
     var self = this;
     var assets = {};
@@ -87,9 +87,11 @@
         assets[key] = obj;
         assets[key].extname = extname(path);
       });
+
       if (obj !== undefined) {
         assets[key] = obj;
       }
+
     }, this);
 
     return this;
