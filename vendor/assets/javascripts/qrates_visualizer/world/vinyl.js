@@ -382,7 +382,7 @@
     })(this._textures);
 
     const self = this;
-    
+
     // モデルをロード
     this._loader.loadAsset(this._paths.models[this._size][this._format], function (key, obj) {
       
@@ -437,6 +437,7 @@
     const self = this;
 
     model.scene.traverse(function(child) {
+      
       if (child instanceof THREE.Mesh) {
         self._bumpScale = 0.3;
 

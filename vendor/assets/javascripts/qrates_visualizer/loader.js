@@ -77,9 +77,6 @@
       var ext = extname(path);
 
       if ('.dae' === ext) {
-        if (path.toLowerCase().indexOf('vinyl') !== -1) {
-          return;
-        }
         if (false === opts.loadModels) {
           return;
         }
