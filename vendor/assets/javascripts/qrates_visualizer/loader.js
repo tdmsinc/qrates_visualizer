@@ -8,7 +8,7 @@
    * Module dependencies.
    */
 
-  var Emitter = exports.Emitter;
+  const Emitter = exports.Emitter;
 
   /**
    * Expose `Loader`.
@@ -20,7 +20,7 @@
    * Regex for path.
    */
 
-  var pathRegex = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+  const pathRegex = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
 
   /**
    * @param {Object} obj
@@ -62,19 +62,18 @@
     opts.loadModels = (opts.loadModels !== undefined) ? opts.loadModels : true;
     opts.loadTextures = (opts.loadTextures !== undefined) ? opts.loadTextures : true;
 
-    var self = this;
-    var manager = new THREE.LoadingManager();
+    const manager = new THREE.LoadingManager();
 
-    manager.onLoad = function() {
-      callback(null, self.assets);
-      self.emit('load', self.assets);
+    manager.onLoad = () => {
+      callback(null, this.assets);
+      this.emit('load', this.assets);
     };
 
-    Object.keys(this.targets).forEach(function(key) {
+    Object.keys(this.targets).forEach((key) => {
 
-      var loader;
-      var path = this.targets[key];
-      var ext = extname(path);
+      let loader;
+      const path = this.targets[key];
+      const ext = extname(path);
 
       if ('.dae' === ext) {
         if (false === opts.loadModels) {
@@ -90,13 +89,13 @@
 
       loader.crossOrigin = ''; // to load texture from cross origin.
 
-      var obj = loader.load(path, function(obj) {
-        self.assets[key] = obj;
-        self.assets[key].extname = extname(path);
+      const obj = loader.load(path, (obj) => {
+        this.assets[key] = obj;
+        this.assets[key].extname = extname(path);
       });
 
       if (obj !== undefined) {
-        self.assets[key] = obj;
+        this.assets[key] = obj;
       }
 
     }, this);
@@ -132,75 +131,18 @@
         }
   
         loader.crossOrigin = '';
-  
-        const self = this;
-  
+    
         loader.load(path, (obj) => {
   
-          console.log('Loader.loadAssets: successfully loaded', self.assets[key]);
+          console.log('Loader.loadAssets: successfully loaded', this.assets[key]);
           
-          self.assets[key] = obj;
-          self.assets[key].extname = ext;
+          this.assets[key] = obj;
+          this.assets[key].extname = ext;
   
           resolve(key);
         });
       }
     });
-
-    // if (!onLoad) {
-    //   console.warn('Loader.loadAssets: no callback function passed');
-    // }
-
-    // console.log('Loader.loadAssets: key: ', key, ', onLoad: ', onLoad);
-    // console.log('Loader.loadAssets: isLoaded("' + key + '")', this.isLoaded(key));
-
-    // if (!this.isLoaded(key)) {
-      
-    //   console.log('Loader.loadAssets: try to load ' + key + '');
-
-    //   let loader;
-    //   const path = this.targets[key];
-    //   const ext = extname(path);
-
-    //   if ('.dae' === ext) {
-    //     loader = new THREE.ColladaLoader(undefined, false);
-    //   } else if ('.png' === ext || '.jpg' === ext) {
-    //     loader = new THREE.ImageLoader();
-    //   }
-
-    //   loader.crossOrigin = '';
-
-    //   const self = this;
-
-    //   loader.load(path, function (obj) {
-
-    //     console.log('Loader.loadAssets: successfully loaded', self.assets[key]);
-        
-    //     self.assets[key] = obj;
-    //     self.assets[key].extname = ext;
-
-    //     if (onLoad) {
-    //       onLoad(key, self.assets[key]);
-    //     }
-    //   }, function () {
-    //     if (onProgress) onProgress(arguments);
-    //   }, function () {
-    //     if (onError) onError(arguments);
-    //   });
-
-    // } else {
-
-    //   if (onProgress) {
-    //     onProgress(1.0);
-    //   }
-
-    //   if (onLoad) {
-    //     console.log('Loader.loadAssets: already loaded');
-    //     onLoad(key, this.assets[key]);
-    //   }
-
-    //   return this.assets[key];
-    // }
   };
 
   /**

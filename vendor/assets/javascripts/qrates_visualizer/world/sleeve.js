@@ -540,10 +540,9 @@
     }
 
     const self = this;
-
     // Image として読み込まれたテクスチャを THREE.Texture に変換する
     (function initTextures (obj) {
-      Object.keys(obj).forEach(function  (key) {
+      Object.keys(obj).forEach((key) => {
         if (obj[key] instanceof Image || obj[key] === undefined) {
           if (obj[key] === undefined) {
             // console.error('texture', obj, ':' + key + ' is ' + obj[key]);
@@ -558,26 +557,26 @@
       });
     })(this._textures);
 
-    this.setFormat(opts.format, function () {
+    this.setFormat(opts.format, () => {
 
       // set initial textures
       if (opts.textures) {
-        if (Sleeve.Format.GATEFOLD === self._format) {
-          Object.keys(opts.textures).forEach(function (side) {
-            Object.keys(opts.textures[side]).forEach(function (type) {
-              self._setTexture(type, opts.textures[side][type], side);
+        if (Sleeve.Format.GATEFOLD === this._format) {
+          Object.keys(opts.textures).forEach((side) => {
+            Object.keys(opts.textures[side]).forEach((type) => {
+              this._setTexture(type, opts.textures[side][type], side);
             });
           });
         } else {
-          Object.keys(opts.textures).forEach(function (type) {
-            self._setTexture(type, opts.textures[type]);
+          Object.keys(opts.textures).forEach((type) => {
+            this._setTexture(type, opts.textures[type]);
           });
         }
       }
 
-      self._coveredRatio = 0;
-      self.setCoveredRatio(self._coveredRatio);
-      self.setOpacity(1, 0);
+      this._coveredRatio = 0;
+      this.setCoveredRatio(this._coveredRatio);
+      this.setOpacity(1, 0);
     });
   };
 
@@ -587,17 +586,15 @@
     if (!model || !textures) {
       return;
     }
-
-    var self = this;
     
     if (-1 < model.assetName.toLowerCase().indexOf('gatefold')) {
       // TODO: ゲートフォールドの面ごとにマテリアルを設定する処理
     } else {
-      model.scene.traverse(function(child) {
+      model.scene.traverse((child) => {
         if (child instanceof THREE.Mesh) {
-          child.material.bumpScale = self._bumpScale;
+          child.material.bumpScale = this._bumpScale;
           child.material.color = new THREE.Color(0xffffff);
-          child.material.shininess = self._shininess;
+          child.material.shininess = this._shininess;
           child.material.specular = new THREE.Color(0x363636);
           child.material.shading = THREE.SmoothShading;
           child.material.transparent = true;
@@ -665,17 +662,15 @@
 
       this.updateTexture(this._textures[this._size][this._format][this._hole][side][type], image);
 
-      const self = this;
-
-      this._currentObject.traverse(function (child) {
+      this._currentObject.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           if (-1 < child.name.toLowerCase().indexOf(side)) {
             if ('ao' === type) {
-              child.material.aoMap = self._textures[self._size][self._format][self._hole][side][type];
+              child.material.aoMap = this._textures[this._size][this._format][this._hole][side][type];
             } else if ('bumpmap' === type) {
-              child.material.bumpMap = self._textures[self._size][self._format][self._hole][side][type];
+              child.material.bumpMap = this._textures[this._size][this._format][this._hole][side][type];
             } else if ('color' == type) {
-              child.material.map = self._textures[self._size][self._format][self._hole][side][type];
+              child.material.map = this._textures[this._size][this._format][this._hole][side][type];
             }
           }
 
@@ -723,71 +718,69 @@
       return;
     }
 
-    const self = this;
-
     if (-1 === Object.values(Sleeve.Format).indexOf(format)) {
       console.error('Sleeve.setFormat: unknown format "' + format + '"');
       return;
     }
 
-    if (format === Sleeve.Format.GATEFOLD && self._hole === Sleeve.Hole.HOLED) {
+    if (format === Sleeve.Format.GATEFOLD && this._hole === Sleeve.Hole.HOLED) {
       console.warn('Sleeve.setFormat: forcibly disabled hole option because gatefold cannot have hole');
 
-      self._hole = Sleeve.Hole.NO_HOLE;
+      this._hole = Sleeve.Hole.NO_HOLE;
     }
 
-    self._format = format;
+    this._format = format;
 
-    self._loader.loadAsset(self._paths.models[self._size][self._format][self._hole])
-      .then(function (key) {
+    this._loader.loadAsset(this._paths.models[this._size][this._format][this._hole])
+      .then((key) => {
 
-        const obj = self._loader.assets[key];
+        const obj = this._loader.assets[key];
 
         console.log('Sleeve.setFormat: model loaded', key, obj);
 
-        const assetName = 'sleeve-' + self._size + '-' + self._format + '-' + self.hole;
+        const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
     
         obj.assetName = assetName;
         obj.scene.assetName = assetName;
 
-        if (self._currentObject) {
-          self.removeFromContainer();
-          self.dispose();
+        if (this._currentObject) {
+          this.removeFromContainer();
+          this.dispose();
         }
 
-        if (self._textures[self._size][self._format][self._hole]) { 
-          self._textures[self._size][self._format][self._hole].assetName = assetName;
+        if (this._textures[this._size][this._format][this._hole]) { 
+          this._textures[this._size][this._format][this._hole].assetName = assetName;
         }
 
-        self.initMaterial(obj, self._textures[self._size][self._format][self._hole]);
+        this.initMaterial(obj, this._textures[this._size][this._format][this._hole]);
 
-        self._currentObject = obj.scene.clone();
-        self._currentObject.name = 'sleeve';
+        this._currentObject = obj.scene.clone();
+        this._currentObject.name = 'sleeve';
     
-        self._currentObject.traverse(function (child) {
+        this._currentObject.traverse((child) => {
           if (child instanceof THREE.Mesh) {
             child.material = child.material.clone();
-            child.material.shininess = self._shininess;
+            child.material.shininess = this._shininess;
             child.material.needsUpdate = true;
           }
         });
     
-        const position = self._currentObject.position;
-        self._currentObject.position.set(0, position.y, position.z);
+        const position = this._currentObject.position;
+        this._currentObject.position.set(0, position.y, position.z);
 
         const scale = 5.5;
-        self._currentObject.scale.set(scale, scale, scale);
+        this._currentObject.scale.set(scale, scale, scale);
 
-        self.updateBoundingBox();
-        self.updateBoundingBoxMesh();
+        this.updateBoundingBox();
+        this.updateBoundingBoxMesh();
 
-        if (Sleeve.Format.GATEFOLD === self._format) {
-          self.setGatefoldCoverAngle(self._gatefoldAngle);
+        if (Sleeve.Format.GATEFOLD === this._format) {
+          this.setGatefoldCoverAngle(this._gatefoldAngle);
         }
 
-        self._container.add(self._currentObject);
+        this._container.add(this._currentObject);
     
-        self.setOpacity(1.0, 0);
+        this.setOpacity(1.0, 0);
     
         if (callback) {
           callback();
@@ -843,12 +836,10 @@
   //--------------------------------------------------------------
   Sleeve.prototype.setOpacity = function(to, duration, delay) {
 
-    var self = this;
-
     duration = undefined !== duration ? duration : 1000;
     delay = undefined !== delay ? delay : 0;
 
-    this._currentObject.traverse(function (child) {
+    this._currentObject.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         var tween = new TWEEN.Tween(child.material);
         child.material.opacity = 0;
@@ -903,13 +894,12 @@
       return;
     }
 
-    var self = this;
-    self._finish = finish;
-    self._shininess = Sleeve.Shininess[self._finish];
+    this._finish = finish;
+    this._shininess = Sleeve.Shininess[this._finish];
 
-    self._currentObject.traverse(function (child) {
+    this._currentObject.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        child.material.shininess = self._shininess;
+        child.material.shininess = this._shininess;
         child.material.needsUpdate = true;
       }
     });
@@ -1027,12 +1017,11 @@
   //--------------------------------------------------------------
   Sleeve.prototype.setBumpScale = function(value) {
 
-    var self = this;
-    self._bumpScale = value;
+    this._bumpScale = value;
 
-    self._currentObject.traverse(function(child) {
+    this._currentObject.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        child.material.bumpScale = self._bumpScale;
+        child.material.bumpScale = this._bumpScale;
         child.material.needsUpdate = true;
       }
     });
@@ -1041,9 +1030,7 @@
   //--------------------------------------------------------------
   Sleeve.prototype.setAoMapIntensity = function(value) {
 
-    var self = this;
-
-    self._currentObject.traverse(function (child) {
+    this._currentObject.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.material.aoMapIntensity = value;
         child.material.needsUpdate = true;
