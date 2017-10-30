@@ -117,60 +117,90 @@
 
   Loader.prototype.loadAsset = function (key, onLoad, onProgress, onError) {
 
-    if (!onLoad) {
-      console.warn('Loader.loadAssets: no callback function passed');
-    }
+    return new Promise((resolve, reject) => {
+      if (!this.isLoaded(key)) {
+        console.log('Loader.loadAssets: try to load ' + key + '');
 
-    console.log('Loader.loadAssets: key: ', key, ', onLoad: ', onLoad);
-    console.log('Loader.loadAssets: isLoaded("' + key + '")', this.isLoaded(key));
-
-    if (!this.isLoaded(key)) {
-      
-      console.log('Loader.loadAssets: try to load ' + key + '');
-
-      let loader;
-      const path = this.targets[key];
-      const ext = extname(path);
-
-      if ('.dae' === ext) {
-        loader = new THREE.ColladaLoader(undefined, false);
-      } else if ('.png' === ext || '.jpg' === ext) {
-        loader = new THREE.ImageLoader();
-      }
-
-      loader.crossOrigin = '';
-
-      const self = this;
-
-      loader.load(path, function (obj) {
-
-        console.log('Loader.loadAssets: successfully loaded', self.assets[key]);
-        
-        self.assets[key] = obj;
-        self.assets[key].extname = ext;
-
-        if (onLoad) {
-          onLoad(key, self.assets[key]);
+        let loader;
+        const path = this.targets[key];
+        const ext = extname(path);
+  
+        if ('.dae' === ext) {
+          loader = new THREE.ColladaLoader(undefined, false);
+        } else if ('.png' === ext || '.jpg' === ext) {
+          loader = new THREE.ImageLoader();
         }
-      }, function () {
-        if (onProgress) onProgress(arguments);
-      }, function () {
-        if (onError) onError(arguments);
-      });
-
-    } else {
-
-      if (onProgress) {
-        onProgress(1.0);
+  
+        loader.crossOrigin = '';
+  
+        const self = this;
+  
+        loader.load(path, (obj) => {
+  
+          console.log('Loader.loadAssets: successfully loaded', self.assets[key]);
+          
+          self.assets[key] = obj;
+          self.assets[key].extname = ext;
+  
+          resolve(key);
+        });
       }
+    });
 
-      if (onLoad) {
-        console.log('Loader.loadAssets: already loaded');
-        onLoad(key, this.assets[key]);
-      }
+    // if (!onLoad) {
+    //   console.warn('Loader.loadAssets: no callback function passed');
+    // }
 
-      return this.assets[key];
-    }
+    // console.log('Loader.loadAssets: key: ', key, ', onLoad: ', onLoad);
+    // console.log('Loader.loadAssets: isLoaded("' + key + '")', this.isLoaded(key));
+
+    // if (!this.isLoaded(key)) {
+      
+    //   console.log('Loader.loadAssets: try to load ' + key + '');
+
+    //   let loader;
+    //   const path = this.targets[key];
+    //   const ext = extname(path);
+
+    //   if ('.dae' === ext) {
+    //     loader = new THREE.ColladaLoader(undefined, false);
+    //   } else if ('.png' === ext || '.jpg' === ext) {
+    //     loader = new THREE.ImageLoader();
+    //   }
+
+    //   loader.crossOrigin = '';
+
+    //   const self = this;
+
+    //   loader.load(path, function (obj) {
+
+    //     console.log('Loader.loadAssets: successfully loaded', self.assets[key]);
+        
+    //     self.assets[key] = obj;
+    //     self.assets[key].extname = ext;
+
+    //     if (onLoad) {
+    //       onLoad(key, self.assets[key]);
+    //     }
+    //   }, function () {
+    //     if (onProgress) onProgress(arguments);
+    //   }, function () {
+    //     if (onError) onError(arguments);
+    //   });
+
+    // } else {
+
+    //   if (onProgress) {
+    //     onProgress(1.0);
+    //   }
+
+    //   if (onLoad) {
+    //     console.log('Loader.loadAssets: already loaded');
+    //     onLoad(key, this.assets[key]);
+    //   }
+
+    //   return this.assets[key];
+    // }
   };
 
   /**

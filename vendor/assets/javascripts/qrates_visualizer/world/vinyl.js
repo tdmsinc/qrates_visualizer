@@ -384,47 +384,87 @@
     const self = this;
 
     // モデルをロード
-    this._loader.loadAsset(this._paths.models[this._size][this._format], function (key, obj) {
-      
-      console.log('Vinyl.setup: asset loaded', key, obj);
-  
-      // マテリアルを初期化
-      const scale = 5.5;  
-      const assetName = 'vinyl-' + self._size + '-' + self._format;
-  
-      obj.assetName = assetName;
-      obj.scene.assetName = assetName;
-  
-      if (self._textures[self._size][self._format]) {
-        self._textures[self._size][self._format].assetName = assetName;
-      }
-  
-      self.initMaterial(obj, self._textures[self._size][self._format]);
-  
-      self._currentObject = obj.scene.clone();
-      self._currentObject.scale.set(scale, scale, scale);
-  
-      self._currentObject.traverse(function (child) {
-        if (child instanceof THREE.Mesh) {
-          child.material = child.material.clone();
+    this._loader.loadAsset(this._paths.models[this._size][this._format])
+      .then(function (key) {
+        console.log('Vinyl.setup: asset loaded', key);
+
+        const obj = self._loader.assets[key];
+        
+        // マテリアルを初期化
+        const scale = 5.5;  
+        const assetName = 'vinyl-' + self._size + '-' + self._format;
+    
+        obj.assetName = assetName;
+        obj.scene.assetName = assetName;
+    
+        if (self._textures[self._size][self._format]) {
+          self._textures[self._size][self._format].assetName = assetName;
         }
+    
+        self.initMaterial(obj, self._textures[self._size][self._format]);
+    
+        self._currentObject = obj.scene.clone();
+        self._currentObject.scale.set(scale, scale, scale);
+    
+        self._currentObject.traverse(function (child) {
+          if (child instanceof THREE.Mesh) {
+            child.material = child.material.clone();
+          }
+        });
+    
+        self._setVinylScale(0.99);
+    
+        const pos = self._currentObject.position;
+        self._currentObject.position.set(pos.x, self._offsetY, pos.z);
+    
+        self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
+        
+        self.setOffsetY(self._offsetY);
+        self.setVisibility(self._visibility);
+        self._container.add(self._currentObject);
       });
-  
-      self._setVinylScale(0.99);
-  
-      const pos = self._currentObject.position;
-      self._currentObject.position.set(pos.x, self._offsetY, pos.z);
-  
-      self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
+
+    // this._loader.loadAsset(this._paths.models[this._size][this._format], function (key, obj) {
       
-      self.setOffsetY(self._offsetY);
-      self.setVisibility(self._visibility);
-      self._container.add(self._currentObject);
-    }, function (progress) {
-      console.log('Vinyl.setup: onProgress', progress);
-    }, function (error) {
-      console.log('Vinyl.setup: onError', error);
-    });
+    //   console.log('Vinyl.setup: asset loaded', key, obj);
+  
+    //   // マテリアルを初期化
+    //   const scale = 5.5;  
+    //   const assetName = 'vinyl-' + self._size + '-' + self._format;
+  
+    //   obj.assetName = assetName;
+    //   obj.scene.assetName = assetName;
+  
+    //   if (self._textures[self._size][self._format]) {
+    //     self._textures[self._size][self._format].assetName = assetName;
+    //   }
+  
+    //   self.initMaterial(obj, self._textures[self._size][self._format]);
+  
+    //   self._currentObject = obj.scene.clone();
+    //   self._currentObject.scale.set(scale, scale, scale);
+  
+    //   self._currentObject.traverse(function (child) {
+    //     if (child instanceof THREE.Mesh) {
+    //       child.material = child.material.clone();
+    //     }
+    //   });
+  
+    //   self._setVinylScale(0.99);
+  
+    //   const pos = self._currentObject.position;
+    //   self._currentObject.position.set(pos.x, self._offsetY, pos.z);
+  
+    //   self._boundingBox = new THREE.Box3().setFromObject(self._currentObject);
+      
+    //   self.setOffsetY(self._offsetY);
+    //   self.setVisibility(self._visibility);
+    //   self._container.add(self._currentObject);
+    // }, function (progress) {
+    //   console.log('Vinyl.setup: onProgress', progress);
+    // }, function (error) {
+    //   console.log('Vinyl.setup: onError', error);
+    // });
   };
 
   //--------------------------------------------------------------

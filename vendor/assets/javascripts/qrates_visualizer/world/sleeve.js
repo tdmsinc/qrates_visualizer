@@ -738,58 +738,61 @@
 
     self._format = format;
 
-    self._loader.loadAsset(self._paths.models[self._size][self._format][self._hole], function (key, obj) {
+    self._loader.loadAsset(self._paths.models[self._size][self._format][self._hole])
+      .then(function (key) {
 
-      console.log('Sleeve.setFormat: model loaded', key, obj);
+        const obj = self._loader.assets[key];
 
-      const assetName = 'sleeve-' + self._size + '-' + self._format + '-' + self.hole;
-  
-      obj.assetName = assetName;
-      obj.scene.assetName = assetName;
+        console.log('Sleeve.setFormat: model loaded', key, obj);
 
-      if (self._currentObject) {
-        self.removeFromContainer();
-        self.dispose();
-      }
+        const assetName = 'sleeve-' + self._size + '-' + self._format + '-' + self.hole;
+    
+        obj.assetName = assetName;
+        obj.scene.assetName = assetName;
 
-      if (self._textures[self._size][self._format][self._hole]) { 
-        self._textures[self._size][self._format][self._hole].assetName = assetName;
-      }
+        if (self._currentObject) {
+          self.removeFromContainer();
+          self.dispose();
+        }
 
-      self.initMaterial(obj, self._textures[self._size][self._format][self._hole]);
+        if (self._textures[self._size][self._format][self._hole]) { 
+          self._textures[self._size][self._format][self._hole].assetName = assetName;
+        }
 
-      self._currentObject = obj.scene.clone();
-      self._currentObject.name = 'sleeve';
-  
-      self._currentObject.traverse(function (child) {
-        if (child instanceof THREE.Mesh) {
-          child.material = child.material.clone();
-          child.material.shininess = self._shininess;
-          child.material.needsUpdate = true;
+        self.initMaterial(obj, self._textures[self._size][self._format][self._hole]);
+
+        self._currentObject = obj.scene.clone();
+        self._currentObject.name = 'sleeve';
+    
+        self._currentObject.traverse(function (child) {
+          if (child instanceof THREE.Mesh) {
+            child.material = child.material.clone();
+            child.material.shininess = self._shininess;
+            child.material.needsUpdate = true;
+          }
+        });
+    
+        const position = self._currentObject.position;
+        self._currentObject.position.set(0, position.y, position.z);
+
+        const scale = 5.5;
+        self._currentObject.scale.set(scale, scale, scale);
+
+        self.updateBoundingBox();
+        self.updateBoundingBoxMesh();
+
+        if (Sleeve.Format.GATEFOLD === self._format) {
+          self.setGatefoldCoverAngle(self._gatefoldAngle);
+        }
+
+        self._container.add(self._currentObject);
+    
+        self.setOpacity(1.0, 0);
+    
+        if (callback) {
+          callback();
         }
       });
-  
-      const position = self._currentObject.position;
-      self._currentObject.position.set(0, position.y, position.z);
-
-      const scale = 5.5;
-      self._currentObject.scale.set(scale, scale, scale);
-
-      self.updateBoundingBox();
-      self.updateBoundingBoxMesh();
-
-      if (Sleeve.Format.GATEFOLD === self._format) {
-        self.setGatefoldCoverAngle(self._gatefoldAngle);
-      }
-
-      self._container.add(self._currentObject);
-  
-      self.setOpacity(1.0, 0);
-  
-      if (callback) {
-        callback();
-      }
-    });
   };
 
   //--------------------------------------------------------------
