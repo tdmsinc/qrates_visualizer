@@ -12,14 +12,16 @@ var defaults = {
       weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
       isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
-      speed: 45
+      speed: 45,
+      label: false
     },
     {
       size: qvv.VinylVisualizer.VinylSize.SIZE_12,
       weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
       isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
-      speed: 45
+      speed: 45,
+      label: false
     }
   ],
   sleeve: {

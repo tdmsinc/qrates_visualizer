@@ -64,6 +64,12 @@
 
     const manager = new THREE.LoadingManager();
 
+    if (false === opts.loadModels && false === opts.loadTextures) {
+      callback(null, this.assets);
+      this.emit('load', this.assets);
+      return;
+    }
+
     manager.onLoad = () => {
       callback(null, this.assets);
       this.emit('load', this.assets);
@@ -82,6 +88,10 @@
 
         loader = new THREE.ColladaLoader(manager, opts.loadTextures);
       } else if ('.png' === ext || '.jpg' === ext) {
+        if (false === opts.loadTextures) {
+          return;
+        }
+
         loader = new THREE.ImageLoader(manager);
       }
 
@@ -114,13 +124,26 @@
 
   };
 
-  Loader.prototype.loadAsset = function (key, onLoad, onProgress, onError) {
+  Loader.prototype.loadAsset = function (target, onLoad, onProgress, onError) {
+    
+    if (this.isLoaded(target['key'])) {
+      return Promise.resolve({
+        'assetType': -1 < target['key'].toLowerCase().indexOf('model') ? 'model' : 'texture',
+        'textureType': target['textureType'] || '',
+        'key': target['key']
+      });
+    }
 
     return new Promise((resolve, reject) => {
+
+      const key = target['key'];
+
       if (!this.isLoaded(key)) {
         console.log('Loader.loadAssets: try to load ' + key + '');
 
         let loader;
+        let assetType = 'model';
+        let textureType = '';
         const path = this.targets[key];
         const ext = extname(path);
   
@@ -128,18 +151,24 @@
           loader = new THREE.ColladaLoader(undefined, false);
         } else if ('.png' === ext || '.jpg' === ext) {
           loader = new THREE.ImageLoader();
+          assetType = 'texture';
+          textureType = target['textureType'];
         }
   
         loader.crossOrigin = '';
     
         loader.load(path, (obj) => {
   
-          console.log('Loader.loadAssets: successfully loaded', this.assets[key]);
-          
           this.assets[key] = obj;
           this.assets[key].extname = ext;
+
+          console.log('Loader.loadAssets: successfully loaded', this.assets[key]);
   
-          resolve(key);
+          resolve({
+            'assetType': assetType,
+            'textureType': textureType,
+            'key': key
+          });
         });
       }
     });

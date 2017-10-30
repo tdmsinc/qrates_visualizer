@@ -731,12 +731,16 @@
 
     this._format = format;
 
-    this._loader.loadAsset(this._paths.models[this._size][this._format][this._hole])
-      .then((key) => {
+    this._loader.loadAsset({
+      'assetType': 'model',
+      'key': this._paths.models[this._size][this._format][this._hole]
+    })
+      .then((result) => {
 
-        const obj = this._loader.assets[key];
+        const assetKey = result['key'];
+        const obj = this._loader.assets[assetKey];
 
-        console.log('Sleeve.setFormat: model loaded', key, obj);
+        console.log('Sleeve.setFormat: model loaded', assetKey, obj);
 
         const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
     
