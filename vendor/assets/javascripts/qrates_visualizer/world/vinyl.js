@@ -701,9 +701,7 @@
 
     this._currentObject.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        if (-1 < child.name.toLowerCase().indexOf(part)) {
-          child.material.alphaTest = 0.5;
-          
+        if (-1 < child.name.toLowerCase().indexOf(part)) {          
           if ('alpha' == type) {
             child.material.alphaMap = this.updateTexture(new THREE.Texture(), image);
           } else if ('ao' === type) {
