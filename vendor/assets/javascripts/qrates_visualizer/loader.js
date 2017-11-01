@@ -155,6 +155,7 @@
           textureType = target['textureType'];
         }
   
+          console.log('Loader.loadAsset: target', key, 'loader', loader);
         loader.crossOrigin = '';
     
         loader.load(path, (obj) => {

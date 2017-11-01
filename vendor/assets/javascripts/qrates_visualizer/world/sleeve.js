@@ -253,12 +253,12 @@
           'gatefold': {
             'normal': {
               'front': {
-                'ao': 'assetsTextureSleeveGatefoldFrontAo-1102',
+                'ao': 'assetsTextureSleeveGatefoldFrontAo-10',
                 'bumpmap': 'assetsTextureSleeveGatefoldFrontBumpmap-10',
                 'color': 'assetsTextureSleeveGatefoldFrontColor-10'
               },
               'back': {
-                'ao': 'assetsTextureSleeveGatefoldBackAo-1102',
+                'ao': 'assetsTextureSleeveGatefoldBackAo-10',
                 'bumpmap': 'assetsTextureSleeveGatefoldBackBumpmap-10',
                 'color': 'assetsTextureSleeveGatefoldBackColor-10'
               },
@@ -448,12 +448,12 @@
         'gatefold': {
           'normal': {
             'front': {
-              'ao': assets['assetsTextureSleeveGatefoldFrontAo-1102'],
+              'ao': assets['assetsTextureSleeveGatefoldFrontAo-10'],
               'bumpmap': assets['assetsTextureSleeveGatefoldFrontBumpmap-10'],
               'color': assets['assetsTextureSleeveGatefoldFrontColor-10']
             },
             'back': {
-              'ao': assets['assetsTextureSleeveGatefoldBackAo-1102'],
+              'ao': assets['assetsTextureSleeveGatefoldBackAo-10'],
               'bumpmap': assets['assetsTextureSleeveGatefoldBackBumpmap-10'],
               'color': assets['assetsTextureSleeveGatefoldBackColor-10']
             },
