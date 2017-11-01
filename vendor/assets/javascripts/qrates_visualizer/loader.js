@@ -96,7 +96,7 @@
       }
 
       if (!loader) return;
-
+      
       loader.crossOrigin = ''; // to load texture from cross origin.
 
       const obj = loader.load(path, (obj) => {

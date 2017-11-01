@@ -157,177 +157,190 @@
         '7': {
           'no-spine': {
             'normal': {
-              'ao': assets['assetsTextureSleeveSingleNoSpineAo-7'],
-              'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-7'],
-              'color': assets['assetsTextureSleeveSingleNoSpineColor-7'],
-              'color-ao': assets['assetsTextureSleeveSingleNoSpineColorAndAo-7']
+              'ao': 'assetsTextureSleeveSingleNoSpineAo-7',
+              'bumpmap': 'assetsTextureSleeveSingleNoSpineBumpmap-7',
+              'color': 'assetsTextureSleeveSingleNoSpineColor-7',
             },
             'holed': {
-              'ao': assets['assetsTextureSleeveSingleNoSpineHoledAo-7'],
-              'bumpmap': assets['assetsTextureSleeveSingleNoSpineHoledBumpmap-7'],
-              'color': assets['assetsTextureSleeveSingleNoSpineHoledColor-7'],
-              'color-ao': assets['assetsTextureSleeveSingleNoSpineHoledColorAndAo-7']
+              'ao': 'assetsTextureSleeveSingleNoSpineHoledAo-7',
+              'bumpmap': 'assetsTextureSleeveSingleNoSpineHoledBumpmap-7',
+              'color': 'assetsTextureSleeveSingleNoSpineHoledColor-7',
             }
           },
           'single': {
             'normal': {
-              'ao': assets['assetsTextureSleeveSingledAo-7'],
-              'bumpmap': assets['assetsTextureSleeveSingleBumpmap-7'],
-              'color': assets['assetsTextureSleeveSingleColor-7'],
-              'color-ao': assets['assetsTextureSleeveSingleColorAndAo-7']
+              'ao': 'assetsTextureSleeveSingledAo-7',
+              'bumpmap': 'assetsTextureSleeveSingleBumpmap-7',
+              'color': 'assetsTextureSleeveSingleColor-7',
             },
             'holed': {
-              'ao': assets['assetsTextureSleeveSingleHoledAo-7'],
-              'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-7'],
-              'color': assets['assetsTextureSleeveSingleHoledColor-7'],
-              'color-ao': assets['assetsTextureSleeveSingleHoledColorAndAo-7']
+              'ao': 'assetsTextureSleeveSingleHoledAo-7',
+              'bumpmap': 'assetsTextureSleeveSingleHoledBumpmap-7',
+              'color': 'assetsTextureSleeveSingleHoledColor-7',
             }
           },
           'double': {
             'normal': {
-              'ao': assets['assetsTextureSleeveDoubleAo-7'],
-              'bumpmap': assets['assetsTextureSleeveDoubleBumpmap-7'],
-              'color': assets['assetsTextureSleeveDoubleColor-7'],
+              'ao': 'assetsTextureSleeveDoubleAo-7',
+              'bumpmap': 'assetsTextureSleeveDoubleBumpmap-7',
+              'color': 'assetsTextureSleeveDoubleColor-7',
             },
             'holed': {
-              'ao': assets['assetsTextureSleeveDoubleHoledAo-7'],
-              'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-7'],
-              'color': assets['assetsTextureSleeveDoubleHoledColor-7'],
+              'ao': 'assetsTextureSleeveDoubleHoledAo-7',
+              'bumpmap': 'assetsTextureSleeveDoubleHoledBumpmap-7',
+              'color': 'assetsTextureSleeveDoubleHoledColor-7',
             }
           },
           'gatefold': {
             'normal': {
               'front': {
-                'ao': assets['assetsTextureSleeveGatefoldFrontAo-7'],
-                'bumpmap': assets['assetsTextureSleeveGatefoldFrontBumpmap-7'],
-                'color': assets['assetsTextureSleeveGatefoldFrontColor-7']
+                'ao': 'assetsTextureSleeveGatefoldFrontAo-7',
+                'bumpmap': 'assetsTextureSleeveGatefoldFrontBumpmap-7',
+                'color': 'assetsTextureSleeveGatefoldFrontColor-7'
               },
               'back': {
-                'ao': assets['assetsTextureSleeveGatefoldBackAo-7'],
-                'bumpmap': assets['assetsTextureSleeveGatefoldBackBumpmap-7'],
-                'color': assets['assetsTextureSleeveGatefoldBackColor-7']
+                'ao': 'assetsTextureSleeveGatefoldBackAo-7',
+                'bumpmap': 'assetsTextureSleeveGatefoldBackBumpmap-7',
+                'color': 'assetsTextureSleeveGatefoldBackColor-7'
               },
               'spine': {
-                'ao': assets['assetsTextureSleeveGatefoldSpineAo-7'],
-                'bumpmap': assets['assetsTextureSleeveGatefoldSpineBumpmap-7'],
-                'color': assets['assetsTextureSleeveGatefoldSpineColor-7']
+                'ao': 'assetsTextureSleeveGatefoldSpineAo-7',
+                'bumpmap': 'assetsTextureSleeveGatefoldSpineBumpmap-7',
+                'color': 'assetsTextureSleeveGatefoldSpineColor-7'
               }
             },
             'holed': null
           }
         },
-  
+      
         '10': {
           'no-spine': {
             'normal': {
-              'ao': assets['assetsTextureSleeveSingleNoSpineAo-10'],
-              'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-10'],
-              'color': assets['assetsTextureSleeveSingleNoSpineColor-10'],
+              'ao': 'assetsTextureSleeveSingleNoSpineAo-10',
+              'bumpmap': 'assetsTextureSleeveSingleNoSpineBumpmap-10',
+              'color': 'assetsTextureSleeveSingleNoSpineColor-10',
             },
             'holed': {
-              'ao': assets['assetsTextureSleeveSingleNoSpineHoledAo-10'],
-              'bumpmap': assets['assetsTextureSleeveSingleNoSpineHoledBumpmap-10'],
-              'color': assets['assetsTextureSleeveSingleNoSpineHoledColor-10'],
+              'ao': 'assetsTextureSleeveSingleNoSpineHoledAo-10',
+              'bumpmap': 'assetsTextureSleeveSingleNoSpineHoledBumpmap-10',
+              'color': 'assetsTextureSleeveSingleNoSpineHoledColor-10',
             }
           },
           'single': {
             'normal': {
-              'ao': assets['assetsTextureSleeveSingleAo-10'],
-              'bumpmap': assets['assetsTextureSleeveSingleBumpmap-10'],
-              'color': assets['assetsTextureSleeveSingleColor-10'],
+              'ao': 'assetsTextureSleeveSingleAo-10',
+              'bumpmap': 'assetsTextureSleeveSingleBumpmap-10',
+              'color': 'assetsTextureSleeveSingleColor-10',
             },
             'holed': {
-              'ao': assets['assetsTextureSleeveSingleHoledAo-10'],
-              'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-10'],
-              'color': assets['assetsTextureSleeveSingleHoledColor-10'],
+              'ao': 'assetsTextureSleeveSingleHoledAo-10',
+              'bumpmap': 'assetsTextureSleeveSingleHoledBumpmap-10',
+              'color': 'assetsTextureSleeveSingleHoledColor-10',
             }
           },
           'double': {
             'normal': {
-              'ao': assets['assetsTextureSleeveDoubleAo-10'],
-              'bumpmap': assets['assetsTextureSleeveDoubleBumpmap-10'],
-              'color': assets['assetsTextureSleeveDoubleColor-10'],
+              'ao': 'assetsTextureSleeveDoubleAo-10',
+              'bumpmap': 'assetsTextureSleeveDoubleBumpmap-10',
+              'color': 'assetsTextureSleeveDoubleColor-10',
             },
             'holed': {
-              'ao': assets['assetsTextureSleeveDoubleHoledAo-10'],
-              'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-10'],
-              'color': assets['assetsTextureSleeveDoubleHoledColor-10'],
+              'ao': 'assetsTextureSleeveDoubleHoledAo-10',
+              'bumpmap': 'assetsTextureSleeveDoubleHoledBumpmap-10',
+              'color': 'assetsTextureSleeveDoubleHoledColor-10',
             }
           },
           'gatefold': {
             'normal': {
               'front': {
-                'ao': assets['assetsTextureSleeveGatefoldFrontAo-1102'],
-                'bumpmap': assets['assetsTextureSleeveGatefoldFrontBumpmap-10'],
-                'color': assets['assetsTextureSleeveGatefoldFrontColor-10']
+                'ao': 'assetsTextureSleeveGatefoldFrontAo-1102',
+                'bumpmap': 'assetsTextureSleeveGatefoldFrontBumpmap-10',
+                'color': 'assetsTextureSleeveGatefoldFrontColor-10'
               },
               'back': {
-                'ao': assets['assetsTextureSleeveGatefoldBackAo-1102'],
-                'bumpmap': assets['assetsTextureSleeveGatefoldBackBumpmap-10'],
-                'color': assets['assetsTextureSleeveGatefoldBackColor-10']
+                'ao': 'assetsTextureSleeveGatefoldBackAo-1102',
+                'bumpmap': 'assetsTextureSleeveGatefoldBackBumpmap-10',
+                'color': 'assetsTextureSleeveGatefoldBackColor-10'
               },
               'spine': {
-                'ao': assets['assetsTextureSleeveGatefoldSpineAo-10'],
-                'bumpmap': assets['assetsTextureSleeveGatefoldSpineBumpmap-10'],
-                'color': assets['assetsTextureSleeveGatefoldSpineColor-10']
+                'ao': 'assetsTextureSleeveGatefoldSpineAo-10',
+                'bumpmap': 'assetsTextureSleeveGatefoldSpineBumpmap-10',
+                'color': 'assetsTextureSleeveGatefoldSpineColor-10'
               }
             },
           }
         },
-  
+      
         '12': {
           'no-spine': {
             'normal': {
-              'ao': assets['assetsTextureSleeveSingleNoSpineAo-12'],
-              'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-12'],
-              'color': assets['assetsTextureSleeveSingleNoSpineColor-12'],
+              'ao': 'assetsTextureSleeveSingleNoSpineAo-12',
+              'bumpmap': 'assetsTextureSleeveSingleNoSpineBumpmap-12',
+              'color': 'assetsTextureSleeveSingleNoSpineColor-12',
             },
             'holed': {
-              'ao': assets['assetsTextureSleeveSingleNoSpineHoledAo-12'],
-              'bumpmap': assets['assetsTextureSleeveSingleNoSpineHoledBumpmap-12'],
-              'color': assets['assetsTextureSleeveSingleNoSpineHoledColor-12'],
+              'ao': 'assetsTextureSleeveSingleNoSpineHoledAo-12',
+              'bumpmap': 'assetsTextureSleeveSingleNoSpineHoledBumpmap-12',
+              'color': 'assetsTextureSleeveSingleNoSpineHoledColor-12',
             }
           },
           'single': {
             'normal': {
-              'ao': assets['assetsTextureSleeveSingleAo-12'],
-              'bumpmap': assets['assetsTextureSleeveSingleBumpmap-12'],
-              'color': assets['assetsTextureSleeveSingleColor-12'],
+              'ao': 'assetsTextureSleeveSingleAo-12',
+              'bumpmap': 'assetsTextureSleeveSingleBumpmap-12',
+              'color': 'assetsTextureSleeveSingleColor-12',
             },
             'holed': {
-              'ao': assets['assetsTextureSleeveSingleHoledAo-12'],
-              'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-12'],
-              'color': assets['assetsTextureSleeveSingleHoledColor-12'],
+              'ao': 'assetsTextureSleeveSingleHoledAo-12',
+              'bumpmap': 'assetsTextureSleeveSingleHoledBumpmap-12',
+              'color': 'assetsTextureSleeveSingleHoledColor-12',
             }
           },
           'double': {
             'normal': {
-              'ao': assets['assetsTextureSleeveDoubleAo-12'],
-              'bumpmap': assets['assetsTextureSleeveDoubleBumpmap-12'],
-              'color': assets['assetsTextureSleeveDoubleColor-12'],
+              'ao': 'assetsTextureSleeveDoubleAo-12',
+              'bumpmap': 'assetsTextureSleeveDoubleBumpmap-12',
+              'color': 'assetsTextureSleeveDoubleColor-12',
             },
             'holed': {
-              'ao': assets['assetsTextureSleeveDoubleHoledAo-12'],
-              'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-12'],
-              'color': assets['assetsTextureSleeveDoubleHoledColor-12'],
+              'ao': 'assetsTextureSleeveDoubleHoledAo-12',
+              'bumpmap': 'assetsTextureSleeveDoubleHoledBumpmap-12',
+              'color': 'assetsTextureSleeveDoubleHoledColor-12',
             }
           },
           'gatefold': {
             'normal': {
               'front': {
-                'ao': assets['assetsTextureSleeveGatefoldFrontAo-12'],
-                'bumpmap': assets['assetsTextureSleeveGatefoldFrontBumpmap-12'],
-                'color': assets['assetsTextureSleeveGatefoldFrontColorAndAo-12']
+                'ao': 'assetsTextureSleeveGatefoldFrontAo-12',
+                'bumpmap': 'assetsTextureSleeveGatefoldFrontBumpmap-12',
+                'color': 'assetsTextureSleeveGatefoldFrontColor-12'
               },
               'back': {
-                'ao': assets['assetsTextureSleeveGatefoldBackAo-12'],
-                'bumpmap': assets['assetsTextureSleeveGatefoldBackBumpmap-12'],
-                'color': assets['assetsTextureSleeveGatefoldBackColorAndAo-12']
+                'ao': 'assetsTextureSleeveGatefoldBackAo-12',
+                'bumpmap': 'assetsTextureSleeveGatefoldBackBumpmap-12',
+                'color': 'assetsTextureSleeveGatefoldBackColor-12'
               },
               'spine': {
-                'ao': assets['assetsTextureSleeveGatefoldSpineAo-12'],
-                'bumpmap': assets['assetsTextureSleeveGatefoldSpineBumpmap-12'],
-                'color': assets['assetsTextureSleeveGatefoldSpineColor-12']
+                'ao': 'assetsTextureSleeveGatefoldSpineAo-12',
+                'bumpmap': 'assetsTextureSleeveGatefoldSpineBumpmap-12',
+                'color': 'assetsTextureSleeveGatefoldSpineColor-12'
+              }
+            },
+            'holed': {
+              'front': {
+                'ao': 'assetsTextureSleeveGatefoldFrontAo-12',
+                'bumpmap': 'assetsTextureSleeveGatefoldFrontBumpmap-12',
+                'color': 'assetsTextureSleeveGatefoldFrontColor-12'
+              },
+              'back': {
+                'ao': 'assetsTextureSleeveGatefoldBackAo-12',
+                'bumpmap': 'assetsTextureSleeveGatefoldBackBumpmap-12',
+                'color': 'assetsTextureSleeveGatefoldBackColor-12'
+              },
+              'spine': {
+                'ao': 'assetsTextureSleeveGatefoldSpineAo-12',
+                'bumpmap': 'assetsTextureSleeveGatefoldSpineBumpmap-12',
+                'color': 'assetsTextureSleeveGatefoldSpineColor-12'
               }
             }
           }
@@ -342,13 +355,11 @@
             'ao': assets['assetsTextureSleeveSingleNoSpineAo-7'],
             'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-7'],
             'color': assets['assetsTextureSleeveSingleNoSpineColor-7'],
-            'color-ao': assets['assetsTextureSleeveSingleNoSpineColorAndAo-7']
           },
           'holed': {
             'ao': assets['assetsTextureSleeveSingleNoSpineHoledAo-7'],
             'bumpmap': assets['assetsTextureSleeveSingleNoSpineHoledBumpmap-7'],
             'color': assets['assetsTextureSleeveSingleNoSpineHoledColor-7'],
-            'color-ao': assets['assetsTextureSleeveSingleNoSpineHoledColorAndAo-7']
           }
         },
         'single': {
@@ -356,13 +367,11 @@
             'ao': assets['assetsTextureSleeveSingledAo-7'],
             'bumpmap': assets['assetsTextureSleeveSingleBumpmap-7'],
             'color': assets['assetsTextureSleeveSingleColor-7'],
-            'color-ao': assets['assetsTextureSleeveSingleColorAndAo-7']
           },
           'holed': {
             'ao': assets['assetsTextureSleeveSingleHoledAo-7'],
             'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-7'],
             'color': assets['assetsTextureSleeveSingleHoledColor-7'],
-            'color-ao': assets['assetsTextureSleeveSingleHoledColorAndAo-7']
           }
         },
         'double': {
@@ -499,12 +508,12 @@
             'front': {
               'ao': assets['assetsTextureSleeveGatefoldFrontAo-12'],
               'bumpmap': assets['assetsTextureSleeveGatefoldFrontBumpmap-12'],
-              'color': assets['assetsTextureSleeveGatefoldFrontColorAndAo-12']
+              'color': assets['assetsTextureSleeveGatefoldFrontColor-12']
             },
             'back': {
               'ao': assets['assetsTextureSleeveGatefoldBackAo-12'],
               'bumpmap': assets['assetsTextureSleeveGatefoldBackBumpmap-12'],
-              'color': assets['assetsTextureSleeveGatefoldBackColorAndAo-12']
+              'color': assets['assetsTextureSleeveGatefoldBackColor-12']
             },
             'spine': {
               'ao': assets['assetsTextureSleeveGatefoldSpineAo-12'],
@@ -731,10 +740,62 @@
 
     this._format = format;
 
-    this._loader.loadAsset({
-      'assetType': 'model',
-      'key': this._paths.models[this._size][this._format][this._hole]
-    })
+    const targets = [];
+
+    (function addTextureToTarget (obj, parentKey) {
+      Object.keys(obj).forEach((key) => {
+        if (typeof obj[key] === 'string') {
+          targets.push({
+            'assetType': 'texture',
+            'textureType': key,
+            'key': obj[key]
+          });
+        } else if (typeof obj[key] === 'object') {
+          addTextureToTarget(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
+        }
+      });
+    })(this._paths.textures[this._size][this._format][this._hole]);
+
+    Promise.all(targets.map((target) => {
+      return this._loader.loadAsset(target);
+    }))
+      .then((results) => {
+        console.log('Sleeve.setFormat: loaded textures  ------', results);
+
+        results.forEach((result) => {
+
+          const assetType = result['assetType'];
+          const textureType = result['textureType'];
+          const assetKey = result['key'];
+  
+          console.log('Sleeve.setFormat: asset loaded', assetType, textureType, assetKey);
+
+          if ('texture' === assetType) {
+            if (Sleeve.Format.GATEFOLD === this._format) {
+              let side;
+
+              if (-1 < assetKey.toLowerCase().indexOf('front')) {
+                side = 'front';
+              } else if (-1 < assetKey.toLowerCase().indexOf('back')) {
+                side = 'back';
+              } else if (-1 < assetKey.toLowerCase().indexOf('spine')) {
+                side = 'spine';
+              }
+
+              console.log('update gatefold texture - ' + side, this._loader.assets[assetKey]);
+              this.updateTexture(this._textures[this._size][this._format][this._hole][side][textureType], this._loader.assets[assetKey]);
+            } else {
+              console.log('update texture', this._loader.assets[assetKey]);
+              this.updateTexture(this._textures[this._size][this._format][this._hole][textureType], this._loader.assets[assetKey]);
+            }
+          }
+        });
+
+        return this._loader.loadAsset({
+          'assetType': 'model',
+          'key': this._paths.models[this._size][this._format][this._hole]
+        });
+      })
       .then((result) => {
 
         const assetKey = result['key'];
