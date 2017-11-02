@@ -142,6 +142,7 @@
     this._gatefoldAngle = 0;
     this._coveredRatio = 0;
     this._basePosition = new THREE.Vector3();
+    this._transparent = opts.transparent;
 
     // weight と label の組み合わせで format を決定する
     this._format = this.updateFormat(this._weight, this._label);
@@ -572,7 +573,8 @@
         child.material.color = this._material.color;
         child.material.opacity = this._material.opacity;
         child.material.specular = new THREE.Color(0x363636);
-        child.material.transparent = true;
+        // child.material.transparent = true;
+        child.material.transparent = this._transparent;
         child.material.shading = THREE.SmoothShading;
         child.material.side = THREE.FrontSide;
         child.material.envMap = this._envMapTexture;
@@ -972,11 +974,15 @@
         var tween = new TWEEN.Tween(child.material);
         child.material.opacity = 0;
         
-        tween
+        new TWEEN.Tween(child.material)
           .stop()
           .delay(delay)
           .to({ opacity: to }, duration)
-          .onUpdate((value) => {
+          .onUpdate((progress) => {
+            if ('label' === child.name) {
+              child.material.opacity = progress;
+            }
+            
             child.material.needsUpdate = true;
           })
           .start();
