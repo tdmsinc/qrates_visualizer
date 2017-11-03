@@ -624,7 +624,7 @@
 
     if (!size) {
       console.warn('World.onVinylSizeChanged: no size value passed');
-      return;
+      return Promise.reject('World.onVinylSizeChanged: no size value passed');
     }
 
     // to string
@@ -636,42 +636,52 @@
 
     if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
       console.error('Unknown vinyl size "' + size + '"');
-      return;
+      return Promise.reject('Unknown vinyl size "' + size + '"');
     }
     
-    switch (size) {
-      case '7':
-      case '7S':
-      case '7L':
-        sleeveSize = Sleeve.Size.SIZE_7;
-        scale = this._objectScales['7'];
-        break;
-      case '10':
-        sleeveSize = Sleeve.Size.SIZE_10;
-        scale = this._objectScales['10'];
-        break;
-      case '12':
-        sleeveSize = Sleeve.Size.SIZE_12;
-        scale = this._objectScales['12'];
-        break;
-    }
-
-    this._containerObject.scale.set(scale, scale, scale);
-    this._sleeve.setSize(sleeveSize, scale);
-
-    this._vinyls.forEach(function (vinyl) {
-      vinyl.setSize(size);
-    });
-
-    if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
-      this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
-
-      this._vinyls.forEach(function (vinyl) {
-        vinyl.setCoveredRatio(vinyl.getCoveredRatio());
+    return new Promise((resolve, reject) => {
+      switch (size) {
+        case '7':
+        case '7S':
+        case '7L':
+          sleeveSize = Sleeve.Size.SIZE_7;
+          scale = this._objectScales['7'];
+          break;
+        case '10':
+          sleeveSize = Sleeve.Size.SIZE_10;
+          scale = this._objectScales['10'];
+          break;
+        case '12':
+          sleeveSize = Sleeve.Size.SIZE_12;
+          scale = this._objectScales['12'];
+          break;
+      }
+  
+      this._containerObject.scale.set(scale, scale, scale);
+  
+      let targets = [];
+  
+      this._vinyls.forEach((vinyl) => {
+        targets.push(vinyl.setSize(size));
       });
-    }
+  
+      targets.push(this._sleeve.setSize(sleeveSize, scale));
+  
+      Promise.all(targets)
+        .then(() => {  
+          if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
+            this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
+      
+            this._vinyls.forEach(function (vinyl) {
+              vinyl.setCoveredRatio(vinyl.getCoveredRatio());
+            });
+          }
 
-    if (callback) callback();
+          resolve();
+
+          if (callback) callback();
+        });
+    });
   };
 
   //--------------------------------------------------------------

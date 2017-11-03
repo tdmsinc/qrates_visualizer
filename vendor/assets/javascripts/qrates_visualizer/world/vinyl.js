@@ -886,7 +886,8 @@
     }
 
     this._size = size;
-    this._loadModel(this._size, this._format);
+    
+    return this._loadModel(this._size, this._format);
   };
 
   //--------------------------------------------------------------

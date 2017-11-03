@@ -375,8 +375,8 @@
     if (!this.world) return this;
     opts = opts || {};
     callback = callback || noop;
-    this.world.setSize(value, opts, callback);
-    return this;
+    
+    return this.world.setSize(value, opts, callback);
   };
 
   VinylVisualizer.prototype.setGatefoldCoverAngle = function (degree, opts, callback) {
