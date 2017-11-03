@@ -942,7 +942,18 @@
       this._material.reflectivity = 0.1;
     }
 
-    this._loadModel(this._size, this._format);
+    this._currentObject.traverse((child) => {
+
+      if (child instanceof THREE.Mesh) {
+        if ('vinyl' === child.name) {
+          child.material.color = this._material.color;
+          child.material.opacity = this._material.opacity;
+          child.material.reflectivity = this._material.reflectivity;
+          child.material.refractionRatio = this._material.refractionRatio;
+          child.material.shininess = this._material.shininess;
+        }
+      }
+    });
   };
 
   //--------------------------------------------------------------
@@ -982,7 +993,7 @@
             if ('label' === child.name) {
               child.material.opacity = progress;
             }
-            
+
             child.material.needsUpdate = true;
           })
           .start();
