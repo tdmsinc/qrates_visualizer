@@ -870,19 +870,19 @@
 
     if (!size) {
       console.warn('Vinyl.setSize: no size specified');
-      return;
+      return Promise.reject(this);
     }
 
     size += '';
 
     if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
       console.warn('Vinyl.setSize: invalid size "' + size + '"');
-      return;
+      return Promise.reject(this);
     }
 
     if (this._size === size) {
       console.info('Vinyl.setSize: already set to size ' + size);
-      return;
+      return Promise.reject(this);
     }
 
     this._size = size;
@@ -1019,11 +1019,11 @@
 
     if (-1 === Object.values(Vinyl.Weight).indexOf(weight)) {
       console.warn('Vinyl.setWeight: unknown weight value "' + weight + '"');
-      return;
+      return Promise.reject(this);
     }
     
     if (this._weight === weight) {
-      return;
+      return Promise.resolve(this);
     }
 
     this._weight = weight;

@@ -849,7 +849,7 @@
       
           this.setOpacity(1.0, 0);
       
-          resolve();
+          resolve(this);
         });
     });
     
@@ -924,25 +924,33 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setHole = function(value) {
+  Sleeve.prototype.setHole = function (value) {
 
-    if (!(value === Sleeve.Hole.NO_HOLE || value === Sleeve.Hole.HOLED)) {
-      console.warn('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
-      return;
+    if ('boolean' === typeof value) {
+      if (value) {
+        value = Sleeve.Hole.HOLED;
+      } else {
+        value = Sleeve.Hole.NO_HOLE;
+      }
+    } else {
+      if (!(value === Sleeve.Hole.NO_HOLE || value === Sleeve.Hole.HOLED)) {
+        console.warn('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
+        return Promise.reject(this);
+      }
+  
+      if (value === Sleeve.Hole.HOLED && this._format === Sleeve.Format.GATEFOLD) {
+        console.warn('Sleeve.setHole: gatefold has no-hole format only');
+        return Promise.reject(this);
+      }
     }
 
-    if (value === Sleeve.Hole.HOLED && this._format === Sleeve.Format.GATEFOLD) {
-      console.warn('Sleeve.setHole: gatefold has no-hole format only');
-      return;
-    }
-    
     if (this._hole === value) {
-      return;
+      return Promise.resolve(this);
     }
 
     this._hole = value;
 
-    this.setFormat(this._format);
+    return this.setFormat(this._format);
   };
 
   //--------------------------------------------------------------

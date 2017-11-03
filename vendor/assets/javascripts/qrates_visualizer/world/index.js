@@ -1312,7 +1312,7 @@
   //--------------------------------------------------------------
   World.prototype.onSleeveHoleChanged = function (value) {
 
-    this._sleeve.setHole(value ? Sleeve.Hole.HOLED : Sleeve.Hole.NO_HOLE);
+    return this._sleeve.setHole(value ? Sleeve.Hole.HOLED : Sleeve.Hole.NO_HOLE);
   };
 
   //--------------------------------------------------------------
