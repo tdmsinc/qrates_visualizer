@@ -544,9 +544,7 @@
       });
     })(this._textures);
 
-    this._loadModel(this._size, this._format).then(() => {
-      console.log('vinyl is ready');
-    });
+    return this._loadModel(this._size, this._format);
   };
 
   //--------------------------------------------------------------
@@ -963,7 +961,7 @@
     this._label = true;
     this._format = this.updateFormat(this._weight, this._label);
     
-    this._loadModel(this._size, this._format);
+    return this._loadModel(this._size, this._format);
   };
 
   //--------------------------------------------------------------
@@ -972,7 +970,7 @@
     this._label = false;
     this._format = this.updateFormat(this._weight, this._label);
     
-    this._loadModel(this._size, this._format);
+    return this._loadModel(this._size, this._format);
   };
 
   //--------------------------------------------------------------

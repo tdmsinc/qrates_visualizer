@@ -566,7 +566,7 @@
       });
     })(this._textures);
 
-    this.setFormat(opts.format, () => {
+    return this.setFormat(opts.format, () => {
 
       // set initial textures
       if (opts.textures) {
