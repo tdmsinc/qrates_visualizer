@@ -886,7 +886,7 @@
     }
 
     this._size = size;
-    
+
     return this._loadModel(this._size, this._format);
   };
 
@@ -1029,7 +1029,7 @@
     this._weight = weight;
     this._format = this.updateFormat(this._weight, this._label);
 
-    this._loadModel(this._size, this._format);
+    return this._loadModel(this._size, this._format);
   };
 
   //--------------------------------------------------------------
@@ -1342,7 +1342,7 @@
             this.setOpacity(this._material.opacity, 1000, 250);
           }
 
-          resolve();
+          resolve(this);
         });
     });
   };
