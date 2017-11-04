@@ -13,7 +13,8 @@ var defaults = {
       isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
       speed: 45,
-      label: false
+      label: true,
+      transparent: true
     },
     {
       size: qvv.VinylVisualizer.VinylSize.SIZE_12,
@@ -21,7 +22,8 @@ var defaults = {
       isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
       speed: 45,
-      label: false
+      label: false,
+      transparent: true
     }
   ],
   sleeve: {
@@ -121,15 +123,21 @@ vv.on('ready', function() {
 
   vm.$watch('vinyl.size1', function(value) { 
     vv.setSize(value)
+      .then(() => {
+        console.log('size changed');
+      });
   });
 
   vm.$watch('vinyl.size2', function(value) { 
     vv.setSize(value)
+      .then(() => {
+        console.log('size changed');
+      });
   });
 
   vm.$watch('vinyl.colors', function(color) {
 
-    vv.vinyls[0].color(color);
+    vv.world._vinyls[0].setColor(color);
 
     if (1 == vv.world._vinyls.length) {
       return;
@@ -137,8 +145,6 @@ vv.on('ready', function() {
 
     vv.world._vinyls[1].setColor(color);
   });
-
-  vm.$watch('vinyl.holeSize', function(value) { vv.vinyl.holeSize(value); });
 
   vm.$watch('vinyl.heavy1', function(value) {
 
@@ -150,7 +156,10 @@ vv.on('ready', function() {
       weight = qvv.VinylVisualizer.VinylWeight.HEAVY;
     }
 
-    vv.world._vinyls[0].setWeight(weight);
+    vv.world._vinyls[0].setWeight(weight)
+    .then((vinyl) => {
+      console.log('vv.world._vinyls[0].setWeight: weight changed', vinyl);
+    });
   });
 
   vm.$watch('vinyl.heavy2', function(value) {
@@ -163,44 +172,75 @@ vv.on('ready', function() {
       weight = qvv.VinylVisualizer.VinylWeight.HEAVY;
     }
 
-    vv.world._vinyls[1].setWeight(weight);
+    vv.world._vinyls[1].setWeight(weight)
+      .then((vinyl) => {
+        console.log('vv.world._vinyls[1].setWeight: weight changed', vinyl);
+      });
   });
 
   vm.$watch('vinyl.label1', function(value) { 
     if (value === false) {
-      vv.world._vinyls[0].disableLabel();
+      vv.world._vinyls[0].disableLabel()
+      .then((vinyl) => {
+        console.log('vv.world._vinyls[0].enableLabel: disabled label', vinyl);
+      });
     } else {
-      vv.world._vinyls[0].enableLabel();
+      vv.world._vinyls[0].enableLabel()
+        .then((vinyl) => {
+          console.log('vv.world._vinyls[0].enableLabel: enabled label', vinyl);
+        });
     }
   });
 
-  vm.$watch('vinyl.label2', function(value) {
+  vm.$watch('vinyl.label2', (value) => {
     if (1 == vv.world._vinyls.length) {
       return;
     }
 
     if (value === false) {
-      vv.world._vinyls[1].disableLabel();
+      vv.world._vinyls[1].disableLabel()
+      .then((vinyl) => {
+        console.log('vv.world._vinyls[1].enableLabel: disabled label');
+      });
     } else {
-      vv.world._vinyls[1].enableLabel();
+      vv.world._vinyls[1].enableLabel()
+        .then((vinyl) => {
+          console.log('vv.world._vinyls[1].enableLabel: enabled label');
+        });
     }
   });
 
-  vm.$watch('vinyl.speed', function(value) {
-    vv.vinyls.forEach(function (vinyl) {
-      vinyl.speed(value);
+  vm.$watch('vinyl.speed', (value) => {
+    vv.world._vinyls.forEach((vinyl) => {
+      vinyl.setRPM(value);
     });
   });
 
-  vm.$watch('sleeve.size', function(value) { vv.setSize(value) });
-
-  vm.$watch('sleeve.type', function (value) {
-    vv.world.setSleeveFormat(value);
+  vm.$watch('sleeve.size', (value) => {
+    vv.setSize(value) 
   });
 
-  vm.$watch('sleeve.colorFormat', function(value) { vv.sleeve.colorFormat(value); });
-  vm.$watch('sleeve.hole', function(value) { vv.sleeve.hole(value); });
-  vm.$watch('sleeve.finish', function(value) { vv.sleeve.finish(value); });
+  vm.$watch('sleeve.type', function (value) {
+    vv.world.setSleeveFormat(value)
+      .then((format) => {
+        console.log('sleeve format changed: ', format);
+      });
+  });
+
+  vm.$watch('sleeve.colorFormat', (value) => {
+    vv.world._sleeve.setColorFormat(value);
+  });
+
+  vm.$watch('sleeve.hole', (value) => {
+    vv.world._sleeve.setHole(value)
+      .then((sleeve) => {
+        console.log('vv.world._sleeve.setHole: hole option changed', sleeve);
+      });
+  });
+
+  vm.$watch('sleeve.finish', (value) => {
+    vv.world._sleeve.setFinish(value);
+  });
 
   //
   // file watcher
@@ -356,33 +396,18 @@ vv.on('ready', function() {
   sleeveColorMap.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.world._sleeve.setColorMap(img, 'front');
-      vv.world._sleeve.setColorMap(img, 'back');
-      vv.world._sleeve.setColorMap(img, 'spine');
+      
+      console.log('sleeveColorMap.onchange', vv.world._sleeve.getFormat());
+
+      if (qvv.VinylVisualizer.SleeveFormat.GATEFOLD === vv.world._sleeve.getFormat()) {
+        vv.world._sleeve.setColorMap(img, 'front');
+        vv.world._sleeve.setColorMap(img, 'back');
+        vv.world._sleeve.setColorMap(img, 'spine');
+      } else {
+        vv.world._sleeve.setColorMap(img);        
+      }
     });
   };
-});
-
-//
-// observers. (for internal use)
-//
-for (var i in vv.vinyls) {
-  vv.vinyls[i].on('colorFormat', function(value) {
-    console.log('change vinyl.colorFormat', value);
-  });
-  vv.vinyls[i].on('color', function(value) {
-    console.log('change vinyl.color', value);
-  });
-  vv.vinyls[i].on('size', function(value) {
-    console.log('change vinyl.size', value);
-  });
-  vv.vinyls[i].on('labelType1', function(value) {
-    console.log('change vinyl.labelType 1', value);
-  });
-}
-
-vv.sleeve.on('finish', function(value) {
-  console.log('change sleeve.finish', value);
 });
 
 //

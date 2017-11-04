@@ -552,16 +552,21 @@
     // Image として読み込まれたテクスチャを THREE.Texture に変換する
     (function initTextures (obj) {
       Object.keys(obj).forEach((key) => {
-        if (obj[key] instanceof Image || obj[key] === undefined) {
-          if (obj[key] === undefined) {
-            // console.error('texture', obj, ':' + key + ' is ' + obj[key]);
-            obj[key] = new Image();
+        if (obj[key]) {
+          if ('object' === typeof obj[key]) {
+            initTextures(obj[key]);
+            return;
+          } else if (obj[key] instanceof Image || undefined === obj[key]) {
+            if (undefined === obj[key]) {
+              obj[key] = new Image();
+            }
+  
+            let texture = new THREE.Texture();
+            obj[key] = self.updateTexture(texture, obj[key]);
           }
-
+        } else {
           let texture = new THREE.Texture();
-          obj[key] = self.updateTexture(texture, obj[key]);
-        } else if (obj[key] instanceof Object) {
-          initTextures(obj[key]);
+          obj[key] = self.updateTexture(texture, new Image());
         }
       });
     })(this._textures);
@@ -655,14 +660,17 @@
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.needsUpdate = true;
-    
+    console.log('texture updated');
     return texture;
   };
 
   //--------------------------------------------------------------
   Sleeve.prototype._setTexture = function (type, image, side) { // for internal use
 
+    console.log('Sleeve._setTexture - size:', this._size, ', format:', this._format, ', hole:', this._hole, ', side:', side, ', type:', type);
+
     if (undefined === side) {
+      console.log('try to update texture', this._textures[this._size][this._format][this._hole][type], image);
       this.updateTexture(this._textures[this._size][this._format][this._hole][type], image);
     } else {
       if (-1 === Object.values(Sleeve.GatefoldSide).indexOf(side)) {
@@ -724,12 +732,12 @@
 
     if (!format) {
       console.warn('Sleeve.setFormat: no format specified');
-      return Promise.reject('Sleeve.setFormat: no format specified');
+      return Promise.reject(new Error('Sleeve.setFormat: no format specified'));
     }
 
     if (-1 === Object.values(Sleeve.Format).indexOf(format)) {
       console.error('Sleeve.setFormat: unknown format "' + format + '"');
-      return Promise.reject('Sleeve.setFormat: unknown format "' + format + '"');
+      return Promise.reject(new Error('Sleeve.setFormat: unknown format "' + format + '"'));
     }
 
     if (format === Sleeve.Format.GATEFOLD && this._hole === Sleeve.Hole.HOLED) {
@@ -935,12 +943,12 @@
     } else {
       if (!(value === Sleeve.Hole.NO_HOLE || value === Sleeve.Hole.HOLED)) {
         console.warn('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
-        return Promise.reject(this);
+        return Promise.reject(new Error('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED'));
       }
   
       if (value === Sleeve.Hole.HOLED && this._format === Sleeve.Format.GATEFOLD) {
         console.warn('Sleeve.setHole: gatefold has no-hole format only');
-        return Promise.reject(this);
+        return Promise.reject(new Error('Sleeve.setHole: gatefold has no-hole format only'));
       }
     }
 

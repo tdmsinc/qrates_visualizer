@@ -95,24 +95,24 @@
    * @api private
    */
 
-  VinylVisualizer.prototype.setup = function() {
-    var self = this;
+  VinylVisualizer.prototype.setup = function () {
+
     var el = this.el;
 
-    Object.keys(el.dataset).forEach(function(key) {
-      self.loader.add(key, el.dataset[key]);
+    Object.keys(el.dataset).forEach((key) => {
+      this.loader.add(key, el.dataset[key]);
     }, this);
     
-    self.loader.load({
+    this.loader.load({
       loadModels: this.loadModels,
       loadTextures: this.loadTextures
-    }, function(err, assets) {
-      var world = self.world = new World(self, assets, self.opts);
-      world.delegateEvents();
-      world.startRender();
-      el.appendChild(world.getRenderer().domElement);
-      setTimeout(function() {
-        self.emit('ready');
+    }, (err, assets) => {
+      this.world = new World(this, assets, this.opts);
+      // world.delegateEvents();
+      this.world.startRender();
+      el.appendChild(this.world.getRenderer().domElement);
+      setTimeout(() => {
+        this.emit('ready');
       }, 0);
     });
   };
