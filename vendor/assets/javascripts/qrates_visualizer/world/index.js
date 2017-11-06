@@ -29,173 +29,166 @@
    */
 
   //--------------------------------------------------------------
-  function World(parent, assets, opts) {
+  function World (parent, assets, opts) {
 
-    if (window.Stats) {
-      this._stats = new window.Stats();
-      this._stats.domElement.setAttribute('class', 'stats');
-      document.body.appendChild(this._stats.domElement);
-    }
+    return new Promise((resolve, reject) => {
 
-    this._parent = parent;
-    this._assets = assets;
-
-    this._opts = opts || {
-      renderer: {
-        antialias: true,
-        preserveDrawingBuffer: true,
+      if (window.Stats) {
+        this._stats = new window.Stats();
+        this._stats.domElement.setAttribute('class', 'stats');
+        document.body.appendChild(this._stats.domElement);
       }
-    };
-
-    this._objectScales = {
-      '7': 1,
-      '10': 0.6890566038,
-      '12': 0.5833865815
-    };
-
-    this._width = opts.width;
-    this._height = opts.height;
-
-    this._isRendering = false;
-
-    this._scene = new THREE.Scene();
-
-    this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
-    this._camera.lookAt(new THREE.Vector3(0, 0, 0));
-    this._camera.position.set(212, 288, 251);
-    this._orthographicZoom = 170;
-
-    if ('orthographic' === this._opts.camera.type) {
-      this.setOrthographic();
-    }
-
-    this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
-    this._renderer.setPixelRatio(this._opts.pixelRatio || window.devicePixelRatio || 1);
-    this._renderer.setSize(this._width, this._height);
-    this._renderer.autoClear = false;
-    this._renderer.setClearColor(0, 0.0);
-
-    this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
-
-    this._controls = new THREE.TrackballControls(this._camera, this._parent.el);
-    this._controls.minDistance = 100;
-    this._controls.maxDistance = 700;
-    this._controls.target = new THREE.Vector3(0, 0, 0);
-    this._controls.handleResize({ left: 0, top: 0, width: opts.width, height: opts.height });
-    this._controls.update();
-    this._controls.enabled = this._opts.camera.control;
-
-    this._lights = this.createLights();
-
-    this._enableRotate = false;
-    this._flip = false;
-
-    // sleeve と vinyl がぶら下がるコンテナ
-    this._containerObject = new THREE.Object3D();
-    this._containerObject.name = 'container';
-
-    // sleeve
-    this._sleeve = new Sleeve();
-    this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._containerObject, this._opts.loader);
-    this._sleeve.setObjectScale(this._objectScales['12']);
-
-    // vinyl
-    this._vinyls = [
-      new Vinyl(),
-      new Vinyl()
-    ];
-
-    // sleeve が single で複数の vinyl オプションが渡された場合は2つ目以降のオプションを削除して single フォーマットを採用する
-    if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
-      if (1 < opts.defaults.vinyl.length) {
-        console.warn('World: too many options for vinyl');
-        
-        opts.defaults.vinyl.pop();
-        opts.defaults.vinyl.length = 1;
-      }
-    }
-
-    // sleeve format に応じて vinyl の位置をオフセット
-    const sleeveFormat = this._sleeve.getFormat();
-    let offsetY = 0.0;
-
-    if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
-      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-        offsetY = 1.08390626812156;
-      } else {
-        offsetY = 0.6;
-      }
-    }
-
-    // vinyl オプションから vinyl を生成
-    if (1 == opts.defaults.vinyl.length) {
-      opts.defaults.vinyl[0].offsetY = 0;
-
-      this._vinyls[0].setup(this._scene, this._assets, this._opts.defaults.vinyl[0], this._containerObject, this._opts.loader);
-      this._vinyls[1].setup(this._scene, this._assets, this._opts.defaults.vinyl[0], this._containerObject, this._opts.loader);
-    } else {
-      // シングルスリーブの場合は2枚目の vinyl を表示しない
-      if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
-        this._vinyls[1].setVisibility(false);
-      }
-      
-      for (let i in opts.defaults.vinyl) {
-        opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
-        opts.defaults.vinyl[i].offsetY = 0 == i ? offsetY : -offsetY;
-
-        if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
-          opts.defaults.vinyl[i].visibility = 0 == i ? true : false;
-        } else {
-          opts.defaults.vinyl[i].visibility = true;
+  
+      this._parent = parent;
+      this._assets = assets;
+  
+      this._opts = opts || {
+        renderer: {
+          antialias: true,
+          preserveDrawingBuffer: true,
         }
-
-        this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject, this._opts.loader);
+      };
+  
+      this._objectScales = {
+        '7': 1,
+        '10': 0.6890566038,
+        '12': 0.5833865815
+      };
+  
+      this._width = opts.width;
+      this._height = opts.height;
+  
+      this._isRendering = false;
+  
+      this._scene = new THREE.Scene();
+  
+      this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
+      this._camera.lookAt(new THREE.Vector3(0, 0, 0));
+      this._camera.position.set(212, 288, 251);
+      this._orthographicZoom = 170;
+  
+      if ('orthographic' === this._opts.camera.type) {
+        this.setOrthographic();
       }
-    }
+  
+      this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
+      this._renderer.setPixelRatio(this._opts.pixelRatio || window.devicePixelRatio || 1);
+      this._renderer.setSize(this._width, this._height);
+      this._renderer.autoClear = false;
+      this._renderer.setClearColor(0, 0.0);
+  
+      this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
+  
+      this._controls = new THREE.TrackballControls(this._camera, this._parent.el);
+      this._controls.minDistance = 100;
+      this._controls.maxDistance = 700;
+      this._controls.target = new THREE.Vector3(0, 0, 0);
+      this._controls.handleResize({ left: 0, top: 0, width: opts.width, height: opts.height });
+      this._controls.update();
+      this._controls.enabled = this._opts.camera.control;
+  
+      this._lights = this.createLights();
+  
+      this._enableRotate = false;
+      this._flip = false;
+  
+      // sleeve と vinyl がぶら下がるコンテナ
+      this._containerObject = new THREE.Object3D();
+      this._containerObject.name = 'container';
+  
+      // sleeve
+      this._sleeve = new Sleeve();
+      this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._containerObject, this._opts.loader)
+        .then(() => {
+          this._sleeve.setObjectScale(this._objectScales['12']);
+          
+          // vinyl
+          this._vinyls = [
+            new Vinyl(),
+            new Vinyl()
+          ];
+  
+          // sleeve が single で複数の vinyl オプションが渡された場合は2つ目以降のオプションを削除して single フォーマットを採用する
+          if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
+            if (1 < opts.defaults.vinyl.length) {
+              console.warn('World: too many options for vinyl');
+              
+              opts.defaults.vinyl.pop();
+              opts.defaults.vinyl.length = 1;
+            }
+          }
+  
+          // sleeve format に応じて vinyl の位置をオフセット
+          const sleeveFormat = this._sleeve.getFormat();
+          let offsetY = 0.0;
+  
+          if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
+            if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+              offsetY = 1.08390626812156;
+            } else {
+              offsetY = 0.6;
+            }
+          }
+  
+          let targets = [];
+  
+          // vinyl オプションから vinyl を生成
+          if (1 == opts.defaults.vinyl.length) {
+            opts.defaults.vinyl[0].offsetY = 0;
+  
+            targets.push(this._vinyls[0].setup(this._scene, this._assets, this._opts.defaults.vinyl[0], this._containerObject, this._opts.loader));
+            targets.push(this._vinyls[1].setup(this._scene, this._assets, this._opts.defaults.vinyl[0], this._containerObject, this._opts.loader));
+          } else {
+            // シングルスリーブの場合は2枚目の vinyl を表示しない
+            if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
+              this._vinyls[1].setVisibility(false);
+            }
+            
+            for (let i in opts.defaults.vinyl) {
+              opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
+              opts.defaults.vinyl[i].offsetY = 0 == i ? offsetY : -offsetY;
+  
+              if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
+                opts.defaults.vinyl[i].visibility = 0 == i ? true : false;
+              } else {
+                opts.defaults.vinyl[i].visibility = true;
+              }
+  
+              targets.push(this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject, this._opts.loader));
+            }
+          }
+  
+          Promise.all(targets)
+            .then(() => {
+              // scale を設定
+              var scale = this._objectScales[this._vinyls[0]._size];
+              this._containerObject.scale.set(scale, scale, scale);
+              this._containerObject.position.set(0, 0, 0);
+  
+              this._flipRotation = 0;
+              this._flipTween = new TWEEN.Tween(this);
+  
+              this._presets = {};
+              this.registerPresets();
+  
+              this._scene.add(this._lights);
+              this._scene.add(this._containerObject);
+  
+              this.initGui();
+  
+              if (opts.defaults.hasOwnProperty('view')) {
+                this.updateView(opts.defaults.view, { duration: 0 });
+              }
+  
+              // シングルスリーブの場合は2枚目の vinyl を表示しない
+              if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
+                this._vinyls[1].setVisibility(false);
+              }
 
-    // scale を設定
-    var scale = this._objectScales[this._vinyls[0]._size];
-    this._containerObject.scale.set(scale, scale, scale);
-    this._containerObject.position.set(0, 0, 0);
-
-    this._flipRotation = 0;
-    this._flipTween = new TWEEN.Tween(this);
-
-    this._presets = {};
-    this.registerPresets();
-
-    this._scene.add(this._lights);
-    this._scene.add(this._containerObject);
-
-    var self = this;
-
-    this.initGui();
-
-    // this._scene.add(new THREE.GridHelper(200, 100));
-
-    if (opts.defaults.hasOwnProperty('view')) {
-      this.updateView(opts.defaults.view, { duration: 0 });
-    }
-
-    // // sleeve format に応じて vinyl の位置をオフセット
-    // var sleeveFormat = this._sleeve.getFormat();
-    // let offsetY = 0.0;
-
-    // if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
-    //   if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-    //     offsetY = 1.08390626812156;
-    //   } else {
-    //     offsetY = 0.6;
-    //   }
-    // }
-
-    // this._vinyls[0].setOffsetY(offsetY);
-    // this._vinyls[1].setOffsetY(-offsetY);
-
-    // シングルスリーブの場合は2枚目の vinyl を表示しない
-    if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
-      this._vinyls[1].setVisibility(false);
-    }
+              resolve(this);
+            });
+        });
+    });
   }
 
   /**
@@ -1079,9 +1072,11 @@
       this._sleeve.update();
     }
 
-    this._vinyls.forEach(function (vinyl) {
-      vinyl.update();
-    });
+    if (0 < this._vinyls) {
+      this._vinyls.forEach(function (vinyl) {
+        vinyl.update();
+      });
+    }
 
     this._controls.update();
 

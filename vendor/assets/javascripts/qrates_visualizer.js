@@ -107,13 +107,16 @@
       loadModels: this.loadModels,
       loadTextures: this.loadTextures
     }, (err, assets) => {
-      this.world = new World(this, assets, this.opts);
-      // world.delegateEvents();
-      this.world.startRender();
-      el.appendChild(this.world.getRenderer().domElement);
-      setTimeout(() => {
-        this.emit('ready');
-      }, 0);
+      new World(this, assets, this.opts)
+        .then((world) => {
+          this.world = world;
+          this.world.startRender();
+          el.appendChild(this.world.getRenderer().domElement);
+          
+          setTimeout(() => {
+            this.emit('ready');
+          }, 0);
+        });
     });
   };
 
