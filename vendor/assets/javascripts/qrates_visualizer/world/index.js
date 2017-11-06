@@ -726,8 +726,8 @@
     const self = this;
     const sleeveFormat = this._sleeve.getFormat();
 
+    // 2枚組の場合はスリーブを動かし、シングルの場合はレコードを動かす
     if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
-      this._sleeve.resetCoveredRatio();
 
       if (Vinyl.Index.SECOND === opts.index) {
         if (1 === this._vinyls.length) {
@@ -769,7 +769,7 @@
 
       new TWEEN.Tween(param)
         .stop()
-        .to({ ratio: value })
+        .to({ ratio: value }, opts.durarion || 500)
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(function () {
           self._vinyls[index].setCoveredRatio(this.ratio, offsetX, offsetY);
@@ -786,7 +786,7 @@
 
       new TWEEN.Tween(param)
         .stop()
-        .to({ ratio: value })
+        .to({ ratio: value }, opts.durarion || 500)
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(function () {
           self._sleeve.setCoveredRatio(this.ratio, opts);
@@ -1354,32 +1354,70 @@
   //--------------------------------------------------------------
   World.prototype.setSleeveFormat = function (format) {
 
-    return new Promise((resolve, reject) => {
+    let lastFormat = this._sleeve.getFormat();
 
-      const lastFormat = this._sleeve.getFormat();
+    if (lastFormat === format) {
+      return Promsie.resolve(lastFormat);
+    }
+
+    let coveredRatio = 0.0;
+    
+    if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
+      coveredRatio = this._sleeve.getCoveredRatio();
+    } else {
+      coveredRatio = this._vinyls[0].getCoveredRatio();
+    }
+
+    return new Promise((resolve, reject) => {
       
       this._sleeve.setFormat(format)
-        .then(() => {
+        .then((sleeve) => {
+
+          this._vinyls.forEach(function (vinyl) {
+            vinyl.setFrontSleevePositionAndAngle(new THREE.Vector3(), 0);
+          });
           
-          this._sleeve.setCoveredRatio(0);
-          
+          let newFormat = this._sleeve.getFormat();
+
+          let firstOffsetY, secondOffsetY;
+
+          if (Sleeve.Format.GATEFOLD === newFormat) {
+            firstOffsetY = 0.08;
+            secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+            if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
+              secondOffsetY += 0.15;
+            }
+          } else {
+            firstOffsetY = 0.6;
+            secondOffsetY = -0.6;
+          }
+
           if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
-            if (Sleeve.Format.GATEFOLD === format || Sleeve.Format.DOUBLE === format) {
+            if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
+              this._sleeve.setCoveredRatio(coveredRatio);
+            } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
               var opts = this._vinyls[0].getCurrentProperties();
               opts.index = Vinyl.Index.SECOND;
               // TODO: プロパティをコピー
               this._vinyls[1].setVisibility(true);
+
+              this._vinyls[0].setCoveredRatio(coveredRatio, 0, firstOffsetY);
+              this._vinyls[1].setCoveredRatio(Math.min(coveredRatio * 2, 1.0), 0, secondOffsetY);
+              this._sleeve.setCoveredRatio(0);
             }
-          } else if (Sleeve.Format.GATEFOLD === lastFormat || Sleeve.Format.DOUBLE === lastFormat) {
-            if (Sleeve.Format.SINGLE_WITHOUT_SPINE === format || Sleeve.Format.SINGLE === format) {
+          } else if (Sleeve.Format.DOUBLE === lastFormat || Sleeve.Format.GATEFOLD === lastFormat) {
+            if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
               this._vinyls[1].setVisibility(false);
+
+              this._vinyls[0].setCoveredRatio(0, 0, firstOffsetY);
+              this._vinyls[1].setCoveredRatio(0, 0, secondOffsetY);
+              this._sleeve.setCoveredRatio(coveredRatio);
+            } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
+              this._vinyls[0].setCoveredRatio(coveredRatio, 0, firstOffsetY);
+              this._vinyls[1].setCoveredRatio(Math.min(coveredRatio * 2, 1.0), 0, secondOffsetY);
             }
           }
-          
-          this._vinyls.forEach(function (vinyl) {
-            vinyl.setFrontSleevePositionAndAngle(new THREE.Vector3(), 0);
-            vinyl.setCoveredRatio(0);
-          });
 
           resolve(this._sleeve.getFormat());
         });

@@ -660,7 +660,7 @@
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.needsUpdate = true;
-    console.log('texture updated');
+
     return texture;
   };
 
