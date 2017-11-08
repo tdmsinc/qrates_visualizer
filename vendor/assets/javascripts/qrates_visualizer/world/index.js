@@ -131,31 +131,23 @@
           }
   
           let targets = [];
+
+          if (1 == opts.defaults.vinyl.length) {
+            opts.defaults.vinyl.push(opts.defaults.vinyl[0]);
+          }
   
           // vinyl オプションから vinyl を生成
-          if (1 == opts.defaults.vinyl.length) {
-            opts.defaults.vinyl[0].offsetY = 0;
-  
-            targets.push(this._vinyls[0].setup(this._scene, this._assets, this._opts.defaults.vinyl[0], this._containerObject, this._opts.loader));
-            targets.push(this._vinyls[1].setup(this._scene, this._assets, this._opts.defaults.vinyl[0], this._containerObject, this._opts.loader));
-          } else {
-            // シングルスリーブの場合は2枚目の vinyl を表示しない
+          for (let i in opts.defaults.vinyl) {
+            opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
+            opts.defaults.vinyl[i].offsetY = 0 == i ? offsetY : -offsetY;
+
             if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
-              this._vinyls[1].setVisibility(false);
+              opts.defaults.vinyl[i].visibility = 0 == i ? true : false;
+            } else {
+              opts.defaults.vinyl[i].visibility = true;
             }
-            
-            for (let i in opts.defaults.vinyl) {
-              opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
-              opts.defaults.vinyl[i].offsetY = 0 == i ? offsetY : -offsetY;
-  
-              if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
-                opts.defaults.vinyl[i].visibility = 0 == i ? true : false;
-              } else {
-                opts.defaults.vinyl[i].visibility = true;
-              }
-  
-              targets.push(this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject, this._opts.loader));
-            }
+
+            targets.push(this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject, this._opts.loader));
           }
   
           Promise.all(targets)

@@ -16,15 +16,15 @@ var defaults = {
       label: true,
       transparent: true
     },
-    {
-      size: qvv.VinylVisualizer.VinylSize.SIZE_12,
-      weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
-      isEnableLabel: false,
-      colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
-      speed: 45,
-      label: false,
-      transparent: true
-    }
+    // {
+    //   size: qvv.VinylVisualizer.VinylSize.SIZE_12,
+    //   weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
+    //   isEnableLabel: false,
+    //   colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
+    //   speed: 45,
+    //   label: false,
+    //   transparent: true
+    // }
   ],
   sleeve: {
     size: qvv.VinylVisualizer.SleeveSize.SIZE_12,
