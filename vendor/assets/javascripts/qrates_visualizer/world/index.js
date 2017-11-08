@@ -1397,9 +1397,12 @@
             if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
               secondOffsetY += 0.15;
             }
-          } else {
+          } else if (Sleeve.Format.DOUBLE === newFormat) {
             firstOffsetY = 0.6;
             secondOffsetY = -0.6;
+          } else {
+            firstOffsetY = 0.0;
+            secondOffsetY = 0.0;
           }
 
           if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
@@ -1409,6 +1412,7 @@
               var opts = this._vinyls[0].getCurrentProperties();
               opts.index = Vinyl.Index.SECOND;
               // TODO: プロパティをコピー
+              this._vinyls[1].copy(this._vinyls[0]);
               this._vinyls[1].setVisibility(true);
 
               this._vinyls[0].setCoveredRatio(coveredRatio, 0, firstOffsetY);

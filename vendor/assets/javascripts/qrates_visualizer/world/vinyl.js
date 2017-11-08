@@ -1171,6 +1171,31 @@
   };
 
   //--------------------------------------------------------------
+  Vinyl.prototype.copy = function (parent) {
+
+    if (!(parent instanceof Vinyl)) {
+      console.error('Vinyl.copy: not an Vinyl object :', parent);
+      return;
+    }
+
+    this._size = parent._size;
+    this._format = parent._format;
+
+    this._loadModel(this._size, this._format)
+      .then((self) => {
+        this._currentObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            const obj = parent._currentObject.getObjectByName(child.name);
+            
+            if (obj) {
+              child.material = obj.material.clone();
+            }
+          }
+        });
+      });
+  };
+
+  //--------------------------------------------------------------
   Vinyl.prototype.update = function() {
 
     if (!this._currentObject) {
