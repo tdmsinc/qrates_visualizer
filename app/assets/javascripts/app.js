@@ -44,6 +44,7 @@ var vv = new qvv.VinylVisualizer(el, {
   pixelRatio: window.devicePixelRatio || 1,
   loadModels: false,
   loadTextures: false,
+  view: 0,
   renderer: {
     antialias: true,
     alpha: true,
