@@ -1016,7 +1016,7 @@
   //--------------------------------------------------------------
   Vinyl.prototype.setCoveredRatio = function (ratio, offsetX, offsetY) {
 
-    this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
+    this._coveredRatio = Math.max(0, Math.min(1.0, ratio)) * 1.02;
     this._offsetX = offsetX || 0;
     this._offsetY = offsetY || 0;
     

@@ -720,35 +720,30 @@
         }
       }
 
-      let index, offsetX, offsetY;
+      let index, offsetY;
 
       if (Vinyl.Index.FIRST === opts.index) {
         index = 0;
         
         if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-          offsetX = 0;
           offsetY = 0.08;
         } else {
-          offsetX = 0;
           offsetY = 0.6;
         }
       } else if (Vinyl.Index.SECOND === opts.index) {
         index = 1;
 
         if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-          offsetX = 0;
           offsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
 
           if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
             offsetY += 0.15;
           }
         } else {
-          offsetX = 0;
           offsetY = -0.6;
         }
       }
 
-      console.log('World.cover: index = ', index, 'this.vinyls', this._vinyls);
       const param = {
         ratio: this._vinyls[index].getCoveredRatio()
       };
@@ -758,7 +753,7 @@
         .to({ ratio: value }, opts.durarion || 500)
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(function () {
-          self._vinyls[index].setCoveredRatio(this.ratio, offsetX, offsetY);
+          self._vinyls[index].setCoveredRatio(this.ratio, 0, offsetY);
         })
         .start();
     } else {
@@ -1411,7 +1406,6 @@
             } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
               var opts = this._vinyls[0].getCurrentProperties();
               opts.index = Vinyl.Index.SECOND;
-              // TODO: プロパティをコピー
               this._vinyls[1].copy(this._vinyls[0]);
               this._vinyls[1].setVisibility(true);
 
