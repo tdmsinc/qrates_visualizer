@@ -88,7 +88,7 @@
 
         loader = new THREE.ColladaLoader(manager, opts.loadTextures);
       } else if ('.png' === ext || '.jpg' === ext) {
-        if (false === opts.loadTextures) {
+        if (false === opts.loadTextures && -1 === path.toLowerCase().indexOf('envmap')) {
           return;
         }
 

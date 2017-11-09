@@ -106,19 +106,6 @@
 
     opts.color = opts.color || 0;
 
-    // 環境マップ
-    let images = [];
-    for (var i = 0; i < 6; ++i) {
-      images.push('envmap.jpg');
-    }
-
-    let cubeTextureLoader = new THREE.CubeTextureLoader();
-    cubeTextureLoader.setPath('assets/qrates_visualizer/vinyls/');
-
-    this._envMapTexture = cubeTextureLoader.load(images);
-    this._envMapTexture.flipY = false;
-    this._envMapTexture.needsUpdate = true;
-
     // --------
     this._loader = loader;
     this._container = container;
@@ -155,6 +142,21 @@
     }
 
     this._color = this._material.color;
+
+    // 環境マップ
+    let images = [];
+    let path = this._loader.targets['assetsTextureVinylEnvmap'];
+
+    for (var i = 0; i < 6; ++i) {
+      images.push(this._loader.targets['assetsTextureVinylEnvmap']);
+    }
+
+    let cubeTextureLoader = new THREE.CubeTextureLoader();
+    cubeTextureLoader.setPath('');
+
+    this._envMapTexture = cubeTextureLoader.load(images);
+    this._envMapTexture.flipY = false;
+    this._envMapTexture.needsUpdate = true;
 
     // モデル
     this._paths = {
@@ -341,32 +343,6 @@
       }
     };
 
-    this._models = {
-      '7S': {
-        'normal': assets['assetsModelVinylSmallHole-7'],
-        'with-label': assets['assetsModelVinylSmallHoleWithLabel-7'],
-        'heavy': assets['assetsModelVinylSmallHoleHeavy-7'],
-        'heavy-with-label': assets['assetsModelVinylSmallHoleHeavyWithLabel-7']
-      },
-      '7L': {
-        'normal': assets['assetsModelVinylLargeHole-7'],
-        'with-label': assets['assetsModelVinylLargeHoleWithLabel-7'],
-        'heavy': assets['assetsModelVinylLargeHoleHeavy-7'],
-        'heavy-with-label': assets['assetsModelVinylLargeHoleHeavyWithLabel-7']
-      },
-      '10': {
-        'normal': assets['assetsModelVinyl-10'],
-        'with-label': assets['assetsModelVinylWithLabel-10'],
-        'heavy': assets['assetsModelVinylHeavy-10'],
-        'heavy-with-label': assets['assetsModelVinylHeavyWithLabel-10']
-      },
-      '12': {
-        'normal': assets['assetsModelVinyl-12'],
-        'with-label': assets['assetsModelVinylWithLabel-12'],
-        'heavy': assets['assetsModelVinylHeavy-12'],
-        'heavy-with-label': assets['assetsModelVinylHeavyWithLabel-12']
-      }
-    };
 
     // テクスチャー
     this._textures = {
