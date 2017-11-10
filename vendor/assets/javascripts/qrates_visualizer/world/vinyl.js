@@ -115,7 +115,6 @@
     this._colorFormat = opts.colorFormat || Vinyl.ColorFormat.BLACK;
     this._material = this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE;
     this._defaultColor = 0x000000;
-    this._opacity = 0;
     this._rpm = opts.speed;
     this._enableRotate = false;
     this._clock = new THREE.Clock();
@@ -520,7 +519,13 @@
       });
     })(this._textures);
 
-    return this._loadModel(this._size, this._format);
+    return new Promise((resolve, reject) => {
+      this._loadModel(this._size, this._format)
+        .then(() => {
+          this.setOpacity(this._material.opacity, 1000, 250);
+          resolve();
+        });
+    })
   };
 
   //--------------------------------------------------------------
@@ -800,16 +805,6 @@
   }
 
   //--------------------------------------------------------------
-  Vinyl.prototype.updateCurrentObjectMaterial = function() {
-
-    if (!this._currentObject) {
-      return;
-    }
-
-    this._loadModel(this._size, this._format);
-  }
-
-  //--------------------------------------------------------------
   Vinyl.prototype.setBumpScale = function(value) {
 
     this._bumpScale = value;
@@ -817,17 +812,6 @@
     this._currentObject.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.material.bumpScale = this._bumpScale;
-        child.material.needsUpdate = true;
-      }
-    });
-  };
-
-  //--------------------------------------------------------------
-  Vinyl.prototype.setAoMapIntensity = function(value) {
-
-    this._currentObject.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.material.aoMapIntensity = value;
         child.material.needsUpdate = true;
       }
     });
@@ -890,9 +874,13 @@
       this._material = Vinyl.Color.WHITE;
     } 
 
-    this._loadModel(this._size, this._format)
-      .then(() => {
-        this.setOpacity(this._material.opacity);
+    return new Promise((resolve, reject) => {
+      this._loadModel(this._size, this._format)
+        .then(() => {
+          this.setOpacity(this._material.opacity, 1000, 250);
+          
+          resolve();
+        });
       });
   };
 
@@ -937,7 +925,14 @@
     this._label = true;
     this._format = this.updateFormat(this._weight, this._label);
     
-    return this._loadModel(this._size, this._format);
+    return new Promise((resolve, reject) => {
+      this._loadModel(this._size, this._format)
+        .then(() => {
+          this.setOpacity(this._material.opacity, 1000, 250);
+
+          resolve();
+        });
+    });
   };
 
   //--------------------------------------------------------------
@@ -946,7 +941,14 @@
     this._label = false;
     this._format = this.updateFormat(this._weight, this._label);
     
-    return this._loadModel(this._size, this._format);
+    return new Promise((resolve, reject) => {
+      this._loadModel(this._size, this._format)
+        .then(() => {
+          this.setOpacity(this._material.opacity, 1000, 250);
+
+          resolve();
+        });
+    });
   };
 
   //--------------------------------------------------------------
@@ -1003,7 +1005,14 @@
     this._weight = weight;
     this._format = this.updateFormat(this._weight, this._label);
 
-    return this._loadModel(this._size, this._format);
+    return new Promise((resolve, reject) => {
+      this._loadModel(this._size, this._format)
+        .then(() => {
+          this.setOpacity(this._material.opacity, 1000, 250);
+
+          resolve();
+        });
+    });
   };
 
   //--------------------------------------------------------------
@@ -1158,7 +1167,7 @@
     this._size = parent._size;
     this._format = parent._format;
 
-    this._loadModel(this._size, this._format)
+    return this._loadModel(this._size, this._format)
       .then((self) => {
         this._currentObject.traverse((child) => {
           if (child instanceof THREE.Mesh) {
@@ -1199,12 +1208,12 @@
   };
 
   //--------------------------------------------------------------
-  Vinyl.prototype._loadModel = function (size, format) {
+  Vinyl.prototype._loadTextures = function (size, format) {
 
     return new Promise((resolve, reject) => {
 
       const targets = [];
-  
+      
       (function addTextureToTarget (obj, parentKey) {
         Object.keys(obj).forEach((key) => {
           if (typeof obj[key] === 'string') {
@@ -1218,38 +1227,44 @@
           }
         });
       })(this._paths.textures[size][format]);
-  
-      // テクスチャをロード
+
       Promise.all(targets.map((target) => {
         return this._loader.loadAsset(target);
       }))
         .then((results) => {
-          console.log('loaded textures  ------', results);
+          console.log('textures are loaded  ------', results);
   
           results.forEach((result) => {
   
             const assetType = result['assetType'];
             const textureType = result['textureType'];
             const assetKey = result['key'];
-    
-            console.log('Vinyl.setup: asset loaded', assetType, textureType, assetKey);
-  
+      
             if ('texture' === assetType) {
               if (this._isWithLabel()) {
                 if (-1 < assetKey.toLowerCase().indexOf('forlabel')) {
-                  console.log('update texture - label part', this._loader.assets[assetKey]);
                   this.updateTexture(this._textures[size][format][Vinyl.Part.LABEL][textureType], this._loader.assets[assetKey]);
                 } else {
-                  console.log('update texture - vinyl part', this._loader.assets[assetKey]);
                   this.updateTexture(this._textures[size][format][Vinyl.Part.VINYL][textureType], this._loader.assets[assetKey]);
                 }
               } else {
-                console.log('update texture', this._loader.assets[assetKey]);
                 this.updateTexture(this._textures[size][format][textureType], this._loader.assets[assetKey]);
               }
             }
           });
   
+          resolve(results);
+        })
+    });
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype._loadModel = function (size, format) {
+
+    return new Promise((resolve, reject) => {
+
+      this._loadTextures(size, format)
+        .then((results) => {
           return this._loader.loadAsset({
             'assetType': 'model',
             'key': this._paths.models[size][format]
@@ -1257,19 +1272,62 @@
         })
         // モデルをロード
         .then((result) => {
-          console.log('loaded model  ------', result);
+          console.log('model is loaded  ------', result);
           
           const assetType = result['assetType'];
-          const textureType = result['textureType'];
           const assetKey = result['key'];
-  
+
           if ('model' === assetType) {
             const obj = this._loader.assets[assetKey];
+
+            if (!obj.initialized) {
+              console.log('model is not initialized', assetKey);
+              const scale = 5.5;  
+              const assetName = 'vinyl-' + size + '-' + format;
+
+              obj.assetName = assetName;
+              obj.scene.assetName = assetName;
             
-            const scale = 5.5;  
-            const assetName = 'vinyl-' + size + '-' + format;
-        
-            this._opacity = 0;
+              if (this._textures[size][format]) {
+                this._textures[size][format].assetName = assetName;
+              }
+    
+              obj.scene.scale.set(scale, scale, scale);
+
+              obj.scene.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                  child.material = child.material.clone();
+          
+                  if (this._isWithLabel()) {
+                    if (Vinyl.Part.VINYL === child.name) {
+                      child.material.bumpScale = this._bumpScale;
+                      child.material.color = this._material.color;
+                      child.material.reflectivity = this._material.reflectivity;
+                      child.material.refractionRatio = this._material.refractionRatio;
+                      child.material.shininess = this._material.shininess;
+                    } else if (Vinyl.Part.LABEL === child.name) { 
+                      child.material.bumpScale = this._bumpScale;
+                      child.material.color = Vinyl.Color.WHITE.color;
+                      child.material.reflectivity = 0;
+                      child.material.refractionRatio = 0;
+                      child.material.shininess = 5;
+                    }
+                  } else {
+                    child.material.bumpScale = this._bumpScale;
+                    child.material.color = this._material.color;
+                    child.material.reflectivity = this._material.reflectivity;
+                    child.material.refractionRatio = this._material.refractionRatio;
+                    child.material.shininess = this._material.shininess;
+                  }
+                  
+                  child.material.needsUpdate = true;
+                }
+              });
+            } // finish initializing
+
+            console.log('model is initialized', assetKey);
+
+            this.initMaterial(obj, this._textures[size][format]);
 
             let position = new THREE.Vector3(0, 0, 0);
             
@@ -1280,32 +1338,70 @@
               this.dispose();
             }
 
-            obj.assetName = assetName;
-            obj.scene.assetName = assetName;
-        
-            if (this._textures[size][format]) {
-              this._textures[size][format].assetName = assetName;
-            }
-  
-            this.initMaterial(obj, this._textures[size][format]);
-        
             this._currentObject = obj.scene.clone();
-            this._currentObject.scale.set(scale, scale, scale);
-        
+
             this._currentObject.traverse((child) => {
               if (child instanceof THREE.Mesh) {
-                child.material = child.material.clone();
+                child.material.opacity = 0;
               }
             });
-        
+
             this._setVinylScale(0.99);
             this.updateBoundingBox();
             this.setOffsetY(this._offsetY);
             this.setVisibility(this._visibility);
+            this.setFrontSleevePositionAndAngle(this._basePosition, this._gatefoldAngle);
+            
+            this._container.add(this._currentObject);
+            this._currentObject.position.set(position.x, position.y, position.z);
+        
+            // this.setOpacity(this._material.opacity, 1000, 250);
+          }
 
-            this._currentObject.traverse((child) => {
+          resolve(this);
+        });
+    });
+  };
+
+  //--------------------------------------------------------------
+  Vinyl.prototype.loadModelForSize = function (size) {
+    
+    return new Promise((resolve, reject) => {
+      
+      this._loadTextures(size, this._format)
+        .then((results) => {
+          return this._loader.loadAsset({
+            'assetType': 'model',
+            'key': this._paths.models[size][this._format]
+          });
+        })
+        .then((result) => {
+          console.log('loaded model  ------', result);
+          
+          const assetType = result['assetType'];
+          const assetKey = result['key'];
+  
+          if ('model' === assetType) {
+            const obj = this._loader.assets[assetKey];
+            
+            const scale = 5.5;  
+            const assetName = 'vinyl-' + size + '-' + this._format;
+                    
+            obj.assetName = assetName;
+            obj.scene.assetName = assetName;
+        
+            if (this._textures[size][this._format]) {
+              this._textures[size][this._format].assetName = assetName;
+            }
+  
+            this.initMaterial(obj.scene, this._textures[size][this._format]);
+
+            obj.scene.scale.set(scale, scale, scale);
+        
+            obj.scene.traverse((child) => {
               if (child instanceof THREE.Mesh) {
                 child.material = child.material.clone();
+                child.material.opacity = 0;
         
                 if (this._isWithLabel()) {
                   if (Vinyl.Part.VINYL === child.name) {
@@ -1334,12 +1430,7 @@
               }
             });
 
-            this.setFrontSleevePositionAndAngle(this._basePosition, this._gatefoldAngle);
-            
-            this._container.add(this._currentObject);
-            this._currentObject.position.set(position.x, position.y, position.z);
-        
-            this.setOpacity(this._material.opacity, 1000, 250);
+            obj.initialized = true;
           }
 
           resolve(this);

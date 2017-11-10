@@ -665,7 +665,69 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype._setTexture = function (type, image, side) { // for internal use
+  Sleeve.prototype._loadTextures = function (size, format, hole) {
+
+    return new Promise((resolve, reject) => {
+
+      let targets = [];
+      
+      (function addTextureToTarget (obj, parentKey) {
+        Object.keys(obj).forEach((key) => {
+          if (typeof obj[key] === 'string') {
+            targets.push({
+              'assetType': 'texture',
+              'textureType': key,
+              'key': obj[key]
+            });
+          } else if (typeof obj[key] === 'object') {
+            addTextureToTarget(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
+          }
+        });
+      })(this._paths.textures[size][format][hole]);
+  
+      Promise.all(targets.map((target) => {
+        return this._loader.loadAsset(target);
+      }))
+        .then((assets) => {
+
+          console.log('Sleeve.setFormat: loaded textures  ------', assets);
+          
+          assets.forEach((asset) => {
+  
+            const assetType = asset['assetType'];
+            const textureType = asset['textureType'];
+            const assetKey = asset['key'];
+    
+            console.log('Sleeve.setFormat: asset loaded', assetType, textureType, assetKey);
+  
+            if ('texture' === assetType) {
+              if (Sleeve.Format.GATEFOLD === format) {
+                let side;
+  
+                if (-1 < assetKey.toLowerCase().indexOf('front')) {
+                  side = 'front';
+                } else if (-1 < assetKey.toLowerCase().indexOf('back')) {
+                  side = 'back';
+                } else if (-1 < assetKey.toLowerCase().indexOf('spine')) {
+                  side = 'spine';
+                }
+  
+                console.log('update gatefold texture - ' + side, this._loader.assets[assetKey]);
+                this.updateTexture(this._textures[size][format][hole][side][textureType], this._loader.assets[assetKey]);
+              } else {
+                console.log('update texture', this._loader.assets[assetKey]);
+                this.updateTexture(this._textures[size][format][hole][textureType], this._loader.assets[assetKey]);
+              }
+            }
+          });
+
+          resolve(assets);
+        });
+    });
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype._setTexture = function (type, image, side) {
 
     console.log('Sleeve._setTexture - size:', this._size, ', format:', this._format, ', hole:', this._hole, ', side:', side, ', type:', type);
 
@@ -718,7 +780,7 @@
   }
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setColorMap = function(image, side) {
+  Sleeve.prototype.setColorMap = function (image, side) {
     
     if (!image) {
       return;
@@ -728,7 +790,7 @@
   }
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setFormat = function(format, callback) {
+  Sleeve.prototype.setFormat = function (format, callback) {
 
     if (!format) {
       console.warn('Sleeve.setFormat: no format specified');
@@ -749,58 +811,9 @@
     return new Promise((resolve, reject) => {
 
       this._format = format;
-      
-      const targets = [];
-  
-      (function addTextureToTarget (obj, parentKey) {
-        Object.keys(obj).forEach((key) => {
-          if (typeof obj[key] === 'string') {
-            targets.push({
-              'assetType': 'texture',
-              'textureType': key,
-              'key': obj[key]
-            });
-          } else if (typeof obj[key] === 'object') {
-            addTextureToTarget(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
-          }
-        });
-      })(this._paths.textures[this._size][this._format][this._hole]);
-  
-      Promise.all(targets.map((target) => {
-        return this._loader.loadAsset(target);
-      }))
+        
+      this._loadTextures(this._size, format, this._hole)
         .then((results) => {
-          console.log('Sleeve.setFormat: loaded textures  ------', results);
-  
-          results.forEach((result) => {
-  
-            const assetType = result['assetType'];
-            const textureType = result['textureType'];
-            const assetKey = result['key'];
-    
-            console.log('Sleeve.setFormat: asset loaded', assetType, textureType, assetKey);
-  
-            if ('texture' === assetType) {
-              if (Sleeve.Format.GATEFOLD === this._format) {
-                let side;
-  
-                if (-1 < assetKey.toLowerCase().indexOf('front')) {
-                  side = 'front';
-                } else if (-1 < assetKey.toLowerCase().indexOf('back')) {
-                  side = 'back';
-                } else if (-1 < assetKey.toLowerCase().indexOf('spine')) {
-                  side = 'spine';
-                }
-  
-                console.log('update gatefold texture - ' + side, this._loader.assets[assetKey]);
-                this.updateTexture(this._textures[this._size][this._format][this._hole][side][textureType], this._loader.assets[assetKey]);
-              } else {
-                console.log('update texture', this._loader.assets[assetKey]);
-                this.updateTexture(this._textures[this._size][this._format][this._hole][textureType], this._loader.assets[assetKey]);
-              }
-            }
-          });
-  
           return this._loader.loadAsset({
             'assetType': 'model',
             'key': this._paths.models[this._size][this._format][this._hole]
@@ -819,7 +832,7 @@
           obj.scene.assetName = assetName;
   
           if (this._currentObject) {
-            this.removeFromContainer();
+            this._container.remove(this._currentObject);
             this.dispose();
           }
   
@@ -861,13 +874,6 @@
         });
     });
     
-  };
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setType = function(format) {
-
-    console.warn('Sleeve.setType(format) is deprecated. use Sleeve.setFormat(format) instead.');
-    this.setFormat(format);
   };
 
   //--------------------------------------------------------------
@@ -1009,13 +1015,6 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.resetCoveredRatio = function () {
-
-    var position = this._currentObject.position;
-    this._currentObject.position.set(position.x, position.y, position.z);
-  };
-
-  //--------------------------------------------------------------
   Sleeve.prototype.setGatefoldCoverAngle = function (angle /* in radians */) {
 
     if (Sleeve.Format.GATEFOLD !== this._format) {
@@ -1047,57 +1046,6 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.setGatefoldFrontRotation = function (value) {
-
-    if (Sleeve.Format.GATEFOLD !== this._format) {
-      console.log('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
-      return;
-    }
-
-    var rad = value * (Math.PI / 180);
-
-    this._currentObject.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        if (-1 < child.name.toLowerCase().indexOf('front')) {
-          var rotation = child.rotation;
-          child.rotation.set(rotation.x, rotation.y, rad);
-        } else if (-1 < child.name.toLowerCase().indexOf('back')) {
-          var rotation = child.rotation;
-          child.rotation.set(rotation.x, rotation.y, -rad);
-        }
-      }
-    });
-
-    var offsetX = this._boundingBox.max.x - 0.5;
-    this._currentObject.translateX(-offsetX);
-    this._currentObject.rotation.set(0, 0, rad);
-    this._currentObject.translateX(offsetX);
-
-    var pos = this._currentObject.position;
-    this._currentObject.position.set(0, pos.y, pos.z);
-  };
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setGatefoldBackRotation = function (value) {
-
-    if (Sleeve.Format.GATEFOLD !== this._format) {
-      console.error('Sleeve.setGatefoldDegree: not viable for sleeve type "' + this._format + '"');
-      return;
-    }
-
-    var rad = value * (Math.PI / 180);
-
-    this._currentObject.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        if (-1 < child.name.toLowerCase().indexOf('back')) {
-          var rotation = child.rotation;
-          child.rotation.set(rotation.x, rotation.y, -rad);
-        }
-      }
-    });
-  };
-
-  //--------------------------------------------------------------
   Sleeve.prototype.setBumpScale = function(value) {
 
     this._bumpScale = value;
@@ -1105,17 +1053,6 @@
     this._currentObject.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.material.bumpScale = this._bumpScale;
-        child.material.needsUpdate = true;
-      }
-    });
-  };
-
-  //--------------------------------------------------------------
-  Sleeve.prototype.setAoMapIntensity = function(value) {
-
-    this._currentObject.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.material.aoMapIntensity = value;
         child.material.needsUpdate = true;
       }
     });
@@ -1140,12 +1077,6 @@
   };
 
   //--------------------------------------------------------------
-  Sleeve.prototype.removeFromContainer = function () {
-    
-    this._container.remove(this._currentObject);
-  };
-
-  //--------------------------------------------------------------
   Sleeve.prototype.dispose = function () {
 
     this._currentObject.traverse(function (child) {
@@ -1164,6 +1095,7 @@
     });
   };
 
+  //--------------------------------------------------------------
   Sleeve.prototype.updateBoundingBoxMesh = function () {
 
     return;
@@ -1259,6 +1191,41 @@
   //--------------------------------------------------------------
   Sleeve.prototype.update = function() {
     
+  };
+
+  //--------------------------------------------------------------
+  Sleeve.prototype.loadModelForSize = function (size) {
+
+    return new Promise((resolve, reject) => {
+      
+      this._loadTextures(size, this._format, this._hole)
+        .then((results) => {
+          return this._loader.loadAsset({
+            'assetType': 'model',
+            'key': this._paths.models[this._size][this._format][this._hole]
+          });
+        })
+        .then((result) => {
+  
+          const assetKey = result['key'];
+          const obj = this._loader.assets[assetKey];
+  
+          console.log('Sleeve.setFormat: model loaded', assetKey, obj);
+  
+          const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
+      
+          obj.assetName = assetName;
+          obj.scene.assetName = assetName;
+  
+          if (this._textures[size][this._format][this._hole]) { 
+            this._textures[size][this._format][this._hole].assetName = assetName;
+          }
+  
+          this.initMaterial(obj, this._textures[this._size][this._format][this._hole]);
+      
+          resolve(this);
+        });
+    });
   };
 
 })(this, (this.qvv = (this.qvv || {})));

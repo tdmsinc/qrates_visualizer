@@ -452,14 +452,6 @@
 
       self._vinyl.setBumpScale(value);
     });
-
-    sleeveAoController.onChange(function (value) {
-      self._sleeve.setAoMapIntensity(value);
-    });
-
-    vinylAoController.onChange(function (value) {
-      self._vinyl.setAoMapIntensity(value);
-    });
   };
 
   //--------------------------------------------------------------
@@ -643,12 +635,19 @@
       }
   
       this._containerObject.scale.set(scale, scale, scale);
-  
+
       Promise.all([
-        this._vinyls[0].setSize(size),
-        this._vinyls[1].setSize(size),
-        this._sleeve.setSize(sleeveSize, scale)
+        this._vinyls[0].loadModelForSize(size),
+        this._vinyls[1].loadModelForSize(size),
+        this._sleeve.loadModelForSize(sleeveSize)
       ])
+        .then((results) => {
+          return Promise.all([
+            this._vinyls[0].setSize(size),
+            this._vinyls[1].setSize(size),
+            this._sleeve.setSize(sleeveSize, scale)
+          ]);
+        })
         .then(() => {
           const format = this._sleeve.getFormat();
           console.log('size changed', this._sleeve.getSize(), this._sleeve.getFormat());
@@ -679,10 +678,15 @@
             this._vinyls[1].setCoveredRatio(this._vinyls[0].getCoveredRatio() * 2, 0, secondOffsetY);
           }
 
+          this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 1000, 250);
+          this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 1000, 250);
+
           resolve();
 
           if (callback) callback();
         });
+  
+      
     });
   };
 
@@ -1423,12 +1427,17 @@
             } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
               var opts = this._vinyls[0].getCurrentProperties();
               opts.index = Vinyl.Index.SECOND;
-              this._vinyls[1].copy(this._vinyls[0]);
-              this._vinyls[1].setVisibility(true);
+              this._vinyls[1].copy(this._vinyls[0])
+                .then(() => {
+                  this._vinyls[1].setVisibility(true);
 
-              this._vinyls[0].setCoveredRatio(coveredRatio, 0, firstOffsetY);
-              this._vinyls[1].setCoveredRatio(Math.min(coveredRatio * 2, 1.0), 0, secondOffsetY);
-              this._sleeve.setCoveredRatio(0);
+                  this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 1000, 250);
+                  this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 1000, 250);
+                  
+                  this._vinyls[0].setCoveredRatio(coveredRatio, 0, firstOffsetY);
+                  this._vinyls[1].setCoveredRatio(Math.min(coveredRatio * 2, 1.0), 0, secondOffsetY);
+                  this._sleeve.setCoveredRatio(0);
+                });
             }
           } else if (Sleeve.Format.DOUBLE === lastFormat || Sleeve.Format.GATEFOLD === lastFormat) {
             if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {

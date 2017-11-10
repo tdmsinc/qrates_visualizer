@@ -127,6 +127,7 @@
   Loader.prototype.loadAsset = function (target, onLoad, onProgress, onError) {
     
     if (this.isLoaded(target['key'])) {
+      console.log('Loader.loadAsset: ' + target['key'] + ' is already loaded');
       return Promise.resolve({
         'assetType': -1 < target['key'].toLowerCase().indexOf('model') ? 'model' : 'texture',
         'textureType': target['textureType'] || '',
@@ -168,6 +169,7 @@
   
           this.assets[key] = obj;
           this.assets[key].extname = ext;
+          this.assets[key].cached = true;
 
           console.log('Loader.loadAssets: successfully loaded', this.assets[key]);
   
