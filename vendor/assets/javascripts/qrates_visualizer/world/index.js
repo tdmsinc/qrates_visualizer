@@ -332,8 +332,8 @@
     var gui = this.gui = new window.dat.GUI();
     var renderController = gui.add(props, 'render');
     var rotationController = gui.add(props, 'rotate');
-    var coveredRatioController = gui.add(props, 'covered ratio 1', 0.0, 1.0);
-    var secondCoveredRatioController = gui.add(props, 'covered ratio 2', 0.0, 1.0);
+    var coveredRatioController = gui.add(props, 'covered ratio 1', 0.0, 1.2);
+    var secondCoveredRatioController = gui.add(props, 'covered ratio 2', 0.0, 1.2);
     var sleeveRotationController = gui.add(props, 'sleeve rot', 0, 90);
     var sleeveFrontRotationController = gui.add(props, 'sleeve front rot', 0, 90);
     var sleeveBackRotationController = gui.add(props, 'sleeve back rot', 0, 90);
@@ -644,22 +644,39 @@
   
       this._containerObject.scale.set(scale, scale, scale);
   
-      let targets = [];
+      Promise.all([
+        this._vinyls[0].setSize(size),
+        this._vinyls[1].setSize(size),
+        this._sleeve.setSize(sleeveSize, scale)
+      ])
+        .then(() => {
+          const format = this._sleeve.getFormat();
+          console.log('size changed', this._sleeve.getSize(), this._sleeve.getFormat());
+          
+
+          if (Sleeve.Format.SINGLE === format || Sleeve.Format.SINGLE_WITHOUT_SPINE === format) {
+            this._vinyls[0].setCoveredRatio(0, 0, 0);
+            this._vinyls[1].setCoveredRatio(0, 0, 0);
+            this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
+          } else {
+            let firstOffsetY, secondOffsetY;
+            
+            if (Sleeve.Format.GATEFOLD === format) {
+              firstOffsetY = 0.08;
+              secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
   
-      this._vinyls.forEach((vinyl) => {
-        targets.push(vinyl.setSize(size));
-      });
+              if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
+                secondOffsetY += 0.15;
+              }
   
-      targets.push(this._sleeve.setSize(sleeveSize, scale));
-  
-      Promise.all(targets)
-        .then(() => {  
-          if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
-            this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
-      
-            this._vinyls.forEach(function (vinyl) {
-              vinyl.setCoveredRatio(vinyl.getCoveredRatio());
-            });
+              this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
+            } else if (Sleeve.Format.DOUBLE === format) {
+              firstOffsetY = 0.6;
+              secondOffsetY = -0.6;
+            }
+
+            this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
+            this._vinyls[1].setCoveredRatio(this._vinyls[0].getCoveredRatio() * 2, 0, secondOffsetY);
           }
 
           resolve();
@@ -770,7 +787,7 @@
         .to({ ratio: value }, opts.durarion || 500)
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(function () {
-          self._sleeve.setCoveredRatio(this.ratio, opts);
+          self._sleeve.setCoveredRatio(this.ratio);
         })
         .start();
     }

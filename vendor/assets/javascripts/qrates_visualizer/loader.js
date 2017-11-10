@@ -155,7 +155,13 @@
           textureType = target['textureType'];
         }
   
-          console.log('Loader.loadAsset: target', key, 'loader', loader);
+        console.log('Loader.loadAsset: target', key, 'loader', loader);
+
+        if (!loader) {
+          console.error('Loader.loadAsset: loader is ' + loader + ', key = ' + key);
+          return Promise.reject();
+        }
+
         loader.crossOrigin = '';
     
         loader.load(path, (obj) => {

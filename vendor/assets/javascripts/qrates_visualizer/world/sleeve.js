@@ -169,7 +169,7 @@
           },
           'single': {
             'normal': {
-              'ao': 'assetsTextureSleeveSingledAo-7',
+              'ao': 'assetsTextureSleeveSingleAo-7',
               'bumpmap': 'assetsTextureSleeveSingleBumpmap-7',
               'color': 'assetsTextureSleeveSingleColor-7',
             },
