@@ -634,13 +634,19 @@
           break;
       }
   
-      this._containerObject.scale.set(scale, scale, scale);
-
       Promise.all([
-        this._vinyls[0].loadModelForSize(size),
-        this._vinyls[1].loadModelForSize(size),
-        this._sleeve.loadModelForSize(sleeveSize)
+        this._vinyls[0].setOpacity(0, 300, 0),
+        this._vinyls[1].setOpacity(0, 300, 0),
+        this._sleeve.setOpacity(0, 300, 0),
       ])
+        .then(() => {
+          console.log('setSize: fade out');
+          return Promise.all([
+            this._vinyls[0].loadModelForSize(size),
+            this._vinyls[1].loadModelForSize(size),
+            this._sleeve.loadModelForSize(sleeveSize)
+          ])
+        })
         .then((results) => {
           return Promise.all([
             this._vinyls[0].setSize(size),
@@ -649,6 +655,8 @@
           ]);
         })
         .then(() => {
+          this._containerObject.scale.set(scale, scale, scale);
+          
           const format = this._sleeve.getFormat();
           console.log('size changed', this._sleeve.getSize(), this._sleeve.getFormat());
           
@@ -678,8 +686,9 @@
             this._vinyls[1].setCoveredRatio(this._vinyls[0].getCoveredRatio() * 2, 0, secondOffsetY);
           }
 
-          this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 1000, 250);
-          this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 1000, 250);
+          this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 250, 100);
+          this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 250, 100);
+          this._sleeve.setOpacity(1.0, 250, 100);
 
           resolve();
 
@@ -1395,7 +1404,10 @@
 
     return new Promise((resolve, reject) => {
       
-      this._sleeve.setFormat(format)
+      this._sleeve.setOpacity(0.0, 250)
+        .then(() => {
+          return this._sleeve.setFormat(format);
+        })
         .then((sleeve) => {
 
           this._vinyls.forEach(function (vinyl) {
@@ -1452,8 +1464,11 @@
             }
           }
 
+          return this._sleeve.setOpacity(1.0, 250);
+        })
+        .then(() => {
           resolve(this._sleeve.getFormat());
-        });
+        });;
     });
   };
 

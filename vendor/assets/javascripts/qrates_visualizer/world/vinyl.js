@@ -101,7 +101,7 @@
       size: Vinyl.Size.SIZE_7_SMALL_HOLE,
       color: Vinyl.Color.CLASSIC_BLACK,
       speed: 45,
-      isEnableLabel: false
+      label: false
     };
 
     opts.color = opts.color || 0;
@@ -787,16 +787,16 @@
   }
 
   //--------------------------------------------------------------
-  Vinyl.prototype.updateFormat = function(weight, isEnableLabel) {
+  Vinyl.prototype.updateFormat = function(weight, label) {
 
     if (weight === Vinyl.Weight.NORMAL) {
-      if (isEnableLabel) {
+      if (label) {
         return Vinyl.Format.WITH_LABEL;
       } else {
         return Vinyl.Format.NORMAL;
       }
     } else if (weight === Vinyl.Weight.HEAVY) {
-      if (isEnableLabel) {
+      if (label) {
         return Vinyl.Format.HEAVY_WITH_LABEL;
       } else {
         return Vinyl.Format.HEAVY;
@@ -957,24 +957,35 @@
     duration = undefined !== duration ? duration : 1000;
     delay = undefined !== delay ? delay : 0;
 
-    this._currentObject.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        var tween = new TWEEN.Tween(child.material);
-        child.material.opacity = 0;
-        
-        new TWEEN.Tween(child.material)
-          .stop()
-          .delay(delay)
-          .to({ opacity: to }, duration)
-          .onUpdate((progress) => {
-            if ('label' === child.name) {
-              child.material.opacity = progress;
-            }
+    return new Promise((resolve, reject) => {
 
-            child.material.needsUpdate = true;
-          })
-          .start();
-      }
+      this._currentObject.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+
+          let tween = new TWEEN.Tween(child.material);
+
+          if ('label' === child.name) {
+            if (0 < to) {
+              to = 1.0;
+            }
+          }
+          
+          new TWEEN.Tween(child.material)
+            .stop()
+            .delay(delay)
+            .to({ opacity: to }, duration)
+            .onUpdate((value) => {
+              console.log('child.material.opacity', child.material.opacity);
+              child.material.needsUpdate = true;
+            })
+            .onComplete(() => {
+              child.material.opacity = to;
+              child.material.needsUpdate = true;
+              resolve();
+            })
+            .start();
+        }
+      });
     });
   };
 
@@ -1095,7 +1106,7 @@
     return {
       size: this._size,
       weight: this._weight,
-      isEnableLabel: this._label,
+      label: this._label,
       colorFormat: this._colorFormat,
       rpm: this._rpm
     };

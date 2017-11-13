@@ -571,26 +571,37 @@
       });
     })(this._textures);
 
-    return this.setFormat(opts.format, () => {
+    return new Promise((resolve, reject) => {
 
-      // set initial textures
-      if (opts.textures) {
-        if (Sleeve.Format.GATEFOLD === this._format) {
-          Object.keys(opts.textures).forEach((side) => {
-            Object.keys(opts.textures[side]).forEach((type) => {
-              this._setTexture(type, opts.textures[side][type], side);
-            });
-          });
-        } else {
-          Object.keys(opts.textures).forEach((type) => {
-            this._setTexture(type, opts.textures[type]);
-          });
-        }
-      }
+      this.setFormat(opts.format)
+        .then(() => {
+          // set initial textures
+          if (opts.textures) {
+            if (Sleeve.Format.GATEFOLD === this._format) {
+              Object.keys(opts.textures).forEach(side => {
+                Object.keys(opts.textures[side]).forEach(type => {
+                  this._setTexture(type, opts.textures[side][type], side);
+                });
+              });
+            } else {
+              Object.keys(opts.textures).forEach(type => {
+                this._setTexture(type, opts.textures[type]);
+              });
+            }
+          }
 
-      this._coveredRatio = 0;
-      this.setCoveredRatio(this._coveredRatio);
-      this.setOpacity(1, 0);
+          this._coveredRatio = 0;
+          this.setCoveredRatio(this._coveredRatio);
+
+          this._currentObject.traverse(child => {
+            if (child instanceof THREE.Mesh) {
+              child.material.opacity = 1.0;
+              child.material.needsUpdate = true;
+            }
+          })
+
+          resolve();
+        })
     });
   };
 
@@ -849,6 +860,7 @@
             if (child instanceof THREE.Mesh) {
               child.material = child.material.clone();
               child.material.shininess = this._shininess;
+              child.material.opacity = 0;
               child.material.needsUpdate = true;
             }
           });
@@ -868,7 +880,7 @@
   
           this._container.add(this._currentObject);
       
-          this.setOpacity(1.0, 0);
+          // this.setOpacity(1.0, 0);
       
           resolve(this);
         });
@@ -920,20 +932,25 @@
     duration = undefined !== duration ? duration : 1000;
     delay = undefined !== delay ? delay : 0;
 
-    this._currentObject.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        var tween = new TWEEN.Tween(child.material);
-        child.material.opacity = 0;
-        
-        tween
-          .stop()
-          .delay(delay)
-          .to({ opacity: to }, duration)
-          .onUpdate(function (value) {
-            child.material.needsUpdate = true;
-          })
-          .start();
-      }
+    return new Promise((resolve, reject) => {
+
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          let tween = new TWEEN.Tween(child.material);
+          
+          tween
+            .stop()
+            .delay(delay)
+            .to({ opacity: to }, duration)
+            .onUpdate(function (value) {
+              child.material.needsUpdate = true;
+            })
+            .onComplete(() => {
+              resolve();
+            })
+            .start();
+        }
+      });
     });
   };
 
@@ -964,7 +981,18 @@
 
     this._hole = value;
 
-    return this.setFormat(this._format);
+    return new Promise((resolve, reject) => {
+      this.setOpacity(0.0, 250)
+        .then(() => {
+          return this.setFormat(this._format)
+        })
+        .then(() => {
+          return this.setOpacity(1.0, 500);
+        })
+        .then(() => {
+          resolve();
+        });
+    });
   };
 
   //--------------------------------------------------------------
