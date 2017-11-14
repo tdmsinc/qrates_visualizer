@@ -5,15 +5,15 @@
 //= require_self
 
 (function (global, exports) {
-  var gui, axes;
+  let gui, axes;
 
   /**
    * Module dependencies.
    */
 
-  var Emitter = exports.Emitter;
-  var Vinyl = exports.world.Vinyl;
-  var Sleeve = exports.world.Sleeve;
+  const Emitter = exports.Emitter;
+  const Vinyl = exports.world.Vinyl;
+  const Sleeve = exports.world.Sleeve;
 
   /**
    * Expose `World`.
@@ -153,7 +153,7 @@
           Promise.all(targets)
             .then(() => {
               // scale を設定
-              var scale = this._objectScales[this._vinyls[0]._size];
+              const scale = this._objectScales[this._vinyls[0]._size];
               this._containerObject.scale.set(scale, scale, scale);
               this._containerObject.position.set(0, 0, 0);
   
@@ -200,42 +200,35 @@
 
   //--------------------------------------------------------------
   World.prototype.createLights = function () {
-    var lights = new THREE.Object3D();
+    const lights = new THREE.Object3D();
     lights.name = 'lights';
 
-    var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
+    const spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
     spotLight1.position.set(335, 1955, 475);
-    spotLight1.castShadow = true;
     lights.add(spotLight1);
 
-    var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
+    const spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
     spotLight2.position.set(-980, -1900, -880);
-    spotLight2.castShadow = true;
     lights.add(spotLight2);
 
-    var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
+    const pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
     pointLight1.position.set(-1000, 1200, -2300);
-    pointLight1.castShadow = true;
     lights.add(pointLight1);
 
-    var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
-    pointLight2.position.set(-2, -160, 1480);
-    pointLight2.castShadow = true;
+    const pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
+    pointLight2.position.set(-2, -620, 180);
     lights.add(pointLight2);
 
-    var hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 0.2);
+    const hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 0.2);
     hemisphereLight1.position.set(380, 140, -1225);
-    hemisphereLight1.castShadow = true;
     lights.add(hemisphereLight1);
 
-    var hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 0.2);
+    const hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 0.2);
     hemisphereLight2.position.set(-360, 60, 1285);
-    hemisphereLight2.castShadow = true;
     lights.add(hemisphereLight2);
 
-    var ambientLight = new THREE.AmbientLight(0x0D0D0D);
+    const ambientLight = new THREE.AmbientLight(0x0D0D0D);
     ambientLight.position.set(0, 820, 2);
-    ambientLight.castShadow = true;
     lights.add(ambientLight);
 
     return lights;
@@ -270,7 +263,7 @@
       return false;
     }
 
-    var props = {
+    const props = {
       color: 0xFFFFFF,
       size: 12,
       render: true,
@@ -293,15 +286,15 @@
       'vinyl offsetY': 0
     };
 
-    var cameraProps = {
+    const cameraProps = {
       x: 0.0, y: 17.0, z: 30.0,
     };
 
-    var self = this;
-    var axes = this.axes;
-    var camera = this._camera;
+    const self = this;
+    const axes = this.axes;
+    const camera = this._camera;
 
-    var temp = {
+    const temp = {
       capture: function () {
         self.capture();
       },
@@ -329,27 +322,27 @@
       }
     };
 
-    var gui = this.gui = new window.dat.GUI();
-    var renderController = gui.add(props, 'render');
-    var rotationController = gui.add(props, 'rotate');
-    var coveredRatioController = gui.add(props, 'covered ratio 1', 0.0, 1.2);
-    var secondCoveredRatioController = gui.add(props, 'covered ratio 2', 0.0, 1.2);
-    var sleeveRotationController = gui.add(props, 'sleeve rot', 0, 90);
-    var sleeveFrontRotationController = gui.add(props, 'sleeve front rot', 0, 90);
-    var sleeveBackRotationController = gui.add(props, 'sleeve back rot', 0, 90);
-    var sleeveVisibilityController = gui.add(props, 'sleeve visibility');
-    var firstVinylVisibilityController = gui.add(props, 'vinyl 1 visibility');
-    var secondVinylVisibilityController = gui.add(props, 'vinyl 2 visibility');
-    var captureController = gui.add(temp, 'capture');
-    var zoomController = gui.add(props, 'zoom', 0, 400);
-    var vinylOffsetYController = gui.add(props, 'vinyl offsetY', 0.0, 2.0);
-    var cameraXController = gui.add(cameraProps, 'x', -1000.0, 1000.0);
-    var cameraYController = gui.add(cameraProps, 'y', -1000.0, 1000.0);
-    var cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
-    var sleeveBumpScaleController = gui.add(props, 'sleeve bump', 0, 1.0);
-    var vinylBumpScaleController = gui.add(props, 'vinyl bump', 0, 1.0);
-    var sleeveAoController = gui.add(props, 'sleeve ao', 0.0, 1.0);
-    var vinylAoController = gui.add(props, 'vinyl ao', 0.0, 1.0);
+    const gui = this.gui = new window.dat.GUI();
+    const renderController = gui.add(props, 'render');
+    const rotationController = gui.add(props, 'rotate');
+    const coveredRatioController = gui.add(props, 'covered ratio 1', 0.0, 1.2);
+    const secondCoveredRatioController = gui.add(props, 'covered ratio 2', 0.0, 1.2);
+    const sleeveRotationController = gui.add(props, 'sleeve rot', 0, 90);
+    const sleeveFrontRotationController = gui.add(props, 'sleeve front rot', 0, 90);
+    const sleeveBackRotationController = gui.add(props, 'sleeve back rot', 0, 90);
+    const sleeveVisibilityController = gui.add(props, 'sleeve visibility');
+    const firstVinylVisibilityController = gui.add(props, 'vinyl 1 visibility');
+    const secondVinylVisibilityController = gui.add(props, 'vinyl 2 visibility');
+    const captureController = gui.add(temp, 'capture');
+    const zoomController = gui.add(props, 'zoom', 0, 400);
+    const vinylOffsetYController = gui.add(props, 'vinyl offsetY', 0.0, 2.0);
+    const cameraXController = gui.add(cameraProps, 'x', -1000.0, 1000.0);
+    const cameraYController = gui.add(cameraProps, 'y', -1000.0, 1000.0);
+    const cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
+    const sleeveBumpScaleController = gui.add(props, 'sleeve bump', 0, 1.0);
+    const vinylBumpScaleController = gui.add(props, 'vinyl bump', 0, 1.0);
+    const sleeveAoController = gui.add(props, 'sleeve ao', 0.0, 1.0);
+    const vinylAoController = gui.add(props, 'vinyl ao', 0.0, 1.0);
 
     gui.add(this, 'flip');
 
@@ -466,18 +459,11 @@
 
     opts.duration = undefined === opts.duration ? 1000 : opts.duration;
 
-    var self = this;
-
-    // self.startRender();
-
-    // this.resetCamera();
-
     new TWEEN.Tween(this._camera.position)
       .to({ x: tx, y: ty, z: tz }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function () {
-        self._camera.lookAt(new THREE.Vector3(0, 0, 0));
-        // self._vinyl.setBumpScale(Math.max(Math.abs(self._camera.position.z) / 4000, self._vinyl.getBumpScale()));
+      .onUpdate(() => {
+        this._camera.lookAt(new THREE.Vector3(0, 0, 0));
       })
       .onComplete(function () {
         if (callback) callback();
@@ -497,18 +483,10 @@
 
     opts.duration = undefined === opts.duration ? 1001 : opts.duration;
 
-    var self = this;
-
-    // self.startRender();
-
-    // this.resetCamera();
-
     new TWEEN.Tween(this._camera.rotation)
       .to({ x: tx, y: ty, z: tz }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
       .onComplete(function () {
-        console.log(self._camera);
-        console.log(self._controls);
         if (callback) callback();
       })
       .start();
@@ -555,32 +533,31 @@
   //--------------------------------------------------------------
   World.prototype.setGatefoldCoverAngle = function (degree, opts, callback) {
 
-    var sleeveFormat = this._sleeve.getFormat();
+    const sleeveFormat = this._sleeve.getFormat();
 
     if (Sleeve.Format.GATEFOLD !== sleeveFormat) {
       console.warn('World.setGatefoldCoverAngle: changing rotation is not available for "' + sleeveFormat + '"');
       return;
     }
 
-    var self = this;
-    var currentAngleInDegrees = this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI);
+    const currentAngleInDegrees = this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI);
 
     new TWEEN.Tween({ rotation: currentAngleInDegrees })
       .stop()
       .to({ rotation: degree }, 500)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function () {
+      .onUpdate(() => {
         angleInRadians = this.rotation * (Math.PI / 180);
-        self._sleeve.setGatefoldCoverAngle(angleInRadians);
-        self._vinyls[0].setFrontSleevePositionAndAngle(self._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
+        this._sleeve.setGatefoldCoverAngle(angleInRadians);
+        this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
 
-        let offsetY = self._containerObject.getObjectByName('Back').getWorldPosition().y;
+        let offsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
 
-        if (Sleeve.Size.SIZE_7 === self._sleeve.getSize()) {
+        if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
           offsetY += 0.15;
         }
 
-        self._vinyls[1].setOffsetY(offsetY);
+        this._vinyls[1].setOffsetY(offsetY);
       })
       .onComplete(function () {
         if (callback) callback();
@@ -705,14 +682,12 @@
 
     this._flip = !this._flip;
 
-    var self = this;
-
     this._flipTween
       .stop()
       .to({ _flipRotation: this._flip ? -Math.PI : 0 })
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function () {
-        self._containerObject.rotation.z = self._flipRotation;
+      .onUpdate(() => {
+        this._containerObject.rotation.z = this._flipRotation;
       })
       .start();
   };
@@ -833,7 +808,7 @@
   //--------------------------------------------------------------
   World.prototype.capture = function (callback) {
     console.log('World::capture');
-    var image = new Image();
+    let image = new Image();
     image.src = this._renderer.domElement.toDataURL('image/png');
     image.onload = function () {
       if (callback) callback(null, this);
@@ -889,14 +864,11 @@
       duration: 2000
     };
 
-    // TODO: rewrite for presets.
-    // TODO: clear all tween.
-
     opts.duration = undefined !== opts.duration ? opts.duration : 2000;
 
     switch (Number(type)) {
       case 0:  // for capture rendered image
-        var rate = 0.9;
+        const rate = 0.9;
         this.setCameraPosition(212 * rate, 288 * rate, 251 * rate, opts, callback);
         this._flip = true;
         this.flip();
@@ -1167,9 +1139,9 @@
   //--------------------------------------------------------------
   World.prototype.delegateEvents = function () {
 
-    var parent = this._parent;
+    const parent = this._parent;
 
-    for (var i in parent.vinyls) {
+    for (let i in parent.vinyls) {
       parent.vinyls[i].on('colorFormat', this.onVinylColorFormatChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('size', this.onVinylSizeChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('color', this.onVinylColorChanged.bind(this, this._vinyls[i]));
@@ -1197,7 +1169,7 @@
 
   //--------------------------------------------------------------
   World.prototype.undelegateEvents = function () {
-    var parent = this._parent;
+    const parent = this._parent;
 
     return this;
   };
@@ -1231,17 +1203,17 @@
 
     target.setSize(size);
 
-    var firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
-    var secondVinylSize = firstVinylSize;
+    const firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
+    const secondVinylSize = firstVinylSize;
 
     if (1 < this._vinyls.length) {
       secondVinylSize = this._convertSizeToNumber(this._vinyls[1].getSize());
     }
 
-    var largerSize = Math.max(firstVinylSize, secondVinylSize);
+    const largerSize = Math.max(firstVinylSize, secondVinylSize);
 
-    var sleeveSize;
-    var scale;
+    let sleeveSize;
+    let scale;
 
     switch (largerSize) {
       case 7:
@@ -1437,8 +1409,10 @@
             if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
               this._sleeve.setCoveredRatio(coveredRatio);
             } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
-              var opts = this._vinyls[0].getCurrentProperties();
+
+              let opts = this._vinyls[0].getCurrentProperties();
               opts.index = Vinyl.Index.SECOND;
+
               this._vinyls[1].copy(this._vinyls[0])
                 .then(() => {
                   this._vinyls[1].setVisibility(true);
