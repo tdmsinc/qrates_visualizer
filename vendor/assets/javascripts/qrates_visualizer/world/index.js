@@ -533,21 +533,22 @@
   //--------------------------------------------------------------
   World.prototype.setGatefoldCoverAngle = function (degree, opts, callback) {
 
-    const sleeveFormat = this._sleeve.getFormat();
-
-    if (Sleeve.Format.GATEFOLD !== sleeveFormat) {
-      console.warn('World.setGatefoldCoverAngle: changing rotation is not available for "' + sleeveFormat + '"');
+    if (Sleeve.Format.GATEFOLD !== this._sleeve.getFormat()) {
+      console.warn('World.setGatefoldCoverAngle: changing rotation is not available for "' + this._sleeve.getFormat() + '"');
       return;
     }
 
-    const currentAngleInDegrees = this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI);
+    let param = {
+      rotation: this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI)
+    };
 
-    new TWEEN.Tween({ rotation: currentAngleInDegrees })
+    new TWEEN.Tween(param)
       .stop()
       .to({ rotation: degree }, 500)
       .easing(TWEEN.Easing.Quartic.Out)
       .onUpdate(() => {
-        angleInRadians = this.rotation * (Math.PI / 180);
+        let angleInRadians = param.rotation * (Math.PI / 180);
+
         this._sleeve.setGatefoldCoverAngle(angleInRadians);
         this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
 
@@ -559,7 +560,7 @@
 
         this._vinyls[1].setOffsetY(offsetY);
       })
-      .onComplete(function () {
+      .onComplete(() => {
         if (callback) callback();
       })
       .start();
