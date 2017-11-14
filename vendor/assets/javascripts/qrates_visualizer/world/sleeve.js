@@ -859,6 +859,8 @@
           this._currentObject.traverse((child) => {
             if (child instanceof THREE.Mesh) {
               child.material = child.material.clone();
+              // child.material = new THREE.MeshBasicMaterial();
+              // child.material = new THREE.MeshPhongMaterial();
               child.material.shininess = this._shininess;
               child.material.opacity = 0;
               child.material.needsUpdate = true;

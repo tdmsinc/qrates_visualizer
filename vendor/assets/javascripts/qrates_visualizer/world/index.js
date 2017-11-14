@@ -48,6 +48,8 @@
           preserveDrawingBuffer: true,
         }
       };
+
+      this.initGui();
   
       this._objectScales = {
         '7': 1,
@@ -75,7 +77,8 @@
       this._renderer.setPixelRatio(this._opts.pixelRatio || window.devicePixelRatio || 1);
       this._renderer.setSize(this._width, this._height);
       this._renderer.autoClear = false;
-      this._renderer.setClearColor(0, 0.0);
+      // this._renderer.setClearColor(0, 0.0);
+      this._renderer.setClearColor(new THREE.Color(0x555555), 1.0);
   
       this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
   
@@ -162,11 +165,13 @@
   
               this._presets = {};
               this.registerPresets();
-  
+
+              this._lights.lookAt(new THREE.Vector3(0, 0, 0));
+
               this._scene.add(this._lights);
+              // this._camera.add(this._lights);
+              // this._lights.position.set(0, 0, 0);
               this._scene.add(this._containerObject);
-  
-              this.initGui();
   
               if (opts.defaults.hasOwnProperty('view')) {
                 this.updateView(opts.defaults.view, { duration: 0 });
@@ -200,43 +205,134 @@
 
   //--------------------------------------------------------------
   World.prototype.createLights = function () {
-    var lights = new THREE.Object3D();
+    let lights = new THREE.Object3D();
     lights.name = 'lights';
 
-    var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
+    let spotLight1 = new THREE.SpotLight(0xffffff, 0.6, 0, 0.314, 10);
     spotLight1.position.set(335, 1955, 475);
-    spotLight1.castShadow = true;
     lights.add(spotLight1);
 
-    var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
+    let spotLight2 = new THREE.SpotLight(0xffffff, 0.6, 0, 0.314, 10);
     spotLight2.position.set(-980, -1900, -880);
-    spotLight2.castShadow = true;
     lights.add(spotLight2);
 
-    var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
+    let pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
     pointLight1.position.set(-1000, 1200, -2300);
-    pointLight1.castShadow = true;
     lights.add(pointLight1);
 
-    var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
-    pointLight2.position.set(-2, -160, 1480);
-    pointLight2.castShadow = true;
+    let pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
+    pointLight2.position.set(-2, -620, 180);
     lights.add(pointLight2);
 
-    var hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 0.2);
+    let hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 0.2);
     hemisphereLight1.position.set(380, 140, -1225);
-    hemisphereLight1.castShadow = true;
     lights.add(hemisphereLight1);
 
-    var hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 0.2);
+    let hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 0.2);
     hemisphereLight2.position.set(-360, 60, 1285);
-    hemisphereLight2.castShadow = true;
     lights.add(hemisphereLight2);
 
-    var ambientLight = new THREE.AmbientLight(0x0D0D0D);
+    let ambientLight = new THREE.AmbientLight(0x0D0D0D);
     ambientLight.position.set(0, 820, 2);
-    ambientLight.castShadow = true;
     lights.add(ambientLight);
+
+    let ambientLight2 = new THREE.AmbientLight(0x0D0D0D);
+    ambientLight2.position.set(0, -820, 2);
+    lights.add(ambientLight2);
+
+    // var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
+    // spotLight1.position.set(335, 1955, 475);
+    // spotLight1.castShadow = true;
+    // lights.add(spotLight1);
+
+    // var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
+    // spotLight2.position.set(-980, -1900, -880);
+    // spotLight2.castShadow = true;
+    // lights.add(spotLight2);
+
+    // var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
+    // pointLight1.position.set(-1000, 1200, -2300);
+    // pointLight1.castShadow = true;
+    // lights.add(pointLight1);
+
+    // var pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
+    // pointLight2.position.set(-2, -160, 1480);
+    // pointLight2.castShadow = true;
+    // lights.add(pointLight2);
+
+    // var hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 0.2);
+    // hemisphereLight1.position.set(380, 140, -1225);
+    // hemisphereLight1.castShadow = true;
+    // lights.add(hemisphereLight1);
+
+    // var hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 0.2);
+    // hemisphereLight2.position.set(-360, 60, 1285);
+    // hemisphereLight2.castShadow = true;
+    // lights.add(hemisphereLight2);
+
+    // var ambientLight = new THREE.AmbientLight(0x0D0D0D);
+    // ambientLight.position.set(0, 820, 2);
+    // ambientLight.castShadow = true;
+    // lights.add(ambientLight);
+
+    this.spotLightHelper1 = new THREE.SpotLightHelper(spotLight1, new THREE.Color(1, 1, 0));
+    this._scene.add(this.spotLightHelper1);
+
+    this.spotLightHelper2 = new THREE.SpotLightHelper(spotLight2, new THREE.Color(1, 1, 0));
+    this._scene.add(this.spotLightHelper2);
+
+    this.pointLightHelper1 = new THREE.PointLightHelper(pointLight1, 50, new THREE.Color(0x00ff00));
+    this._scene.add(this.pointLightHelper1);
+
+    this.pointLightHelper2 = new THREE.PointLightHelper(pointLight2, 50, new THREE.Color(0x00ff00));
+    this._scene.add(this.pointLightHelper2);
+
+    this.hemisphereLightHelper1 = new THREE.HemisphereLightHelper(hemisphereLight1, 50);
+    this._scene.add(this.hemisphereLightHelper1);
+
+    this.hemisphereLightHelper2 = new THREE.HemisphereLightHelper(hemisphereLight2, 50);
+    this._scene.add(this.hemisphereLightHelper2);
+
+    let gui_light = this.gui.addFolder('light');
+
+    gui_spotLight1 = gui_light.addFolder('spot light 1');
+    gui_spotLight1.add(spotLight1, 'intensity', 0.0, 2.0);
+    gui_spotLight1.add(spotLight1, 'distance', 0.0, 100);
+    gui_spotLight1.add(spotLight1, 'angle', 0.0, Math.PI);
+    gui_spotLight1.add(spotLight1, 'penumbra', 0.0, 100);
+    gui_spotLight1.add(spotLight1, 'decay', 0.0, 100);
+
+    gui_spotLight2 = gui_light.addFolder('spot light 2');
+    gui_spotLight2.add(spotLight2, 'intensity', 0.0, 2.0);
+    gui_spotLight2.add(spotLight2, 'distance', 0.0, 100);
+    gui_spotLight2.add(spotLight2, 'angle', 0.0, Math.PI);
+    gui_spotLight2.add(spotLight2, 'penumbra', 0.0, 100);
+    gui_spotLight2.add(spotLight2, 'decay', 0.0, 100);
+
+    gui_pointLight1 = gui_light.addFolder('point light 1');
+    gui_pointLight1.add(pointLight1, 'intensity', 0.0, 2.0);
+    gui_pointLight1.add(pointLight1, 'distance', 0.0, 100);
+    gui_pointLight1.add(pointLight1, 'decay', 0.0, 100);
+
+    gui_pointLight2 = gui_light.addFolder('point light 2');
+    gui_pointLight2.add(pointLight2, 'intensity', 0.0, 20.0);
+    gui_pointLight2.add(pointLight2, 'distance', 0.0, 100);
+    gui_pointLight2.add(pointLight2, 'decay', 0.0, 100);
+    gui_pointLight2.add(pointLight2.position, 'x', -50, 50);
+    gui_pointLight2.add(pointLight2.position, 'y', -1000, 0);
+    gui_pointLight2.add(pointLight2.position, 'z', 0, 2000);
+
+    gui_hemisphereLight1 = gui_light.addFolder('hemisphere light 1');
+    gui_hemisphereLight1.add(hemisphereLight1, 'intensity', 0.0, 2.0);
+
+    gui_hemisphereLight2 = gui_light.addFolder('hemisphere light 2');
+    gui_hemisphereLight2.add(hemisphereLight2, 'intensity', 0.0, 2.0);
+
+    gui_ambientLight = gui_light.addFolder('ambient light');
+    gui_ambientLight.add(ambientLight, 'intensity', 0.0, 50.0);
+
+    gui_ambientLight2 = gui_light.addFolder('ambient light 2');
+    gui_ambientLight2.add(ambientLight2, 'intensity', 0.0, 50.0);
 
     return lights;
   };
@@ -279,7 +375,6 @@
       'vinyl 1 visibility': true,
       'vinyl 2 visibility': true,
       out: false,
-      zoom: 1.0,
       'covered ratio 1': 1.0,
       'covered ratio 2': 0.5,
       'sleeve rot': 60,
@@ -287,14 +382,6 @@
       'sleeve back rot': 0,
       'sleeve bump': 0.3,
       'vinyl bump': 0.3,
-      'sleeve ao': 1.0,
-      'vinyl ao': 1.0,
-      sleeveX: -15,
-      'vinyl offsetY': 0
-    };
-
-    var cameraProps = {
-      x: 0.0, y: 17.0, z: 30.0,
     };
 
     var self = this;
@@ -329,36 +416,41 @@
       }
     };
 
-    var gui = this.gui = new window.dat.GUI();
-    var renderController = gui.add(props, 'render');
-    var rotationController = gui.add(props, 'rotate');
-    var coveredRatioController = gui.add(props, 'covered ratio 1', 0.0, 1.2);
-    var secondCoveredRatioController = gui.add(props, 'covered ratio 2', 0.0, 1.2);
-    var sleeveRotationController = gui.add(props, 'sleeve rot', 0, 90);
-    var sleeveFrontRotationController = gui.add(props, 'sleeve front rot', 0, 90);
-    var sleeveBackRotationController = gui.add(props, 'sleeve back rot', 0, 90);
-    var sleeveVisibilityController = gui.add(props, 'sleeve visibility');
-    var firstVinylVisibilityController = gui.add(props, 'vinyl 1 visibility');
-    var secondVinylVisibilityController = gui.add(props, 'vinyl 2 visibility');
-    var captureController = gui.add(temp, 'capture');
-    var zoomController = gui.add(props, 'zoom', 0, 400);
-    var vinylOffsetYController = gui.add(props, 'vinyl offsetY', 0.0, 2.0);
-    var cameraXController = gui.add(cameraProps, 'x', -1000.0, 1000.0);
-    var cameraYController = gui.add(cameraProps, 'y', -1000.0, 1000.0);
-    var cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
-    var sleeveBumpScaleController = gui.add(props, 'sleeve bump', 0, 1.0);
-    var vinylBumpScaleController = gui.add(props, 'vinyl bump', 0, 1.0);
-    var sleeveAoController = gui.add(props, 'sleeve ao', 0.0, 1.0);
-    var vinylAoController = gui.add(props, 'vinyl ao', 0.0, 1.0);
+    let lightParams = {
+      spotLight1: {
+        intensity: 1,
+        distance: 0,
+        angle: 0.314,
+        penumbra: 10,
+        decay: 0
+      }
+    };
 
-    gui.add(this, 'flip');
+    let gui = this.gui = new window.dat.GUI();
+    let f1 = gui.addFolder('general');
+    var renderController = f1.add(props, 'render');
+    var rotationController = f1.add(props, 'rotate');
+    var coveredRatioController = f1.add(props, 'covered ratio 1', 0.0, 1.2);
+    var secondCoveredRatioController = f1.add(props, 'covered ratio 2', 0.0, 1.2);
+    var sleeveRotationController = f1.add(props, 'sleeve rot', 0, 90);
+    var sleeveFrontRotationController = f1.add(props, 'sleeve front rot', 0, 90);
+    var sleeveBackRotationController = f1.add(props, 'sleeve back rot', 0, 90);
+    var sleeveVisibilityController = f1.add(props, 'sleeve visibility');
+    var firstVinylVisibilityController = f1.add(props, 'vinyl 1 visibility');
+    var secondVinylVisibilityController = f1.add(props, 'vinyl 2 visibility');
+    var captureController = f1.add(temp, 'capture');
+    var sleeveBumpScaleController = f1.add(props, 'sleeve bump', 0, 1.0);
+    var vinylBumpScaleController = f1.add(props, 'vinyl bump', 0, 1.0);
 
-    gui.add(temp, 'zoom in');
-    gui.add(temp, 'zoom out');
-    gui.add(temp, 'rotate horizontal');
-    gui.add(temp, 'rotate vertical');
-    gui.add(temp, 'reset');
-    gui.add(temp, 'toggle camera');
+    f1.add(this, 'flip');
+
+    let f2 = gui.addFolder('camera');
+    f2.add(temp, 'zoom in');
+    f2.add(temp, 'zoom out');
+    f2.add(temp, 'rotate horizontal');
+    f2.add(temp, 'rotate vertical');
+    f2.add(temp, 'reset');
+    f2.add(temp, 'toggle camera');
 
     renderController.onChange(function (value) {
       if (value) {
@@ -410,31 +502,6 @@
     secondVinylVisibilityController.onChange(function (value) {
       self.setVinylVisibility(Vinyl.Index.SECOND, value, null, function () {
       });
-    });
-
-    zoomController.onChange(function (value) {
-      self.zoom(value);
-    });
-
-    vinylOffsetYController.onChange(function (value) {
-      console.log(value);
-      self._vinyls[0].setOffsetY(value);
-
-      if (1 === self._vinyls.length) {
-        return;
-      }
-
-      self._vinyls[1].setOffsetY(-value);
-    });
-
-    cameraXController.onChange(function (value) {
-      self.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
-    });
-    cameraYController.onChange(function (value) {
-      self.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
-    });
-    cameraZController.onChange(function (value) {
-      self.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
     });
 
     sleeveBumpScaleController.onChange(function (value) {
@@ -1119,8 +1186,11 @@
 
     this._controls.update();
 
+    if (this.spotLightHelper1) {
+      this.spotLightHelper1.update();
+    }
     this._lights.position.copy(this._camera.position);
-    //this._lights.lookAt(new THREE.Vector3(0, 0, 0));
+    // this._lights.lookAt(new THREE.Vector3(0, 0, 0));
     this._lights.lookAt(this._controls.target);
   };
 
