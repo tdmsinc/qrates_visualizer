@@ -975,7 +975,6 @@
             .delay(delay)
             .to({ opacity: to }, duration)
             .onUpdate((value) => {
-              console.log('child.material.opacity', child.material.opacity);
               child.material.needsUpdate = true;
             })
             .onComplete(() => {
