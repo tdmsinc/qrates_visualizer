@@ -104,8 +104,8 @@
           
           // vinyl
           this._vinyls = [
-            new Vinyl(),
-            new Vinyl()
+            new Vinyl(this._assets, this._containerObject, this._opts.loader),
+            new Vinyl(this._assets, this._containerObject, this._opts.loader)
           ];
   
           // sleeve が single で複数の vinyl オプションが渡された場合は2つ目以降のオプションを削除して single フォーマットを採用する
@@ -147,7 +147,7 @@
               opts.defaults.vinyl[i].visibility = true;
             }
 
-            targets.push(this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject, this._opts.loader));
+            targets.push(this._vinyls[i].setup(this._opts.defaults.vinyl[i]));
           }
   
           Promise.all(targets)
@@ -1084,7 +1084,7 @@
       this._sleeve.update();
     }
 
-    if (0 < this._vinyls) {
+    if (0 < this._vinyls.length) {
       this._vinyls.forEach(function (vinyl) {
         vinyl.update();
       });
