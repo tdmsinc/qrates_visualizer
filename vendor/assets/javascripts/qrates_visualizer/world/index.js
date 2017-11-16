@@ -97,7 +97,7 @@
       this._containerObject.name = 'container';
   
       // sleeve
-      this._sleeve = new Sleeve();
+      this._sleeve = new Sleeve(this._assets, this._containerObject, this._opts.loader);
       this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._containerObject, this._opts.loader)
         .then(() => {
           this._sleeve.setObjectScale(this._objectScales['12']);
@@ -1364,7 +1364,7 @@
     let lastFormat = this._sleeve.getFormat();
 
     if (lastFormat === format) {
-      return Promsie.resolve(lastFormat);
+      return Promise.resolve(lastFormat);
     }
 
     let coveredRatio = 0.0;
