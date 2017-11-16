@@ -76,6 +76,7 @@
       this._renderer.setSize(this._width, this._height);
       this._renderer.autoClear = false;
       this._renderer.setClearColor(0, 0.0);
+      this._renderer.sortObjects = false;
   
       this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
   
@@ -176,6 +177,9 @@
               if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
                 this._vinyls[1].setVisibility(false);
               }
+
+              this._vinyls[0].setRenderOrder(0);
+              this._vinyls[1].setRenderOrder(1);
 
               resolve(this);
             });
