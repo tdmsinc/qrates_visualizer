@@ -438,10 +438,13 @@
           }
         }
       };
+
+      this._container = container;
+      this._loader = loader;
     }
 
     //--------------------------------------------------------------
-    setup(scene, assets, opts, container, loader) {
+    setup(opts) {
     
       opts = opts || {
         format: Sleeve.Format.SINGLE_WITHOUT_SPINE,
@@ -454,8 +457,6 @@
         }
       };
   
-      this._loader = loader;
-      this._container = container;
       this._size = opts.size;
       this._finish = opts.finish || Sleeve.Finish.NORMAL;
       this._currentTextures = opts.textures;

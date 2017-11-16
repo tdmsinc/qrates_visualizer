@@ -98,7 +98,7 @@
   
       // sleeve
       this._sleeve = new Sleeve(this._assets, this._containerObject, this._opts.loader);
-      this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._containerObject, this._opts.loader)
+      this._sleeve.setup(opts.defaults.sleeve)
         .then(() => {
           this._sleeve.setObjectScale(this._objectScales['12']);
           
