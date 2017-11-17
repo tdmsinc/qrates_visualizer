@@ -444,7 +444,7 @@
     }
 
     //--------------------------------------------------------------
-    setup(opts) {
+    async setup(opts) {
     
       opts = opts || {
         format: Sleeve.Format.SINGLE_WITHOUT_SPINE,
@@ -500,39 +500,35 @@
           }
         });
       })(this._textures);
-  
-      return new Promise((resolve, reject) => {
-  
-        this.setFormat(opts.format)
-          .then(() => {
-            // set initial textures
-            if (opts.textures) {
-              if (Sleeve.Format.GATEFOLD === this._format) {
-                Object.keys(opts.textures).forEach(side => {
-                  Object.keys(opts.textures[side]).forEach(type => {
-                    this._setTexture(type, opts.textures[side][type], side);
-                  });
-                });
-              } else {
-                Object.keys(opts.textures).forEach(type => {
-                  this._setTexture(type, opts.textures[type]);
-                });
-              }
-            }
-  
-            this._coveredRatio = 0;
-            this.setCoveredRatio(this._coveredRatio);
-  
-            this._currentObject.traverse(child => {
-              if (child instanceof THREE.Mesh) {
-                child.material.opacity = 1.0;
-                child.material.needsUpdate = true;
-              }
-            })
-  
-            resolve();
-          })
+
+      await this.setFormat(opts.format);
+
+      // set initial textures
+      if (opts.textures) {
+        if (Sleeve.Format.GATEFOLD === this._format) {
+          Object.keys(opts.textures).forEach(side => {
+            Object.keys(opts.textures[side]).forEach(type => {
+              this._setTexture(type, opts.textures[side][type], side);
+            });
+          });
+        } else {
+          Object.keys(opts.textures).forEach(type => {
+            this._setTexture(type, opts.textures[type]);
+          });
+        }
+      }
+
+      this._coveredRatio = 0;
+      this.setCoveredRatio(this._coveredRatio);
+
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          child.material.opacity = 1.0;
+          child.material.needsUpdate = true;
+        }
       });
+
+      return this;
     }
     
     //--------------------------------------------------------------
@@ -744,7 +740,7 @@
     }
   
     //--------------------------------------------------------------
-    setFormat(format, callback) {
+    async setFormat(format, callback) {
   
       if (!format) {
         console.warn('Sleeve.setFormat: no format specified');
@@ -761,73 +757,64 @@
   
         this._hole = Sleeve.Hole.NO_HOLE;
       }
-  
-      return new Promise((resolve, reject) => {
-  
-        this._format = format;
-          
-        this._loadTextures(this._size, format, this._hole)
-          .then((results) => {
-            return this._loader.loadAsset({
-              'assetType': 'model',
-              'key': this._paths.models[this._size][this._format][this._hole]
-            });
-          })
-          .then((result) => {
-    
-            const assetKey = result['key'];
-            const obj = this._loader.assets[assetKey];
-    
-            console.log('Sleeve.setFormat: model loaded', assetKey, obj);
-    
-            const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
-        
-            obj.assetName = assetName;
-            obj.scene.assetName = assetName;
-    
-            if (this._currentObject) {
-              this._container.remove(this._currentObject);
-              this.dispose();
-            }
-    
-            if (this._textures[this._size][this._format][this._hole]) { 
-              this._textures[this._size][this._format][this._hole].assetName = assetName;
-            }
-    
-            this.initMaterial(obj, this._textures[this._size][this._format][this._hole]);
-    
-            this._currentObject = obj.scene.clone();
-            this._currentObject.name = 'sleeve';
-        
-            this._currentObject.traverse((child) => {
-              if (child instanceof THREE.Mesh) {
-                child.material = child.material.clone();
-                child.material.shininess = this._shininess;
-                child.material.opacity = 0;
-                child.material.needsUpdate = true;
-              }
-            });
-        
-            const position = this._currentObject.position;
-            this._currentObject.position.set(0, position.y, position.z);
-    
-            const scale = 5.5;
-            this._currentObject.scale.set(scale, scale, scale);
-    
-            this.updateBoundingBox();
-            this.updateBoundingBoxMesh();
-    
-            if (Sleeve.Format.GATEFOLD === this._format) {
-              this.setGatefoldCoverAngle(this._gatefoldAngle);
-            }
-    
-            this._container.add(this._currentObject);
-        
-            // this.setOpacity(1.0, 0);
-        
-            resolve(this);
-          });
+
+      this._format = format;
+
+      await this._loadTextures(this._size, format, this._hole);
+
+      let result = await this._loader.loadAsset({
+        'assetType': 'model',
+        'key': this._paths.models[this._size][this._format][this._hole]
       });
+
+      const assetKey = result['key'];
+      const obj = this._loader.assets[assetKey];
+
+      console.log('Sleeve.setFormat: model loaded', assetKey, obj);
+
+      const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
+  
+      obj.assetName = assetName;
+      obj.scene.assetName = assetName;
+
+      if (this._currentObject) {
+        this._container.remove(this._currentObject);
+        this.dispose();
+      }
+
+      if (this._textures[this._size][this._format][this._hole]) { 
+        this._textures[this._size][this._format][this._hole].assetName = assetName;
+      }
+
+      this.initMaterial(obj, this._textures[this._size][this._format][this._hole]);
+
+      this._currentObject = obj.scene.clone();
+      this._currentObject.name = 'sleeve';
+  
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          child.material = child.material.clone();
+          child.material.shininess = this._shininess;
+          child.material.opacity = 0;
+          child.material.needsUpdate = true;
+        }
+      });
+  
+      const position = this._currentObject.position;
+      this._currentObject.position.set(0, position.y, position.z);
+
+      const scale = 5.5;
+      this._currentObject.scale.set(scale, scale, scale);
+
+      this.updateBoundingBox();
+
+      if (Sleeve.Format.GATEFOLD === this._format) {
+        this.setGatefoldCoverAngle(this._gatefoldAngle);
+      }
+
+      this._container.add(this._currentObject);
+
+      return this;
     }
   
     //--------------------------------------------------------------
@@ -837,7 +824,7 @@
     }
   
     //--------------------------------------------------------------
-    setSize(size, scale) {
+    async setSize(size, scale) {
   
       if (!size) {
         console.warn('Sleeve.setSize: no size specified');
@@ -869,35 +856,30 @@
     }
   
     //--------------------------------------------------------------
-    setOpacity(to, duration, delay) {
+    async setOpacity(to, duration, delay) {
   
       duration = undefined !== duration ? duration : 1000;
       delay = undefined !== delay ? delay : 0;
   
-      return new Promise((resolve, reject) => {
-  
-        this._currentObject.traverse(child => {
-          if (child instanceof THREE.Mesh) {
-            let tween = new TWEEN.Tween(child.material);
-            
-            tween
-              .stop()
-              .delay(delay)
-              .to({ opacity: to }, duration)
-              .onUpdate(function (value) {
-                child.material.needsUpdate = true;
-              })
-              .onComplete(() => {
-                resolve();
-              })
-              .start();
-          }
-        });
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          new TWEEN.Tween(child.material)
+            .stop()
+            .delay(delay)
+            .to({ opacity: to }, duration)
+            .onUpdate(() => {
+              child.material.needsUpdate = true;
+            })
+            .onComplete(() => {
+              return;
+            })
+            .start();
+        }
       });
     }
   
     //--------------------------------------------------------------
-    setHole(value) {
+    async setHole(value) {
   
       if ('boolean' === typeof value) {
         if (value) {
@@ -923,18 +905,9 @@
   
       this._hole = value;
   
-      return new Promise((resolve, reject) => {
-        this.setOpacity(0.0, 250)
-          .then(() => {
-            return this.setFormat(this._format)
-          })
-          // .then(() => {
-          //   return this.setOpacity(1.0, 500);
-          // })
-          .then(() => {
-            resolve(this);
-          });
-      });
+      await this.setOpacity(0.0, 250);
+
+      return this.setFormat(this._format);      
     }
   
     //--------------------------------------------------------------

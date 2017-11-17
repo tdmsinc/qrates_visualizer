@@ -1151,44 +1151,6 @@
   };
 
   //--------------------------------------------------------------
-  World.prototype.delegateEvents = function () {
-
-    const parent = this._parent;
-
-    for (let i in parent.vinyls) {
-      parent.vinyls[i].on('colorFormat', this.onVinylColorFormatChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('size', this.onVinylSizeChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('color', this.onVinylColorChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('weight', this.onVinylWeightChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('speed', this.onVinylSpeedChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('alphaMap', this.onVinylAlphaMapChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('aoMap', this.onVinylAoMapChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('bumpMap', this.onVinylBumpMapChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('colorMap', this.onVinylColorMapChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('label', this.onLabelOptionChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('labelAoMap', this.onLabelAoMapChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('labelBumpMap', this.onLabelBumpMapChanged.bind(this, this._vinyls[i]));
-      parent.vinyls[i].on('labelColorMap', this.onLabelColorMapChanged.bind(this, this._vinyls[i]));
-    }
-
-    parent.sleeve.on('size', this.onSleeveSizeChanged.bind(this));
-    parent.sleeve.on('hole', this.onSleeveHoleChanged.bind(this));
-    parent.sleeve.on('finish', this.onSleeveFinishChanged.bind(this));
-    parent.sleeve.on('colorMap', this.onSleeveColorMapChanged.bind(this));
-    parent.sleeve.on('aoMap', this.onSleeveAoMapChanged.bind(this));
-    parent.sleeve.on('bumpMap', this.onSleeveBumpMapChanged.bind(this));
-
-    return this;
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.undelegateEvents = function () {
-    const parent = this._parent;
-
-    return this;
-  };
-
-  //--------------------------------------------------------------
   World.prototype.onVinylColorFormatChanged = function (target, colorFormat) {
 
     if (-1 === Object.values(Vinyl.ColorFormat).indexOf(colorFormat)) {
@@ -1327,12 +1289,6 @@
       this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), this._sleeve.getCurrentGatefoldAngle() * 2);
       this._vinyls[1].setOffsetY(this._containerObject.getObjectByName('Back').getWorldPosition().y);
     }
-  };
-
-  //--------------------------------------------------------------
-  World.prototype.onSleeveHoleChanged = function (value) {
-
-    return this._sleeve.setHole(value ? Sleeve.Hole.HOLED : Sleeve.Hole.NO_HOLE);
   };
 
   //--------------------------------------------------------------
