@@ -1099,6 +1099,15 @@
     this._lights.position.copy(this._camera.position);
     //this._lights.lookAt(new THREE.Vector3(0, 0, 0));
     this._lights.lookAt(this._controls.target);
+
+    // let cameraPosition = this._camera.position;
+    // let vinyl1Position = this._vinyls[0]._currentObject.position;
+    // let vinyl2Position = this._vinyls[1]._currentObject.position;
+
+    // if (cameraPosition) {
+    //   console.log('distance from camera', cameraPosition.distanceTo(vinyl1Position), cameraPosition.distanceTo(vinyl2Position));
+    // }
+    
   };
 
   //--------------------------------------------------------------

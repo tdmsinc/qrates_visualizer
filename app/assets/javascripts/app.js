@@ -145,15 +145,15 @@ vv.on('ready', function() {
       });
   });
 
-  vm.$watch('vinyl.colors', function(color) {
+  vm.$watch('vinyl.colors', function(index) {
 
-    vv.world._vinyls[0].setColor(color);
+    vv.world._vinyls[0].setColor(index);
 
     if (1 == vv.world._vinyls.length) {
       return;
     }
 
-    vv.world._vinyls[1].setColor(color);
+    vv.world._vinyls[1].setColor(index);
   });
 
   vm.$watch('vinyl.heavy1', function(value) {

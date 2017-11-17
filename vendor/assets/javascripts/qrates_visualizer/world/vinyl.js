@@ -392,6 +392,7 @@
   
       // this._currentObject が変更される度に反映する必要があるプロパティ
       this._bumpScale = 0.17;
+      this._labelBumpScale = 0.17;
   
       if (this._colorFormat === Vinyl.ColorFormat.SPECIAL) {
         this._material = Vinyl.Color.WHITE;
@@ -462,7 +463,6 @@
           }
 
           child.material = child.material.clone();
-          child.material.bumpScale = this._bumpScale;
           child.material.combine = THREE.MultiplyOperation;
           child.material.color = this._material.color;
           child.material.opacity = this._material.opacity;
@@ -477,6 +477,7 @@
           if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {          
             if (Vinyl.Part.VINYL === child.name) {
 
+              child.material.bumpScale = this._bumpScale;
               child.material.reflectivity = this._material.reflectivity;
               child.material.refractionRatio = this._material.refractionRatio;
               child.material.shininess = this._material.shininess;
@@ -504,6 +505,7 @@
               }
             } else if (Vinyl.Part.LABEL === child.name) {
 
+              child.material.bumpScale = this._labelBumpScale;
               child.material.color = new THREE.Color(0xffffff);
               child.material.reflectivity = 0;
               child.material.refractionRatio = 0;
@@ -733,6 +735,23 @@
     }
 
     //--------------------------------------------------------------
+    setLabelBumpScale(value) {
+      
+      this._labelBumpScale = value;
+
+      if (this._isWithLabel()) {
+        this._currentObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            if (Vinyl.Part.LABEL === child.name) {
+              child.material.bumpScale = this._labelBumpScale;
+              child.material.needsUpdate = true;
+            }
+          }
+        });
+      }
+    }
+
+    //--------------------------------------------------------------
     getBumpScale() {
 
       return this._bumpScale;
@@ -803,12 +822,14 @@
     setColor(color) {
 
       if (Vinyl.ColorFormat.COLOR !== this._colorFormat) {
-        console.warn('Vinyl.setColor: color option is valid when vinyl type = COLOR');
+        console.error('Vinyl.setColor: color option is valid when vinyl type = COLOR');
         return;
       }
 
+      color = Object.keys(Vinyl.Color)[color];
+
       if (-1 === Object.keys(Vinyl.Color).indexOf(color)) {
-        console.warn('Vinyl.setColor: unknown color "' + color + '"');
+        console.error('Vinyl.setColor: unknown color "' + color + '"');
         return;
       }
 
@@ -829,6 +850,7 @@
             child.material.reflectivity = this._material.reflectivity;
             child.material.refractionRatio = this._material.refractionRatio;
             child.material.shininess = this._material.shininess;
+            child.material.needsUpdate = true;
           }
         }
       });
@@ -1151,35 +1173,9 @@
 
               obj.scene.scale.set(scale, scale, scale);
           
-              obj.scene.traverse((child) => {
+              this._currentObject.traverse((child) => {
                 if (child instanceof THREE.Mesh) {
-                  child.material = child.material.clone();
                   child.material.opacity = 0;
-          
-                  if (this._isWithLabel()) {
-                    if (Vinyl.Part.VINYL === child.name) {
-                      child.material.bumpScale = this._bumpScale;
-                      child.material.color = this._material.color;
-                      child.material.reflectivity = this._material.reflectivity;
-                      child.material.refractionRatio = this._material.refractionRatio;
-                      child.material.shininess = this._material.shininess;
-                    } else if (Vinyl.Part.LABEL === child.name) { 
-                      child.material.bumpScale = this._bumpScale;
-                      child.material.color = Vinyl.Color.WHITE.color;
-                      child.material.reflectivity = 0;
-                      child.material.refractionRatio = 0;
-                      child.material.shininess = 5;
-                    }
-                  } else {
-                    child.material.bumpScale = this._bumpScale;
-                    child.material.color = this._material.color;
-                    child.material.reflectivity = this._material.reflectivity;
-                    child.material.refractionRatio = this._material.refractionRatio;
-                    child.material.shininess = this._material.shininess;
-                  }
-                  
-                  
-                  child.material.needsUpdate = true;
                 }
               });
 
@@ -1277,36 +1273,6 @@
                 }
       
                 obj.scene.scale.set(scale, scale, scale);
-
-                obj.scene.traverse((child) => {
-                  if (child instanceof THREE.Mesh) {
-                    child.material = child.material.clone();
-            
-                    if (this._isWithLabel()) {
-                      if (Vinyl.Part.VINYL === child.name) {
-                        child.material.bumpScale = this._bumpScale;
-                        child.material.color = this._material.color;
-                        child.material.reflectivity = this._material.reflectivity;
-                        child.material.refractionRatio = this._material.refractionRatio;
-                        child.material.shininess = this._material.shininess;
-                      } else if (Vinyl.Part.LABEL === child.name) { 
-                        child.material.bumpScale = this._bumpScale;
-                        child.material.color = Vinyl.Color.WHITE.color;
-                        child.material.reflectivity = 0;
-                        child.material.refractionRatio = 0;
-                        child.material.shininess = 5;
-                      }
-                    } else {
-                      child.material.bumpScale = this._bumpScale;
-                      child.material.color = this._material.color;
-                      child.material.reflectivity = this._material.reflectivity;
-                      child.material.refractionRatio = this._material.refractionRatio;
-                      child.material.shininess = this._material.shininess;
-                    }
-                    
-                    child.material.needsUpdate = true;
-                  }
-                });
               } // finish initializing
 
               console.log('model is initialized', assetKey);
@@ -1340,6 +1306,8 @@
               this._currentObject.position.set(position.x, position.y, position.z);
           
               // this.setOpacity(this._material.opacity, 1000, 250);
+
+              obj.initialized = true;
             }
 
             resolve(this);
