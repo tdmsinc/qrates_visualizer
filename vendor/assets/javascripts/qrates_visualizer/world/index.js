@@ -5,15 +5,15 @@
 //= require_self
 
 (function (global, exports) {
-  var gui, axes;
+  let gui, axes;
 
   /**
    * Module dependencies.
    */
 
-  var Emitter = exports.Emitter;
-  var Vinyl = exports.world.Vinyl;
-  var Sleeve = exports.world.Sleeve;
+  const Emitter = exports.Emitter;
+  const Vinyl = exports.world.Vinyl;
+  const Sleeve = exports.world.Sleeve;
 
   /**
    * Expose `World`.
@@ -77,8 +77,8 @@
       this._renderer.setPixelRatio(this._opts.pixelRatio || window.devicePixelRatio || 1);
       this._renderer.setSize(this._width, this._height);
       this._renderer.autoClear = false;
-      // this._renderer.setClearColor(0, 0.0);
-      this._renderer.setClearColor(new THREE.Color(0x555555), 1.0);
+      this._renderer.setClearColor(0, 0.0);
+      this._renderer.sortObjects = false;
   
       this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
   
@@ -100,15 +100,15 @@
       this._containerObject.name = 'container';
   
       // sleeve
-      this._sleeve = new Sleeve();
-      this._sleeve.setup(this._scene, assets, opts.defaults.sleeve, this._containerObject, this._opts.loader)
+      this._sleeve = new Sleeve(this._assets, this._containerObject, this._opts.loader);
+      this._sleeve.setup(opts.defaults.sleeve)
         .then(() => {
           this._sleeve.setObjectScale(this._objectScales['12']);
           
           // vinyl
           this._vinyls = [
-            new Vinyl(),
-            new Vinyl()
+            new Vinyl(this._assets, this._containerObject, this._opts.loader),
+            new Vinyl(this._assets, this._containerObject, this._opts.loader)
           ];
   
           // sleeve が single で複数の vinyl オプションが渡された場合は2つ目以降のオプションを削除して single フォーマットを採用する
@@ -150,13 +150,13 @@
               opts.defaults.vinyl[i].visibility = true;
             }
 
-            targets.push(this._vinyls[i].setup(this._scene, this._assets, this._opts.defaults.vinyl[i], this._containerObject, this._opts.loader));
+            targets.push(this._vinyls[i].setup(this._opts.defaults.vinyl[i]));
           }
   
           Promise.all(targets)
             .then(() => {
               // scale を設定
-              var scale = this._objectScales[this._vinyls[0]._size];
+              const scale = this._objectScales[this._vinyls[0]._size];
               this._containerObject.scale.set(scale, scale, scale);
               this._containerObject.position.set(0, 0, 0);
   
@@ -181,6 +181,9 @@
               if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === opts.defaults.sleeve.format || Sleeve.Format.SINGLE === opts.defaults.sleeve.format)) {
                 this._vinyls[1].setVisibility(false);
               }
+
+              this._vinyls[0].setRenderOrder(0);
+              this._vinyls[1].setRenderOrder(1);
 
               resolve(this);
             });
@@ -313,6 +316,9 @@
     gui_pointLight1.add(pointLight1, 'intensity', 0.0, 2.0);
     gui_pointLight1.add(pointLight1, 'distance', 0.0, 100);
     gui_pointLight1.add(pointLight1, 'decay', 0.0, 100);
+    gui_pointLight1.add(pointLight1.position, 'x', -2000, 2000);
+    gui_pointLight1.add(pointLight1.position, 'y', -2000, 2000);
+    gui_pointLight1.add(pointLight1.position, 'z', -2000, 2000);
 
     gui_pointLight2 = gui_light.addFolder('point light 2');
     gui_pointLight2.add(pointLight2, 'intensity', 0.0, 20.0);
@@ -330,9 +336,15 @@
 
     gui_ambientLight = gui_light.addFolder('ambient light');
     gui_ambientLight.add(ambientLight, 'intensity', 0.0, 50.0);
+    gui_ambientLight.add(ambientLight.position, 'x', -50, 50);
+    gui_ambientLight.add(ambientLight.position, 'y', -1000, 0);
+    gui_ambientLight.add(ambientLight.position, 'z', 0, 2000);
 
     gui_ambientLight2 = gui_light.addFolder('ambient light 2');
     gui_ambientLight2.add(ambientLight2, 'intensity', 0.0, 50.0);
+    gui_ambientLight2.add(ambientLight2.position, 'x', -50, 50);
+    gui_ambientLight2.add(ambientLight2.position, 'y', -1000, 0);
+    gui_ambientLight2.add(ambientLight2.position, 'z', 0, 2000);
 
     return lights;
   };
@@ -366,7 +378,7 @@
       return false;
     }
 
-    var props = {
+    const props = {
       color: 0xFFFFFF,
       size: 12,
       render: true,
@@ -384,11 +396,11 @@
       'vinyl bump': 0.3,
     };
 
-    var self = this;
-    var axes = this.axes;
-    var camera = this._camera;
+    const self = this;
+    const axes = this.axes;
+    const camera = this._camera;
 
-    var temp = {
+    const temp = {
       capture: function () {
         self.capture();
       },
@@ -533,18 +545,11 @@
 
     opts.duration = undefined === opts.duration ? 1000 : opts.duration;
 
-    var self = this;
-
-    // self.startRender();
-
-    // this.resetCamera();
-
     new TWEEN.Tween(this._camera.position)
       .to({ x: tx, y: ty, z: tz }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function () {
-        self._camera.lookAt(new THREE.Vector3(0, 0, 0));
-        // self._vinyl.setBumpScale(Math.max(Math.abs(self._camera.position.z) / 4000, self._vinyl.getBumpScale()));
+      .onUpdate(() => {
+        this._camera.lookAt(new THREE.Vector3(0, 0, 0));
       })
       .onComplete(function () {
         if (callback) callback();
@@ -564,18 +569,10 @@
 
     opts.duration = undefined === opts.duration ? 1001 : opts.duration;
 
-    var self = this;
-
-    // self.startRender();
-
-    // this.resetCamera();
-
     new TWEEN.Tween(this._camera.rotation)
       .to({ x: tx, y: ty, z: tz }, opts.duration)
       .easing(TWEEN.Easing.Quartic.Out)
       .onComplete(function () {
-        console.log(self._camera);
-        console.log(self._controls);
         if (callback) callback();
       })
       .start();
@@ -622,34 +619,34 @@
   //--------------------------------------------------------------
   World.prototype.setGatefoldCoverAngle = function (degree, opts, callback) {
 
-    var sleeveFormat = this._sleeve.getFormat();
-
-    if (Sleeve.Format.GATEFOLD !== sleeveFormat) {
-      console.warn('World.setGatefoldCoverAngle: changing rotation is not available for "' + sleeveFormat + '"');
+    if (Sleeve.Format.GATEFOLD !== this._sleeve.getFormat()) {
+      console.warn('World.setGatefoldCoverAngle: changing rotation is not available for "' + this._sleeve.getFormat() + '"');
       return;
     }
 
-    var self = this;
-    var currentAngleInDegrees = this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI);
+    let param = {
+      rotation: this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI)
+    };
 
-    new TWEEN.Tween({ rotation: currentAngleInDegrees })
+    new TWEEN.Tween(param)
       .stop()
       .to({ rotation: degree }, 500)
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function () {
-        angleInRadians = this.rotation * (Math.PI / 180);
-        self._sleeve.setGatefoldCoverAngle(angleInRadians);
-        self._vinyls[0].setFrontSleevePositionAndAngle(self._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
+      .onUpdate(() => {
+        let angleInRadians = param.rotation * (Math.PI / 180);
 
-        let offsetY = self._containerObject.getObjectByName('Back').getWorldPosition().y;
+        this._sleeve.setGatefoldCoverAngle(angleInRadians);
+        this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
 
-        if (Sleeve.Size.SIZE_7 === self._sleeve.getSize()) {
+        let offsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+        if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
           offsetY += 0.15;
         }
 
-        self._vinyls[1].setOffsetY(offsetY);
+        this._vinyls[1].setOffsetY(offsetY);
       })
-      .onComplete(function () {
+      .onComplete(() => {
         if (callback) callback();
       })
       .start();
@@ -772,14 +769,12 @@
 
     this._flip = !this._flip;
 
-    var self = this;
-
     this._flipTween
       .stop()
       .to({ _flipRotation: this._flip ? -Math.PI : 0 })
       .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function () {
-        self._containerObject.rotation.z = self._flipRotation;
+      .onUpdate(() => {
+        this._containerObject.rotation.z = this._flipRotation;
       })
       .start();
   };
@@ -900,7 +895,7 @@
   //--------------------------------------------------------------
   World.prototype.capture = function (callback) {
     console.log('World::capture');
-    var image = new Image();
+    let image = new Image();
     image.src = this._renderer.domElement.toDataURL('image/png');
     image.onload = function () {
       if (callback) callback(null, this);
@@ -956,14 +951,11 @@
       duration: 2000
     };
 
-    // TODO: rewrite for presets.
-    // TODO: clear all tween.
-
     opts.duration = undefined !== opts.duration ? opts.duration : 2000;
 
     switch (Number(type)) {
       case 0:  // for capture rendered image
-        var rate = 0.9;
+        const rate = 0.9;
         this.setCameraPosition(212 * rate, 288 * rate, 251 * rate, opts, callback);
         this._flip = true;
         this.flip();
@@ -1178,7 +1170,7 @@
       this._sleeve.update();
     }
 
-    if (0 < this._vinyls) {
+    if (0 < this._vinyls.length) {
       this._vinyls.forEach(function (vinyl) {
         vinyl.update();
       });
@@ -1192,6 +1184,15 @@
     this._lights.position.copy(this._camera.position);
     // this._lights.lookAt(new THREE.Vector3(0, 0, 0));
     this._lights.lookAt(this._controls.target);
+
+    // let cameraPosition = this._camera.position;
+    // let vinyl1Position = this._vinyls[0]._currentObject.position;
+    // let vinyl2Position = this._vinyls[1]._currentObject.position;
+
+    // if (cameraPosition) {
+    //   console.log('distance from camera', cameraPosition.distanceTo(vinyl1Position), cameraPosition.distanceTo(vinyl2Position));
+    // }
+    
   };
 
   //--------------------------------------------------------------
@@ -1237,9 +1238,9 @@
   //--------------------------------------------------------------
   World.prototype.delegateEvents = function () {
 
-    var parent = this._parent;
+    const parent = this._parent;
 
-    for (var i in parent.vinyls) {
+    for (let i in parent.vinyls) {
       parent.vinyls[i].on('colorFormat', this.onVinylColorFormatChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('size', this.onVinylSizeChanged.bind(this, this._vinyls[i]));
       parent.vinyls[i].on('color', this.onVinylColorChanged.bind(this, this._vinyls[i]));
@@ -1267,7 +1268,7 @@
 
   //--------------------------------------------------------------
   World.prototype.undelegateEvents = function () {
-    var parent = this._parent;
+    const parent = this._parent;
 
     return this;
   };
@@ -1301,17 +1302,17 @@
 
     target.setSize(size);
 
-    var firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
-    var secondVinylSize = firstVinylSize;
+    const firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
+    const secondVinylSize = firstVinylSize;
 
     if (1 < this._vinyls.length) {
       secondVinylSize = this._convertSizeToNumber(this._vinyls[1].getSize());
     }
 
-    var largerSize = Math.max(firstVinylSize, secondVinylSize);
+    const largerSize = Math.max(firstVinylSize, secondVinylSize);
 
-    var sleeveSize;
-    var scale;
+    let sleeveSize;
+    let scale;
 
     switch (largerSize) {
       case 7:
@@ -1461,7 +1462,7 @@
     let lastFormat = this._sleeve.getFormat();
 
     if (lastFormat === format) {
-      return Promsie.resolve(lastFormat);
+      return Promise.resolve(lastFormat);
     }
 
     let coveredRatio = 0.0;
@@ -1507,8 +1508,10 @@
             if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
               this._sleeve.setCoveredRatio(coveredRatio);
             } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
-              var opts = this._vinyls[0].getCurrentProperties();
+
+              let opts = this._vinyls[0].getCurrentProperties();
               opts.index = Vinyl.Index.SECOND;
+
               this._vinyls[1].copy(this._vinyls[0])
                 .then(() => {
                   this._vinyls[1].setVisibility(true);
