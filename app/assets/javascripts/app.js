@@ -242,10 +242,7 @@ vv.on('ready', function() {
   });
 
   vm.$watch('sleeve.hole', (value) => {
-    vv.world._sleeve.setHole(value)
-      .then((sleeve) => {
-        console.log('vv.world._sleeve.setHole: hole option changed', sleeve);
-      });
+    vv.world.setSleeveHole(value);
   });
 
   vm.$watch('sleeve.finish', (value) => {

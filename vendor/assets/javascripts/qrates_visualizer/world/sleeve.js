@@ -928,11 +928,11 @@
           .then(() => {
             return this.setFormat(this._format)
           })
+          // .then(() => {
+          //   return this.setOpacity(1.0, 500);
+          // })
           .then(() => {
-            return this.setOpacity(1.0, 500);
-          })
-          .then(() => {
-            resolve();
+            resolve(this);
           });
       });
     }

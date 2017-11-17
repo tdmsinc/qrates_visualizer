@@ -1461,6 +1461,45 @@
   };
 
   //--------------------------------------------------------------
+  World.prototype.setSleeveHole = function (yn) {
+
+    if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+      this._sleeve.setHole(yn)
+        .then((sleeve) => {
+
+          let sleeveFormat = this._sleeve.getFormat();
+          let firstOffsetY, secondOffsetY;
+
+          let coveredRatio = 0.0;
+
+          if (Sleeve.Format.DOUBLE === sleeveFormat) {
+            firstOffsetY = 0.6;
+            secondOffsetY = -0.6;
+          } else {
+            firstOffsetY = 0.0;
+            secondOffsetY = 0.0;
+          }
+
+          if (Sleeve.Format.SINGLE_WITHOUT_SPINE === sleeveFormat || Sleeve.Format.SINGLE === sleeveFormat) {
+            this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
+          } else if (Sleeve.Format.DOUBLE === sleeveFormat) {
+            this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
+            this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
+          }
+
+          return this._sleeve.setOpacity(1.0, 100);
+        })
+        .then(() => {
+          resolve();
+        });
+    });
+  };
+
+  //--------------------------------------------------------------
   World.prototype._convertSizeToNumber = function (size) {
 
     if (Vinyl.Size.SIZE_7_SMALL_HOLE === size || Vinyl.Size.SIZE_7_LARGE_HOLE === size || Sleeve.Size.SIZE_7 === size) {
