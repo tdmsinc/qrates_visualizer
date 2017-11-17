@@ -385,6 +385,7 @@
       this._coveredRatio = 0;
       this._basePosition = new THREE.Vector3();
       this._transparent = opts.transparent;
+      this._side = opts.side || THREE.FrontSide;
   
       // weight と label の組み合わせで format を決定する
       this._format = this.updateFormat(this._weight, this._label);
@@ -466,11 +467,12 @@
           child.material.color = this._material.color;
           child.material.opacity = this._material.opacity;
           child.material.specular = new THREE.Color(0x363636);
-          // child.material.transparent = true;
-          child.material.transparent = this._transparent;
+          child.material.transparent = true;
+          // child.material.transparent = this._transparent;
           child.material.shading = THREE.SmoothShading;
-          child.material.side = THREE.FrontSide;
+          child.material.side = this._side;
           child.material.envMap = this._envMapTexture;
+          // child.renderOrder = 0;
 
           if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {          
             if (Vinyl.Part.VINYL === child.name) {
@@ -1000,6 +1002,11 @@
     }
 
     //--------------------------------------------------------------
+    setRenderOrder(order) {
+      this._currentObject.renderOrder = order;
+    }
+
+    //--------------------------------------------------------------
     resetRotation(angle /* in radians */, offsetX, offsetY) {
       
           this._gatefoldAngle = 0;
@@ -1032,24 +1039,6 @@
 
       return this._assetName;
     };
-
-    //--------------------------------------------------------------
-    _setVinylScale(scale) {
-
-      this._currentObject.scale.y = scale;
-
-      if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
-        return;
-      }
-
-      this._currentObject.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          if (-1 < child.name.toLowerCase().indexOf('label')) {
-            child.scale.set(1.0, 2.5, 1.0);
-          }
-        }
-      });
-    }
 
     //--------------------------------------------------------------
     removeFromContainer() {
@@ -1367,6 +1356,24 @@
 
       return false;
     }
+
+    //--------------------------------------------------------------
+    _setVinylScale(scale) {
+      
+            this._currentObject.scale.y = scale;
+      
+            if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
+              return;
+            }
+      
+            this._currentObject.traverse((child) => {
+              if (child instanceof THREE.Mesh) {
+                if (-1 < child.name.toLowerCase().indexOf('label')) {
+                  child.scale.set(1.0, 2.5, 1.0);
+                }
+              }
+            });
+          }
   }
 
 

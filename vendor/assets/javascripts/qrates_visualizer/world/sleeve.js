@@ -543,16 +543,15 @@
       }
       
       if (-1 < model.assetName.toLowerCase().indexOf('gatefold')) {
-        // TODO: ゲートフォールドの面ごとにマテリアルを設定する処理
-      } else {
         model.scene.traverse((child) => {
           if (child instanceof THREE.Mesh) {
+            child.material = child.material.clone();
             child.material.bumpScale = this._bumpScale;
             child.material.color = new THREE.Color(0xffffff);
             child.material.shininess = this._shininess;
             child.material.specular = new THREE.Color(0x363636);
             child.material.shading = THREE.SmoothShading;
-            child.material.transparent = true;
+            child.material.transparent = false;
   
             child.material.aoMap = textures['ao'] || null;
             if (child.material.aoMap) {
