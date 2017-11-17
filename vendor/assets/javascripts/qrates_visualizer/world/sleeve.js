@@ -674,6 +674,20 @@
       if (undefined === side) {
         console.log('try to update texture', this._textures[this._size][this._format][this._hole][type], image);
         this.updateTexture(this._textures[this._size][this._format][this._hole][type], image);
+
+        this._currentObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            if ('ao' === type) {
+              child.material.aoMap = this._textures[this._size][this._format][this._hole][type];
+            } else if ('bumpmap' === type) {
+              child.material.bumpMap = this._textures[this._size][this._format][this._hole][type];
+            } else if ('color' == type) {
+              child.material.map = this._textures[this._size][this._format][this._hole][type];
+            }
+  
+            child.material.needsUpdate = true;
+          }
+        });
       } else {
         if (-1 === Object.values(Sleeve.GatefoldSide).indexOf(side)) {
           return;
