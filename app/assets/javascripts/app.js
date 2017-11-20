@@ -392,14 +392,28 @@ vv.on('ready', function() {
   sleeveAoMap.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.world._sleeve.setAoMap(img);
+
+      if (qvv.VinylVisualizer.SleeveFormat.GATEFOLD === vv.world._sleeve.getFormat()) {
+        vv.world._sleeve.setAoMap(img, 'front');
+        vv.world._sleeve.setAoMap(img, 'back');
+        vv.world._sleeve.setAoMap(img, 'spine');
+      } else {
+        vv.world._sleeve.setAoMap(img);    
+      }
     });
   };
 
   sleeveBumpMap.onchange = function(e) {
     load(e.target.files.item(0), function(err, img) {
       if (err) return console.error(err);
-      vv.world._sleeve.setBumpMap(img);
+
+      if (qvv.VinylVisualizer.SleeveFormat.GATEFOLD === vv.world._sleeve.getFormat()) {
+        vv.world._sleeve.setBumpMap(img, 'front');
+        vv.world._sleeve.setBumpMap(img, 'back');
+        vv.world._sleeve.setBumpMap(img, 'spine');
+      } else {
+        vv.world._sleeve.setBumpMap(img);    
+      }
     });
   };
 

@@ -166,11 +166,6 @@
               this._presets = {};
               this.registerPresets();
 
-              this._lights.lookAt(new THREE.Vector3(0, 0, 0));
-
-              this._scene.add(this._lights);
-              // this._camera.add(this._lights);
-              // this._lights.position.set(0, 0, 0);
               this._scene.add(this._containerObject);
   
               if (opts.defaults.hasOwnProperty('view')) {
@@ -211,47 +206,46 @@
     let lights = new THREE.Object3D();
     lights.name = 'lights';
 
-    let spotLight1 = new THREE.SpotLight(0xffffff, 0.6, 0, 0.314, 10);
-    spotLight1.position.set(335, 1955, 475);
-    lights.add(spotLight1);
+    let spotLight_top = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
+    spotLight_top.position.set(-159, 2000, -120);
+    this._scene.add(spotLight_top);
 
-    let spotLight2 = new THREE.SpotLight(0xffffff, 0.6, 0, 0.314, 10);
-    spotLight2.position.set(-980, -1900, -880);
-    lights.add(spotLight2);
+    let spotLight_bottom = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
+    spotLight_bottom.position.set(159, -2000, 120);
+    this._scene.add(spotLight_bottom);
 
     let pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
     pointLight1.position.set(-1000, 1200, -2300);
-    lights.add(pointLight1);
+    // lights.add(pointLight1);
 
     let pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
     pointLight2.position.set(-2, -620, 180);
-    lights.add(pointLight2);
+    // lights.add(pointLight2);
 
     let hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 0.2);
     hemisphereLight1.position.set(380, 140, -1225);
-    lights.add(hemisphereLight1);
+    // lights.add(hemisphereLight1);
 
     let hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 0.2);
     hemisphereLight2.position.set(-360, 60, 1285);
-    lights.add(hemisphereLight2);
+    // lights.add(hemisphereLight2);
 
-    let ambientLight = new THREE.AmbientLight(0x0D0D0D);
-    ambientLight.position.set(0, 820, 2);
-    lights.add(ambientLight);
+    let ambientLight = new THREE.AmbientLight(0x0D0D0D, 6.73);
+    this._scene.add(ambientLight);
 
     let ambientLight2 = new THREE.AmbientLight(0x0D0D0D);
     ambientLight2.position.set(0, -820, 2);
-    lights.add(ambientLight2);
+    // lights.add(ambientLight2);
 
-    // var spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
-    // spotLight1.position.set(335, 1955, 475);
-    // spotLight1.castShadow = true;
-    // lights.add(spotLight1);
+    // var spotLight_top = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
+    // spotLight_top.position.set(335, 1955, 475);
+    // spotLight_top.castShadow = true;
+    // lights.add(spotLight_top);
 
-    // var spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
-    // spotLight2.position.set(-980, -1900, -880);
-    // spotLight2.castShadow = true;
-    // lights.add(spotLight2);
+    // var spotLight_bottom = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
+    // spotLight_bottom.position.set(-980, -1900, -880);
+    // spotLight_bottom.castShadow = true;
+    // lights.add(spotLight_bottom);
 
     // var pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
     // pointLight1.position.set(-1000, 1200, -2300);
@@ -278,16 +272,16 @@
     // ambientLight.castShadow = true;
     // lights.add(ambientLight);
 
-    this.spotLightHelper1 = new THREE.SpotLightHelper(spotLight1, new THREE.Color(1, 1, 0));
+    this.spotLightHelper1 = new THREE.SpotLightHelper(spotLight_top, new THREE.Color(0xff0000));
     this._scene.add(this.spotLightHelper1);
 
-    this.spotLightHelper2 = new THREE.SpotLightHelper(spotLight2, new THREE.Color(1, 1, 0));
+    this.spotLightHelper2 = new THREE.SpotLightHelper(spotLight_bottom, new THREE.Color(0x00ffff));
     this._scene.add(this.spotLightHelper2);
 
-    this.pointLightHelper1 = new THREE.PointLightHelper(pointLight1, 50, new THREE.Color(0x00ff00));
+    this.pointLightHelper1 = new THREE.PointLightHelper(pointLight1, 50, new THREE.Color(0x0000ff));
     this._scene.add(this.pointLightHelper1);
 
-    this.pointLightHelper2 = new THREE.PointLightHelper(pointLight2, 50, new THREE.Color(0x00ff00));
+    this.pointLightHelper2 = new THREE.PointLightHelper(pointLight2, 50, new THREE.Color(0xffff00));
     this._scene.add(this.pointLightHelper2);
 
     this.hemisphereLightHelper1 = new THREE.HemisphereLightHelper(hemisphereLight1, 50);
@@ -298,21 +292,27 @@
 
     let gui_light = this.gui.addFolder('light');
 
-    gui_spotLight1 = gui_light.addFolder('spot light 1');
-    gui_spotLight1.add(spotLight1, 'intensity', 0.0, 2.0);
-    gui_spotLight1.add(spotLight1, 'distance', 0.0, 100);
-    gui_spotLight1.add(spotLight1, 'angle', 0.0, Math.PI);
-    gui_spotLight1.add(spotLight1, 'penumbra', 0.0, 100);
-    gui_spotLight1.add(spotLight1, 'decay', 0.0, 100);
+    gui_spotLight_top = gui_light.addFolder('spot - top');
+    gui_spotLight_top.add(spotLight_top, 'intensity', 0.0, 2.0);
+    gui_spotLight_top.add(spotLight_top, 'distance', 0.0, 100);
+    gui_spotLight_top.add(spotLight_top, 'angle', 0.0, Math.PI);
+    gui_spotLight_top.add(spotLight_top, 'penumbra', 0.0, 1.0);
+    gui_spotLight_top.add(spotLight_top, 'decay', 0.0, 100);
+    gui_spotLight_top.add(spotLight_top.position, 'x', -2000, 2000);
+    gui_spotLight_top.add(spotLight_top.position, 'y', -2000, 2000);
+    gui_spotLight_top.add(spotLight_top.position, 'z', -2000, 2000);
 
-    gui_spotLight2 = gui_light.addFolder('spot light 2');
-    gui_spotLight2.add(spotLight2, 'intensity', 0.0, 2.0);
-    gui_spotLight2.add(spotLight2, 'distance', 0.0, 100);
-    gui_spotLight2.add(spotLight2, 'angle', 0.0, Math.PI);
-    gui_spotLight2.add(spotLight2, 'penumbra', 0.0, 100);
-    gui_spotLight2.add(spotLight2, 'decay', 0.0, 100);
+    gui_spotLight_bottom = gui_light.addFolder('spot - bottom');
+    gui_spotLight_bottom.add(spotLight_bottom, 'intensity', 0.0, 2.0);
+    gui_spotLight_bottom.add(spotLight_bottom, 'distance', 0.0, 100);
+    gui_spotLight_bottom.add(spotLight_bottom, 'angle', 0.0, Math.PI);
+    gui_spotLight_bottom.add(spotLight_bottom, 'penumbra', 0.0, 100);
+    gui_spotLight_bottom.add(spotLight_bottom, 'decay', 0.0, 100);
+    gui_spotLight_bottom.add(spotLight_bottom.position, 'x', -2000, 2000);
+    gui_spotLight_bottom.add(spotLight_bottom.position, 'y', -2000, 2000);
+    gui_spotLight_bottom.add(spotLight_bottom.position, 'z', -2000, 2000);
 
-    gui_pointLight1 = gui_light.addFolder('point light 1');
+    gui_pointLight1 = gui_light.addFolder('point 1');
     gui_pointLight1.add(pointLight1, 'intensity', 0.0, 2.0);
     gui_pointLight1.add(pointLight1, 'distance', 0.0, 100);
     gui_pointLight1.add(pointLight1, 'decay', 0.0, 100);
@@ -320,7 +320,7 @@
     gui_pointLight1.add(pointLight1.position, 'y', -2000, 2000);
     gui_pointLight1.add(pointLight1.position, 'z', -2000, 2000);
 
-    gui_pointLight2 = gui_light.addFolder('point light 2');
+    gui_pointLight2 = gui_light.addFolder('point 2');
     gui_pointLight2.add(pointLight2, 'intensity', 0.0, 20.0);
     gui_pointLight2.add(pointLight2, 'distance', 0.0, 100);
     gui_pointLight2.add(pointLight2, 'decay', 0.0, 100);
@@ -328,13 +328,13 @@
     gui_pointLight2.add(pointLight2.position, 'y', -1000, 0);
     gui_pointLight2.add(pointLight2.position, 'z', 0, 2000);
 
-    gui_hemisphereLight1 = gui_light.addFolder('hemisphere light 1');
+    gui_hemisphereLight1 = gui_light.addFolder('hemisphere 1');
     gui_hemisphereLight1.add(hemisphereLight1, 'intensity', 0.0, 2.0);
 
-    gui_hemisphereLight2 = gui_light.addFolder('hemisphere light 2');
+    gui_hemisphereLight2 = gui_light.addFolder('hemisphere 2');
     gui_hemisphereLight2.add(hemisphereLight2, 'intensity', 0.0, 2.0);
 
-    gui_ambientLight = gui_light.addFolder('ambient light');
+    gui_ambientLight = gui_light.addFolder('ambient');
     gui_ambientLight.add(ambientLight, 'intensity', 0.0, 50.0);
     gui_ambientLight.add(ambientLight.position, 'x', -50, 50);
     gui_ambientLight.add(ambientLight.position, 'y', -1000, 0);
@@ -517,7 +517,7 @@
     });
 
     sleeveBumpScaleController.onChange(function (value) {
-      if (!self._vinyl) {
+      if (!self._sleeve) {
         return;
       }
 

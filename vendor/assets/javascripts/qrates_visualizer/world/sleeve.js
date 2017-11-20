@@ -542,38 +542,39 @@
         return;
       }
       
-      if (-1 < model.assetName.toLowerCase().indexOf('gatefold')) {
-        model.scene.traverse((child) => {
-          if (child instanceof THREE.Mesh) {
-            child.material = child.material.clone();
-            child.material.bumpScale = this._bumpScale;
-            child.material.color = new THREE.Color(0xffffff);
-            child.material.shininess = this._shininess;
-            child.material.specular = new THREE.Color(0x363636);
-            child.material.shading = THREE.SmoothShading;
-            child.material.transparent = false;
-  
-            child.material.aoMap = textures['ao'] || null;
-            if (child.material.aoMap) {
-              child.material.aoMap.needsUpdate = true;
-            }
-            
-            child.material.bumpMap = textures['bumpmap'] || null;
-            if (child.material.bumpMap) {
-              child.material.bumpMap.needsUpdate = true;
-            }
-            
-            child.material.map = textures['color'] || null;
-            if (child.material.map) {
-              child.material.map.needsUpdate = true;
-            }
-  
-            child.geometry.computeFaceNormals();
-  
-            child.material.needsUpdate = true;
+      model.scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          console.log('init material - name = ' + child.name);
+          child.material = child.material.clone();
+          child.material.bumpScale = this._bumpScale;
+          child.material.color = new THREE.Color(0xffffff);
+          child.material.shininess = this._shininess;
+          child.material.specular = new THREE.Color(0x363636);
+          child.material.shading = THREE.SmoothShading;
+          child.material.transparent = false;
+          child.material.side = THREE.DoubleSide;
+
+          child.material.aoMap = textures['ao'] || null;
+          if (child.material.aoMap) {
+            child.material.aoMap.needsUpdate = true;
           }
-        });
-      }
+          
+          child.material.bumpMap = textures['bumpmap'] || null;
+          if (child.material.bumpMap) {
+            child.material.bumpMap.needsUpdate = true;
+          }
+          
+          child.material.map = textures['color'] || null;
+          if (child.material.map) {
+            child.material.map.needsUpdate = true;
+          }
+
+          child.geometry.computeFaceNormals();
+          // child.geometry.computeVertexNormals();
+
+          child.material.needsUpdate = true;
+        }
+      });
   
       return model;
     }
@@ -801,8 +802,6 @@
         
             this._currentObject.traverse((child) => {
               if (child instanceof THREE.Mesh) {
-                child.material = child.material.clone();
-                child.material.shininess = this._shininess;
                 child.material.opacity = 0;
                 child.material.needsUpdate = true;
               }
@@ -1021,6 +1020,7 @@
   
       this._currentObject.traverse((child) => {
         if (child instanceof THREE.Mesh) {
+          console.log('bumpscale', this._bumpScale);
           child.material.bumpScale = this._bumpScale;
           child.material.needsUpdate = true;
         }
