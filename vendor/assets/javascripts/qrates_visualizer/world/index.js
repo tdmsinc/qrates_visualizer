@@ -1035,8 +1035,19 @@
         this._controls.target = new THREE.Vector3(-75, 0, 0);
         this._controls.update();
         break;
+      case 30: // order spec 画面 default 表示用 (sleeve in)
+        this.setPerspective();
+        this.setCameraPositionWithTarget(50, 1000, 10, 50, 0, 0, opts, callback); // item detail rotation 9
+        const sleeveFormat = this._sleeve.getFormat();
+        this.cover(0, { duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this._camera.position.set(50, 1000, 10);
+        this._controls.target = new THREE.Vector3(50, 0, 0);
+        this._camera.setZoom(3);
+        this._controls.update();
+        break;
       case 31: // order spec 画面 default 表示用
-        this.vv.world.setPerspective();
+        this.setPerspective();
         this.setCameraPositionWithTarget(50, 1000, 10, 50, 0, 0, opts, callback); // item detail rotation 9
         const sleeveFormat = this._sleeve.getFormat();
         if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
@@ -1045,9 +1056,9 @@
         } else {
           this.cover(0.8, { duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
-        this._camera.setZoom(3);
         this._camera.position.set(50, 1000, 10);
         this._controls.target = new THREE.Vector3(50, 0, 0);
+        this._camera.setZoom(3);
         this._controls.update();
         break;
       case 33: 
