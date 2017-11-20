@@ -87,9 +87,7 @@
       this._controls.handleResize({ left: 0, top: 0, width: opts.width, height: opts.height });
       this._controls.update();
       this._controls.enabled = this._opts.camera.control;
-  
-      this._lights = this.createLights();
-  
+    
       this._enableRotate = false;
       this._flip = false;
   
@@ -164,7 +162,7 @@
               this._presets = {};
               this.registerPresets();
   
-              this._scene.add(this._lights);
+              this.createLights();
               this._scene.add(this._containerObject);
   
               this.initGui();
@@ -204,38 +202,18 @@
 
   //--------------------------------------------------------------
   World.prototype.createLights = function () {
-    const lights = new THREE.Object3D();
-    lights.name = 'lights';
 
-    const spotLight1 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
-    spotLight1.position.set(335, 1955, 475);
-    lights.add(spotLight1);
+    let spotLight_top = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
+    spotLight_top.position.set(-159, 2000, -120);
+    this._scene.add(spotLight_top);
 
-    const spotLight2 = new THREE.SpotLight(0xFFFFFF, 0.6, 0, 0.314, 10);
-    spotLight2.position.set(-980, -1900, -880);
-    lights.add(spotLight2);
+    let spotLight_bottom = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
+    spotLight_bottom.position.set(159, -2000, 120);
+    this._scene.add(spotLight_bottom);
 
-    const pointLight1 = new THREE.PointLight(0xFFFFFF, 0.9, 0);
-    pointLight1.position.set(-1000, 1200, -2300);
-    lights.add(pointLight1);
-
-    const pointLight2 = new THREE.PointLight(0xFFFFFF, 0.5, 0);
-    pointLight2.position.set(-2, -620, 180);
-    lights.add(pointLight2);
-
-    const hemisphereLight1 = new THREE.HemisphereLight(0x080E21, 0x2E1B11, 0.2);
-    hemisphereLight1.position.set(380, 140, -1225);
-    lights.add(hemisphereLight1);
-
-    const hemisphereLight2 = new THREE.HemisphereLight(0x120C17, 0x220A0E, 0.2);
-    hemisphereLight2.position.set(-360, 60, 1285);
-    lights.add(hemisphereLight2);
-
-    const ambientLight = new THREE.AmbientLight(0x0D0D0D);
-    ambientLight.position.set(0, 820, 2);
-    lights.add(ambientLight);
-
-    return lights;
+    let ambientLight = new THREE.AmbientLight(0x0D0D0D, 6.73);
+    this._scene.add(ambientLight);
+    
   };
 
   //--------------------------------------------------------------
@@ -435,7 +413,7 @@
     });
 
     sleeveBumpScaleController.onChange(function (value) {
-      if (!self._vinyl) {
+      if (!self._sleeve) {
         return;
       }
 
@@ -443,7 +421,7 @@
     });
 
     vinylBumpScaleController.onChange(function (value) {
-      if (!self._vinyl) {
+      if (0 === self._vinyls.length) {
         return;
       }
 
@@ -1110,19 +1088,6 @@
     }
 
     this._controls.update();
-
-    this._lights.position.copy(this._camera.position);
-    //this._lights.lookAt(new THREE.Vector3(0, 0, 0));
-    this._lights.lookAt(this._controls.target);
-
-    // let cameraPosition = this._camera.position;
-    // let vinyl1Position = this._vinyls[0]._currentObject.position;
-    // let vinyl2Position = this._vinyls[1]._currentObject.position;
-
-    // if (cameraPosition) {
-    //   console.log('distance from camera', cameraPosition.distanceTo(vinyl1Position), cameraPosition.distanceTo(vinyl2Position));
-    // }
-    
   };
 
   //--------------------------------------------------------------
