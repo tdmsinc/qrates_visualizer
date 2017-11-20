@@ -851,7 +851,8 @@
     };
 
     opts.duration = undefined !== opts.duration ? opts.duration : 2000;
-
+    const sleeveFormat = this._sleeve.getFormat();
+    
     switch (Number(type)) {
       case 0:  // for capture rendered image
         const rate = 0.9;
@@ -1037,10 +1038,8 @@
         break;
       case 30: // order spec 画面 default 表示用 (sleeve in)
         this.setPerspective();
-        this.setCameraPositionWithTarget(50, 1000, 10, 50, 0, 0, opts, callback); // item detail rotation 9
-        const sleeveFormat = this._sleeve.getFormat();
-        this.cover(0, { duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-        this.cover(0, { duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         this._camera.position.set(50, 1000, 10);
         this._controls.target = new THREE.Vector3(50, 0, 0);
         this._camera.setZoom(3);
@@ -1048,13 +1047,11 @@
         break;
       case 31: // order spec 画面 default 表示用
         this.setPerspective();
-        this.setCameraPositionWithTarget(50, 1000, 10, 50, 0, 0, opts, callback); // item detail rotation 9
-        const sleeveFormat = this._sleeve.getFormat();
         if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
-          this.cover(1.2, { duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.65, { duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         } else {
-          this.cover(0.8, { duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
         this._camera.position.set(50, 1000, 10);
         this._controls.target = new THREE.Vector3(50, 0, 0);
