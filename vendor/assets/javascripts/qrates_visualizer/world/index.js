@@ -721,69 +721,50 @@
     const self = this;
     const sleeveFormat = this._sleeve.getFormat();
 
-    // 2枚組の場合はスリーブを動かし、シングルの場合はレコードを動かす
-    if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
-
-      if (Vinyl.Index.SECOND === opts.index) {
-        if (1 === this._vinyls.length) {
-          return;
-        }
+    if (Vinyl.Index.SECOND === opts.index) {
+      if (1 === this._vinyls.length) {
+        return;
       }
-
-      let index, offsetY;
-
-      if (Vinyl.Index.FIRST === opts.index) {
-        index = 0;
-        
-        if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-          offsetY = 0.08;
-        } else {
-          offsetY = 0.6;
-        }
-      } else if (Vinyl.Index.SECOND === opts.index) {
-        index = 1;
-
-        if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-          offsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
-
-          if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
-            offsetY += 0.15;
-          }
-        } else {
-          offsetY = -0.6;
-        }
-      }
-
-      const param = {
-        ratio: this._vinyls[index].getCoveredRatio()
-      };
-
-      new TWEEN.Tween(param)
-        .stop()
-        .to({ ratio: value }, opts.durarion || 500)
-        .easing(TWEEN.Easing.Quartic.Out)
-        .onUpdate(function () {
-          self._vinyls[index].setCoveredRatio(this.ratio, 0, offsetY);
-        })
-        .start();
-    } else {
-      const param = {
-        ratio: this._sleeve.getCoveredRatio()
-      }
-
-      this._vinyls.forEach(function (vinyl) {
-        vinyl.setCoveredRatio(0, 0, 0);
-      });
-
-      new TWEEN.Tween(param)
-        .stop()
-        .to({ ratio: value }, opts.durarion || 500)
-        .easing(TWEEN.Easing.Quartic.Out)
-        .onUpdate(function () {
-          self._sleeve.setCoveredRatio(this.ratio);
-        })
-        .start();
     }
+
+    let index, offsetY;
+
+    if (Vinyl.Index.FIRST === opts.index) {
+      index = 0;
+      
+      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+        offsetY = 0.08;
+      } else if (Sleeve.Format.DOUBLE === sleeveFormat) {
+        offsetY = 0.6;
+      } else {
+        offsetY = 0;
+      }
+    } else if (Vinyl.Index.SECOND === opts.index) {
+      index = 1;
+
+      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+        offsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+        if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
+          offsetY += 0.15;
+        }
+      } else {
+        offsetY = -0.6;
+      }
+    }
+
+    const param = {
+      ratio: this._vinyls[index].getCoveredRatio()
+    };
+
+    new TWEEN.Tween(param)
+      .stop()
+      .to({ ratio: value }, opts.durarion || 500)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .onUpdate(function () {
+        self._vinyls[index].setCoveredRatio(this.ratio, 0, offsetY);
+      })
+      .start();
   };
 
   //--------------------------------------------------------------
@@ -1054,7 +1035,33 @@
         this._controls.target = new THREE.Vector3(-75, 0, 0);
         this._controls.update();
         break;
-      default:
+      case 31: // order spec 画面 default 表示用
+        this.vv.world.setPerspective();
+        this.setCameraPositionWithTarget(50, 1000, 10, 50, 0, 0, opts, callback); // item detail rotation 9
+        const sleeveFormat = this._sleeve.getFormat();
+        if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
+          this.cover(1.2, { duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
+        this._camera.setZoom(3);
+        this._camera.position.set(50, 1000, 10);
+        this._controls.target = new THREE.Vector3(50, 0, 0);
+        this._controls.update();
+        break;
+      case 33: 
+      case 34:
+      case 35:
+      case 36:
+      case 37:
+      case 38:
+      case 39:
+      case 40:
+      case 41:
+      case 42:
+          
+    default:
         break;
     }
   };
