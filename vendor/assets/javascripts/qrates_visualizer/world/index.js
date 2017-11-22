@@ -1357,7 +1357,9 @@
 
           if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
             if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
-              this._sleeve.setCoveredRatio(coveredRatio);
+              this._vinyls[1].setVisibility(false);
+              this._vinyls[0].setCoveredRatio(0, 0, firstOffsetY);
+              this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
             } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
 
               let opts = this._vinyls[0].getCurrentProperties();
@@ -1370,21 +1372,20 @@
                   this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 1000, 250);
                   this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 1000, 250);
                   
-                  this._vinyls[0].setCoveredRatio(coveredRatio, 0, firstOffsetY);
-                  this._vinyls[1].setCoveredRatio(Math.min(coveredRatio * 2, 1.0), 0, secondOffsetY);
+                  this._vinyls[0].setCoveredRatio(this._sleeve.getCoveredRatio(), 0, firstOffsetY);
+                  this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
                   this._sleeve.setCoveredRatio(0);
                 });
             }
           } else if (Sleeve.Format.DOUBLE === lastFormat || Sleeve.Format.GATEFOLD === lastFormat) {
             if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
-              this._vinyls[1].setVisibility(false);
+              this._sleeve.setCoveredRatio(this._vinyls[0].getCoveredRatio());
 
+              this._vinyls[1].setVisibility(false);
               this._vinyls[0].setCoveredRatio(0, 0, firstOffsetY);
-              this._vinyls[1].setCoveredRatio(0, 0, secondOffsetY);
-              this._sleeve.setCoveredRatio(coveredRatio);
             } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
-              this._vinyls[0].setCoveredRatio(coveredRatio, 0, firstOffsetY);
-              this._vinyls[1].setCoveredRatio(Math.min(coveredRatio * 2, 1.0), 0, secondOffsetY);
+              this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
+              this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
             }
           }
 
