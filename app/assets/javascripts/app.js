@@ -6,6 +6,7 @@ var canvas_width = window.innerWidth, canvas_height = window.innerHeight;
 // defaults
 //
 var defaults = {
+  view: 31,
   vinyl: [
     {
       size: qvv.VinylVisualizer.VinylSize.SIZE_12,
@@ -29,7 +30,7 @@ var defaults = {
   ],
   sleeve: {
     size: qvv.VinylVisualizer.SleeveSize.SIZE_12,
-    format: qvv.VinylVisualizer.SleeveFormat.GATEFOLD,
+    format: qvv.VinylVisualizer.SleeveFormat.SINGLE_WITHOUT_SPINE,
     hole: true,
     finish: qvv.VinylVisualizer.SleeveFinish.NORMAL
   }
@@ -58,10 +59,7 @@ var vv = new qvv.VinylVisualizer(el, {
     far: 10000,
     type: 'perspective', // or orthographic
   },
-  defaults: {
-    vinyl: defaults.vinyl,
-    sleeve: defaults.sleeve
-  }
+  defaults
 });
 
 //

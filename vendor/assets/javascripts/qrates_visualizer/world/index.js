@@ -620,31 +620,26 @@
           const format = this._sleeve.getFormat();
           console.log('size changed', this._sleeve.getSize(), this._sleeve.getFormat());
           
+          let firstOffsetY, secondOffsetY;
+          
+          if (Sleeve.Format.GATEFOLD === format) {
+            firstOffsetY = 0.08;
+            secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
 
-          if (Sleeve.Format.SINGLE === format || Sleeve.Format.SINGLE_WITHOUT_SPINE === format) {
-            this._vinyls[0].setCoveredRatio(0, 0, 0);
-            this._vinyls[1].setCoveredRatio(0, 0, 0);
-            this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
-          } else {
-            let firstOffsetY, secondOffsetY;
-            
-            if (Sleeve.Format.GATEFOLD === format) {
-              firstOffsetY = 0.08;
-              secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
-  
-              if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
-                secondOffsetY += 0.15;
-              }
-  
-              this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
-            } else if (Sleeve.Format.DOUBLE === format) {
-              firstOffsetY = 0.6;
-              secondOffsetY = -0.6;
+            if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
+              secondOffsetY += 0.15;
             }
 
-            this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
-            this._vinyls[1].setCoveredRatio(this._vinyls[0].getCoveredRatio() * 2, 0, secondOffsetY);
+            this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
+          } else if (Sleeve.Format.DOUBLE === format) {
+            firstOffsetY = 0.6;
+            secondOffsetY = -0.6;
+          } else {
+            firstOffsetY = secondOffsetY = 0;
           }
+
+          this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
+          this._vinyls[1].setCoveredRatio(this._vinyls[0].getCoveredRatio() * 2, 0, secondOffsetY);
 
           this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 250, 100);
           this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 250, 100);
@@ -654,8 +649,6 @@
 
           if (callback) callback();
         });
-  
-      
     });
   };
 
