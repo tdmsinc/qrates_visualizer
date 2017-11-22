@@ -241,7 +241,7 @@
   World.prototype.initGui = function () {
     if (!window.dat) {
       console.warn('dat.GUI is not loaded');
-      this._sleeve.setCoveredRatio(0.8, { duration: 1 });
+      // this._sleeve.setCoveredRatio(0.8, { duration: 1 });
       return false;
     }
 
@@ -1383,12 +1383,8 @@
             secondOffsetY = 0.0;
           }
 
-          if (Sleeve.Format.SINGLE_WITHOUT_SPINE === sleeveFormat || Sleeve.Format.SINGLE === sleeveFormat) {
-            this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
-          } else if (Sleeve.Format.DOUBLE === sleeveFormat) {
-            this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
-            this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
-          }
+          this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
+          this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
 
           return this._sleeve.setOpacity(1.0, 100);
         })
