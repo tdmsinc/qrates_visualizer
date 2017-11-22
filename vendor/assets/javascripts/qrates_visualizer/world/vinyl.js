@@ -353,7 +353,7 @@
     }
 
     //--------------------------------------------------------------
-    setup(opts) {
+    async setup(opts) {
       opts = opts || {
         format: Vinyl.Format.NORMAL,
         size: Vinyl.Size.SIZE_7_SMALL_HOLE,
@@ -434,14 +434,11 @@
           }
         });
       })(this._textures);
-  
-      return new Promise((resolve, reject) => {
-        this._loadModel(this._size, this._format)
-          .then(() => {
-            this.setOpacity(this._material.opacity, 1000, 250);
-            resolve();
-          });
-      });
+
+      await this._loadModel(this._size, this._format);
+      await this.setOpacity(this._material.opacity, 1000, 250);
+
+      return this;
     }
 
     //--------------------------------------------------------------
@@ -758,23 +755,23 @@
     }
 
     //--------------------------------------------------------------
-    setSize(size) {
+    async setSize(size) {
 
       if (!size) {
         console.warn('Vinyl.setSize: no size specified');
-        return Promise.reject(new Error('Vinyl.setSize: no size specified'));
+        throw new Error('Vinyl.setSize: no size specified');
       }
 
       size += '';
 
       if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
         console.warn('Vinyl.setSize: invalid size "' + size + '"');
-        return Promise.reject(new Error('Vinyl.setSize: invalid size "' + size + '"'));
+        throw new Error('Vinyl.setSize: invalid size "' + size + '"');
       }
 
       if (this._size === size) {
         console.info('Vinyl.setSize: already set to size ' + size);
-        return Promise.resolve(this);
+        return this;
       }
 
       this._size = size;
@@ -789,7 +786,7 @@
     }
 
     //--------------------------------------------------------------
-    setColorFormat(format) {
+    async setColorFormat(format) {
 
       if (-1 === Object.values(Vinyl.ColorFormat).indexOf(format)) {
         console.error('Vinyl.setColorFormat: invalid color format"' + format + '"');
@@ -808,14 +805,10 @@
         this._material = Vinyl.Color.WHITE;
       } 
 
-      return new Promise((resolve, reject) => {
-        this._loadModel(this._size, this._format)
-          .then(() => {
-            this.setOpacity(this._material.opacity, 1000, 250);
-            
-            resolve();
-          });
-        });
+      await this._loadModel(this._size, this._format);
+      await this.setOpacity(this._material.opacity, 1000, 250);
+
+      return this;
     }
 
     //--------------------------------------------------------------
@@ -857,71 +850,61 @@
     }
 
     //--------------------------------------------------------------
-    enableLabel() {
+    async enableLabel() {
 
       this._label = true;
       this._format = this.updateFormat(this._weight, this._label);
       
-      return new Promise((resolve, reject) => {
-        this._loadModel(this._size, this._format)
-          .then(() => {
-            this.setOpacity(this._material.opacity, 1000, 250);
+      await this._loadModel(this._size, this._format);
+      await this.setOpacity(this._material.opacity, 1000, 250);
 
-            resolve();
-          });
-      });
+      return;
     }
 
     //--------------------------------------------------------------
-    disableLabel() {
+    async disableLabel() {
       
       this._label = false;
       this._format = this.updateFormat(this._weight, this._label);
       
-      return new Promise((resolve, reject) => {
-        this._loadModel(this._size, this._format)
-          .then(() => {
-            this.setOpacity(this._material.opacity, 1000, 250);
+      await this._loadModel(this._size, this._format);
+      await this.setOpacity(this._material.opacity, 1000, 250);
 
-            resolve();
-          });
-      });
+      return;
     }
 
     //--------------------------------------------------------------
-    setOpacity(to, duration, delay) {
+    async setOpacity(to, duration, delay) {
 
       duration = undefined !== duration ? duration : 1000;
       delay = undefined !== delay ? delay : 0;
 
-      return new Promise((resolve, reject) => {
+      this._currentObject.traverse((child) => {
 
-        this._currentObject.traverse((child) => {
-          if (child instanceof THREE.Mesh) {
+        if (child instanceof THREE.Mesh) {
 
-            let tween = new TWEEN.Tween(child.material);
+          let tween = new TWEEN.Tween(child.material);
 
-            if ('label' === child.name) {
-              if (0 < to) {
-                to = 1.0;
-              }
+          if ('label' === child.name) {
+            if (0 < to) {
+              to = 1.0;
             }
-            
-            new TWEEN.Tween(child.material)
-              .stop()
-              .delay(delay)
-              .to({ opacity: to }, duration)
-              .onUpdate((value) => {
-                child.material.needsUpdate = true;
-              })
-              .onComplete(() => {
-                child.material.opacity = to;
-                child.material.needsUpdate = true;
-                resolve();
-              })
-              .start();
           }
-        });
+          
+          new TWEEN.Tween(child.material)
+            .stop()
+            .delay(delay)
+            .to({ opacity: to }, duration)
+            .onUpdate((value) => {
+              child.material.needsUpdate = true;
+            })
+            .onComplete(() => {
+              child.material.opacity = to;
+              child.material.needsUpdate = true;
+              return;
+            })
+            .start();
+        }
       });
     }
 
@@ -936,28 +919,24 @@
     }
 
     //--------------------------------------------------------------
-    setWeight(weight) {
+    async setWeight(weight) {
 
       if (-1 === Object.values(Vinyl.Weight).indexOf(weight)) {
         console.warn('Vinyl.setWeight: unknown weight value "' + weight + '"');
-        return Promise.reject(new Error('Vinyl.setWeight: unknown weight value "' + weight + '"'));
+        throw new Error('Vinyl.setWeight: unknown weight value "' + weight + '"');
       }
       
       if (this._weight === weight) {
-        return Promise.resolve(this);
+        return this;
       }
 
       this._weight = weight;
       this._format = this.updateFormat(this._weight, this._label);
 
-      return new Promise((resolve, reject) => {
-        this._loadModel(this._size, this._format)
-          .then(() => {
-            this.setOpacity(this._material.opacity, 1000, 250);
+      await this._loadModel(this._size, this._format);
+      await this.setOpacity(this._material.opacity, 1000, 250);
 
-            resolve();
-          });
-      });
+      return this;
     }
 
     //--------------------------------------------------------------
@@ -1088,7 +1067,7 @@
     }
 
     //--------------------------------------------------------------
-    copy(parent) {
+    async copy(parent) {
 
       if (!(parent instanceof Vinyl)) {
         console.error('Vinyl.copy: not an Vinyl object :', parent);
@@ -1098,18 +1077,19 @@
       this._size = parent._size;
       this._format = parent._format;
 
-      return this._loadModel(this._size, this._format)
-        .then((self) => {
-          this._currentObject.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              const obj = parent._currentObject.getObjectByName(child.name);
-              
-              if (obj) {
-                child.material = obj.material.clone();
-              }
-            }
-          });
-        });
+      await this._loadModel(this._size, this._format);
+
+      this._currentObject.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          const obj = parent._currentObject.getObjectByName(child.name);
+          
+          if (obj) {
+            child.material = obj.material.clone();
+          }
+        }
+      });
+
+      return this;
     }
 
     //--------------------------------------------------------------
@@ -1139,180 +1119,164 @@
     }
 
     //--------------------------------------------------------------
-    loadModelForSize(size) {
+    async loadModelForSize(size) {
       
-      return new Promise((resolve, reject) => {
-        
-        this._loadTextures(size, this._format)
-          .then((results) => {
-            return this._loader.loadAsset({
-              'assetType': 'model',
-              'key': this._paths.models[size][this._format]
-            });
-          })
-          .then((result) => {
-            console.log('loaded model  ------', result);
-            
-            const assetType = result['assetType'];
-            const assetKey = result['key'];
-    
-            if ('model' === assetType) {
-              const obj = this._loader.assets[assetKey];
-              
-              const scale = 5.5;  
-              const assetName = 'vinyl-' + size + '-' + this._format;
-                      
-              obj.assetName = assetName;
-              obj.scene.assetName = assetName;
-          
-              if (this._textures[size][this._format]) {
-                this._textures[size][this._format].assetName = assetName;
-              }
-    
-              this.initMaterial(obj.scene, this._textures[size][this._format]);
-
-              obj.scene.scale.set(scale, scale, scale);
-          
-              this._currentObject.traverse((child) => {
-                if (child instanceof THREE.Mesh) {
-                  child.material.opacity = 0;
-                }
-              });
-
-              obj.initialized = true;
-            }
-
-            resolve(this);
-          });
+      await this._loadTextures(size, this._format);
+      
+      let result = await this._loader.loadAsset({
+        'assetType': 'model',
+        'key': this._paths.models[size][this._format]
       });
+      
+      console.log('loaded model  ------', result);
+      
+      const assetType = result['assetType'];
+      const assetKey = result['key'];
+
+      if ('model' === assetType) {
+        const obj = this._loader.assets[assetKey];
+        
+        const scale = 5.5;  
+        const assetName = 'vinyl-' + size + '-' + this._format;
+                
+        obj.assetName = assetName;
+        obj.scene.assetName = assetName;
+    
+        if (this._textures[size][this._format]) {
+          this._textures[size][this._format].assetName = assetName;
+        }
+
+        this.initMaterial(obj.scene, this._textures[size][this._format]);
+
+        obj.scene.scale.set(scale, scale, scale);
+    
+        this._currentObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.material.opacity = 0;
+          }
+        });
+
+        obj.initialized = true;
+      }
+
+      return this;
     }
 
     //--------------------------------------------------------------
-    _loadTextures(size, format) {
+    async _loadTextures(size, format) {
 
-      return new Promise((resolve, reject) => {
-
-        const targets = [];
-        
-        (function addTextureToTarget (obj, parentKey) {
-          Object.keys(obj).forEach((key) => {
-            if (typeof obj[key] === 'string') {
-              targets.push({
-                'assetType': 'texture',
-                'textureType': key,
-                'key': obj[key]
-              });
-            } else if (typeof obj[key] === 'object') {
-              addTextureToTarget(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
-            }
-          });
-        })(this._paths.textures[size][format]);
-
-        Promise.all(targets.map((target) => {
-          return this._loader.loadAsset(target);
-        }))
-          .then((results) => {
-            console.log('textures are loaded  ------', results);
-    
-            results.forEach((result) => {
-    
-              const assetType = result['assetType'];
-              const textureType = result['textureType'];
-              const assetKey = result['key'];
-        
-              if ('texture' === assetType) {
-                if (this._isWithLabel()) {
-                  if (-1 < assetKey.toLowerCase().indexOf('forlabel')) {
-                    this.updateTexture(this._textures[size][format][Vinyl.Part.LABEL][textureType], this._loader.assets[assetKey]);
-                  } else {
-                    this.updateTexture(this._textures[size][format][Vinyl.Part.VINYL][textureType], this._loader.assets[assetKey]);
-                  }
-                } else {
-                  this.updateTexture(this._textures[size][format][textureType], this._loader.assets[assetKey]);
-                }
-              }
+      const targets = [];
+      
+      (function addTextureToTarget (obj, parentKey) {
+        Object.keys(obj).forEach((key) => {
+          if (typeof obj[key] === 'string') {
+            targets.push({
+              'assetType': 'texture',
+              'textureType': key,
+              'key': obj[key]
             });
-    
-            resolve(results);
-          })
+          } else if (typeof obj[key] === 'object') {
+            addTextureToTarget(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
+          }
+        });
+      })(this._paths.textures[size][format]);
+
+      let results = await Promise.all(targets.map((target) => {
+        return this._loader.loadAsset(target);
+      }));
+
+      console.log('textures are loaded  ------', results);
+      
+      results.forEach((result) => {
+
+        const assetType = result['assetType'];
+        const textureType = result['textureType'];
+        const assetKey = result['key'];
+  
+        if ('texture' === assetType) {
+          if (this._isWithLabel()) {
+            if (-1 < assetKey.toLowerCase().indexOf('forlabel')) {
+              this.updateTexture(this._textures[size][format][Vinyl.Part.LABEL][textureType], this._loader.assets[assetKey]);
+            } else {
+              this.updateTexture(this._textures[size][format][Vinyl.Part.VINYL][textureType], this._loader.assets[assetKey]);
+            }
+          } else {
+            this.updateTexture(this._textures[size][format][textureType], this._loader.assets[assetKey]);
+          }
+        }
       });
+
+      return results;
     }
 
     //--------------------------------------------------------------
-    _loadModel(size, format) {
+    async _loadModel(size, format) {
 
-      return new Promise((resolve, reject) => {
+      await this._loadTextures(size, format);
 
-        this._loadTextures(size, format)
-          .then((results) => {
-            return this._loader.loadAsset({
-              'assetType': 'model',
-              'key': this._paths.models[size][format]
-            });
-          })
-          // モデルをロード
-          .then((result) => {
-            console.log('model is loaded  ------', result);
-            
-            const assetType = result['assetType'];
-            const assetKey = result['key'];
-
-            if ('model' === assetType) {
-              const obj = this._loader.assets[assetKey];
-
-              if (!obj.initialized) {
-                console.log('model is not initialized', assetKey);
-                const scale = 5.5;  
-                const assetName = 'vinyl-' + size + '-' + format;
-
-                obj.assetName = assetName;
-                obj.scene.assetName = assetName;
-              
-                if (this._textures[size][format]) {
-                  this._textures[size][format].assetName = assetName;
-                }
-      
-                obj.scene.scale.set(scale, scale, scale);
-              } // finish initializing
-
-              console.log('model is initialized', assetKey);
-
-              this.initMaterial(obj, this._textures[size][format]);
-
-              let position = new THREE.Vector3(0, 0, 0);
-              
-              if (this._currentObject) {
-                position = this._currentObject.position;
-
-                this.removeFromContainer();
-                this.dispose();
-              }
-
-              this._currentObject = obj.scene.clone();
-
-              this._currentObject.traverse((child) => {
-                if (child instanceof THREE.Mesh) {
-                  child.material.opacity = 0;
-                }
-              });
-
-              this._setVinylScale(0.99);
-              this.updateBoundingBox();
-              this.setOffsetY(this._offsetY);
-              this.setVisibility(this._visibility);
-              this.setFrontSleevePositionAndAngle(this._basePosition, this._gatefoldAngle);
-              
-              this._container.add(this._currentObject);
-              this._currentObject.position.set(position.x, position.y, position.z);
-          
-              // this.setOpacity(this._material.opacity, 1000, 250);
-
-              obj.initialized = true;
-            }
-
-            resolve(this);
-          });
+      let result = await this._loader.loadAsset({
+        'assetType': 'model',
+        'key': this._paths.models[size][format]
       });
+
+      // モデルをロード
+      console.log('model is loaded  ------', result);
+      
+      const assetType = result['assetType'];
+      const assetKey = result['key'];
+
+      if ('model' === assetType) {
+        const obj = this._loader.assets[assetKey];
+
+        if (!obj.initialized) {
+          console.log('model is not initialized', assetKey);
+          const scale = 5.5;  
+          const assetName = 'vinyl-' + size + '-' + format;
+
+          obj.assetName = assetName;
+          obj.scene.assetName = assetName;
+        
+          if (this._textures[size][format]) {
+            this._textures[size][format].assetName = assetName;
+          }
+
+          obj.scene.scale.set(scale, scale, scale);
+        } // finish initializing
+
+        console.log('model is initialized', assetKey);
+
+        this.initMaterial(obj, this._textures[size][format]);
+
+        let position = new THREE.Vector3(0, 0, 0);
+        
+        if (this._currentObject) {
+          position = this._currentObject.position;
+
+          this.removeFromContainer();
+          this.dispose();
+        }
+
+        this._currentObject = obj.scene.clone();
+
+        this._currentObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.material.opacity = 0;
+          }
+        });
+
+        this._setVinylScale(0.99);
+        this.updateBoundingBox();
+        this.setOffsetY(this._offsetY);
+        this.setVisibility(this._visibility);
+        this.setFrontSleevePositionAndAngle(this._basePosition, this._gatefoldAngle);
+        
+        this._container.add(this._currentObject);
+        this._currentObject.position.set(position.x, position.y, position.z);
+    
+        obj.initialized = true;
+      }
+
+      return this;
     }
 
     //--------------------------------------------------------------

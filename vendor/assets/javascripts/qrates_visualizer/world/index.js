@@ -76,7 +76,7 @@
       this._renderer.setSize(this._width, this._height);
       this._renderer.autoClear = false;
       this._renderer.setClearColor(0, 0.0);
-      this._renderer.sortObjects = false;
+      // this._renderer.sortObjects = false;
   
       this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
   
