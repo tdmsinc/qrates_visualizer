@@ -107,9 +107,9 @@
       loadModels: this.loadModels,
       loadTextures: this.loadTextures
     }, (err, assets) => {
-      new World(this, assets, this.opts)
+      this.world = new World(this, assets, this.opts);
+      this.world.setup()
         .then((world) => {
-          this.world = world;
           this.world.startRender();
           el.appendChild(this.world.getRenderer().domElement);
           
