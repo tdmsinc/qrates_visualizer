@@ -360,8 +360,7 @@
       });
   
       sleeveVisibilityController.onChange(function (value) {
-        self.setSleeveVisibility(value, null, function () {
-        });
+        self._sleeve.setVisibility(value);
       });
   
       firstVinylVisibilityController.onChange(function (value) {
@@ -538,14 +537,6 @@
     };
   
     //--------------------------------------------------------------
-    setSleeveVisibility(yn, opts, callback) {
-  
-      this._sleeve.setVisibility(yn);
-  
-      if (callback) callback();
-    };
-  
-    //--------------------------------------------------------------
     async setSize(size, opts, callback) {
   
       if (!size) {
@@ -653,24 +644,6 @@
     };
   
     //--------------------------------------------------------------
-    rotateHorizontal(degrees) {
-      console.log('World::rotateHorizontal', degrees);
-  
-      // this._controls.rotateLeft(degrees * (Math.PI / 180));
-      // this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(0, 0));
-      // this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(30, 0));
-    };
-  
-    //--------------------------------------------------------------
-    rotateVertical(degrees) {
-      console.log('World::rotateVertical', degrees);
-  
-      // this._controls.rotateUp(degrees * (Math.PI / 180));
-      // this._controls.rotateStart.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2));
-      // this._controls.rotateEnd.copy(this._controls.getMouseProjectionOnBall(this._width / 2, this._height / 2 + 6 * degrees));
-    };
-  
-    //--------------------------------------------------------------
     cover(value, opts) {
   
       const self = this;
@@ -767,7 +740,6 @@
   
     //--------------------------------------------------------------
     capture(callback) {
-      console.log('World::capture');
       let image = new Image();
       image.src = this._renderer.domElement.toDataURL('image/png');
       image.onload = function () {
@@ -928,7 +900,7 @@
           break;
         case 21:
           this.setPerspective();
-          this.setSleeveVisibility(true);
+          this._sleeve.setVisibility(true);
           this.setCameraPosition(190 * 0.8, 259 * 0.8, 226 * 0.8, { duration: opts.duration });
           this.cover(0.25, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.5, { duration: opts.duration, index: Vinyl.Index.SECOND });
@@ -937,7 +909,7 @@
           break;
         case 22:
           this.setPerspective();
-          this.setSleeveVisibility(true);
+          this._sleeve.setVisibility(true);
           this.setCameraPosition(-250, 260, 260, { duration: opts.duration });
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
@@ -946,7 +918,7 @@
           break;
         case 23:
           this.setOrthographic();
-          this.setSleeveVisibility(true);
+          this._sleeve.setVisibility(true);
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
           this._camera.position.set(-75, 500, 10);
@@ -955,7 +927,7 @@
           break;
         case 24:
           this.setOrthographic();
-          this.setSleeveVisibility(true);
+          this._sleeve.setVisibility(true);
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
           this._camera.position.set(-75, -500, -10);
@@ -964,7 +936,7 @@
           break;
         case 25:
           this.setOrthographic();
-          this.setSleeveVisibility(true);
+          this._sleeve.setVisibility(true);
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
           this._camera.position.set(0, 500, 10);
@@ -973,7 +945,7 @@
           break;
         case 26:
           this.setOrthographic();
-          this.setSleeveVisibility(true);
+          this._sleeve.setVisibility(true);
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
           this._camera.position.set(0, -500, -10);
@@ -982,7 +954,7 @@
           break;
         case 27:
           this.setOrthographic();
-          this.setSleeveVisibility(false);
+          this._sleeve.setVisibility(false);
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
           this._camera.position.set(0, 400, 10);
@@ -992,7 +964,7 @@
           break;
         case 28:
           this.setOrthographic();
-          this.setSleeveVisibility(false);
+          this._sleeve.setVisibility(false);
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
           this._camera.position.set(0, -328, -10);
@@ -1002,7 +974,7 @@
           break;
         case 29:
           this.setOrthographic();
-          this.setSleeveVisibility(false);
+          this._sleeve.setVisibility(false);
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
           this._camera.position.set(-75, 500, 10);
@@ -1016,7 +988,6 @@
   
     //--------------------------------------------------------------
     startRender() {
-      console.log('World::startRender', this._request);
       if (!this._request) {
         this._isRendering = true;
         this._request = requestAnimationFrame(this.draw.bind(this));
@@ -1025,19 +996,13 @@
       return this;
     };
 
+    //--------------------------------------------------------------
     resumeRender() {
-      console.log('World::startRender', this._request);
-      if (!this._request) {
-        this._isRendering = true;
-        this._request = requestAnimationFrame(this.draw.bind(this));
-      }
-
-      return this;
+      startRender();
     };
   
     //--------------------------------------------------------------
     stopRender() {
-      console.log('World::stopRender', this._request);
       if (this._request) {
         this._isRendering = false;
         this._request = cancelAnimationFrame(this._request);
@@ -1090,186 +1055,10 @@
     registerPreset(type, fn) {
       if (this._presets[type]) {
         console.warn('Preset %s is already registered. Overwritten.', type);
-      } console.log('registerPreset');
+      }
+
       this._presets[type] = fn;
       return this;
-    };
-  
-    //--------------------------------------------------------------
-    onVinylColorFormatChanged(target, colorFormat) {
-  
-      if (-1 === Object.values(Vinyl.ColorFormat).indexOf(colorFormat)) {
-        console.warn('World.onVinylColorFormatChanged: unknown value "' + colorFormat + '" for vinyl color format');
-        return;
-      }
-  
-      target.setColorFormat(colorFormat);
-    };
-  
-    //--------------------------------------------------------------
-    onVinylSizeChanged(target, size) {
-  
-      // to string
-      size += '';
-  
-      if (!size) {
-        console.warn('World.onVinylSizeChanged: no size value passed');
-        return;
-      }
-  
-      if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
-        console.error('Unknown vinyl size "' + size + '"');
-        return;
-      }
-  
-      target.setSize(size);
-  
-      const firstVinylSize = this._convertSizeToNumber(this._vinyls[0].getSize());
-      const secondVinylSize = firstVinylSize;
-  
-      if (1 < this._vinyls.length) {
-        secondVinylSize = this._convertSizeToNumber(this._vinyls[1].getSize());
-      }
-  
-      const largerSize = Math.max(firstVinylSize, secondVinylSize);
-  
-      let sleeveSize;
-      let scale;
-  
-      switch (largerSize) {
-        case 7:
-          sleeveSize = Sleeve.Size.SIZE_7;
-          scale = 1;
-          break;
-        case 10:
-          sleeveSize = Sleeve.Size.SIZE_10;
-          scale = 0.6890566038;
-          break;
-        case 12:
-          sleeveSize = Sleeve.Size.SIZE_12;
-          scale = 0.5833865815;
-          break;
-      }
-  
-      this._containerObject.scale.set(scale, scale, scale);
-      this._sleeve.setSize(sleeveSize);
-    };
-  
-    //--------------------------------------------------------------
-    onVinylColorChanged(target, color) {
-  
-      target.setColor(Object.keys(Vinyl.Color)[color]);
-    };
-  
-    //--------------------------------------------------------------
-    onVinylWeightChanged(target, weight) {
-  
-      target.setWeight(weight);
-    };
-  
-    //--------------------------------------------------------------
-    onLabelOptionChanged(target, value) {
-  
-      if (value === true) {
-        target.enableLabel();
-      } else {
-        target.disableLabel();
-      }
-    };
-  
-    //--------------------------------------------------------------
-    onVinylSpeedChanged(target, rpm) {
-  
-      target.setRPM(rpm);
-    };
-  
-    //--------------------------------------------------------------
-    onVinylAlphaMapChanged(target, image) {
-  
-      target.setAlphaMap(image);
-    };
-  
-    //--------------------------------------------------------------
-    onVinylAoMapChanged(target, image) {
-  
-      target.setAoMap(image);
-    };
-  
-    //--------------------------------------------------------------
-    onVinylBumpMapChanged(target, image) {
-  
-      target.setBumpMap(image);
-    };
-  
-    //--------------------------------------------------------------
-    onVinylColorMapChanged(target, image) {
-  
-      target.setColorMap(image);
-    };
-  
-    //--------------------------------------------------------------
-    onLabelAoMapChanged(target, image) {
-  
-      target.setLabelAoMap(image);
-    };
-  
-    //--------------------------------------------------------------
-    onLabelBumpMapChanged(target, image) {
-  
-      target.setLabelBumpMap(image);
-    };
-  
-    //--------------------------------------------------------------
-    onLabelColorMapChanged(target, image) {
-  
-      target.setLabelColorMap(image);
-    };
-  
-    //--------------------------------------------------------------
-    onSleeveSizeChanged(value) {
-  
-      this._sleeve.setSize(value);
-  
-      if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
-        this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), this._sleeve.getCurrentGatefoldAngle() * 2);
-        this._vinyls[1].setOffsetY(this._containerObject.getObjectByName('Back').getWorldPosition().y);
-      }
-    };
-  
-    //--------------------------------------------------------------
-    onSleeveFinishChanged(value) {
-  
-      this._sleeve.setFinish(value);
-    };
-  
-    //--------------------------------------------------------------
-    onSleeveColorMapChanged(value) {
-  
-      if (!value) {
-        return;
-      }
-  
-      this._sleeve.setColorMap(value);
-    };
-  
-    //--------------------------------------------------------------
-    onSleeveAoMapChanged(value) {
-  
-      if (!value) {
-        return;
-      }
-  
-      this._sleeve.setAoMap(value);
-    };
-  
-    //--------------------------------------------------------------
-    onSleeveBumpMapChanged(value) {
-  
-      if (!value) {
-        return;
-      }
-  
-      this._sleeve.setBumpMap(value);
     };
   
     //--------------------------------------------------------------
@@ -1383,20 +1172,8 @@
       }
 
       await this._sleeve.setOpacity(1.0, 100);
-      
+
       return this;
-    };
-  
-    //--------------------------------------------------------------
-    _convertSizeToNumber(size) {
-  
-      if (Vinyl.Size.SIZE_7_SMALL_HOLE === size || Vinyl.Size.SIZE_7_LARGE_HOLE === size || Sleeve.Size.SIZE_7 === size) {
-        return 7;
-      } else if (Vinyl.Size.SIZE_10 === size) {
-        return 10;
-      } else if (Vinyl.Size.SIZE_12 === size) {
-        return 12;
-      }
     };
   }
 

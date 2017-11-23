@@ -993,7 +993,7 @@
     }
   
     //--------------------------------------------------------------
-    setVisibility(yn, opts, callback) {
+    setVisibility(yn, opts) {
   
       this._currentObject.visible = yn;
     }
