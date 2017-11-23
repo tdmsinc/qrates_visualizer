@@ -546,11 +546,10 @@
     };
   
     //--------------------------------------------------------------
-    setSize(size, opts, callback) {
+    async setSize(size, opts, callback) {
   
       if (!size) {
-        console.warn('World.onVinylSizeChanged: no size value passed');
-        return Promise.reject('World.onVinylSizeChanged: no size value passed');
+        throw new Error('World.onVinylSizeChanged: no size value passed');
       }
   
       // to string
@@ -561,91 +560,80 @@
       }
   
       if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
-        console.error('Unknown vinyl size "' + size + '"');
-        return Promise.reject('Unknown vinyl size "' + size + '"');
+        throw new Error('Unknown vinyl size "' + size + '"');
       }
       
-      return new Promise((resolve, reject) => {
-        switch (size) {
-          case '7':
-          case '7S':
-          case '7L':
-            sleeveSize = Sleeve.Size.SIZE_7;
-            scale = this._objectScales['7'];
-            break;
-          case '10':
-            sleeveSize = Sleeve.Size.SIZE_10;
-            scale = this._objectScales['10'];
-            break;
-          case '12':
-            sleeveSize = Sleeve.Size.SIZE_12;
-            scale = this._objectScales['12'];
-            break;
-        }
-    
-        Promise.all([
-          this._vinyls[0].setOpacity(0, 300, 0),
-          this._vinyls[1].setOpacity(0, 300, 0),
-          this._sleeve.setOpacity(0, 300, 0),
-        ])
-          .then(() => {
-            console.log('setSize: fade out');
-            return Promise.all([
-              this._vinyls[0].loadModelForSize(size),
-              this._vinyls[1].loadModelForSize(size),
-              this._sleeve.loadModelForSize(sleeveSize)
-            ])
-          })
-          .then((results) => {
-            return Promise.all([
-              this._vinyls[0].setSize(size),
-              this._vinyls[1].setSize(size),
-              this._sleeve.setSize(sleeveSize, scale)
-            ]);
-          })
-          .then(() => {
-            this._containerObject.scale.set(scale, scale, scale);
-            
-            const format = this._sleeve.getFormat();
-            console.log('size changed', this._sleeve.getSize(), this._sleeve.getFormat());
-            
+      let sleeveSize, scale;
+      
+      switch (size) {
+        case '7':
+        case '7S':
+        case '7L':
+          sleeveSize = Sleeve.Size.SIZE_7;
+          scale = this._objectScales['7'];
+          break;
+        case '10':
+          sleeveSize = Sleeve.Size.SIZE_10;
+          scale = this._objectScales['10'];
+          break;
+        case '12':
+          sleeveSize = Sleeve.Size.SIZE_12;
+          scale = this._objectScales['12'];
+          break;
+      }
   
-            if (Sleeve.Format.SINGLE === format || Sleeve.Format.SINGLE_WITHOUT_SPINE === format) {
-              this._vinyls[0].setCoveredRatio(0, 0, 0);
-              this._vinyls[1].setCoveredRatio(0, 0, 0);
-              this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
-            } else {
-              let firstOffsetY, secondOffsetY;
-              
-              if (Sleeve.Format.GATEFOLD === format) {
-                firstOffsetY = 0.08;
-                secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
-    
-                if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
-                  secondOffsetY += 0.15;
-                }
-    
-                this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
-              } else if (Sleeve.Format.DOUBLE === format) {
-                firstOffsetY = 0.6;
-                secondOffsetY = -0.6;
-              }
-  
-              this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
-              this._vinyls[1].setCoveredRatio(this._vinyls[0].getCoveredRatio() * 2, 0, secondOffsetY);
-            }
-  
-            this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 250, 100);
-            this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 250, 100);
-            this._sleeve.setOpacity(1.0, 250, 100);
-  
-            resolve();
-  
-            if (callback) callback();
-          });
-    
+      await Promise.all([
+        this._vinyls[0].setOpacity(0, 300, 0),
+        this._vinyls[1].setOpacity(0, 300, 0),
+        this._sleeve.setOpacity(0, 300, 0),
+      ]);
+
+      await Promise.all([
+        this._vinyls[0].loadModelForSize(size),
+        this._vinyls[1].loadModelForSize(size),
+        this._sleeve.loadModelForSize(sleeveSize)
+      ]);
+
+      await Promise.all([
+        this._vinyls[0].setSize(size),
+        this._vinyls[1].setSize(size),
+        this._sleeve.setSize(sleeveSize, scale)
+      ]);
+
+      this._containerObject.scale.set(scale, scale, scale);
+      
+      const format = this._sleeve.getFormat();      
+
+      if (Sleeve.Format.SINGLE === format || Sleeve.Format.SINGLE_WITHOUT_SPINE === format) {
+        this._vinyls[0].setCoveredRatio(0, 0, 0);
+        this._vinyls[1].setCoveredRatio(0, 0, 0);
+        this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
+      } else {
+        let firstOffsetY, secondOffsetY;
         
-      });
+        if (Sleeve.Format.GATEFOLD === format) {
+          firstOffsetY = 0.08;
+          secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+          if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
+            secondOffsetY += 0.15;
+          }
+
+          this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
+        } else if (Sleeve.Format.DOUBLE === format) {
+          firstOffsetY = 0.6;
+          secondOffsetY = -0.6;
+        }
+
+        this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
+        this._vinyls[1].setCoveredRatio(this._vinyls[0].getCoveredRatio() * 2, 0, secondOffsetY);
+      }
+
+      this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 250, 100);
+      this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 250, 100);
+      this._sleeve.setOpacity(1.0, 250, 100);
+
+      return this;
     };
   
     //--------------------------------------------------------------
@@ -1285,12 +1273,12 @@
     };
   
     //--------------------------------------------------------------
-    setSleeveFormat(format) {
+    async setSleeveFormat(format) {
   
       let lastFormat = this._sleeve.getFormat();
   
       if (lastFormat === format) {
-        return Promise.resolve(lastFormat);
+        return lastFormat;
       }
   
       let coveredRatio = 0.0;
@@ -1301,116 +1289,102 @@
         coveredRatio = this._vinyls[0].getCoveredRatio();
       }
   
-      return new Promise((resolve, reject) => {
-        
-        this._sleeve.setOpacity(0.0, 250)
-          .then(() => {
-            return this._sleeve.setFormat(format);
-          })
-          .then((sleeve) => {
-  
-            this._vinyls.forEach(function (vinyl) {
-              vinyl.setFrontSleevePositionAndAngle(new THREE.Vector3(), 0);
-            });
-            
-            let newFormat = this._sleeve.getFormat();
-  
-            let firstOffsetY, secondOffsetY;
-  
-            if (Sleeve.Format.GATEFOLD === newFormat) {
-              firstOffsetY = 0.08;
-              secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
-  
-              if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
-                secondOffsetY += 0.15;
-              }
-            } else if (Sleeve.Format.DOUBLE === newFormat) {
-              firstOffsetY = 0.6;
-              secondOffsetY = -0.6;
-            } else {
-              firstOffsetY = 0.0;
-              secondOffsetY = 0.0;
-            }
-  
-            if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
-              if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
-                this._vinyls[1].setVisibility(false);
-                this._vinyls[0].setCoveredRatio(0, 0, firstOffsetY);
-                this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
-              } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
-  
-                let opts = this._vinyls[0].getCurrentProperties();
-                opts.index = Vinyl.Index.SECOND;
-  
-                this._vinyls[1].copy(this._vinyls[0])
-                  .then(() => {
-                    this._vinyls[1].setVisibility(true);
-  
-                    this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 1000, 250);
-                    this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 1000, 250);
-                    
-                    this._vinyls[0].setCoveredRatio(this._sleeve.getCoveredRatio(), 0, firstOffsetY);
-                    this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
-                    this._sleeve.setCoveredRatio(0);
-                  });
-              }
-            } else if (Sleeve.Format.DOUBLE === lastFormat || Sleeve.Format.GATEFOLD === lastFormat) {
-              if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
-                this._sleeve.setCoveredRatio(this._vinyls[0].getCoveredRatio());
-  
-                this._vinyls[1].setVisibility(false);
-                this._vinyls[0].setCoveredRatio(0, 0, firstOffsetY);
-              } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
-                this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
-                this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
-              }
-            }
-  
-            return this._sleeve.setOpacity(1.0, 250);
-          })
-          .then(() => {
-            resolve(this._sleeve.getFormat());
-          });;
+      await this._sleeve.setOpacity(0.0, 250);
+      await this._sleeve.setFormat(format);
+
+      this._vinyls.forEach(function (vinyl) {
+        vinyl.setFrontSleevePositionAndAngle(new THREE.Vector3(), 0);
       });
+      
+      let newFormat = this._sleeve.getFormat();
+
+      let firstOffsetY, secondOffsetY;
+
+      if (Sleeve.Format.GATEFOLD === newFormat) {
+        firstOffsetY = 0.08;
+        secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+        if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
+          secondOffsetY += 0.15;
+        }
+      } else if (Sleeve.Format.DOUBLE === newFormat) {
+        firstOffsetY = 0.6;
+        secondOffsetY = -0.6;
+      } else {
+        firstOffsetY = 0.0;
+        secondOffsetY = 0.0;
+      }
+
+      if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
+        if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
+          this._vinyls[1].setVisibility(false);
+          this._vinyls[0].setCoveredRatio(0, 0, firstOffsetY);
+          this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
+        } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
+
+          let opts = this._vinyls[0].getCurrentProperties();
+          opts.index = Vinyl.Index.SECOND;
+
+          await this._vinyls[1].copy(this._vinyls[0])
+           
+          this._vinyls[1].setVisibility(true);
+          
+          this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 1000, 250);
+          this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 1000, 250);
+          
+          this._vinyls[0].setCoveredRatio(this._sleeve.getCoveredRatio(), 0, firstOffsetY);
+          this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
+          this._sleeve.setCoveredRatio(0);
+        }
+      } else if (Sleeve.Format.DOUBLE === lastFormat || Sleeve.Format.GATEFOLD === lastFormat) {
+        if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
+          this._sleeve.setCoveredRatio(this._vinyls[0].getCoveredRatio());
+
+          this._vinyls[1].setVisibility(false);
+          this._vinyls[0].setCoveredRatio(0, 0, firstOffsetY);
+        } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
+          this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
+          this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
+        }
+      }
+
+      await this._sleeve.setOpacity(1.0, 250);
+
+      return this._sleeve.getFormat();
     };
   
     //--------------------------------------------------------------
-    setSleeveHole(yn) {
+    async setSleeveHole(yn) {
   
       if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
-        return Promise.resolve();
+        return this;
       }
   
-      return new Promise((resolve, reject) => {
-        this._sleeve.setHole(yn)
-          .then((sleeve) => {
-  
-            let sleeveFormat = this._sleeve.getFormat();
-            let firstOffsetY, secondOffsetY;
-  
-            let coveredRatio = 0.0;
-  
-            if (Sleeve.Format.DOUBLE === sleeveFormat) {
-              firstOffsetY = 0.6;
-              secondOffsetY = -0.6;
-            } else {
-              firstOffsetY = 0.0;
-              secondOffsetY = 0.0;
-            }
-  
-            if (Sleeve.Format.SINGLE_WITHOUT_SPINE === sleeveFormat || Sleeve.Format.SINGLE === sleeveFormat) {
-              this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
-            } else if (Sleeve.Format.DOUBLE === sleeveFormat) {
-              this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
-              this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
-            }
-  
-            return this._sleeve.setOpacity(1.0, 100);
-          })
-          .then(() => {
-            resolve();
-          });
-      });
+      await this._sleeve.setHole(yn);
+
+      let sleeveFormat = this._sleeve.getFormat();
+      let firstOffsetY, secondOffsetY;
+
+      let coveredRatio = 0.0;
+
+      if (Sleeve.Format.DOUBLE === sleeveFormat) {
+        firstOffsetY = 0.6;
+        secondOffsetY = -0.6;
+      } else {
+        firstOffsetY = 0.0;
+        secondOffsetY = 0.0;
+      }
+
+      if (Sleeve.Format.SINGLE_WITHOUT_SPINE === sleeveFormat || Sleeve.Format.SINGLE === sleeveFormat) {
+        this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
+      } else if (Sleeve.Format.DOUBLE === sleeveFormat) {
+        this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
+        this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
+      }
+
+      await this._sleeve.setOpacity(1.0, 100);
+      
+      return this;
     };
   
     //--------------------------------------------------------------
