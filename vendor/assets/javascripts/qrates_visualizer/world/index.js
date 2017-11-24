@@ -70,7 +70,7 @@
       this._renderer.setSize(this._width, this._height);
       this._renderer.autoClear = false;
       this._renderer.setClearColor(0, 0.0);
-      // this._renderer.sortObjects = false;
+      this._renderer.sortObjects = false;
   
       this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
   
@@ -174,9 +174,6 @@
       if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === this._opts.defaults.sleeve.format || Sleeve.Format.SINGLE === this._opts.defaults.sleeve.format)) {
         this._vinyls[1].setVisibility(false);
       }
-
-      this._vinyls[0].setRenderOrder(0);
-      this._vinyls[1].setRenderOrder(1);
 
       return this;
     }
@@ -1081,12 +1078,29 @@
       }
   
       if (0 < this._vinyls.length) {
+        if (0 < this._camera.getWorldDirection().y) {
+          this._vinyls[0].setTransparent(false);
+          this._vinyls[1].setTransparent(true);
+
+          this._vinyls[0].setRenderOrder(2);
+          this._vinyls[1].setRenderOrder(1);
+        } else {
+          this._vinyls[0].setTransparent(true);
+          this._vinyls[1].setTransparent(false);
+
+          this._vinyls[0].setRenderOrder(1);
+          this._vinyls[1].setRenderOrder(2);
+        }
+        
+
         this._vinyls.forEach(function (vinyl) {
           vinyl.update();
         });
       }
   
       this._controls.update();
+
+      // console.log('direction', this._camera.getWorldDirection());
     };
   
     //--------------------------------------------------------------

@@ -384,7 +384,7 @@
       this._gatefoldAngle = 0;
       this._coveredRatio = 0;
       this._basePosition = new THREE.Vector3();
-      this._transparent = opts.transparent;
+      this._transparent = false;
       this._side = opts.side || THREE.FrontSide;
   
       // weight と label の組み合わせで format を決定する
@@ -464,12 +464,10 @@
           child.material.color = this._material.color;
           child.material.opacity = this._material.opacity;
           child.material.specular = new THREE.Color(0x363636);
-          child.material.transparent = true;
-          // child.material.transparent = this._transparent;
+          child.material.transparent = this._transparent;
           child.material.shading = THREE.SmoothShading;
           child.material.side = this._side;
           child.material.envMap = this._envMapTexture;
-          // child.renderOrder = 0;
 
           if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {          
             if (Vinyl.Part.VINYL === child.name) {
@@ -562,6 +560,23 @@
       });
 
       return model;
+    }
+
+    //--------------------------------------------------------------
+    setTransparent(value /* boolean */) {
+
+      if (this._transparent === value) {
+        return;
+      }
+
+      this._transparent = value;
+
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          child.material.transparent = value;
+          child.material.needsUpdate = true;
+        }
+      });
     }
 
     //--------------------------------------------------------------
