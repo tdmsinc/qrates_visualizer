@@ -429,6 +429,7 @@
       opts.duration = undefined === opts.duration ? 1000 : opts.duration;
   
       new TWEEN.Tween(this._camera.position)
+        .stop()
         .to({ x: tx, y: ty, z: tz }, opts.duration)
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(() => {
@@ -797,6 +798,8 @@
       };
   
       opts.duration = undefined !== opts.duration ? opts.duration : 2000;
+
+      let reset = true;
   
       switch (Number(type)) {
         case 0:  // for capture rendered image
@@ -806,7 +809,11 @@
           this.flip();
           this.cover(0.25, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.5, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 1:
           this.setCameraPosition(62, 94, 105, opts, callback); // item detail rotation 1
@@ -814,7 +821,11 @@
           this.flip();
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 2:
           this.setCameraPosition(0.01, 365, 10, opts, callback); // item detail rotation 2
@@ -822,7 +833,11 @@
           this.flip();
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 3:
           this.setCameraPosition(0.01, 365, 50, opts, callback); // item detail rotation 3
@@ -830,7 +845,11 @@
           this.flip();
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 4:
           this.setCameraPosition(0.01, 345, 400, opts, callback); // item detail rotation 4
@@ -838,7 +857,11 @@
           this.flip();
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 5:
           this.setCameraPosition(0.01, 345, 400, opts, callback); // item detail rotation 5
@@ -846,19 +869,35 @@
           this.flip();
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 6:
           this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation 6
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 7:
           this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation 7
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 8:
           this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation 8
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 9:
           this.setCameraPosition(148, 201, 175, opts, callback); // item detail rotation 9
@@ -866,37 +905,61 @@
           this.flip();
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 10:
           this.setCameraPosition(0, 436, 1, opts, callback); // vinyl Side A
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 11:
           this.setCameraPosition(0, 170, 1, opts, callback); // label Side A
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 12:
           this.setCameraPosition(0, -170, -1, opts, callback); // label Side B
           this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 13:
           this.setCameraPosition(0, 400, 1, opts, callback); // sleeve Front
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 14:
           this.setCameraPosition(0, -400, -1, opts, callback); // sleeve Back
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
           this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.reset();
+          
+          if (reset) {
+            this._controls.reset();
+          }
+
           break;
         case 21:
           this.setPerspective();
