@@ -161,10 +161,10 @@
       this._presets = {};
       this.registerPresets();
 
+      this.initGui();
+
       this.createLights();
       this._scene.add(this._containerObject);
-
-      this.initGui();
 
       if (this._opts.defaults.hasOwnProperty('view')) {
         this.updateView(this._opts.defaults.view, { duration: 0 });
@@ -197,6 +197,26 @@
       let ambientLight = new THREE.AmbientLight(0x0D0D0D, 6.73);
       this._scene.add(ambientLight);
       
+      if (!this.gui) {
+        this.gui = new window.dat.GUI();
+      }
+
+      let lightParamsFolder = this.gui.addFolder('lights');
+
+      let topSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - top');
+      topSpotLightParamsFolder.add(spotLight_top, 'intensity', 0, 1);
+      topSpotLightParamsFolder.add(spotLight_top.position, 'x', -2000, 2000);
+      topSpotLightParamsFolder.add(spotLight_top.position, 'y', -2000, 2000);
+      topSpotLightParamsFolder.add(spotLight_top.position, 'z', -2000, 2000);
+
+      let bottomSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - bottom');
+      bottomSpotLightParamsFolder.add(spotLight_bottom, 'intensity', 0, 1);
+      bottomSpotLightParamsFolder.add(spotLight_bottom.position, 'x', -2000, 2000);
+      bottomSpotLightParamsFolder.add(spotLight_bottom.position, 'y', -2000, 2000);
+      bottomSpotLightParamsFolder.add(spotLight_bottom.position, 'z', -2000, 2000);
+
+      let ambientLightParamsFolder = lightParamsFolder.addFolder('ambient light');
+      ambientLightParamsFolder.add(ambientLight, 'intensity', 0, 10);
     };
   
     //--------------------------------------------------------------
@@ -288,36 +308,38 @@
         }
       };
   
-      const gui = this.gui = new window.dat.GUI();
-      const renderController = gui.add(props, 'render');
-      const rotationController = gui.add(props, 'rotate');
-      const coveredRatioController = gui.add(props, 'covered ratio 1', 0.0, 1.2);
-      const secondCoveredRatioController = gui.add(props, 'covered ratio 2', 0.0, 1.2);
-      const sleeveRotationController = gui.add(props, 'sleeve rot', 0, 90);
-      const sleeveFrontRotationController = gui.add(props, 'sleeve front rot', 0, 90);
-      const sleeveBackRotationController = gui.add(props, 'sleeve back rot', 0, 90);
-      const sleeveVisibilityController = gui.add(props, 'sleeve visibility');
-      const firstVinylVisibilityController = gui.add(props, 'vinyl 1 visibility');
-      const secondVinylVisibilityController = gui.add(props, 'vinyl 2 visibility');
-      const captureController = gui.add(temp, 'capture');
-      const zoomController = gui.add(props, 'zoom', 0, 400);
-      const vinylOffsetYController = gui.add(props, 'vinyl offsetY', 0.0, 2.0);
-      const cameraXController = gui.add(cameraProps, 'x', -1000.0, 1000.0);
-      const cameraYController = gui.add(cameraProps, 'y', -1000.0, 1000.0);
-      const cameraZController = gui.add(cameraProps, 'z', -1000.0, 1000.0);
-      const sleeveBumpScaleController = gui.add(props, 'sleeve bump', 0, 1.0);
-      const vinylBumpScaleController = gui.add(props, 'vinyl bump', 0, 1.0);
-      const sleeveAoController = gui.add(props, 'sleeve ao', 0.0, 1.0);
-      const vinylAoController = gui.add(props, 'vinyl ao', 0.0, 1.0);
+      this.gui = new window.dat.GUI();
+
+      let generalParamsFolder = this.gui.addFolder('general');
+      const renderController = generalParamsFolder.add(props, 'render');
+      const rotationController = generalParamsFolder.add(props, 'rotate');
+      const coveredRatioController = generalParamsFolder.add(props, 'covered ratio 1', 0.0, 1.2);
+      const secondCoveredRatioController = generalParamsFolder.add(props, 'covered ratio 2', 0.0, 1.2);
+      const sleeveRotationController = generalParamsFolder.add(props, 'sleeve rot', 0, 90);
+      const sleeveFrontRotationController = generalParamsFolder.add(props, 'sleeve front rot', 0, 90);
+      const sleeveBackRotationController = generalParamsFolder.add(props, 'sleeve back rot', 0, 90);
+      const sleeveVisibilityController = generalParamsFolder.add(props, 'sleeve visibility');
+      const firstVinylVisibilityController = generalParamsFolder.add(props, 'vinyl 1 visibility');
+      const secondVinylVisibilityController = generalParamsFolder.add(props, 'vinyl 2 visibility');
+      const captureController = generalParamsFolder.add(temp, 'capture');
+      const zoomController = generalParamsFolder.add(props, 'zoom', 0, 400);
+      const vinylOffsetYController = generalParamsFolder.add(props, 'vinyl offsetY', 0.0, 2.0);
+      const cameraXController = generalParamsFolder.add(cameraProps, 'x', -1000.0, 1000.0);
+      const cameraYController = generalParamsFolder.add(cameraProps, 'y', -1000.0, 1000.0);
+      const cameraZController = generalParamsFolder.add(cameraProps, 'z', -1000.0, 1000.0);
+      const sleeveBumpScaleController = generalParamsFolder.add(props, 'sleeve bump', 0, 1.0);
+      const vinylBumpScaleController = generalParamsFolder.add(props, 'vinyl bump', 0, 1.0);
+      const sleeveAoController = generalParamsFolder.add(props, 'sleeve ao', 0.0, 1.0);
+      const vinylAoController = generalParamsFolder.add(props, 'vinyl ao', 0.0, 1.0);
   
-      gui.add(this, 'flip');
+      generalParamsFolder.add(this, 'flip');
   
-      gui.add(temp, 'zoom in');
-      gui.add(temp, 'zoom out');
-      gui.add(temp, 'rotate horizontal');
-      gui.add(temp, 'rotate vertical');
-      gui.add(temp, 'reset');
-      gui.add(temp, 'toggle camera');
+      generalParamsFolder.add(temp, 'zoom in');
+      generalParamsFolder.add(temp, 'zoom out');
+      generalParamsFolder.add(temp, 'rotate horizontal');
+      generalParamsFolder.add(temp, 'rotate vertical');
+      generalParamsFolder.add(temp, 'reset');
+      generalParamsFolder.add(temp, 'toggle camera');
   
       renderController.onChange(function (value) {
         if (value) {
@@ -1078,21 +1100,25 @@
       }
   
       if (0 < this._vinyls.length) {
-        if (0 < this._camera.getWorldDirection().y) {
-          this._vinyls[0].setTransparent(false);
-          this._vinyls[1].setTransparent(true);
-
-          this._vinyls[0].setRenderOrder(2);
-          this._vinyls[1].setRenderOrder(1);
-        } else {
+        if (!this._vinyls[1]._visibility) {
           this._vinyls[0].setTransparent(true);
-          this._vinyls[1].setTransparent(false);
-
-          this._vinyls[0].setRenderOrder(1);
-          this._vinyls[1].setRenderOrder(2);
+          this._vinyls[0].setRenderOrder(0);
+        } else {
+          if (0 < this._camera.getWorldDirection().y) {
+            this._vinyls[0].setTransparent(false);
+            this._vinyls[1].setTransparent(true);
+  
+            this._vinyls[0].setRenderOrder(2);
+            this._vinyls[1].setRenderOrder(1);
+          } else {
+            this._vinyls[0].setTransparent(true);
+            this._vinyls[1].setTransparent(false);
+  
+            this._vinyls[0].setRenderOrder(1);
+            this._vinyls[1].setRenderOrder(2);
+          }
         }
         
-
         this._vinyls.forEach(function (vinyl) {
           vinyl.update();
         });

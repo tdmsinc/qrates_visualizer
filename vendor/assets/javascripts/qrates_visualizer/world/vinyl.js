@@ -466,7 +466,8 @@
           child.material.specular = new THREE.Color(0x363636);
           child.material.transparent = this._transparent;
           child.material.shading = THREE.SmoothShading;
-          child.material.side = this._side;
+          // child.material.side = this._side;
+          child.material.side = THREE.FrontSide;
           child.material.envMap = this._envMapTexture;
 
           if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {          
