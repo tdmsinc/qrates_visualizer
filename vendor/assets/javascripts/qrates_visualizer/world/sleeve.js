@@ -547,7 +547,7 @@
           child.material.specular = new THREE.Color(0x363636);
           child.material.shading = THREE.SmoothShading;
           child.material.transparent = false;
-          child.material.side = THREE.DoubleSide;
+          child.material.side = THREE.FrontSide;
 
           child.material.aoMap = textures['ao'] || null;
           if (child.material.aoMap) {
