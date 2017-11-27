@@ -194,7 +194,7 @@
       spotLight_bottom.position.set(159, -2000, 120);
       this._scene.add(spotLight_bottom);
   
-      let ambientLight = new THREE.AmbientLight(0x0D0D0D, 6.73);
+      let ambientLight = new THREE.AmbientLight(0x0D0D0D, 10);
       this._scene.add(ambientLight);
       
       if (!this.gui) {
