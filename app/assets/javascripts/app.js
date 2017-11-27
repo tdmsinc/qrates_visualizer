@@ -227,7 +227,10 @@ vv.on('ready', function() {
   });
 
   vm.$watch('sleeve.size', (value) => {
-    vv.setSize(value) 
+    vv.setSize(value)
+      .then(world => {
+        console.log('size changed');
+      });
   });
 
   vm.$watch('sleeve.type', function (value) {
