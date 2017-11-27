@@ -42,7 +42,7 @@
           preserveDrawingBuffer: true,
         }
       };
-        
+
       this._objectScales = {
         '7': 1,
         '10': 0.6890566038,
@@ -94,6 +94,10 @@
       this._bottomSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
       this._bottomSpotLight.position.set(159, -2000, 120);
       this._scene.add(this._bottomSpotLight);
+
+      this._sideSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
+      this._sideSpotLight.position.set(-250, 0, 0);
+      this._scene.add(this._sideSpotLight);
   
       this._ambientLight = new THREE.AmbientLight(0x0D0D0D, 6.73);
       this._scene.add(this._ambientLight);
@@ -414,6 +418,7 @@
         this._vinyl.setBumpScale(value);
       });
 
+      // lights' parameters
       const lightParamsFolder = this.gui.addFolder('lights');
       
       const topSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - top');
@@ -428,8 +433,44 @@
       bottomSpotLightParamsFolder.add(this._bottomSpotLight.position, 'y', -2000, 2000);
       bottomSpotLightParamsFolder.add(this._bottomSpotLight.position, 'z', -2000, 2000);
 
+      const sideSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - side');
+      sideSpotLightParamsFolder.add(this._sideSpotLight, 'intensity', 0, 1);
+      sideSpotLightParamsFolder.add(this._sideSpotLight.position, 'x', -500, 0);
+      sideSpotLightParamsFolder.add(this._sideSpotLight.position, 'y', -500, 500);
+      sideSpotLightParamsFolder.add(this._sideSpotLight.position, 'z', -500, 500);
+
       const ambientLightParamsFolder = lightParamsFolder.addFolder('ambient light');
       ambientLightParamsFolder.add(this._ambientLight, 'intensity', 0, 10);
+
+      // light helpers
+      this._topSpotLightHelper = new THREE.SpotLightHelper(this._topSpotLight, 0xff0000);
+      this._bottomSpotLightHelper = new THREE.SpotLightHelper(this._bottomSpotLight, 0x00ff00);
+      this._sideSpotLightHelper = new THREE.SpotLightHelper(this._sideSpotLight, 0x0000ff);
+
+      this._scene.add(this._topSpotLightHelper);
+      this._scene.add(this._bottomSpotLightHelper);
+      this._scene.add(this._sideSpotLightHelper);
+
+      const lightHelperToggles = {
+        topSpotLight: true,
+        bottomSpotLight: true,
+        sideSpotLight: true
+      };
+
+      const topSpotLightHelperController = topSpotLightParamsFolder.add(lightHelperToggles, 'topSpotLight');
+      topSpotLightHelperController.onChange(value => {
+        this._topSpotLightHelper.visible = value;
+      });
+
+      const bottomSpotLightHelperController = bottomSpotLightParamsFolder.add(lightHelperToggles, 'bottomSpotLight');
+      bottomSpotLightHelperController.onChange(value => {
+        this._bottomSpotLightHelper.visible = value;
+      });
+
+      const sideSpotLightHelperController = sideSpotLightParamsFolder.add(lightHelperToggles, 'sideSpotLight');
+      sideSpotLightHelperController.onChange(value => {
+        this._sideSpotLightHelper.visible = value;
+      });
     };
   
     //--------------------------------------------------------------
@@ -1123,8 +1164,6 @@
       }
   
       this._controls.update();
-
-      // console.log('direction', this._camera.getWorldDirection());
     };
   
     //--------------------------------------------------------------
