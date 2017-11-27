@@ -4,7 +4,8 @@
 //= require_tree .
 //= require_self
 
-(function (global, exports) {
+((global, exports) => {
+  
   let gui, axes;
 
   /**
