@@ -404,7 +404,7 @@
       let images = [];
       let path = this._loader.targets['assetsTextureVinylEnvmap'];
   
-      for (var i = 0; i < 6; ++i) {
+      for (let i = 0; i < 6; ++i) {
         images.push(this._loader.targets['assetsTextureVinylEnvmap']);
       }
   

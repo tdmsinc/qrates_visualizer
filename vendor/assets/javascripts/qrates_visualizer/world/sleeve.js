@@ -958,8 +958,9 @@
   
       this._gatefoldAngle = angle;
   
-      var offsetX = this._boundingBox.max.x;
-      var offsetY = this._boundingBox.max.y * 0.1;
+      let offsetX = this._boundingBox.max.x;
+      let offsetY = this._boundingBox.max.y * 0.1;
+
       this._currentObject.translateX(-offsetX);
       this._currentObject.rotation.set(0, 0, angle);
       this._currentObject.translateX(offsetX);
@@ -967,11 +968,11 @@
       this._currentObject.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
           if (-1 < child.name.toLowerCase().indexOf('front')) {
-            var rotation = child.rotation;
+            let rotation = child.rotation;
             child.rotation.set(rotation.x, rotation.y, angle);
             child.updateMatrix();
           } else if (-1 < child.name.toLowerCase().indexOf('back')) {
-            var rotation = child.rotation;
+            let rotation = child.rotation;
             child.rotation.set(rotation.x, rotation.y, -angle);
             child.updateMatrix();
           }
@@ -1034,8 +1035,8 @@
   
       return;
   
-      var name = 'bounding box';
-      var mesh = this._container.getObjectByName(name);
+      let name = 'bounding box';
+      let mesh = this._container.getObjectByName(name);
       if (mesh) {
         this._container.remove(mesh);
   
@@ -1063,14 +1064,14 @@
       // console.log('world position', object.getWorldPosition());
       // console.log('bounding box', bounds);
   
-      var geometry = new THREE.BoxGeometry(
+      let geometry = new THREE.BoxGeometry(
         bounds.getSize().x * 5.5,
         bounds.getSize().y * 5.5,
         bounds.getSize().z * 5.5,
         2, 2, 2
       );
   
-      var material = new THREE.MeshBasicMaterial({
+      let material = new THREE.MeshBasicMaterial({
         color: 0xff0000,
         wireframe: true
       });

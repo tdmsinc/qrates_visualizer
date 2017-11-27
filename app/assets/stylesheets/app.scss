@@ -19,8 +19,10 @@ body {
 }
 
 canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
   border: 1px solid red;
-  margin-left: 200px;
   background-image: url(qrates_visualizer/checkerboard-2.png);
 }
 
@@ -28,8 +30,8 @@ form {
   padding: 1em;
   width: 18em;
   position: fixed;
-  left: 1em;
-  top: 1em;
+  left: 0;
+  top: 0;
   background-color: #aaa;
   height: 85%;
   overflow-x: scroll;
