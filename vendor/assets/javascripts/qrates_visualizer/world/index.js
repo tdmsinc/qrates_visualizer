@@ -95,7 +95,7 @@
       this._bottomSpotLight.position.set(159, -2000, 120);
       this._scene.add(this._bottomSpotLight);
   
-      this._ambientLight = new THREE.AmbientLight(0x0D0D0D, 6.73);
+      this._ambientLight = new THREE.AmbientLight(0x0D0D0D, 10);
       this._scene.add(this._ambientLight);
     
       // 
