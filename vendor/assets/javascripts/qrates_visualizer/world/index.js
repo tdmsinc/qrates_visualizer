@@ -54,8 +54,10 @@
   
       this._isRendering = false;
   
+      // scene
       this._scene = new THREE.Scene();
   
+      // camera
       this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
       this._camera.lookAt(new THREE.Vector3(0, 0, 0));
       this._camera.position.set(212, 288, 251);
@@ -65,6 +67,7 @@
         this.setOrthographic();
       }
   
+      // renderer
       this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
       this._renderer.setPixelRatio(this._opts.pixelRatio || window.devicePixelRatio || 1);
       this._renderer.setSize(this._width, this._height);
@@ -74,6 +77,7 @@
   
       this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
   
+      // controls
       this._controls = new THREE.TrackballControls(this._camera, this._parent.el);
       this._controls.minDistance = 100;
       this._controls.maxDistance = 700;
@@ -81,7 +85,20 @@
       this._controls.handleResize({ left: 0, top: 0, width: opts.width, height: opts.height });
       this._controls.update();
       this._controls.enabled = this._opts.camera.control;
+
+      // lights
+      this._topSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
+      this._topSpotLight.position.set(-159, 2000, -120);
+      this._scene.add(this._topSpotLight);
+  
+      this._bottomSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
+      this._bottomSpotLight.position.set(159, -2000, 120);
+      this._scene.add(this._bottomSpotLight);
+  
+      this._ambientLight = new THREE.AmbientLight(0x0D0D0D, 6.73);
+      this._scene.add(this._ambientLight);
     
+      // 
       this._enableRotate = false;
       this._flip = false;
   
@@ -163,7 +180,6 @@
 
       this.initGui();
 
-      this.createLights();
       this._scene.add(this._containerObject);
 
       if (this._opts.defaults.hasOwnProperty('view')) {
@@ -182,42 +198,6 @@
     getRenderer() {
       return this._renderer;
     }
-
-    //--------------------------------------------------------------
-    createLights() {
-    
-      let spotLight_top = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
-      spotLight_top.position.set(-159, 2000, -120);
-      this._scene.add(spotLight_top);
-  
-      let spotLight_bottom = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
-      spotLight_bottom.position.set(159, -2000, 120);
-      this._scene.add(spotLight_bottom);
-  
-      let ambientLight = new THREE.AmbientLight(0x0D0D0D, 10);
-      this._scene.add(ambientLight);
-      
-      if (!this.gui) {
-        this.gui = new window.dat.GUI();
-      }
-
-      let lightParamsFolder = this.gui.addFolder('lights');
-
-      let topSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - top');
-      topSpotLightParamsFolder.add(spotLight_top, 'intensity', 0, 1);
-      topSpotLightParamsFolder.add(spotLight_top.position, 'x', -2000, 2000);
-      topSpotLightParamsFolder.add(spotLight_top.position, 'y', -2000, 2000);
-      topSpotLightParamsFolder.add(spotLight_top.position, 'z', -2000, 2000);
-
-      let bottomSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - bottom');
-      bottomSpotLightParamsFolder.add(spotLight_bottom, 'intensity', 0, 1);
-      bottomSpotLightParamsFolder.add(spotLight_bottom.position, 'x', -2000, 2000);
-      bottomSpotLightParamsFolder.add(spotLight_bottom.position, 'y', -2000, 2000);
-      bottomSpotLightParamsFolder.add(spotLight_bottom.position, 'z', -2000, 2000);
-
-      let ambientLightParamsFolder = lightParamsFolder.addFolder('ambient light');
-      ambientLightParamsFolder.add(ambientLight, 'intensity', 0, 10);
-    };
   
     //--------------------------------------------------------------
     registerPresets() {
@@ -245,7 +225,6 @@
 
       if (!window.dat) {
         console.warn('dat.GUI is not loaded');
-        // this._sleeve.setCoveredRatio(0.8, { duration: 1 });
         return false;
       }
   
@@ -308,9 +287,11 @@
         }
       };
   
-      this.gui = new window.dat.GUI();
+      if (!this.gui) {
+        this.gui = new window.dat.GUI();
+      }
 
-      let generalParamsFolder = this.gui.addFolder('general');
+      const generalParamsFolder = this.gui.addFolder('general');
       const renderController = generalParamsFolder.add(props, 'render');
       const rotationController = generalParamsFolder.add(props, 'rotate');
       const coveredRatioController = generalParamsFolder.add(props, 'covered ratio 1', 0.0, 1.2);
@@ -341,7 +322,7 @@
       generalParamsFolder.add(temp, 'reset');
       generalParamsFolder.add(temp, 'toggle camera');
   
-      renderController.onChange(function (value) {
+      renderController.onChange(value => {
         if (value) {
           self.startRender();
         } else {
@@ -349,7 +330,7 @@
         }
       });
   
-      rotationController.onChange(function (value) {
+      rotationController.onChange(value => {
         
         if (value) {
           self.play();
@@ -358,80 +339,97 @@
         }
       });
   
-      coveredRatioController.onChange(function (value) {
-        self.cover(value, { duration: 2000, index: Vinyl.Index.FIRST });
+      coveredRatioController.onChange(value => {
+        this.cover(value, { duration: 2000, index: Vinyl.Index.FIRST });
       });
   
-      secondCoveredRatioController.onChange(function (value) {
-        self.cover(value, { duration: 2000, index: Vinyl.Index.SECOND });
+      secondCoveredRatioController.onChange(value => {
+        this.cover(value, { duration: 2000, index: Vinyl.Index.SECOND });
       });
   
-      sleeveRotationController.onChange(function (value) {
-        self.setGatefoldCoverAngle(value);
+      sleeveRotationController.onChange(value => {
+        this.setGatefoldCoverAngle(value);
       });
   
-      sleeveFrontRotationController.onChange(function (value) {
-        self.setSleeveFrontRotation(value);
+      sleeveFrontRotationController.onChange(value => {
+        this.setSleeveFrontRotation(value);
       });
   
-      sleeveBackRotationController.onChange(function (value) {
-        self._sleeve.setGatefoldBackRotation(value);
+      sleeveBackRotationController.onChange(value => {
+        this._sleeve.setGatefoldBackRotation(value);
       });
   
-      sleeveVisibilityController.onChange(function (value) {
-        self._sleeve.setVisibility(value);
+      sleeveVisibilityController.onChange(value => {
+        this._sleeve.setVisibility(value);
       });
   
-      firstVinylVisibilityController.onChange(function (value) {
-        self.setVinylVisibility(Vinyl.Index.FIRST, value, null, function () {
+      firstVinylVisibilityController.onChange(value => {
+        this.setVinylVisibility(Vinyl.Index.FIRST, value, null, function () {
         });
       });
   
-      secondVinylVisibilityController.onChange(function (value) {
-        self.setVinylVisibility(Vinyl.Index.SECOND, value, null, function () {
+      secondVinylVisibilityController.onChange(value => {
+        this.setVinylVisibility(Vinyl.Index.SECOND, value, null, function () {
         });
       });
   
-      zoomController.onChange(function (value) {
-        self.zoom(value);
+      zoomController.onChange(value => {
+        this.zoom(value);
       });
   
-      vinylOffsetYController.onChange(function (value) {
+      vinylOffsetYController.onChange(value => {
         console.log(value);
-        self._vinyls[0].setOffsetY(value);
+        this._vinyls[0].setOffsetY(value);
   
-        if (1 === self._vinyls.length) {
+        if (1 === this._vinyls.length) {
           return;
         }
   
-        self._vinyls[1].setOffsetY(-value);
+        this._vinyls[1].setOffsetY(-value);
       });
   
-      cameraXController.onChange(function (value) {
-        self.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
+      cameraXController.onChange(value => {
+        this.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
       });
-      cameraYController.onChange(function (value) {
-        self.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
+      cameraYController.onChange(value => {
+        this.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
       });
-      cameraZController.onChange(function (value) {
-        self.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
+      cameraZController.onChange(value => {
+        this.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
       });
   
-      sleeveBumpScaleController.onChange(function (value) {
-        if (!self._sleeve) {
+      sleeveBumpScaleController.onChange(value => {
+        if (!this._sleeve) {
           return;
         }
   
-        self._sleeve.setBumpScale(value);
+        this._sleeve.setBumpScale(value);
       });
   
-      vinylBumpScaleController.onChange(function (value) {
-        if (0 === self._vinyls.length) {
+      vinylBumpScaleController.onChange(value => {
+        if (0 === this._vinyls.length) {
           return;
         }
   
-        self._vinyl.setBumpScale(value);
+        this._vinyl.setBumpScale(value);
       });
+
+      const lightParamsFolder = this.gui.addFolder('lights');
+      
+      const topSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - top');
+      topSpotLightParamsFolder.add(this._topSpotLight, 'intensity', 0, 1);
+      topSpotLightParamsFolder.add(this._topSpotLight.position, 'x', -2000, 2000);
+      topSpotLightParamsFolder.add(this._topSpotLight.position, 'y', -2000, 2000);
+      topSpotLightParamsFolder.add(this._topSpotLight.position, 'z', -2000, 2000);
+
+      const bottomSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - bottom');
+      bottomSpotLightParamsFolder.add(this._bottomSpotLight, 'intensity', 0, 1);
+      bottomSpotLightParamsFolder.add(this._bottomSpotLight.position, 'x', -2000, 2000);
+      bottomSpotLightParamsFolder.add(this._bottomSpotLight.position, 'y', -2000, 2000);
+      bottomSpotLightParamsFolder.add(this._bottomSpotLight.position, 'z', -2000, 2000);
+
+      const ambientLightParamsFolder = lightParamsFolder.addFolder('ambient light');
+      ambientLightParamsFolder.add(this._ambientLight, 'intensity', 0, 10);
     };
   
     //--------------------------------------------------------------

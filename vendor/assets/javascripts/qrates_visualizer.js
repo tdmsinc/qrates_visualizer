@@ -3,18 +3,18 @@
 //= require_tree ./qrates_visualizer
 //= require_self
 
-(function(global, exports) {
+((global, exports) => {
 
   /**
    * Module dependencies.
    */
 
-  var Emitter = exports.Emitter;
-  var World = exports.World;
-  var Loader = exports.Loader;
-  var Vinyl = exports.Vinyl;
-  var Label = exports.Label;
-  var Sleeve = exports.Sleeve;
+  const Emitter = exports.Emitter;
+  const World = exports.World;
+  const Loader = exports.Loader;
+  const Vinyl = exports.Vinyl;
+  const Label = exports.Label;
+  const Sleeve = exports.Sleeve;
 
   /**
    * Expose `VinylVisualizer`.
