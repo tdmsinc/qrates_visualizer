@@ -901,25 +901,50 @@
 
           let tween = new TWEEN.Tween(child.material);
 
-          if ('label' === child.name) {
-            if (0 < to) {
-              to = 1.0;
+          if (0 < to) {
+            if ('label' === child.name) {
+              new TWEEN.Tween(child.material)
+                .stop()
+                .delay(delay)
+                .to({ opacity: 1.0 }, duration)
+                .onUpdate((value) => {
+                  child.material.needsUpdate = true;
+                })
+                .onComplete(() => {
+                  child.material.needsUpdate = true;
+                  return;
+                })
+                .start();
+            } else {
+              new TWEEN.Tween(child.material)
+                .stop()
+                .delay(delay)
+                .to({ opacity: to }, duration)
+                .onUpdate((value) => {
+                  child.material.needsUpdate = true;
+                })
+                .onComplete(() => {
+                  child.material.opacity = to;
+                  child.material.needsUpdate = true;
+                  return;
+                })
+                .start();
             }
+          } else {
+            new TWEEN.Tween(child.material)
+              .stop()
+              .delay(delay)
+              .to({ opacity: 0 }, duration)
+              .onUpdate((value) => {
+                child.material.needsUpdate = true;
+              })
+              .onComplete(() => {
+                child.material.opacity = to;
+                child.material.needsUpdate = true;
+                return;
+              })
+              .start();
           }
-          
-          new TWEEN.Tween(child.material)
-            .stop()
-            .delay(delay)
-            .to({ opacity: to }, duration)
-            .onUpdate((value) => {
-              child.material.needsUpdate = true;
-            })
-            .onComplete(() => {
-              child.material.opacity = to;
-              child.material.needsUpdate = true;
-              return;
-            })
-            .start();
         }
       });
     }
@@ -1020,6 +1045,10 @@
 
     //--------------------------------------------------------------
     setRenderOrder(order) {
+      if (!this._currentObject) {
+        return;
+      }
+
       this._currentObject.renderOrder = order;
     }
 
@@ -1066,7 +1095,7 @@
     //--------------------------------------------------------------
     dispose() {
 
-      this._currentObject.traverse((child) => {
+      this._currentObject.traverse(child => {
         if (child instanceof THREE.Mesh) {
           child.geometry.dispose();
           child.material.dispose();
@@ -1095,7 +1124,7 @@
 
       await this._loadModel(this._size, this._format);
 
-      this._currentObject.traverse((child) => {
+      this._currentObject.traverse(child => {
         if (child instanceof THREE.Mesh) {
           const obj = parent._currentObject.getObjectByName(child.name);
           
@@ -1264,15 +1293,18 @@
         this.initMaterial(obj, this._textures[size][format]);
 
         let position = new THREE.Vector3(0, 0, 0);
+        let renderOrder;
         
         if (this._currentObject) {
           position = this._currentObject.position;
+          renderOrder = this._currentObject.renderOrder;
 
           this.removeFromContainer();
           this.dispose();
         }
 
         this._currentObject = obj.scene.clone();
+        this._currentObject.renderOrder = renderOrder;
 
         this._currentObject.traverse((child) => {
           if (child instanceof THREE.Mesh) {

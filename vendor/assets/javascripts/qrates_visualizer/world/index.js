@@ -471,6 +471,10 @@
       sideSpotLightHelperController.onChange(value => {
         this._sideSpotLightHelper.visible = value;
       });
+
+      // axis
+      this._axisHelper = new THREE.AxisHelper(100);
+      this._scene.add(this._axisHelper);
     };
   
     //--------------------------------------------------------------
@@ -685,6 +689,33 @@
 
       return this;
     };
+
+    //--------------------------------------------------------------
+    updateVinylRenderOrder() {
+
+      if (0 === this._vinyls.length) {
+        return;
+      }
+      
+      if (!this._vinyls[1]._visibility) {
+        this._vinyls[0].setTransparent(true);
+        this._vinyls[0].setRenderOrder(0);
+      } else {
+        if (0 < this._camera.getWorldDirection().y) {
+          this._vinyls[0].setTransparent(false);
+          this._vinyls[1].setTransparent(true);
+
+          this._vinyls[0].setRenderOrder(2);
+          this._vinyls[1].setRenderOrder(1);
+        } else {
+          this._vinyls[0].setTransparent(true);
+          this._vinyls[1].setTransparent(false);
+
+          this._vinyls[0].setRenderOrder(1);
+          this._vinyls[1].setRenderOrder(2);
+        }
+      }
+    }
   
     //--------------------------------------------------------------
     flip(value) {
@@ -1137,31 +1168,12 @@
       if (this._sleeve) {
         this._sleeve.update();
       }
+
+      this.updateVinylRenderOrder();
   
-      if (0 < this._vinyls.length) {
-        if (!this._vinyls[1]._visibility) {
-          this._vinyls[0].setTransparent(true);
-          this._vinyls[0].setRenderOrder(0);
-        } else {
-          if (0 < this._camera.getWorldDirection().y) {
-            this._vinyls[0].setTransparent(false);
-            this._vinyls[1].setTransparent(true);
-  
-            this._vinyls[0].setRenderOrder(2);
-            this._vinyls[1].setRenderOrder(1);
-          } else {
-            this._vinyls[0].setTransparent(true);
-            this._vinyls[1].setTransparent(false);
-  
-            this._vinyls[0].setRenderOrder(1);
-            this._vinyls[1].setRenderOrder(2);
-          }
-        }
-        
-        this._vinyls.forEach(function (vinyl) {
-          vinyl.update();
-        });
-      }
+      this._vinyls.forEach(function (vinyl) {
+        vinyl.update();
+      });
   
       this._controls.update();
     };
@@ -1245,11 +1257,11 @@
       }
 
       if (Sleeve.Format.SINGLE_WITHOUT_SPINE === lastFormat || Sleeve.Format.SINGLE === lastFormat) {
-        if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
+        if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) { // last format = single && new format = single
           this._vinyls[1].setVisibility(false);
           this._vinyls[0].setCoveredRatio(0, 0, firstOffsetY);
           this._sleeve.setCoveredRatio(this._sleeve.getCoveredRatio());
-        } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
+        } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) { // last format = single && new format = double 
 
           let opts = this._vinyls[0].getCurrentProperties();
           opts.index = Vinyl.Index.SECOND;
@@ -1266,18 +1278,20 @@
           this._sleeve.setCoveredRatio(0);
         }
       } else if (Sleeve.Format.DOUBLE === lastFormat || Sleeve.Format.GATEFOLD === lastFormat) {
-        if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) {
+        if (Sleeve.Format.SINGLE_WITHOUT_SPINE === newFormat || Sleeve.Format.SINGLE === newFormat) { // last format = double && new format = single
           this._sleeve.setCoveredRatio(this._vinyls[0].getCoveredRatio());
 
           this._vinyls[1].setVisibility(false);
           this._vinyls[0].setCoveredRatio(0, 0, firstOffsetY);
-        } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) {
+        } else if (Sleeve.Format.DOUBLE === newFormat || Sleeve.Format.GATEFOLD === newFormat) { // last format = double && new format = double
           this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
           this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
         }
       }
 
       await this._sleeve.setOpacity(1.0, 250);
+
+      this.updateVinylRenderOrder();
 
       return this._sleeve.getFormat();
     };
