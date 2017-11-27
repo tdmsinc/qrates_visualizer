@@ -794,6 +794,7 @@
       };
   
       opts.duration = undefined !== opts.duration ? opts.duration : 2000;
+      const sleeveFormat = this._sleeve.getFormat();
 
       let reset = true;
   
@@ -1040,6 +1041,40 @@
           this._controls.target = new THREE.Vector3(-75, 0, 0);
           this._controls.update();
           break;
+
+        case 30: // order spec 画面 default 表示用 (sleeve in)
+          this.setPerspective();
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          this.setCameraPosition(50, 1000, 10, opts, callback);
+          this._controls.target = new THREE.Vector3(50, 0, 0);
+          this._camera.setZoom(3);
+          this._controls.update();
+          break;
+        case 31: // order spec 画面 default 表示用
+          this.setPerspective();
+          if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
+            this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+            this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          } else {
+            this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          }
+          this.setCameraPosition(50, 1000, 10, opts, callback);
+          this._controls.target = new THREE.Vector3(50, 0, 0);
+          this._camera.setZoom(3);
+          this._controls.update();
+          break;
+        case 33: 
+        case 34:
+        case 35:
+        case 36:
+        case 37:
+        case 38:
+        case 39:
+        case 40:
+        case 41:
+        case 42:          
+          
         default:
           break;
       }
