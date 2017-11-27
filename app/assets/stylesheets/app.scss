@@ -33,7 +33,7 @@ form {
   left: 0;
   top: 0;
   background-color: #aaa;
-  height: 85%;
+  height: 100%;
   overflow-x: scroll;
   height: .25em;
   opacity: .3;
@@ -45,7 +45,7 @@ form {
   &.show {
     background-color: rgba(194, 194, 194, 0.671);
     opacity: 1;
-    height: 85%;
+    height: 100%;
   }
 
   h1 {
