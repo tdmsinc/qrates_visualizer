@@ -103,7 +103,7 @@ vv.on('ready', () => {
   });
 
   vm.$watch('visualizer.capture', value => {
-    var opts = {
+    const opts = {
       canvas_width: 1280,
       canvas_height: 794,
       duration: 0
@@ -158,7 +158,7 @@ vv.on('ready', () => {
 
   vm.$watch('vinyl.heavy1', value => {
 
-    var weight;
+    let weight;
 
     if (!value) {
       weight = qvv.VinylVisualizer.VinylWeight.NORMAL;
@@ -167,14 +167,14 @@ vv.on('ready', () => {
     }
 
     vv.world._vinyls[0].setWeight(weight)
-    .then((vinyl) => {
-      console.log('vv.world._vinyls[0].setWeight: weight changed', vinyl);
-    });
+      .then((vinyl) => {
+        console.log('vv.world._vinyls[0].setWeight: weight changed', vinyl);
+      });
   });
 
   vm.$watch('vinyl.heavy2', value => {
 
-    var weight;
+    let weight;
 
     if (!value) {
       weight = qvv.VinylVisualizer.VinylWeight.NORMAL;
@@ -256,20 +256,20 @@ vv.on('ready', () => {
   // file watcher
   //
 
-  var vinylAlphaMap1 = document.querySelector('input[name=vinyl-alpha1]');
-  var vinylAoMap1 = document.querySelector('input[name=vinyl-ao1]');
-  var vinylBumpMap1 = document.querySelector('input[name=vinyl-bump1]');
-  var vinylColorMap1 = document.querySelector('input[name=vinyl-color1]');
-  var vinylAlphaMap2 = document.querySelector('input[name=vinyl-alpha2]');
-  var vinylAoMap2 = document.querySelector('input[name=vinyl-ao2]');
-  var vinylBumpMap2 = document.querySelector('input[name=vinyl-bump2]');
-  var vinylColorMap2 = document.querySelector('input[name=vinyl-color2]');
-  var labelAoMap1 = document.querySelector('input[name=label-ao1]');
-  var labelBumpMap1 = document.querySelector('input[name=label-bump1]');
-  var labelColorMap1 = document.querySelector('input[name=label-color1]');
-  var sleeveAoMap = document.querySelector('input[name=sleeve-ao]');
-  var sleeveBumpMap = document.querySelector('input[name=sleeve-bump]');
-  var sleeveColorMap = document.querySelector('input[name=sleeve-color]');
+  const vinylAlphaMap1 = document.querySelector('input[name=vinyl-alpha1]');
+  const vinylAoMap1 = document.querySelector('input[name=vinyl-ao1]');
+  const vinylBumpMap1 = document.querySelector('input[name=vinyl-bump1]');
+  const vinylColorMap1 = document.querySelector('input[name=vinyl-color1]');
+  const vinylAlphaMap2 = document.querySelector('input[name=vinyl-alpha2]');
+  const vinylAoMap2 = document.querySelector('input[name=vinyl-ao2]');
+  const vinylBumpMap2 = document.querySelector('input[name=vinyl-bump2]');
+  const vinylColorMap2 = document.querySelector('input[name=vinyl-color2]');
+  const labelAoMap1 = document.querySelector('input[name=label-ao1]');
+  const labelBumpMap1 = document.querySelector('input[name=label-bump1]');
+  const labelColorMap1 = document.querySelector('input[name=label-color1]');
+  const sleeveAoMap = document.querySelector('input[name=sleeve-ao]');
+  const sleeveBumpMap = document.querySelector('input[name=sleeve-bump]');
+  const sleeveColorMap = document.querySelector('input[name=sleeve-color]');
 
   /**
    * @param {File} file
@@ -277,9 +277,9 @@ vv.on('ready', () => {
    */
 
   function load(file, callback) {
-    var reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = e => {
-      var img = new Image();
+      const img = new Image();
       img.onerror =
       img.onabort = e => {
         callback(e);
@@ -438,8 +438,8 @@ vv.on('ready', () => {
 // utils.
 //
 
-var form = document.querySelector('form');
-var show = document.querySelector('.action-show');
+const form = document.querySelector('form');
+const show = document.querySelector('.action-show');
 
 show.addEventListener('click', e => {
   form.classList.toggle('show');
