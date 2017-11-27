@@ -16,7 +16,7 @@ var defaults = {
       speed: 45,
       label: true,
       transparent: true,
-      side: THREE.DoubleSide
+      // side: THREE.DoubleSide
     },
     // {
     //   size: qvv.VinylVisualizer.VinylSize.SIZE_12,

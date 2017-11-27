@@ -547,7 +547,7 @@
           child.material.specular = new THREE.Color(0x363636);
           child.material.shading = THREE.SmoothShading;
           child.material.transparent = false;
-          child.material.side = THREE.DoubleSide;
+          child.material.side = THREE.FrontSide;
 
           child.material.aoMap = textures['ao'] || null;
           if (child.material.aoMap) {
@@ -600,65 +600,60 @@
     }
   
     //--------------------------------------------------------------
-    _loadTextures(size, format, hole) {
+    async _loadTextures(size, format, hole) {
   
-      return new Promise((resolve, reject) => {
-  
-        let targets = [];
-        
-        (function addTextureToTarget (obj, parentKey) {
-          Object.keys(obj).forEach((key) => {
-            if (typeof obj[key] === 'string') {
-              targets.push({
-                'assetType': 'texture',
-                'textureType': key,
-                'key': obj[key]
-              });
-            } else if (typeof obj[key] === 'object') {
-              addTextureToTarget(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
-            }
-          });
-        })(this._paths.textures[size][format][hole]);
-    
-        Promise.all(targets.map((target) => {
-          return this._loader.loadAsset(target);
-        }))
-          .then((assets) => {
-  
-            console.log('Sleeve.setFormat: loaded textures  ------', assets);
-            
-            assets.forEach((asset) => {
-    
-              const assetType = asset['assetType'];
-              const textureType = asset['textureType'];
-              const assetKey = asset['key'];
+      let targets = [];
       
-              console.log('Sleeve.setFormat: asset loaded', assetType, textureType, assetKey);
-    
-              if ('texture' === assetType) {
-                if (Sleeve.Format.GATEFOLD === format) {
-                  let side;
-    
-                  if (-1 < assetKey.toLowerCase().indexOf('front')) {
-                    side = 'front';
-                  } else if (-1 < assetKey.toLowerCase().indexOf('back')) {
-                    side = 'back';
-                  } else if (-1 < assetKey.toLowerCase().indexOf('spine')) {
-                    side = 'spine';
-                  }
-    
-                  console.log('update gatefold texture - ' + side, this._loader.assets[assetKey]);
-                  this.updateTexture(this._textures[size][format][hole][side][textureType], this._loader.assets[assetKey]);
-                } else {
-                  console.log('update texture', this._loader.assets[assetKey]);
-                  this.updateTexture(this._textures[size][format][hole][textureType], this._loader.assets[assetKey]);
-                }
-              }
+      (function addTextureToTarget (obj, parentKey) {
+        Object.keys(obj).forEach((key) => {
+          if (typeof obj[key] === 'string') {
+            targets.push({
+              'assetType': 'texture',
+              'textureType': key,
+              'key': obj[key]
             });
+          } else if (typeof obj[key] === 'object') {
+            addTextureToTarget(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
+          }
+        });
+      })(this._paths.textures[size][format][hole]);
   
-            resolve(assets);
-          });
+      let assets = await Promise.all(targets.map((target) => {
+        return this._loader.loadAsset(target);
+      }));
+
+      console.log('Sleeve.setFormat: loaded textures  ------', assets);
+      
+      assets.forEach((asset) => {
+
+        const assetType = asset['assetType'];
+        const textureType = asset['textureType'];
+        const assetKey = asset['key'];
+
+        console.log('Sleeve.setFormat: asset loaded', assetType, textureType, assetKey);
+
+        if ('texture' === assetType) {
+          if (Sleeve.Format.GATEFOLD === format) {
+            let side;
+
+            if (-1 < assetKey.toLowerCase().indexOf('front')) {
+              side = 'front';
+            } else if (-1 < assetKey.toLowerCase().indexOf('back')) {
+              side = 'back';
+            } else if (-1 < assetKey.toLowerCase().indexOf('spine')) {
+              side = 'spine';
+            }
+
+            console.log('update gatefold texture - ' + side, this._loader.assets[assetKey]);
+            this.updateTexture(this._textures[size][format][hole][side][textureType], this._loader.assets[assetKey]);
+          } else {
+            console.log('update texture', this._loader.assets[assetKey]);
+            this.updateTexture(this._textures[size][format][hole][textureType], this._loader.assets[assetKey]);
+          }
+        }
       });
+
+      return assets;
     }
   
     //--------------------------------------------------------------
@@ -743,12 +738,12 @@
   
       if (!format) {
         console.warn('Sleeve.setFormat: no format specified');
-        return Promise.reject(new Error('Sleeve.setFormat: no format specified'));
+        throw new Error('Sleeve.setFormat: no format specified');
       }
   
       if (-1 === Object.values(Sleeve.Format).indexOf(format)) {
         console.error('Sleeve.setFormat: unknown format "' + format + '"');
-        return Promise.reject(new Error('Sleeve.setFormat: unknown format "' + format + '"'));
+        throw new Error('Sleeve.setFormat: unknown format "' + format + '"');
       }
   
       if (format === Sleeve.Format.GATEFOLD && this._hole === Sleeve.Hole.HOLED) {
@@ -887,17 +882,17 @@
       } else {
         if (!(value === Sleeve.Hole.NO_HOLE || value === Sleeve.Hole.HOLED)) {
           console.warn('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
-          return Promise.reject(new Error('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED'));
+          throw new Error('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
         }
     
         if (value === Sleeve.Hole.HOLED && this._format === Sleeve.Format.GATEFOLD) {
           console.warn('Sleeve.setHole: gatefold has no-hole format only');
-          return Promise.reject(new Error('Sleeve.setHole: gatefold has no-hole format only'));
+          throw new Error('Sleeve.setHole: gatefold has no-hole format only');
         }
       }
   
       if (this._hole === value) {
-        return Promise.resolve(this);
+        return this;
       }
   
       this._hole = value;
@@ -963,8 +958,9 @@
   
       this._gatefoldAngle = angle;
   
-      var offsetX = this._boundingBox.max.x;
-      var offsetY = this._boundingBox.max.y * 0.1;
+      let offsetX = this._boundingBox.max.x;
+      let offsetY = this._boundingBox.max.y * 0.1;
+
       this._currentObject.translateX(-offsetX);
       this._currentObject.rotation.set(0, 0, angle);
       this._currentObject.translateX(offsetX);
@@ -972,11 +968,11 @@
       this._currentObject.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
           if (-1 < child.name.toLowerCase().indexOf('front')) {
-            var rotation = child.rotation;
+            let rotation = child.rotation;
             child.rotation.set(rotation.x, rotation.y, angle);
             child.updateMatrix();
           } else if (-1 < child.name.toLowerCase().indexOf('back')) {
-            var rotation = child.rotation;
+            let rotation = child.rotation;
             child.rotation.set(rotation.x, rotation.y, -angle);
             child.updateMatrix();
           }
@@ -998,7 +994,7 @@
     }
   
     //--------------------------------------------------------------
-    setVisibility(yn, opts, callback) {
+    setVisibility(yn, opts) {
   
       this._currentObject.visible = yn;
     }
@@ -1039,8 +1035,8 @@
   
       return;
   
-      var name = 'bounding box';
-      var mesh = this._container.getObjectByName(name);
+      let name = 'bounding box';
+      let mesh = this._container.getObjectByName(name);
       if (mesh) {
         this._container.remove(mesh);
   
@@ -1068,14 +1064,14 @@
       // console.log('world position', object.getWorldPosition());
       // console.log('bounding box', bounds);
   
-      var geometry = new THREE.BoxGeometry(
+      let geometry = new THREE.BoxGeometry(
         bounds.getSize().x * 5.5,
         bounds.getSize().y * 5.5,
         bounds.getSize().z * 5.5,
         2, 2, 2
       );
   
-      var material = new THREE.MeshBasicMaterial({
+      let material = new THREE.MeshBasicMaterial({
         color: 0xff0000,
         wireframe: true
       });
@@ -1133,38 +1129,32 @@
     }
   
     //--------------------------------------------------------------
-    loadModelForSize(size) {
+    async loadModelForSize(size) {
   
-      return new Promise((resolve, reject) => {
-        
-        this._loadTextures(size, this._format, this._hole)
-          .then((results) => {
-            return this._loader.loadAsset({
-              'assetType': 'model',
-              'key': this._paths.models[this._size][this._format][this._hole]
-            });
-          })
-          .then((result) => {
-    
-            const assetKey = result['key'];
-            const obj = this._loader.assets[assetKey];
-    
-            console.log('Sleeve.setFormat: model loaded', assetKey, obj);
-    
-            const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
-        
-            obj.assetName = assetName;
-            obj.scene.assetName = assetName;
-    
-            if (this._textures[size][this._format][this._hole]) { 
-              this._textures[size][this._format][this._hole].assetName = assetName;
-            }
-    
-            this.initMaterial(obj, this._textures[this._size][this._format][this._hole]);
-        
-            resolve(this);
-          });
+      await this._loadTextures(size, this._format, this._hole);
+      
+      let result = await this._loader.loadAsset({
+        'assetType': 'model',
+        'key': this._paths.models[this._size][this._format][this._hole]
       });
+
+      const assetKey = result['key'];
+      const obj = this._loader.assets[assetKey];
+
+      console.log('Sleeve.setFormat: model loaded', assetKey, obj);
+
+      const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
+  
+      obj.assetName = assetName;
+      obj.scene.assetName = assetName;
+
+      if (this._textures[size][this._format][this._hole]) { 
+        this._textures[size][this._format][this._hole].assetName = assetName;
+      }
+
+      this.initMaterial(obj, this._textures[this._size][this._format][this._hole]);
+  
+      return this;
     }
   }
 
