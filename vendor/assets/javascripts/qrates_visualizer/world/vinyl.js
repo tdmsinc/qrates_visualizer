@@ -1145,18 +1145,12 @@
       }
 
       if (this._enableRotate) {
-        let target = this._currentObject;
-        let amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
+        const target = this._currentObject;
+        const amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
 
         this._currentObject.children.forEach(function (child) {
-          let rotation = child.rotation.clone();
-          
-          if ('label' == child.name) {
-            rotation.y += amount;
-          } else {
-            rotation.y -= amount;
-          }
-          
+          const rotation = child.rotation.clone();
+          rotation.y -= amount;
           child.rotation.set(rotation.x, rotation.y, rotation.z);
         });
         

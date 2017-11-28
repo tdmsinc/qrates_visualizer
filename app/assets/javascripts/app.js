@@ -267,6 +267,9 @@ vv.on('ready', () => {
   const labelAoMap1 = document.querySelector('input[name=label-ao1]');
   const labelBumpMap1 = document.querySelector('input[name=label-bump1]');
   const labelColorMap1 = document.querySelector('input[name=label-color1]');
+  const labelAoMap2 = document.querySelector('input[name=label-ao2]');
+  const labelBumpMap2 = document.querySelector('input[name=label-bump2]');
+  const labelColorMap2 = document.querySelector('input[name=label-color2]');
   const sleeveAoMap = document.querySelector('input[name=sleeve-ao]');
   const sleeveBumpMap = document.querySelector('input[name=sleeve-bump]');
   const sleeveColorMap = document.querySelector('input[name=sleeve-color]');
@@ -386,6 +389,27 @@ vv.on('ready', () => {
     load(e.target.files.item(0), (err, img) => {
       if (err) return console.error(err);
       vv.world._vinyls[0].setLabelColorMap(img);
+    });
+  };
+
+  labelAoMap2.onchange = e => {
+    load(e.target.files.item(0), (err, img) => {
+      if (err) return console.error(err);
+      vv.world._vinyls[1].setLabelAoMap(img);
+    });
+  };
+
+  labelBumpMap2.onchange = function(e) {
+    load(e.target.files.item(0), function(err, img) {
+      if (err) return console.error(err);
+      vv.world._vinyls[1].setLabelBumpMap(img);
+    });
+  };
+
+  labelColorMap2.onchange = e => {
+    load(e.target.files.item(0), (err, img) => {
+      if (err) return console.error(err);
+      vv.world._vinyls[1].setLabelColorMap(img);
     });
   };
   
