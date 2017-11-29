@@ -987,6 +987,7 @@
   
       this._currentObject.traverse((child) => {
         if (child instanceof THREE.Mesh) {
+          console.log('bumpscale', this._bumpScale);
           child.material.bumpScale = this._bumpScale;
           child.material.needsUpdate = true;
         }

@@ -4,7 +4,8 @@
 //= require_tree .
 //= require_self
 
-(function (global, exports) {
+((global, exports) => {
+  
   let gui, axes;
 
   /**
@@ -42,7 +43,7 @@
           preserveDrawingBuffer: true,
         }
       };
-  
+
       this._objectScales = {
         '7': 1,
         '10': 0.6890566038,
@@ -94,6 +95,10 @@
       this._bottomSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
       this._bottomSpotLight.position.set(159, -2000, 120);
       this._scene.add(this._bottomSpotLight);
+
+      this._sideSpotLight = new THREE.SpotLight(0xffffff, 0.35, 0, 0.314, 0.26, 1);
+      this._sideSpotLight.position.set(-500, 0, 0);
+      this._scene.add(this._sideSpotLight);
   
       this._ambientLight = new THREE.AmbientLight(0x0D0D0D, 10);
       this._scene.add(this._ambientLight);
@@ -414,6 +419,7 @@
         this._vinyl.setBumpScale(value);
       });
 
+      // lights' parameters
       const lightParamsFolder = this.gui.addFolder('lights');
       
       const topSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - top');
@@ -428,8 +434,48 @@
       bottomSpotLightParamsFolder.add(this._bottomSpotLight.position, 'y', -2000, 2000);
       bottomSpotLightParamsFolder.add(this._bottomSpotLight.position, 'z', -2000, 2000);
 
+      const sideSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - side');
+      sideSpotLightParamsFolder.add(this._sideSpotLight, 'intensity', 0, 1);
+      sideSpotLightParamsFolder.add(this._sideSpotLight.position, 'x', -500, 0);
+      sideSpotLightParamsFolder.add(this._sideSpotLight.position, 'y', -500, 500);
+      sideSpotLightParamsFolder.add(this._sideSpotLight.position, 'z', -500, 500);
+
       const ambientLightParamsFolder = lightParamsFolder.addFolder('ambient light');
       ambientLightParamsFolder.add(this._ambientLight, 'intensity', 0, 10);
+
+      // light helpers
+      this._topSpotLightHelper = new THREE.SpotLightHelper(this._topSpotLight, 0xff0000);
+      this._bottomSpotLightHelper = new THREE.SpotLightHelper(this._bottomSpotLight, 0x00ff00);
+      this._sideSpotLightHelper = new THREE.SpotLightHelper(this._sideSpotLight, 0x0000ff);
+
+      this._scene.add(this._topSpotLightHelper);
+      this._scene.add(this._bottomSpotLightHelper);
+      this._scene.add(this._sideSpotLightHelper);
+
+      const lightHelperToggles = {
+        topSpotLight: true,
+        bottomSpotLight: true,
+        sideSpotLight: true
+      };
+
+      const topSpotLightHelperController = topSpotLightParamsFolder.add(lightHelperToggles, 'topSpotLight');
+      topSpotLightHelperController.onChange(value => {
+        this._topSpotLightHelper.visible = value;
+      });
+
+      const bottomSpotLightHelperController = bottomSpotLightParamsFolder.add(lightHelperToggles, 'bottomSpotLight');
+      bottomSpotLightHelperController.onChange(value => {
+        this._bottomSpotLightHelper.visible = value;
+      });
+
+      const sideSpotLightHelperController = sideSpotLightParamsFolder.add(lightHelperToggles, 'sideSpotLight');
+      sideSpotLightHelperController.onChange(value => {
+        this._sideSpotLightHelper.visible = value;
+      });
+
+      // axis
+      this._axisHelper = new THREE.AxisHelper(100);
+      this._scene.add(this._axisHelper);
     };
   
     //--------------------------------------------------------------
@@ -638,6 +684,33 @@
 
       return this;
     };
+
+    //--------------------------------------------------------------
+    updateVinylRenderOrder() {
+
+      if (0 === this._vinyls.length) {
+        return;
+      }
+      
+      if (!this._vinyls[1]._visibility) {
+        this._vinyls[0].setTransparent(true);
+        this._vinyls[0].setRenderOrder(0);
+      } else {
+        if (0 < this._camera.getWorldDirection().y) {
+          this._vinyls[0].setTransparent(false);
+          this._vinyls[1].setTransparent(true);
+
+          this._vinyls[0].setRenderOrder(2);
+          this._vinyls[1].setRenderOrder(1);
+        } else {
+          this._vinyls[0].setTransparent(true);
+          this._vinyls[1].setTransparent(false);
+
+          this._vinyls[0].setRenderOrder(1);
+          this._vinyls[1].setRenderOrder(2);
+        }
+      }
+    }
   
     //--------------------------------------------------------------
     flip(value) {
@@ -1108,35 +1181,14 @@
       if (this._sleeve) {
         this._sleeve.update();
       }
+
+      this.updateVinylRenderOrder();
   
-      if (0 < this._vinyls.length) {
-        if (!this._vinyls[1]._visibility) {
-          this._vinyls[0].setTransparent(true);
-          this._vinyls[0].setRenderOrder(0);
-        } else {
-          if (0 < this._camera.getWorldDirection().y) {
-            this._vinyls[0].setTransparent(false);
-            this._vinyls[1].setTransparent(true);
-  
-            this._vinyls[0].setRenderOrder(2);
-            this._vinyls[1].setRenderOrder(1);
-          } else {
-            this._vinyls[0].setTransparent(true);
-            this._vinyls[1].setTransparent(false);
-  
-            this._vinyls[0].setRenderOrder(1);
-            this._vinyls[1].setRenderOrder(2);
-          }
-        }
-        
-        this._vinyls.forEach(function (vinyl) {
-          vinyl.update();
-        });
-      }
+      this._vinyls.forEach(function (vinyl) {
+        vinyl.update();
+      });
   
       this._controls.update();
-
-      // console.log('direction', this._camera.getWorldDirection());
     };
   
     //--------------------------------------------------------------
@@ -1217,6 +1269,8 @@
       this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
 
       await this._sleeve.setOpacity(1.0, 250);
+
+      this.updateVinylRenderOrder();
 
       return this._sleeve.getFormat();
     };

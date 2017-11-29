@@ -901,25 +901,50 @@
 
           let tween = new TWEEN.Tween(child.material);
 
-          if ('label' === child.name) {
-            if (0 < to) {
-              to = 1.0;
+          if (0 < to) {
+            if ('label' === child.name) {
+              new TWEEN.Tween(child.material)
+                .stop()
+                .delay(delay)
+                .to({ opacity: 1.0 }, duration)
+                .onUpdate((value) => {
+                  child.material.needsUpdate = true;
+                })
+                .onComplete(() => {
+                  child.material.needsUpdate = true;
+                  return;
+                })
+                .start();
+            } else {
+              new TWEEN.Tween(child.material)
+                .stop()
+                .delay(delay)
+                .to({ opacity: to }, duration)
+                .onUpdate((value) => {
+                  child.material.needsUpdate = true;
+                })
+                .onComplete(() => {
+                  child.material.opacity = to;
+                  child.material.needsUpdate = true;
+                  return;
+                })
+                .start();
             }
+          } else {
+            new TWEEN.Tween(child.material)
+              .stop()
+              .delay(delay)
+              .to({ opacity: 0 }, duration)
+              .onUpdate((value) => {
+                child.material.needsUpdate = true;
+              })
+              .onComplete(() => {
+                child.material.opacity = to;
+                child.material.needsUpdate = true;
+                return;
+              })
+              .start();
           }
-          
-          new TWEEN.Tween(child.material)
-            .stop()
-            .delay(delay)
-            .to({ opacity: to }, duration)
-            .onUpdate((value) => {
-              child.material.needsUpdate = true;
-            })
-            .onComplete(() => {
-              child.material.opacity = to;
-              child.material.needsUpdate = true;
-              return;
-            })
-            .start();
         }
       });
     }
@@ -1020,6 +1045,10 @@
 
     //--------------------------------------------------------------
     setRenderOrder(order) {
+      if (!this._currentObject) {
+        return;
+      }
+
       this._currentObject.renderOrder = order;
     }
 
@@ -1066,7 +1095,7 @@
     //--------------------------------------------------------------
     dispose() {
 
-      this._currentObject.traverse((child) => {
+      this._currentObject.traverse(child => {
         if (child instanceof THREE.Mesh) {
           child.geometry.dispose();
           child.material.dispose();
@@ -1095,7 +1124,7 @@
 
       await this._loadModel(this._size, this._format);
 
-      this._currentObject.traverse((child) => {
+      this._currentObject.traverse(child => {
         if (child instanceof THREE.Mesh) {
           const obj = parent._currentObject.getObjectByName(child.name);
           
@@ -1116,18 +1145,12 @@
       }
 
       if (this._enableRotate) {
-        let target = this._currentObject;
-        let amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
+        const target = this._currentObject;
+        const amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
 
         this._currentObject.children.forEach(function (child) {
-          let rotation = child.rotation.clone();
-          
-          if ('label' == child.name) {
-            rotation.y += amount;
-          } else {
-            rotation.y -= amount;
-          }
-          
+          const rotation = child.rotation.clone();
+          rotation.y -= amount;
           child.rotation.set(rotation.x, rotation.y, rotation.z);
         });
         
@@ -1264,15 +1287,18 @@
         this.initMaterial(obj, this._textures[size][format]);
 
         let position = new THREE.Vector3(0, 0, 0);
+        let renderOrder;
         
         if (this._currentObject) {
           position = this._currentObject.position;
+          renderOrder = this._currentObject.renderOrder;
 
           this.removeFromContainer();
           this.dispose();
         }
 
         this._currentObject = obj.scene.clone();
+        this._currentObject.renderOrder = renderOrder;
 
         this._currentObject.traverse((child) => {
           if (child instanceof THREE.Mesh) {

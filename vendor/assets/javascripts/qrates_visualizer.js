@@ -5,10 +5,6 @@
 
 ((global, exports) => {
 
-  /**
-   * Module dependencies.
-   */
-
   const Emitter = exports.Emitter;
   const World = exports.World;
   const Loader = exports.Loader;
@@ -16,44 +12,344 @@
   const Label = exports.Label;
   const Sleeve = exports.Sleeve;
 
-  /**
-   * Expose `VinylVisualizer`.
-   */
+  const noop = function() {};
 
-  exports.VinylVisualizer = VinylVisualizer;
+  class VinylVisualizer {
 
-  /**
-   * noop.
-   */
+    //--------------------------------------------------------------
+    constructor(el, opts) {
 
-  var noop = function() {};
-
-  /**
-   * Constructor.
-   *
-   * @api public
-   */
-
-  function VinylVisualizer(el, opts) {
-    this.opts = opts = opts || {};
-
-    var defaults = opts.defaults || {};
-    this.el = el;
-    this.loader = new Loader();
-    this.loadModels = opts.loadModels !== undefined ? opts.loadModels : true;
-    this.loadTextures = opts.loadTextures !== undefined ? opts.loadTextures : true;
-    
-    this.vinyls = [];
-
-    for (var i in opts.defaults.vinyl) {
-      this.vinyls.push(new Vinyl({ defaults: defaults.vinyl[i] }));
+      this.opts = opts = opts || {};
+      
+      const defaults = opts.defaults || {};
+  
+      this.el = el;
+      this.loader = new Loader();
+      this.loadModels = opts.loadModels !== undefined ? opts.loadModels : true;
+      this.loadTextures = opts.loadTextures !== undefined ? opts.loadTextures : true;
+      
+      this.vinyls = [];
+  
+      for (let i in opts.defaults.vinyl) {
+        this.vinyls.push(new Vinyl({ defaults: defaults.vinyl[i] }));
+      }
+  
+      this.sleeve = new Sleeve({ defaults: defaults.sleeve });
+  
+      this.opts.loader = this.loader;
+  
+      this.setup();
     }
 
-    this.sleeve = new Sleeve({ defaults: defaults.sleeve });
+    //--------------------------------------------------------------
+    setup() {
+      
+      const el = this.el;
+  
+      Object.keys(el.dataset).forEach((key) => {
+        this.loader.add(key, el.dataset[key]);
+      }, this);
+      
+      this.loader.load({
+        loadModels: this.loadModels,
+        loadTextures: this.loadTextures
+      }, (err, assets) => {
+        this.world = new World(this, assets, this.opts);
+        this.world.setup()
+          .then((world) => {
+            this.world.startRender();
+            el.appendChild(this.world.getRenderer().domElement);
+            
+            setTimeout(() => {
+              this.emit('ready');
+            }, 0);
+          });
+      });
+    }
+  
+    //--------------------------------------------------------------
+    startAutoRotation(opts) {
+  
+      if (this.timer) {
+        return this;
+      }
+  
+      opts = opts || {};
+  
+      let count = 0;
+      const duration = opts.duration || 2000;
+      const interval = opts.interval || 3000;
+  
+      this.timer = setTimeout(() => {
+        const callee = arguments.callee;
+        const type = count++ % 5;
+  
+        this.view(type, { duration: duration }, () => {
+          this.timer = setTimeout(callee, interval);
+        });
+      }, 0);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    stopAutoRotation(opts) {
+  
+      this.timer = clearTimeout(this.timer);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    view(type, opts, callback) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      this.world.updateView(type, opts, callback);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    capture(callback) {
+      
+      if (!this.world) {
+        return this;
+      }
+  
+      this.world.capture(callback);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    resize(width, height) {
+      
+      if (!this.world) {
+        return this;
+      }
+  
+      this.world.resize(width, height);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    play() {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      this.world.play();
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    pause() {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      this.world.pause();
+      
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    startRender() {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      this.world.startRender();
+      
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    stopRender() {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      this.world.stopRender();
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    flip(opts) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      this.world.flip(opts);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    rotateHorizontal(degree, opts) {
 
-    this.opts.loader = this.loader;
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      this.world.rotateHorizontal(degree, opts);
+  
+      return this;
+    }
 
-    this.setup();
+    //--------------------------------------------------------------
+    lookAround(degree, opts) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      this.world.rotateHorizontal(degree, opts);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    rotateVertical(degree, opts) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      this.world.rotateVertical(degree, opts);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    cover(value, opts) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      this.world.cover(value, opts);
+      
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    zoom(step, opts) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      
+      if (step < 0) {
+        this.world.zoomOut(Math.abs(step), opts);
+      } else {
+        this.world.zoomIn(step, opts);
+      }
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    setOrthographic() {
+      
+      if (!this.world) {
+        return this;
+      }
+  
+      this.world.setOrthographic();
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    setPerspective() {
+      
+      if (!this.world) {
+        return this;
+      }
+      
+      this.world.setPerspective();
+      
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    vinylVisibility(index, value, opts, callback) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      callback = callback || noop;
+      
+      this.world.setVinylVisibility(index, value, opts, callback);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    sleeveVisibility(value, opts, callback) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      callback = callback || noop;
+  
+      this.world.setSleeveVisibility(value, opts, callback);
+  
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    async setSize(value, opts, callback) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      callback = callback || noop;
+      
+      await this.world.setSize(value, opts, callback);
+
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    setGatefoldCoverAngle(degree, opts, callback) {
+  
+      if (!this.world) {
+        return this;
+      }
+  
+      opts = opts || {};
+      callback = callback || noop;
+  
+      this.world.setGatefoldCoverAngle(degree, opts, callback);
+  
+      return this;
+    }
   }
 
   /**
@@ -89,306 +385,6 @@
   // sleeve のフィニッシュ(光沢)オプション -----------------------
   VinylVisualizer.SleeveFinish = Sleeve.Finish;
 
-  /**
-   * Setup visualizer.
-   *
-   * @api private
-   */
-
-  VinylVisualizer.prototype.setup = function () {
-
-    var el = this.el;
-
-    Object.keys(el.dataset).forEach((key) => {
-      this.loader.add(key, el.dataset[key]);
-    }, this);
-    
-    this.loader.load({
-      loadModels: this.loadModels,
-      loadTextures: this.loadTextures
-    }, (err, assets) => {
-      this.world = new World(this, assets, this.opts);
-      this.world.setup()
-        .then((world) => {
-          this.world.startRender();
-          el.appendChild(this.world.getRenderer().domElement);
-          
-          setTimeout(() => {
-            this.emit('ready');
-          }, 0);
-        });
-    });
-  };
-
-  /**
-   * @param {Object} opts
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.startAutoRotation = function(opts) {
-    if (this.timer) return this;
-    opts = opts || {};
-    var count = 0;
-    var self = this;
-    var duration = opts.duration || 2000;
-    var interval = opts.interval || 3000;
-    this.timer = setTimeout(function() {
-      var callee = arguments.callee;
-      var type = count++ % 5;
-      self.view(type, { duration: duration }, function() {
-        self.timer = setTimeout(callee, interval);
-      });
-    }, 0);
-    return this;
-  };
-
-  /**
-   * @param {Object} opts
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.stopAutoRotation = function(opts) {
-    this.timer = clearTimeout(this.timer);
-    return this;
-  };
-
-  /**
-   * @param {Number} type
-   * @param {Object} opts
-   * @param {Function} callback
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.view = function(type, opts, callback) {
-    if (!this.world) return this;
-    this.world.updateView(type, opts, callback);
-    return this;
-  };
-
-  /**
-   * @param {Function} callback
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.capture = function(callback) {
-    if (!this.world) return this;
-    this.world.capture(callback);
-    return this;
-  };
-
-  /**
-   * @param {Number} width
-   * @param {Number} height
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.resize = function(width, height) {
-    if (!this.world) return this;
-    this.world.resize(width, height);
-    return this;
-  };
-
-  /**
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.play = function() {
-    if (!this.world) return this;
-    this.world.play();
-    return this;
-  };
-
-  /**
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.pause = function() {
-    if (!this.world) return this;
-    this.world.pause();
-    return this;
-  };
-
-  /**
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.startRender = function() {
-    if (!this.world) return this;
-    this.world.startRender();
-    return this;
-  };
-
-  /**
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.stopRender = function() {
-    if (!this.world) return this;
-    this.world.stopRender();
-    return this;
-  };
-
-  /**
-   * @param {Object} opts [optional]
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.flip = function(opts) {
-    if (!this.world) return this;
-    opts = opts || {};
-    this.world.flip(opts);
-    return this;
-  };
-
-  /**
-   * @param {Number} degree
-   * @param {Object} opts [optional]
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.rotateHorizontal =
-  VinylVisualizer.prototype.lookAround = function(degree, opts) {
-    if (!this.world) return this;
-    opts = opts || {};
-    this.world.rotateHorizontal(degree, opts);
-    return this;
-  };
-
-  /**
-   * @param {Number} degree
-   * @param {Object} opts [optional]
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.rotateVertical = function(degree, opts) {
-    if (!this.world) return this;
-    opts = opts || {};
-    this.world.rotateVertical(degree, opts);
-    return this;
-  };
-
-  /**
-   * @param {Number} value
-   * @param {Object} opts [optional]
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.cover = function(value, opts) {
-    if (!this.world) return this;
-    opts = opts || {};
-    this.world.cover(value, opts);
-    return this;
-  };
-
-  /**
-   * @param {Number} step
-   * @param {Object} opts [optional]
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.zoom = function(step, opts) {
-    if (!this.world) return this;
-    opts = opts || {};
-    if (step < 0) {
-      this.world.zoomOut(Math.abs(step), opts);
-    } else {
-      this.world.zoomIn(step, opts);
-    }
-    return this;
-  };
-
-  /**
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.setOrthographic = function() {
-    if (!this.world) return this;
-    this.world.setOrthographic();
-    return this;
-  };
-
-  /**
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.setPerspective = function() {
-    if (!this.world) return this;
-    this.world.setPerspective();
-    return this;
-  };
-
-  VinylVisualizer.prototype.setSleeveFormat = function (format, callback) {
-
-    if (!this.world) return this;
-    callback = callback || noop;
-    // this.world.setVinylVisibility(index, value, opts, callback);
-    return this;
-  };
-
-  /**
-   * @param {Boolean} value
-   * @param {Object} opts [optional]
-   * @param {Function} callback
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.vinylVisibility = function(index, value, opts, callback) {
-    if (!this.world) return this;
-    opts = opts || {};
-    callback = callback || noop;
-    this.world.setVinylVisibility(index, value, opts, callback);
-    return this;
-  };
-
-  /**
-   * @param {Boolean} value
-   * @param {Object} opts [optional]
-   * @param {Function} callback
-   * @return {VinylVisualizer}
-   * @api public
-   */
-
-  VinylVisualizer.prototype.sleeveVisibility = function(value, opts, callback) {
-    if (!this.world) return this;
-    opts = opts || {};
-    callback = callback || noop;
-    this.world.setSleeveVisibility(value, opts, callback);
-    return this;
-  };
-
-  VinylVisualizer.prototype.setSize = function (value, opts, callback) {
-
-    if (!this.world) return this;
-    opts = opts || {};
-    callback = callback || noop;
-    
-    return this.world.setSize(value, opts, callback);
-  };
-
-  VinylVisualizer.prototype.setGatefoldCoverAngle = function (degree, opts, callback) {
-
-    if (!this.world) return this;
-    opts = opts || {};
-    callback = callback || noop;
-    this.world.setGatefoldCoverAngle(degree, opts, callback);
-    return this;
-  };
+  exports.VinylVisualizer = VinylVisualizer;
 
 })(this, (this.qvv = (this.qvv || {})));
