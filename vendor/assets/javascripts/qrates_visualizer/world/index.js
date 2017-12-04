@@ -96,7 +96,7 @@
       this._bottomSpotLight.position.set(159, -2000, 120);
       this._scene.add(this._bottomSpotLight);
 
-      this._sideSpotLight = new THREE.SpotLight(0xffffff, 0.35, 0, 0.314, 0.26, 1);
+      this._sideSpotLight = new THREE.SpotLight(0xffffff, 0.3, 0, 0.314, 0.26, 1);
       this._sideSpotLight.position.set(-500, 0, 0);
       this._scene.add(this._sideSpotLight);
   
