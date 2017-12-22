@@ -386,7 +386,7 @@
       this._basePosition = new THREE.Vector3();
       this._transparent = false;
       this._side = opts.side || THREE.FrontSide;
-  
+
       // weight と label の組み合わせで format を決定する
       this._format = this.updateFormat(this._weight, this._label);
   
@@ -1355,8 +1355,8 @@
    * Constants
    */
   Vinyl.Size = {
-    SIZE_7_SMALL_HOLE: '7S',
-    SIZE_7_LARGE_HOLE: '7L',
+    SIZE_7S: '7S',
+    SIZE_7L: '7L',
     SIZE_10: '10',
     SIZE_12: '12'
   };

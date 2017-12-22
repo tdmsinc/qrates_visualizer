@@ -8,7 +8,7 @@ const canvas_width = window.innerWidth, canvas_height = window.innerHeight;
 const defaults = {
   vinyl: [
     {
-      size: qvv.VinylVisualizer.VinylSize.SIZE_12,
+      size: qvv.VinylVisualizer.VinylSize.SIZE_7S,
       weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
       isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
