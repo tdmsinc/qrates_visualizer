@@ -15,6 +15,7 @@ const defaults = {
       speed: 45,
       label: true,
       transparent: true,
+      color: 6
       // side: THREE.DoubleSide
     },
     // {

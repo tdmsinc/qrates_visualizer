@@ -436,6 +436,11 @@
       })(this._textures);
 
       await this._loadModel(this._size, this._format);
+
+      if (this._colorFormat === Vinyl.ColorFormat.COLOR) {
+        this.setColor(opts.color || 0);
+      }
+
       await this.setOpacity(this._material.opacity, 1000, 250);
 
       return this;
@@ -828,7 +833,7 @@
     }
 
     //--------------------------------------------------------------
-    setColor(color) {
+    setColor(color /* = int */) {
 
       if (Vinyl.ColorFormat.COLOR !== this._colorFormat) {
         console.error('Vinyl.setColor: color option is valid when vinyl type = COLOR');
