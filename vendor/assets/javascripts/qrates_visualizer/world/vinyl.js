@@ -453,7 +453,7 @@
         return false;
       }
 
-      model.scene.traverse((child) => {
+      model.scene.traverse(child => {
         
         if (child instanceof THREE.Mesh) {
           this._bumpScale = 0.3;
@@ -475,8 +475,11 @@
           child.material.side = THREE.FrontSide;
           child.material.envMap = this._envMapTexture;
 
-          if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {          
-            if (Vinyl.Part.VINYL === child.name) {
+          if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
+
+            const isLabel = this._isLabel(child);
+
+            if (!isLabel) {
 
               child.material.bumpScale = this._bumpScale;
               child.material.reflectivity = this._material.reflectivity;
@@ -504,8 +507,7 @@
                   child.material.map.needsUpdate = true;
                 }
               }
-            } else if (Vinyl.Part.LABEL === child.name) {
-
+            } else {
               child.material.bumpScale = this._labelBumpScale;
               child.material.color = new THREE.Color(0xffffff);
               child.material.reflectivity = 0;
@@ -615,7 +617,7 @@
         }
       }
 
-      this._currentObject.traverse((child) => {
+      this._currentObject.traverse(child => {
         if (child instanceof THREE.Mesh) {
           if (-1 < child.name.toLowerCase().indexOf(part)) {          
             if ('alpha' == type) {
@@ -758,9 +760,9 @@
       this._labelBumpScale = value;
 
       if (this._isWithLabel()) {
-        this._currentObject.traverse((child) => {
+        this._currentObject.traverse(child => {
           if (child instanceof THREE.Mesh) {
-            if (Vinyl.Part.LABEL === child.name) {
+            if (this._isLabel(child)) {
               child.material.bumpScale = this._labelBumpScale;
               child.material.needsUpdate = true;
             }
@@ -858,7 +860,7 @@
       this._currentObject.traverse((child) => {
 
         if (child instanceof THREE.Mesh) {
-          if ('vinyl' === child.name) {
+          if (!this._isLabel(child)) {
             child.material.color = this._material.color;
             child.material.opacity = this._material.opacity;
             child.material.reflectivity = this._material.reflectivity;
@@ -907,7 +909,7 @@
           let tween = new TWEEN.Tween(child.material);
 
           if (0 < to) {
-            if ('label' === child.name) {
+            if (this._isLabel(child)) {
               new TWEEN.Tween(child.material)
                 .stop()
                 .delay(delay)
@@ -1263,9 +1265,7 @@
         'key': this._paths.models[size][format]
       });
 
-      // モデルをロード
-      console.log('model is loaded  ------', result);
-      
+      // モデルをロード      
       const assetType = result['assetType'];
       const assetKey = result['key'];
 
@@ -1337,6 +1337,12 @@
     }
 
     //--------------------------------------------------------------
+    _isLabel(child /* = THREE.Mesh */) {
+
+      return -1 < child.name.toLowerCase().indexOf('label');
+    }
+
+    //--------------------------------------------------------------
     _setVinylScale(scale) {
       
             this._currentObject.scale.y = scale;
@@ -1347,7 +1353,7 @@
       
             this._currentObject.traverse((child) => {
               if (child instanceof THREE.Mesh) {
-                if (-1 < child.name.toLowerCase().indexOf('label')) {
+                if (this._isLabel(child)) {
                   child.scale.set(1.0, 2.5, 1.0);
                 }
               }
