@@ -9,13 +9,14 @@ var defaults = {
   view: 31,
   vinyl: [
     {
-      size: qvv.VinylVisualizer.VinylSize.SIZE_12,
+      size: qvv.VinylVisualizer.VinylSize.SIZE_7S,
       weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
       isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
       speed: 45,
       label: true,
       transparent: true,
+      color: 6
       // side: THREE.DoubleSide
     },
     // {

@@ -45,6 +45,8 @@
       };
 
       this._objectScales = {
+        '7S': 1,
+        '7L': 1,
         '7': 1,
         '10': 0.6890566038,
         '12': 0.5833865815
@@ -110,6 +112,26 @@
       // sleeve と vinyl がぶら下がるコンテナ
       this._containerObject = new THREE.Object3D();
       this._containerObject.name = 'container';
+
+      let vinylSize_1 = this._opts.defaults.vinyl[0].size;
+      vinylSize_1 = -1 < vinylSize_1.indexOf('7') ? '7' : vinylSize_1;
+
+      let vinylSize_2 = vinylSize_1;
+      
+      if (1 < this._opts.defaults.vinyl.length) {
+        vinylSize_2 = this._opts.defaults.vinyl[1].size;
+        vinylSize_2 = -1 < vinylSize_2.indexOf('7') ? '7' : vinylSize_2;
+      }
+
+      let sleeveSize;
+
+      if (parseInt(vinylSize_1) > parseInt(vinylSize_2)) {
+        sleeveSize = vinylSize_1;
+      } else {
+        sleeveSize = vinylSize_2;
+      }
+      
+      this._opts.defaults.sleeve.size = sleeveSize;
   
       // sleeve
       this._sleeve = new Sleeve(this._assets, this._containerObject, this._opts.loader);
@@ -126,7 +148,7 @@
 
       await this._sleeve.setup(this._opts.defaults.sleeve);
       
-      this._sleeve.setObjectScale(this._objectScales['12']);
+      this._sleeve.setObjectScale(this._objectScales[this._opts.defaults.sleeve.size]);
       
       // sleeve が single で複数の vinyl オプションが渡された場合は2つ目以降のオプションを削除して single フォーマットを採用する
       if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === this._opts.defaults.sleeve.format || Sleeve.Format.SINGLE === this._opts.defaults.sleeve.format)) {
@@ -581,6 +603,7 @@
         .to({ rotation: degree }, 500)
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(() => {
+
           let angleInRadians = param.rotation * (Math.PI / 180);
   
           this._sleeve.setGatefoldCoverAngle(angleInRadians);
