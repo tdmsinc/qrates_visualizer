@@ -272,40 +272,37 @@ img src="" id="tableBanner"
 form.show
 
   p.action-show toggle
-  h2 Capture types
-  p
-    select number="" v-model="visualizer.capture"
-      option disabled="" ▾ view (edit page angle)
-      option value="21" 21 vinyl fly out right down
-      option value="22" 22 vinyl fly out right up
-      option value="23" 23 vinyl fly out right
-      option value="24" 24 23 flip version
-      option value="25" 25 vinyl put in sleeve
-      option value="26" 26 25 flip version
-      option value="27" 27 zoom to label
-      option value="28" 28 27 flip version
-      option value="30" 30 30 default covered
-      option value="31" 31 31 default uncovered
-
+  br
+  br
   h1 Visualizer options
   p
     select number="" v-model="visualizer.view"
       option disabled="" ▾ view
-      option value="0" default
-      option value="1" item detail rotation 1
-      option value="2" item detail rotation 2
-      option value="3" item detail rotation 3
-      option value="4" item detail rotation 4
-      option value="5" item detail rotation 5
-      option value="6" item detail rotation 6
-      option value="7" item detail rotation 7
-      option value="8" item detail rotation 8
-      option value="9" item detail rotation 9
-      option value="10" vinyl Side A
-      option value="11" label Side A
-      option value="12" label Side B
-      option value="13" sleeve Front
-      option value="14" sleeve Back
+      option value="0" Default
+      option value="1" Overview #1
+      option value="2" Overview #2
+      option value="3" Overview #3
+      option value="4" Overview #4
+      option value="5" Overview #5
+      option value="6" Overview #6
+      option value="7" Overview #7
+      option value="8" Overview #8
+      option value="9" Overview #9
+
+      option value="11" Product image #1
+      option value="12" Product image #2
+      option value="13" Product image #3
+      option value="14" Product image #4
+      option value="15" Product image #5
+      option value="16" Product image #6
+      option value="17" Product image #7
+      option value="18" Product image #8
+      option value="19" Product image #9
+
+      option value="21" Thumbnail
+      option value="22" Sleeve thumbnail
+      option value="23" Vinyl thumbnail 1
+      option value="24" Vinyl thumbnail 2
     | &nbsp;
     input type="number" number="" v-model="visualizer.transition" placeholder="transition"
 

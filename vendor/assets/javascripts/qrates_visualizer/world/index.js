@@ -881,6 +881,19 @@
     };
   
     //--------------------------------------------------------------
+    setProjectionAndVisibility(projection, sleeveVisibility, vinyl1Visibility, vinyl2Visibility) {
+      const sleeveFormat = this._sleeve.getFormat();
+      if (projection) {
+        this.setPerspective();
+      } else {
+        this.setOrthographic();
+      }
+      this._sleeve.setVisibility(sleeveVisibility);
+      this._vinyls[0].setVisibility(vinyl1Visibility);
+      if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
+        this._vinyls[1].setVisibility(vinyl2Visibility);
+      }
+  }
     updateView(type, opts, callback) {
   
       opts = opts || {
@@ -889,288 +902,220 @@
   
       opts.duration = undefined !== opts.duration ? opts.duration : 2000;
       const sleeveFormat = this._sleeve.getFormat();
-
+      const double = (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat);
+        
       let reset = true;
   
       switch (Number(type)) {
-        case 0:  // for capture rendered image
-          const rate = 0.9;
-          this.setCameraPosition(212 * rate, 288 * rate, 251 * rate, opts, callback);
-          this._flip = true;
-          this.flip();
-          this.cover(0.25, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.5, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
+      case 0: { // Default
+        this.setProjectionAndVisibility(true, true, true, true);
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
+        this.setCameraPosition(50, 230, 10, opts, callback);
+        this._controls.target = new THREE.Vector3(50, 0, 0);
+        // this._camera.setZoom(3);
+        this._controls.update();
+        break;
+      }
+      case 1: { // Overview #1
+        this.setProjectionAndVisibility(true, true, true, true);
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
+        this.setCameraPosition(50, 230, 10, opts, callback);
+        this._controls.target = new THREE.Vector3(50, 0, 0);
+        // this._camera.setZoom(3);
+        this._controls.update();
+        break;
+      }
+      case 2: { // Overview #2
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPosition(62, 94, 105, opts, callback);
+        this._flip = true;
+        this.flip();
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
+        
+        if (reset) {
+          this._controls.reset();
+        }
+        break;
+      }
+      case 3: { // Overview #3
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPosition(0.01, 365, 50, opts, callback); // item detail rotation 3
+        this._flip = false;
+        this.flip();
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
+        if (reset) {
+          this._controls.reset();
+        }
+        break;
+      }
+      case 4: { // Overview #4
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPosition(0.01, 345, 400, opts, callback); // item detail rotation 5
+        this._flip = true;
+        this.flip();
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        
+        if (reset) {
+          this._controls.reset();
+        }
+        break;
+      }
+      case 5: { // Overview #5
+        break;
+      }
+      case 6: {
+        break;
+      }
+      case 7: {
+        break;
+      }
+      case 8: {
+        break;
+      }
+      case 9: {
+        break;
+      }
+      case 11: { // Product image #1
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPosition(190 * 0.8, 259 * 0.8, 226 * 0.8, { duration: opts.duration });
+        this.cover(0.25, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.5, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        this._controls.target = new THREE.Vector3(-30, 0, 24);
+        this._controls.update();
+        break;
+      }
+      case 12: { // Product image #2
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPosition(-250, 260, 260, { duration: opts.duration });
+        this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        this._controls.target = new THREE.Vector3(-30, -210, -140);
+        this._controls.update();
+        break;
+      }
+      case 13: { // Product image #3
+        this.setProjectionAndVisibility(false, true, true, true);
+        this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        this._camera.position.set(-75, 500, 10);
+        this._controls.target = new THREE.Vector3(-75, 0, 0);
+        this._controls.update();
+        break;
+      }
+      case 14: { // Product image #4
+        this.setProjectionAndVisibility(false, true, true, true);
+        this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        this._camera.position.set(-75, -500, -10);
+        this._controls.target = new THREE.Vector3(-75, 0, 0);
+        this._controls.update();
+        break;
+      }
+      case 15: { // Product image #5
+        this.setProjectionAndVisibility(false, true, true, true);
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        this._camera.position.set(0, 500, 10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._controls.update();
+        break;
+      }
+      case 16: { // Product image #6
+        this.setProjectionAndVisibility(false, true, true, true);
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        this._camera.position.set(0, -500, -10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._controls.update();
+        break;
+      }
+      case 17: { // Product image #7
+        this.setProjectionAndVisibility(false, false, true, true);
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        this._camera.position.set(0, 400, 10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._camera.setZoom(320);
+        this._controls.update();
+        break;
+      }
+      case 18: { // Product image #8
+        this.setProjectionAndVisibility(false, false, true, true);
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        this._camera.position.set(0, -328, -10);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._camera.setZoom(320);
+        this._controls.update();
+        break;
+      }
+      case 21: { // Thumbnail
+        this.setProjectionAndVisibility(false, true, true, true);
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
 
-          break;
-        case 1:
-          this.setCameraPosition(62, 94, 105, opts, callback); // item detail rotation 1
-          this._flip = true;
-          this.flip();
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
+        this.setCameraPosition(0, 400, 1, opts, callback);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._camera.setZoom(320);
+        this._controls.update();
+        break;
+      }
+      case 22: { // Sleeve thumbnail
+        this.setProjectionAndVisibility(false, true, false, false);
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        
+        this.setCameraPosition(0, 400, 1, opts, callback);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._camera.setZoom(320);
+        this._controls.update();
+        break;
+      }
+      case 23: { // Vinyl thumbnail 1
+        this.setProjectionAndVisibility(false, false, true, false);
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        
+        this.setCameraPosition(0, 400, 1, opts, callback);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._camera.setZoom(320);
+        this._controls.update();
 
-          break;
-        case 2:
-          this.setCameraPosition(0.01, 365, 10, opts, callback); // item detail rotation 2
-          this._flip = true;
-          this.flip();
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
+        break;
+      }
+      case 23: { // Vinyl thumbnail 2
+        this.setProjectionAndVisibility(false, false, false, true);
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
+        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
+        
+        this.setCameraPosition(0, 400, 1, opts, callback);
+        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this._camera.setZoom(320);
+        this._controls.update();
 
-          break;
-        case 3:
-          this.setCameraPosition(0.01, 365, 50, opts, callback); // item detail rotation 3
-          this._flip = false;
-          this.flip();
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 4:
-          this.setCameraPosition(0.01, 345, 400, opts, callback); // item detail rotation 4
-          this._flip = false;
-          this.flip();
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 5:
-          this.setCameraPosition(0.01, 345, 400, opts, callback); // item detail rotation 5
-          this._flip = true;
-          this.flip();
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 6:
-          this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation 6
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 7:
-          this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation 7
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 8:
-          this.setCameraPosition(212, 288, 251, opts, callback); // item detail rotation 8
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 9:
-          this.setCameraPosition(148, 201, 175, opts, callback); // item detail rotation 9
-          this._flip = true;
-          this.flip();
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 10:
-          this.setCameraPosition(0, 436, 1, opts, callback); // vinyl Side A
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 11:
-          this.setCameraPosition(0, 170, 1, opts, callback); // label Side A
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 12:
-          this.setCameraPosition(0, -170, -1, opts, callback); // label Side B
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 13:
-          this.setCameraPosition(0, 400, 1, opts, callback); // sleeve Front
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 14:
-          this.setCameraPosition(0, -400, -1, opts, callback); // sleeve Back
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          
-          if (reset) {
-            this._controls.reset();
-          }
-
-          break;
-        case 21:
-          this.setPerspective();
-          this._sleeve.setVisibility(true);
-          this.setCameraPosition(190 * 0.8, 259 * 0.8, 226 * 0.8, { duration: opts.duration });
-          this.cover(0.25, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.5, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.target = new THREE.Vector3(-30, 0, 24);
-          this._controls.update();
-          break;
-        case 22:
-          this.setPerspective();
-          this._sleeve.setVisibility(true);
-          this.setCameraPosition(-250, 260, 260, { duration: opts.duration });
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._controls.target = new THREE.Vector3(-30, -210, -140);
-          this._controls.update();
-          break;
-        case 23:
-          this.setOrthographic();
-          this._sleeve.setVisibility(true);
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._camera.position.set(-75, 500, 10);
-          this._controls.target = new THREE.Vector3(-75, 0, 0);
-          this._controls.update();
-          break;
-        case 24:
-          this.setOrthographic();
-          this._sleeve.setVisibility(true);
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._camera.position.set(-75, -500, -10);
-          this._controls.target = new THREE.Vector3(-75, 0, 0);
-          this._controls.update();
-          break;
-        case 25:
-          this.setOrthographic();
-          this._sleeve.setVisibility(true);
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._camera.position.set(0, 500, 10);
-          this._controls.target = new THREE.Vector3(0, 0, 0);
-          this._controls.update();
-          break;
-        case 26:
-          this.setOrthographic();
-          this._sleeve.setVisibility(true);
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._camera.position.set(0, -500, -10);
-          this._controls.target = new THREE.Vector3(0, 0, 0);
-          this._controls.update();
-          break;
-        case 27:
-          this.setOrthographic();
-          this._sleeve.setVisibility(false);
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._camera.position.set(0, 400, 10);
-          this._controls.target = new THREE.Vector3(0, 0, 0);
-          this._camera.setZoom(320);
-          this._controls.update();
-          break;
-        case 28:
-          this.setOrthographic();
-          this._sleeve.setVisibility(false);
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._camera.position.set(0, -328, -10);
-          this._controls.target = new THREE.Vector3(0, 0, 0);
-          this._camera.setZoom(320);
-          this._controls.update();
-          break;
-        case 29:
-          this.setOrthographic();
-          this._sleeve.setVisibility(false);
-          this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-          this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-          this._camera.position.set(-75, 500, 10);
-          this._controls.target = new THREE.Vector3(-75, 0, 0);
-          this._controls.update();
-          break;
-
-        case 30: // order spec 画面 default 表示用 (sleeve in)
-          this.setPerspective();
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-          this.setCameraPosition(50, 1000, 10, opts, callback);
-          this._controls.target = new THREE.Vector3(50, 0, 0);
-          this._camera.setZoom(3);
-          this._controls.update();
-          break;
-        case 31: // order spec 画面 default 表示用
-          this.setPerspective();
-          if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
-            this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-            this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-          } else {
-            this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-          }
-          this.setCameraPosition(50, 1000, 10, opts, callback);
-          this._controls.target = new THREE.Vector3(50, 0, 0);
-          this._camera.setZoom(3);
-          this._controls.update();
-          break;
-        case 33: 
-        case 34:
-        case 35:
-        case 36:
-        case 37:
-        case 38:
-        case 39:
-        case 40:
-        case 41:
-        case 42:          
-          
-        default:
-          break;
+        break;
+      }
       }
     };
   
