@@ -501,7 +501,7 @@
     };
   
     //--------------------------------------------------------------
-    setCameraPosition(tx, ty, tz, opts, callback) {
+    setCameraPosition(x, y, z, opts, callback) {
 
       if (!callback) {
         callback = null;
@@ -515,7 +515,7 @@
   
       new TWEEN.Tween(this._camera.position)
         .stop()
-        .to({ x: tx, y: ty, z: tz }, opts.duration)
+        .to({ x, y, z }, opts.duration)
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(() => {
           this._camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -525,7 +525,44 @@
         })
         .start();
     };
+
+    //--------------------------------------------------------------
+    setCameraPositionAndTarget(x, y, z, tx, ty, tz, opts, callback) {
+      
+      if (!callback) {
+        callback = null;
+      }
   
+      opts = opts || {
+        durarion: 1000
+      };
+  
+      opts.duration = undefined === opts.duration ? 1000 : opts.duration;
+
+      let param = {
+        x: this._camera.position.x,
+        y: this._camera.position.y,
+        z: this._camera.position.z,
+        tx: this._controls.target.x,
+        ty: this._controls.target.y,
+        tz: this._controls.target.z
+      };
+      
+      new TWEEN.Tween(param)
+        .stop()
+        .to({ x, y, z, tx, ty, tz }, opts.duration)
+        .easing(TWEEN.Easing.Quartic.Out)
+        .onUpdate(() => {
+          this._camera.position.set(param.x, param.y, param.z);
+          // this._camera.lookAt(new THREE.Vector3(0, 0, 0));
+          this._controls.target.set(param.tx, param.ty, param.tz);// = new THREE.Vector3(tx, ty, tz);
+        })
+        .onComplete(function () {
+          if (callback) callback();
+        })
+        .start();
+    };
+          
     //--------------------------------------------------------------
     setCameraRotation(tx, ty, tz, opts, callback) {
 
@@ -915,10 +952,10 @@
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
-        this.setCameraPosition(50, 230, 10, opts, callback);
-        this._controls.target = new THREE.Vector3(50, 0, 0);
+        this.setCameraPositionAndTarget(50, 230, 10, 50, 0, 0, opts, callback);
+        // this._controls.target = new THREE.Vector3(50, 0, 0);
         // this._camera.setZoom(3);
-        this._controls.update();
+        // this._controls.update();
         break;
       }
       case 1: { // Overview #1
@@ -929,15 +966,15 @@
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
-        this.setCameraPosition(50, 230, 10, opts, callback);
-        this._controls.target = new THREE.Vector3(50, 0, 0);
+        this.setCameraPositionAndTarget(50, 230, 10, 50, 0, 0, opts, callback);
+        // this._controls.target = new THREE.Vector3(50, 0, 0);
         // this._camera.setZoom(3);
-        this._controls.update();
+        // this._controls.update();
         break;
       }
       case 2: { // Overview #2
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPosition(62, 94, 105, opts, callback);
+        this.setCameraPositionAndTarget(62, 94, 105, 0, 0, 0, opts, callback);
         this._flip = true;
         this.flip();
         if (double) {
@@ -947,14 +984,14 @@
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
         
-        if (reset) {
-          this._controls.reset();
-        }
+        // if (reset) {
+        //   this._controls.reset();
+        // }
         break;
       }
       case 3: { // Overview #3
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPosition(0.01, 365, 50, opts, callback); // item detail rotation 3
+        this.setCameraPositionAndTarget(0.01, 365, 50, 0, 0, 0,  opts, callback); // item detail rotation 3
         this._flip = false;
         this.flip();
         if (double) {
@@ -963,22 +1000,22 @@
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
-        if (reset) {
-          this._controls.reset();
-        }
+        // if (reset) {
+        //   this._controls.reset();
+        // }
         break;
       }
       case 4: { // Overview #4
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPosition(0.01, 345, 400, opts, callback); // item detail rotation 5
+        this.setCameraPositionAndTarget(0.01, 345, 400, 0, 0, 0,  opts, callback); // item detail rotation 5
         this._flip = true;
         this.flip();
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
         
-        if (reset) {
-          this._controls.reset();
-        }
+        // if (reset) {
+        //   this._controls.reset();
+        // }
         break;
       }
       case 5: { // Overview #5
@@ -998,76 +1035,75 @@
       }
       case 11: { // Product image #1
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPosition(190 * 0.8, 259 * 0.8, 226 * 0.8, { duration: opts.duration });
         this.cover(0.25, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.5, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this._controls.target = new THREE.Vector3(-30, 0, 24);
-        this._controls.update();
+        this.setCameraPositionAndTarget(190 * 0.8, 259 * 0.8, 226 * 0.8, -30, 0, 24, opts, callback);
+        // this._controls.target = new THREE.Vector3(-30, 0, 24);
+        // this._controls.update();
         break;
       }
       case 12: { // Product image #2
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPosition(-250, 260, 260, { duration: opts.duration });
         this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this._controls.target = new THREE.Vector3(-30, -210, -140);
-        this._controls.update();
+        this.setCameraPosition(-250, 260, 260, -30, -210, -140, opts, callback);
+        // this._controls.target = new THREE.Vector3();
+        // this._controls.update();
         break;
       }
       case 13: { // Product image #3
         this.setProjectionAndVisibility(false, true, true, true);
         this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this._camera.position.set(-75, 500, 10);
-        this._controls.target = new THREE.Vector3(-75, 0, 0);
-        this._controls.update();
+        this.setCameraPositionAndTarget(-75, 500, 10, -75, 0, 0, opts, callback);
+        // this._controls.target = new THREE.Vector3();
+        // this._controls.update();
         break;
       }
       case 14: { // Product image #4
         this.setProjectionAndVisibility(false, true, true, true);
         this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this._camera.position.set(-75, -500, -10);
-        this._controls.target = new THREE.Vector3(-75, 0, 0);
-        this._controls.update();
+        this.setCameraPositionAndTarget(-75, -500, -10, -75, 0, 0, opts, callback);
+        this._camera.position.set();
+        // this._controls.target = new THREE.Vector3();
+        // this._controls.update();
         break;
       }
       case 15: { // Product image #5
         this.setProjectionAndVisibility(false, true, true, true);
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this._camera.position.set(0, 500, 10);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._controls.update();
+        this.setCameraPositionAndTarget(0, 500, 10, 0, 0, 0, opts, callback);
         break;
       }
       case 16: { // Product image #6
         this.setProjectionAndVisibility(false, true, true, true);
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this._camera.position.set(0, -500, -10);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._controls.update();
+        this.setCameraPositionAndTarget(0, -500, -10, 0, 0, 0, opts, callback);
         break;
       }
       case 17: { // Product image #7
         this.setProjectionAndVisibility(false, false, true, true);
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this._camera.position.set(0, 400, 10);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this.setCameraPositionAndTarget(0, 400, 10, 0, 0, 0, opts, callback);
+        // this._camera.position.set(0, 400, 10);
+        // this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
-        this._controls.update();
+        // this._controls.update();
         break;
       }
       case 18: { // Product image #8
         this.setProjectionAndVisibility(false, false, true, true);
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this._camera.position.set(0, -328, -10);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this.setCameraPositionAndTarget(0, -328, -10, 0, 0, 0, opts, callback);
+        // this._camera.position.set(0, -328, -10);
+        // this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
-        this._controls.update();
+        // this._controls.update();
         break;
       }
       case 21: { // Thumbnail
@@ -1075,10 +1111,10 @@
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
 
-        this.setCameraPosition(0, 400, 1, opts, callback);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this.setCameraPositionAndTarget(0, 400, 1, 0, 0, 0, opts, callback);
+        // this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
-        this._controls.update();
+        // this._controls.update();
         break;
       }
       case 22: { // Sleeve thumbnail
@@ -1086,10 +1122,10 @@
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
         
-        this.setCameraPosition(0, 400, 1, opts, callback);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this.setCameraPositionAndTarget(0, 400, 1, 0, 0, 0, opts, callback);
+        // this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
-        this._controls.update();
+        // this._controls.update();
         break;
       }
       case 23: { // Vinyl thumbnail 1
@@ -1097,10 +1133,10 @@
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
         
-        this.setCameraPosition(0, 400, 1, opts, callback);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this.setCameraPosition(0, 400, 1, 0, 0, 0, opts, callback);
+        // this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
-        this._controls.update();
+        // this._controls.update();
 
         break;
       }
@@ -1109,10 +1145,10 @@
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
         
-        this.setCameraPosition(0, 400, 1, opts, callback);
-        this._controls.target = new THREE.Vector3(0, 0, 0);
+        this.setCameraPosition(0, 400, 1, 0, 0, 0, opts, callback);
+        // this._controls.target = new THREE.Vector3(0, 0, 0);
         this._camera.setZoom(320);
-        this._controls.update();
+        // this._controls.update();
 
         break;
       }
