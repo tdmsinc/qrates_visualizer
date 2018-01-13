@@ -776,7 +776,11 @@
     flip(value) {
       console.log('World::flip', value);
   
-      this._flip = !this._flip;
+      if (value === undefined) {
+        this._flip = !this._flip;
+      } else {
+        this._flip = value;
+      }
   
       this._flipTween
         .stop()
@@ -946,6 +950,8 @@
       switch (Number(type)) {
       case 0: { // Default
         this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
         if (double) {
           this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
           this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
@@ -953,81 +959,112 @@
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
         this.setCameraPositionAndTarget(50, 230, 10, 50, 0, 0, opts, callback);
-        // this._controls.target = new THREE.Vector3(50, 0, 0);
-        // this._camera.setZoom(3);
-        // this._controls.update();
         break;
       }
-      case 1: { // Overview #1
+      case 1: { // Overview #1 おもて面、sleeve & vinyl 正面
         this.setProjectionAndVisibility(true, true, true, true);
-        if (double) {
-          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        } else {
-          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        }
         this.setCameraPositionAndTarget(50, 230, 10, 50, 0, 0, opts, callback);
-        // this._controls.target = new THREE.Vector3(50, 0, 0);
-        // this._camera.setZoom(3);
-        // this._controls.update();
-        break;
-      }
-      case 2: { // Overview #2
-        this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(62, 94, 105, 0, 0, 0, opts, callback);
-        this._flip = true;
-        this.flip();
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
         if (double) {
           this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
           this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
-        
-        // if (reset) {
-        //   this._controls.reset();
-        // }
         break;
       }
-      case 3: { // Overview #3
+      case 2: { // Overview #2 裏面、sleeve & vinyl 正面
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(0.01, 365, 50, 0, 0, 0,  opts, callback); // item detail rotation 3
-        this._flip = false;
-        this.flip();
+        this.setCameraPositionAndTarget(-50, 230, 10, -50, 0, 0, opts, callback);
+        this.flip(true);
+        this.setGatefoldCoverAngle(0);
         if (double) {
           this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
           this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
-        // if (reset) {
-        //   this._controls.reset();
-        // }
         break;
       }
-      case 4: { // Overview #4
+      case 3: { // Overview #3 おもて面、sleeve & vinyl 斜め
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(0.01, 345, 400, 0, 0, 0,  opts, callback); // item detail rotation 5
-        this._flip = true;
-        this.flip();
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        
-        // if (reset) {
-        //   this._controls.reset();
-        // }
+        this.setCameraPositionAndTarget(150, 100, 100, 50, 0, 0, opts, callback);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
-      case 5: { // Overview #5
+      case 4: { // Overview #4 vinyl label面 寄り おもて
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.setCameraPositionAndTarget(100, 130, 10, 100, 0, 0, opts, callback);
+          this.cover(1.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.setCameraPositionAndTarget(100, 130, 10, 100, 0, 0, opts, callback);
+          this.cover(1.1, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
-      case 6: {
+      case 5: { // Overview #5 vinyl label面 寄り 裏
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(true);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.setCameraPositionAndTarget(-100, 130, 10, -100, 0, 0, opts, callback);
+          this.cover(1.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.setCameraPositionAndTarget(-100, 130, 10, -100, 0, 0, opts, callback);
+          this.cover(1.1, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
-      case 7: {
+      case 6: { // Overview #6 spine面
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPositionAndTarget(-150, 100, 100, 0, 0, 0, opts, callback);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
+        break;
+      }
+      case 7: { // Overview #7 inner
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPositionAndTarget(-30, 250, 10, -30, 0, 0, opts, callback);
+        this.flip(false);
+        this.setGatefoldCoverAngle(80);
+        if (double) {
+          this.cover(0.4, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 8: {
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPositionAndTarget(-30, -250, -10, -30, 0, 0, opts, callback);
+        this.flip(false);
+        this.setGatefoldCoverAngle(80);
+        if (double) {
+          this.cover(0.4, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 9: {
@@ -1035,121 +1072,147 @@
       }
       case 11: { // Product image #1
         this.setProjectionAndVisibility(true, true, true, true);
-        this.cover(0.25, { duration: opts.duration, index: Vinyl.Index.FIRST });
-        this.cover(0.5, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this.setCameraPositionAndTarget(190 * 0.8, 259 * 0.8, 226 * 0.8, -30, 0, 24, opts, callback);
-        // this._controls.target = new THREE.Vector3(-30, 0, 24);
-        // this._controls.update();
+        this.setCameraPositionAndTarget(50, 230, 10, 50, 0, 0, opts, callback);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 12: { // Product image #2
         this.setProjectionAndVisibility(true, true, true, true);
-        this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-        this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this.setCameraPosition(-250, 260, 260, -30, -210, -140, opts, callback);
-        // this._controls.target = new THREE.Vector3();
-        // this._controls.update();
+        this.setCameraPositionAndTarget(-50, 230, 10, -50, 0, 0, opts, callback);
+        this.flip(true);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 13: { // Product image #3
-        this.setProjectionAndVisibility(false, true, true, true);
-        this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-        this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this.setCameraPositionAndTarget(-75, 500, 10, -75, 0, 0, opts, callback);
-        // this._controls.target = new THREE.Vector3();
-        // this._controls.update();
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPositionAndTarget(150, 100, 100, 50, 0, 0, opts, callback);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 14: { // Product image #4
-        this.setProjectionAndVisibility(false, true, true, true);
-        this.cover(0.4, { duration: opts.duration, index: Vinyl.Index.FIRST });
-        this.cover(0.8, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this.setCameraPositionAndTarget(-75, -500, -10, -75, 0, 0, opts, callback);
-        this._camera.position.set();
-        // this._controls.target = new THREE.Vector3();
-        // this._controls.update();
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.setCameraPositionAndTarget(100, 130, 10, 100, 0, 0, opts, callback);
+          this.cover(1.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.setCameraPositionAndTarget(100, 130, 10, 100, 0, 0, opts, callback);
+          this.cover(1.1, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 15: { // Product image #5
-        this.setProjectionAndVisibility(false, true, true, true);
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this.setCameraPositionAndTarget(0, 500, 10, 0, 0, 0, opts, callback);
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(true);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.setCameraPositionAndTarget(-100, 130, 10, -100, 0, 0, opts, callback);
+          this.cover(1.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.setCameraPositionAndTarget(-100, 130, 10, -100, 0, 0, opts, callback);
+          this.cover(1.1, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 16: { // Product image #6
-        this.setProjectionAndVisibility(false, true, true, true);
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this.setCameraPositionAndTarget(0, -500, -10, 0, 0, 0, opts, callback);
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPositionAndTarget(-150, 100, 100, 0, 0, 0, opts, callback);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
+        if (double) {
+          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 17: { // Product image #7
-        this.setProjectionAndVisibility(false, false, true, true);
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this.setCameraPositionAndTarget(0, 400, 10, 0, 0, 0, opts, callback);
-        // this._camera.position.set(0, 400, 10);
-        // this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._camera.setZoom(320);
-        // this._controls.update();
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPositionAndTarget(-30, 250, 10, -30, 0, 0, opts, callback);
+        this.flip(false);
+        this.setGatefoldCoverAngle(80);
+        if (double) {
+          this.cover(0.4, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 18: { // Product image #8
-        this.setProjectionAndVisibility(false, false, true, true);
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
-        this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        this.setCameraPositionAndTarget(0, -328, -10, 0, 0, 0, opts, callback);
-        // this._camera.position.set(0, -328, -10);
-        // this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._camera.setZoom(320);
-        // this._controls.update();
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.setCameraPositionAndTarget(-30, -250, -10, -30, 0, 0, opts, callback);
+        this.flip(false);
+        this.setGatefoldCoverAngle(80);
+        if (double) {
+          this.cover(0.4, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
         break;
       }
       case 21: { // Thumbnail
         this.setProjectionAndVisibility(false, true, true, true);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-
-        this.setCameraPositionAndTarget(0, 400, 1, 0, 0, 0, opts, callback);
-        // this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._camera.setZoom(320);
-        // this._controls.update();
+        this.setCameraPositionAndTarget(0, 160, 1, 0, 0, 0, opts, callback);
+        this._camera.setZoom(450);
         break;
       }
       case 22: { // Sleeve thumbnail
         this.setProjectionAndVisibility(false, true, false, false);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        
-        this.setCameraPositionAndTarget(0, 400, 1, 0, 0, 0, opts, callback);
-        // this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._camera.setZoom(320);
-        // this._controls.update();
+        this.setCameraPositionAndTarget(0, 160, 1, 0, 0, 0, opts, callback);
+        this._camera.setZoom(450);
         break;
       }
       case 23: { // Vinyl thumbnail 1
         this.setProjectionAndVisibility(false, false, true, false);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        
-        this.setCameraPosition(0, 400, 1, 0, 0, 0, opts, callback);
-        // this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._camera.setZoom(320);
-        // this._controls.update();
-
+        this.setCameraPositionAndTarget(0, 160, 1, 0, 0, 0, opts, callback);
+        this._camera.setZoom(450);
         break;
       }
-      case 23: { // Vinyl thumbnail 2
-        this.setProjectionAndVisibility(false, false, false, true);
+      case 24: { // Vinyl thumbnail 2
+        this.setProjectionAndVisibility(true, false, false, true);
+        this.flip(false);
+        this.setGatefoldCoverAngle(0);
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.FIRST });
         this.cover(0.0, { duration: opts.duration, index: Vinyl.Index.SECOND });
-        
-        this.setCameraPosition(0, 400, 1, 0, 0, 0, opts, callback);
-        // this._controls.target = new THREE.Vector3(0, 0, 0);
-        this._camera.setZoom(320);
-        // this._controls.update();
-
+        this.setCameraPositionAndTarget(0, 160, 1, 0, 0, 0, opts, callback);
         break;
       }
       }
