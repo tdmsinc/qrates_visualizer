@@ -1027,20 +1027,34 @@
         }
         break;
       }
-      case 6: { // Overview #6 spine面
+      case 6: {
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(false, opts);
+        this.setGatefoldCoverAngle(0, opts);
+        this.setCameraPositionAndTarget(0, 130, 10, 0, 0, 0, opts, callback);
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        break;
+      }
+      case 7: {
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(true, opts);
+        this.setGatefoldCoverAngle(0, opts);
+        this.setCameraPositionAndTarget(0, 130, 10, 0, 0, 0, opts, callback);
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        break;
+      }
+      case 8: { // Overview #8 spine面
         this.setProjectionAndVisibility(true, true, true, true);
         this.setCameraPositionAndTarget(-150, 100, 100, 0, 0, 0, opts, callback);
         this.flip(false, opts);
         this.setGatefoldCoverAngle(0, opts);
-        if (double) {
-          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        } else {
-          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        }
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         break;
       }
-      case 7: { // Overview #7 inner
+      case 9: { // Overview #9 gatefold open inner
         this.setProjectionAndVisibility(true, true, true, true);
         this.setCameraPositionAndTarget(-30, 250, 10, -30, 0, 0, opts, callback);
         this.flip(false, opts);
@@ -1053,7 +1067,7 @@
         }
         break;
       }
-      case 8: {
+      case 10: { // Overview #10 gatefold open outer
         this.setProjectionAndVisibility(true, true, true, true);
         this.setCameraPositionAndTarget(-30, -250, -10, -30, 0, 0, opts, callback);
         this.flip(false, opts);
@@ -1064,9 +1078,6 @@
         } else {
           this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
-        break;
-      }
-      case 9: {
         break;
       }
       case 11: { // Product image #1
