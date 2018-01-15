@@ -190,9 +190,8 @@
       if (!this.world) {
         return this;
       }
-  
-      opts = opts || {};
-      this.world.flip(opts);
+
+      this.world.flip(undefined, opts);
   
       return this;
     }
