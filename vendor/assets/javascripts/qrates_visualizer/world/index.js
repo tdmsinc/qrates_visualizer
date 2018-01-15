@@ -776,8 +776,10 @@
     flip(value, opts) {
       if (value === undefined) {
         this._flip = !this._flip;
+        console.log('(toggled) flip to', this._flip);
       } else {
         this._flip = value;
+        console.log('(set as) flip to', this._flip);
       }
 
       opts = opts || { duration: 2000 };
