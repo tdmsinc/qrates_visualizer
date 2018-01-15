@@ -782,7 +782,7 @@
         console.log('(set as) flip to', this._flip);
       }
 
-      opts = opts || { duration: 2000 };
+      opts = opts || { duration: 1000 };
   
       this._flipTween
         .stop()
