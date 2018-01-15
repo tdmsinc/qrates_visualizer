@@ -779,6 +779,8 @@
       } else {
         this._flip = value;
       }
+
+      opts = opts || { duration: 2000 };
   
       this._flipTween
         .stop()
@@ -792,7 +794,8 @@
   
     //--------------------------------------------------------------
     cover(value, opts) {
-  
+      opts = opts || { duration: 500 };
+      
       const self = this;
       const sleeveFormat = this._sleeve.getFormat();
   
@@ -835,7 +838,7 @@
       };
       new TWEEN.Tween(param)
         .stop()
-        .to({ ratio: value }, opts.duration || 500)
+        .to({ ratio: value }, opts.duration)
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(function () {
           self._vinyls[index].setCoveredRatio(this.ratio, 0, offsetY);
@@ -937,9 +940,7 @@
       opts = opts || {
         duration: 0
       };
-      opts = { duration: 1 };
   
-      opts.duration = undefined !== opts.duration ? opts.duration : 2000;
       const sleeveFormat = this._sleeve.getFormat();
       const double = (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat);
         
