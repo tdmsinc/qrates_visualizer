@@ -547,6 +547,8 @@
         ty: this._controls.target.y,
         tz: this._controls.target.z
       };
+
+      this._controls.reset();
       
       new TWEEN.Tween(param)
         .stop()
