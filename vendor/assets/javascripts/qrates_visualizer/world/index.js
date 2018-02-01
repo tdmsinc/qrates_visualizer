@@ -637,9 +637,11 @@
         rotation: this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI)
       };
   
+      opts = opts || { duration: 500 };
+      
       new TWEEN.Tween(param)
         .stop()
-        .to({ rotation: degree }, 500)
+        .to({ rotation: degree }, opts.duration)
         .easing(TWEEN.Easing.Quartic.Out)
         .onUpdate(() => {
 
