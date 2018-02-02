@@ -1340,12 +1340,15 @@
         if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
           secondOffsetY += 0.15;
         }
+        this._vinyls[1].setVisibility(true);
       } else if (Sleeve.Format.DOUBLE === newFormat) {
         firstOffsetY = 0.6;
         secondOffsetY = -0.6;
+        this._vinyls[1].setVisibility(true);
       } else {
         firstOffsetY = 0.0;
         secondOffsetY = 0.0;
+        this._vinyls[1].setVisibility(false);
       }
 
       this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
