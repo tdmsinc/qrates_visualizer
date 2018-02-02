@@ -649,9 +649,8 @@
   
           this._sleeve.setGatefoldCoverAngle(angleInRadians);
           this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
-  
-          let offsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
-  
+          let offsetY = this._containerObject.worldToLocal(this._containerObject.getObjectByName('Back').getWorldPosition()).y;
+
           if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
             offsetY += 0.15;
           }
@@ -827,7 +826,7 @@
         index = 1;
 
         if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-          offsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
+          offsetY = this._containerObject.worldToLocal(this._containerObject.getObjectByName('Back').getWorldPosition()).y;
 
           if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
             offsetY += 0.15;
