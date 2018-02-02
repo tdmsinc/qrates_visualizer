@@ -1111,15 +1111,15 @@
       const size = bounds.getSize();
       size.multiplyScalar(5.5);
   
-      const worldPosition = this._container.worldToLocal(object.getWorldPosition());
-      worldPosition.divideScalar(this._globalObjectScale);
+      const position = this._container.worldToLocal(object.getWorldPosition());
+      position.divideScalar(this._globalObjectScale);
   
       const ratio = this._gatefoldAngle / (Math.PI * 0.5);
   
       let vector = new THREE.Vector3();
       
-      vector.x = (worldPosition.x + (size.x * 0.5)) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
-      vector.y = (worldPosition.y + (size.y * (0.15 * (ratio * 2 - 1)))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
+      vector.x = (position.x + (size.x * 0.5)) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
+      vector.y = (position.y + (size.y * (0.15 * (ratio * 2 - 1)))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
   
       return vector;
     }
