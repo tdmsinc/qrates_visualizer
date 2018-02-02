@@ -1112,7 +1112,7 @@
       size.multiplyScalar(5.5);
   
       const position = this._container.worldToLocal(object.getWorldPosition());
-      position.divideScalar(this._globalObjectScale);
+      // position.divideScalar(this._globalObjectScale);
   
       const ratio = this._gatefoldAngle / (Math.PI * 0.5);
   
