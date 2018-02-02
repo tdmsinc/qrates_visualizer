@@ -546,7 +546,7 @@
           child.material.shininess = this._shininess;
           child.material.specular = new THREE.Color(0x363636);
           child.material.shading = THREE.SmoothShading;
-          child.material.transparent = false;
+          child.material.transparent = true;
           child.material.side = THREE.FrontSide;
 
           child.material.aoMap = textures['ao'] || null;
