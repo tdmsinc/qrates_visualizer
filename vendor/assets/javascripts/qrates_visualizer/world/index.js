@@ -548,7 +548,7 @@
         tz: this._controls.target.z
       };
 
-      this._controls.reset();
+      // this._controls.reset();
       
       new TWEEN.Tween(param)
         .stop()
@@ -940,7 +940,8 @@
       if (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat) {
         this._vinyls[1].setVisibility(vinyl2Visibility);
       }
-  }
+    }
+    
     updateView(type, opts, callback) {
   
       opts = opts || {
