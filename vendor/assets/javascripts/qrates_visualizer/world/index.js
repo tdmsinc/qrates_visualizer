@@ -653,6 +653,10 @@
 
           if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
             offsetY += 0.15;
+          } else if (Sleeve.Size.SIZE_10 === this._sleeve.getSize()) {
+            offsetY += 0.2;
+          } else if (Sleeve.Size.SIZE_12 === this._sleeve.getSize()) {
+            offsetY += 0.2;
           }
   
           this._vinyls[1].setOffsetY(offsetY);
@@ -730,6 +734,10 @@
 
         if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
           secondOffsetY += 0.15;
+        } else if (Sleeve.Size.SIZE_10 === this._sleeve.getSize()) {
+          secondOffsetY += 0.2;
+        } else if (Sleeve.Size.SIZE_12 === this._sleeve.getSize()) {
+          secondOffsetY += 0.2;
         }
 
         this.setGatefoldCoverAngle(this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI));
@@ -830,7 +838,12 @@
 
           if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
             offsetY += 0.15;
+          } else if (Sleeve.Size.SIZE_10 === this._sleeve.getSize()) {
+            offsetY += 0.2;
+          } else if (Sleeve.Size.SIZE_12 === this._sleeve.getSize()) {
+            offsetY += 0.2;
           }
+  
         } else if (Sleeve.Format.DOUBLE === sleeveFormat) {
           offsetY = -0.6;
         } else {
@@ -1339,7 +1352,12 @@
 
         if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
           secondOffsetY += 0.15;
+        } else if (Sleeve.Size.SIZE_10 === this._sleeve.getSize()) {
+          secondOffsetY += 0.2;
+        } else if (Sleeve.Size.SIZE_12 === this._sleeve.getSize()) {
+          secondOffsetY += 0.2;
         }
+
         this._vinyls[1].setVisibility(true);
       } else if (Sleeve.Format.DOUBLE === newFormat) {
         firstOffsetY = 0.6;
