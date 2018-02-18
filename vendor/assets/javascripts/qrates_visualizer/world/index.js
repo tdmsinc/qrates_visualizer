@@ -1212,7 +1212,7 @@
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
-        this.setCameraPositionAndTarget(150, 112.5, 112.5, 50, -8, 0, opts, callback);
+        this.setCameraPositionAndTarget(160, 120, 120, 50, -8, 0, opts, callback);
 
         break;
       }
