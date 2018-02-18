@@ -67,8 +67,9 @@
   
         if (!loader) return;
         
-        loader.crossOrigin = ''; // to load texture from cross origin.
-  
+        loader.crossOrigin = 'anonymous'; // to load texture from cross origin.
+        console.log('visualizer loader loading(1) ' + path);
+        
         const obj = loader.load(path, obj => {
           this.assets[key] = obj;
           this.assets[key].extname = extname(path);
@@ -133,7 +134,8 @@
             return Promise.reject();
           }
   
-          loader.crossOrigin = '';
+          loader.crossOrigin = 'anonymous';
+          console.log('visualizer loader loading(2) ' + path);
       
           loader.load(path, obj => {
     
