@@ -1022,20 +1022,32 @@
       }
       case 2: { // Overview #2 裏面、sleeve & vinyl 正面
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(-50, 300, 10, -50, 0, 0, opts, callback);
         this.flip(true, opts);
         this.setGatefoldCoverAngle(0, opts);
         if (double) {
-          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          this.cover(1.15, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.60, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          if (size === Sleeve.Size.SIZE_7) {
+            this.setCameraPositionAndTarget(-55, 300, 10, -55, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_10) {
+            this.setCameraPositionAndTarget(-56, 300, 10, -56, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_12) {
+            this.setCameraPositionAndTarget(-57, 300, 10, -57, 0, 0, opts, callback);
+          }
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          if (size === Sleeve.Size.SIZE_7) {
+            this.setCameraPositionAndTarget(-36, 300, 10, -36, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_10) {
+            this.setCameraPositionAndTarget(-37, 300, 10, -37, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_12) {
+            this.setCameraPositionAndTarget(-38, 300, 10, -38, 0, 0, opts, callback);
+          }
         }
         break;
       }
       case 3: { // Overview #3 おもて面、sleeve & vinyl 斜め
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(200, 150, 150, 50, 0, 0, opts, callback);
         this.flip(false, opts);
         this.setGatefoldCoverAngle(0, opts);
         if (double) {
@@ -1044,6 +1056,7 @@
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
+        this.setCameraPositionAndTarget(200, 150, 150, 50, 0, 0, opts, callback);
         break;
       }
       case 4: { // Overview #4 vinyl1 label面 寄り おもて
@@ -1088,32 +1101,31 @@
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(false, opts);
         this.setGatefoldCoverAngle(0, opts);
-        this.setCameraPositionAndTarget(0, 230, 1, 0, 0, 0, opts, callback);
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(0, 230, 1, 0, 0, 0, opts, callback);
         break;
       }
       case 7: { // Overview #7 sleeve back
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(true, opts);
         this.setGatefoldCoverAngle(0, opts);
-        this.setCameraPositionAndTarget(0, 230, 1, 0, 0, 0, opts, callback);
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(0, 230, 1, 0, 0, 0, opts, callback);
         break;
       }
       case 8: { // Overview #8 spine面
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(-150, 130, 130, -10, 0, 10, opts, callback);
         this.flip(false, opts);
         this.setGatefoldCoverAngle(0, opts);
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(-150, 130, 130, -10, 0, 10, opts, callback);
         break;
       }
       case 9: { // Overview #9 gatefold open inner
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(-30, 300, 10, -30, 0, 0, opts, callback);
         this.flip(false, opts);
         this.setGatefoldCoverAngle(75, opts);
         if (double) {
@@ -1122,125 +1134,177 @@
         } else {
           this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
+        this.setCameraPositionAndTarget(-30, 300, 10, -30, 0, 0, opts, callback);
         break;
       }
       case 10: { // Overview #10 gatefold open outer
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(-30, -250, -10, -30, 0, 0, opts, callback);
         this.flip(false, opts);
-        this.setGatefoldCoverAngle(80, opts);
+        this.setGatefoldCoverAngle(75, opts);
         if (double) {
-          this.cover(0.4, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
           this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         } else {
           this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
+        this.setCameraPositionAndTarget(-30, -300, -10, -30, 0, 0, opts, callback);
         break;
       }
-      case 11: { // Product image #1
-        this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(50, 230, 10, 50, 0, 0, opts, callback);
-        this.flip(false, opts);
-        this.setGatefoldCoverAngle(0, opts);
-        if (double) {
-          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        } else {
-          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        }
-        break;
-      }
-      case 12: { // Product image #2
-        this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(-50, 230, 10, -50, 0, 0, opts, callback);
-        this.flip(true, opts);
-        this.setGatefoldCoverAngle(0, opts);
-        if (double) {
-          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        } else {
-          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        }
-        break;
-      }
-      case 13: { // Product image #3
-        this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(150, 100, 100, 50, 0, 0, opts, callback);
-        this.flip(false, opts);
-        this.setGatefoldCoverAngle(0, opts);
-        if (double) {
-          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        } else {
-          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        }
-        break;
-      }
-      case 14: { // Product image #4
+      case 11: { // Renderer image #1
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(false, opts);
         this.setGatefoldCoverAngle(0, opts);
         if (double) {
-          this.setCameraPositionAndTarget(100, 130, 10, 100, 0, 0, opts, callback);
-          this.cover(1.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          this.cover(1.15, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.60, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          if (size === Sleeve.Size.SIZE_7) {
+            this.setCameraPositionAndTarget(55, 230, 10, 55, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_10) {
+            this.setCameraPositionAndTarget(56, 230, 10, 56, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_12) {
+            this.setCameraPositionAndTarget(57, 230, 10, 57, 0, 0, opts, callback);
+          }
         } else {
-          this.setCameraPositionAndTarget(100, 130, 10, 100, 0, 0, opts, callback);
-          this.cover(1.1, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          if (size === Sleeve.Size.SIZE_7) {
+            this.setCameraPositionAndTarget(36, 230, 10, 36, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_10) {
+            this.setCameraPositionAndTarget(37, 230, 10, 37, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_12) {
+            this.setCameraPositionAndTarget(38, 230, 10, 38, 0, 0, opts, callback);
+          }
         }
         break;
       }
-      case 15: { // Product image #5
+      case 12: { // Renderer image #2
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(true, opts);
         this.setGatefoldCoverAngle(0, opts);
         if (double) {
-          this.setCameraPositionAndTarget(-100, 130, 10, -100, 0, 0, opts, callback);
-          this.cover(1.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          this.cover(1.15, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.60, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          if (size === Sleeve.Size.SIZE_7) {
+            this.setCameraPositionAndTarget(-55, 230, 10, -55, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_10) {
+            this.setCameraPositionAndTarget(-56, 230, 10, -56, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_12) {
+            this.setCameraPositionAndTarget(-57, 230, 10, -57, 0, 0, opts, callback);
+          }
         } else {
-          this.setCameraPositionAndTarget(-100, 130, 10, -100, 0, 0, opts, callback);
-          this.cover(1.1, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          if (size === Sleeve.Size.SIZE_7) {
+            this.setCameraPositionAndTarget(-36, 230, 10, -36, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_10) {
+            this.setCameraPositionAndTarget(-37, 230, 10, -37, 0, 0, opts, callback);
+          } else if (size === Sleeve.Size.SIZE_12) {
+            this.setCameraPositionAndTarget(-38, 230, 10, -38, 0, 0, opts, callback);
+          }
         }
         break;
       }
-      case 16: { // Product image #6
+      case 13: { // Renderer image #3
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(-150, 100, 100, 0, 0, 0, opts, callback);
         this.flip(false, opts);
         this.setGatefoldCoverAngle(0, opts);
         if (double) {
-          this.cover(1.2, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0.65, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+          this.cover(1, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.55, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
+        this.setCameraPositionAndTarget(150, 100, 100, 50, -8, 0, opts, callback);
+
         break;
       }
-      case 17: { // Product image #7
+      case 14: { // Renderer image #4 label a
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(-30, 250, 10, -30, 0, 0, opts, callback);
         this.flip(false, opts);
-        this.setGatefoldCoverAngle(80, opts);
+        this.setGatefoldCoverAngle(0, opts);
         if (double) {
-          this.cover(0.4, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(2.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(1.3, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(1.3, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
+        if (size === Sleeve.Size.SIZE_7) {
+          this.setCameraPositionAndTarget(121.5, 90, 10, 121.5, 0, 0, opts, callback);
+        } else if (size === Sleeve.Size.SIZE_10) {
+          this.setCameraPositionAndTarget(123, 90, 10, 123, 0, 0, opts, callback);
+        } else if (size === Sleeve.Size.SIZE_12) {
+          this.setCameraPositionAndTarget(126, 90, 10, 126, 0, 0, opts, callback);
+        }
+        break;
+      }
+      case 15: { // Renderer image #5 label b
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(true, opts);
+        this.setGatefoldCoverAngle(0, opts);
+        if (double) {
+          this.cover(2.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(1.3, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        } else {
+          this.cover(1.3, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        }
+        if (size === Sleeve.Size.SIZE_7) {
+          this.setCameraPositionAndTarget(-121.5, 90, 10, -121.5, 0, 0, opts, callback);
+        } else if (size === Sleeve.Size.SIZE_10) {
+          this.setCameraPositionAndTarget(-123, 90, 10, -123, 0, 0, opts, callback);
+        } else if (size === Sleeve.Size.SIZE_12) {
+          this.setCameraPositionAndTarget(-126, 90, 10, -126, 0, 0, opts, callback);
+        }
+        break;
+      }
+      case 16: { // Renderer image #6 sleeve front
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(false, opts);
+        this.setGatefoldCoverAngle(0, opts);
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(0, 200, 1, 0, 0, 0, opts, callback);
+        break;
+      }
+      case 17: { // Renderer image #7 sleeve back
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(true, opts);
+        this.setGatefoldCoverAngle(80, opts);
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(0, 200, 1, 0, 0, 0, opts, callback);
+        break;
+      }
+      case 18: { // Renderer image #8 (for spine)
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(false, opts);
+        this.setGatefoldCoverAngle(0, opts);
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(-120, 104, 104, -10, 0, 10, opts, callback);
+        break;
+      }
+      case 19: { // Renderer image #9 (for gatefold)
+        this.setProjectionAndVisibility(true, true, true, true);
+        this.flip(false, opts);
+        this.setGatefoldCoverAngle(75, opts);
+        if (double) {
+          this.cover(0.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
           this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         } else {
           this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
+        this.setCameraPositionAndTarget(-30, 300, 10, -30, 0, 0, opts, callback);
         break;
       }
-      case 18: { // Product image #8
+      case 20: { // Renderer image #10 (for gatefold)
         this.setProjectionAndVisibility(true, true, true, true);
-        this.setCameraPositionAndTarget(-30, -250, -10, -30, 0, 0, opts, callback);
         this.flip(false, opts);
-        this.setGatefoldCoverAngle(80, opts);
+        this.setGatefoldCoverAngle(75, opts);
         if (double) {
-          this.cover(0.4, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+          this.cover(0.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
           this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         } else {
           this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
         }
+        this.setCameraPositionAndTarget(-30, -300, -10, -30, 0, 0, opts, callback);
         break;
       }
       case 21: { // Thumbnail
