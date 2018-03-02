@@ -9,7 +9,7 @@ var defaults = {
   view: 31,
   vinyl: [
     {
-      size: qvv.VinylVisualizer.VinylSize.SIZE_7S,
+      size: qvv.VinylVisualizer.VinylSize.SIZE_12,
       weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
       isEnableLabel: false,
       colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
@@ -17,22 +17,22 @@ var defaults = {
       label: true,
       transparent: true,
       color: 6
-      // side: THREE.DoubleSide
     },
-    // {
-    //   size: qvv.VinylVisualizer.VinylSize.SIZE_12,
-    //   weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
-    //   isEnableLabel: false,
-    //   colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
-    //   speed: 45,
-    //   label: false,
-    //   transparent: true
-    // }
+    {
+      size: qvv.VinylVisualizer.VinylSize.SIZE_12,
+      weight: qvv.VinylVisualizer.VinylWeight.NORMAL,
+      isEnableLabel: false,
+      colorFormat: qvv.VinylVisualizer.VinylColorFormat.COLOR,
+      speed: 45,
+      label: false,
+      transparent: true,
+      color: 6
+    }
   ],
   sleeve: {
     size: qvv.VinylVisualizer.SleeveSize.SIZE_12,
-    format: qvv.VinylVisualizer.SleeveFormat.SINGLE_WITHOUT_SPINE,
-    hole: true,
+    format: qvv.VinylVisualizer.SleeveFormat.DOUBLE,
+    hole: false,
     finish: qvv.VinylVisualizer.SleeveFinish.NORMAL
   }
 };

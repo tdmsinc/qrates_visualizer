@@ -162,14 +162,26 @@
 
       // sleeve format に応じて vinyl の位置をオフセット
       const sleeveFormat = this._sleeve.getFormat();
-      let offsetY = 0.0;
 
-      if (Sleeve.Format.DOUBLE === sleeveFormat || Sleeve.Format.GATEFOLD === sleeveFormat) {
-        if (Sleeve.Format.GATEFOLD === sleeveFormat) {
-          offsetY = 1.08390626812156;
-        } else {
-          offsetY = 0.6;
+      let firstOffsetY, secondOffsetY;
+      
+      if (Sleeve.Format.GATEFOLD === sleeveFormat) {
+        firstOffsetY = 0.08;
+        secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
+
+        if (Sleeve.Size.SIZE_7 === this._sleeve.getSize()) {
+          secondOffsetY += 0.15;
+        } else if (Sleeve.Size.SIZE_10 === this._sleeve.getSize()) {
+          secondOffsetY += 0.2;
+        } else if (Sleeve.Size.SIZE_12 === this._sleeve.getSize()) {
+          secondOffsetY += 0.2;
         }
+      } else if (Sleeve.Format.DOUBLE === sleeveFormat) {
+        firstOffsetY = 0.6;
+        secondOffsetY = -0.6;
+      } else {
+        firstOffsetY = 0.0;
+        secondOffsetY = 0.0;
       }
 
       let targets = [];
@@ -181,7 +193,7 @@
       // vinyl オプションから vinyl を生成
       for (let i in this._opts.defaults.vinyl) {
         this._opts.defaults.vinyl[i].index = Object.values(Vinyl.Index)[i];
-        this._opts.defaults.vinyl[i].offsetY = 0 == i ? offsetY : -offsetY;
+        this._opts.defaults.vinyl[i].offsetY = 0 == i ? firstOffsetY : secondOffsetY;
 
         if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === this._opts.defaults.sleeve.format || Sleeve.Format.SINGLE === this._opts.defaults.sleeve.format)) {
           this._opts.defaults.vinyl[i].visibility = 0 == i ? true : false;
@@ -1127,27 +1139,19 @@
       case 9: { // Overview #9 gatefold open inner
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(false, opts);
-        this.setGatefoldCoverAngle(75, opts);
-        if (double) {
-          this.cover(0.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        } else {
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        }
-        this.setCameraPositionAndTarget(-30, 300, 10, -30, 0, 0, opts, callback);
+        this.setGatefoldCoverAngle(90, opts);
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(-50, 300, 10, -50, 0, 0, opts, callback);
         break;
       }
       case 10: { // Overview #10 gatefold open outer
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(false, opts);
-        this.setGatefoldCoverAngle(75, opts);
-        if (double) {
-          this.cover(0.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        } else {
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        }
-        this.setCameraPositionAndTarget(-30, -300, -10, -30, 0, 0, opts, callback);
+        this.setGatefoldCoverAngle(90, opts);
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(-40, -300, -10, -40, 0, 0, opts, callback);
         break;
       }
       case 11: { // Renderer image #1
@@ -1284,27 +1288,19 @@
       case 19: { // Renderer image #9 (for gatefold)
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(false, opts);
-        this.setGatefoldCoverAngle(75, opts);
-        if (double) {
-          this.cover(0.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        } else {
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        }
-        this.setCameraPositionAndTarget(-30, 300, 10, -30, 0, 0, opts, callback);
+        this.setGatefoldCoverAngle(90, opts);
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(-50, 300, 10, -50, 0, 0, opts, callback);
         break;
       }
       case 20: { // Renderer image #10 (for gatefold)
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(false, opts);
-        this.setGatefoldCoverAngle(75, opts);
-        if (double) {
-          this.cover(0.6, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        } else {
-          this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
-        }
-        this.setCameraPositionAndTarget(-30, -300, -10, -30, 0, 0, opts, callback);
+        this.setGatefoldCoverAngle(90, opts);
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
+        this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setCameraPositionAndTarget(-50, -300, -10, -50, 0, 0, opts, callback);
         break;
       }
       case 21: { // Thumbnail
