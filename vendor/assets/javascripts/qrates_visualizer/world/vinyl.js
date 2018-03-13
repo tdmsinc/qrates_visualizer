@@ -1,5 +1,5 @@
 
-//= require tdmsinc-three.js
+//= require tdmsinc-three.js.js
 //= require_self
 
 ((global, exports) => {
