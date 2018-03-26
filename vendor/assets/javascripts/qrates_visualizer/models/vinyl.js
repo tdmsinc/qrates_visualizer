@@ -1,5 +1,6 @@
 
 //= require ../model
+//= require ../world/vinyl
 
 (function(global, exports) {
 
@@ -16,21 +17,35 @@
   exports.Vinyl = Vinyl;
 
   /**
+   * Constants
+   */
+  
+  Vinyl.Size = exports.world.Vinyl.Size;
+  Vinyl.ColorFormat = exports.world.Vinyl.ColorFormat;
+  Vinyl.Weight = exports.world.Vinyl.Weight;
+  Vinyl.Color = exports.world.Vinyl.Color;
+  Vinyl.Index = exports.world.Vinyl.Index;
+
+  /**
    * Properties.
    */
 
   var properties = [
-    'type',
+    'colorFormat',
     'size',
     'color',
     'splatterColor',
     'holeSize',
-    'heavy',
+    'weight',
     'speed',
-    'sideATexture',
-    'sideBTexture',
-    'sideABumpMapTexture',
-    'sideBBumpMapTexture'
+    'alphaMap',
+    'aoMap',
+    'bumpMap',
+    'colorMap',
+    'label',
+    'labelAoMap',
+    'labelBumpMap',
+    'labelColorMap'
   ];
 
   /**

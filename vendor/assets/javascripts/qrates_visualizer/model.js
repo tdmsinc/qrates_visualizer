@@ -41,6 +41,7 @@
       settings[key] = value;
       return this.emit(key, value);
     }
+
     for (var k in key) {
       settings[k] = key[k];
       this.emit(k, key[k]);

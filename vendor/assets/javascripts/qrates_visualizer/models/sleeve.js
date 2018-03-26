@@ -1,5 +1,6 @@
 
 //= require ../model
+//= require ../world/sleeve
 
 (function(global, exports) {
 
@@ -16,16 +17,28 @@
   exports.Sleeve = Sleeve;
 
   /**
+   * Constants
+   */
+  
+  Sleeve.Size = exports.world.Sleeve.Size;
+  Sleeve.Format = exports.world.Sleeve.Format;
+  Sleeve.ColorFormat = exports.world.Sleeve.ColorFormat;
+  Sleeve.Hole = exports.world.Sleeve.Hole;
+  Sleeve.Finish = exports.world.Sleeve.Finish;
+
+  /**
    * Properties.
    */
 
   var properties = [
+    'size',
     'type',
+    'colorFormat',
     'hole',
-    'glossFinish',
-    'frontTexture',
-    'backTexture',
-    'spineTexture'
+    'finish',
+    'colorMap',
+    'aoMap',
+    'bumpMap'
   ];
 
   /**

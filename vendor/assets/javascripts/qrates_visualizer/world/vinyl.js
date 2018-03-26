@@ -1,454 +1,1451 @@
 
-//= require tdmsinc-three.js
+//= require tdmsinc-three.js.js
 //= require_self
 
-(function(global, exports) {
-
-  exports.world = exports.world || {};
-  exports.world.Vinyl = Vinyl;
-
-  //--------------------------------------------------------------
-  function Vinyl() {
-  }
-
-  Vinyl.prototype.setup = function(scene, assets, opts, container) {
-    opts = opts || {
-      type: 1,
-      size: 1,
-      color: 0,
-      holeSize: 0,
-      heavy: false,
-      speed: 45,
-    };
-
-    opts.color = opts.color || 0;
-
-    this._materialPresets = [
-      { color: 0x000000, opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true }, // CLASSIC BLACK
-      { color: 0xFFFFFF, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true }, // #1 WHITE
-      { color: 0xfffd4d, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true }, // #2 EASTER YELLOW
-      { color: 0xcc0e00, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true }, // #3 RED(ISH)
-      { color: 0xff8c1a, opacity: 1.0, reflectivity:0.05, refractionRatio: 0.98, shininess:  15, metal: true }, // #4 HALLOWEEN ORANGE
-      { color: 0x00b1dd, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true }, // #5 CYAN BLUE
-      { color: 0x593320, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true }, // #6 DOOKIE BROWN
-      { color: 0x41ff9f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true }, // #7 DOUBLEMINT
-      { color: 0x9EA2A2, opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  20, metal: true }, // #8 GREY
-      { color: 0x00b94e, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true }, // #9 KELLY GREEN
-      { color: 0xffed00, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true }, // #10 PISS YELLOW
-      { color: 0xc8000e, opacity: 0.8, reflectivity: 0.2, refractionRatio: 1.98, shininess:  60, metal: true }, // #11 BLOOD RED
-      { color: 0x9a004c, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  80, metal: true }, // #12 DEEP PURPLE
-      { color: 0x0040b6, opacity: 0.8, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true }, // #13 ROYAL BLUE
-      { color: 0xFFFFFF, opacity: 0.6, reflectivity: 0.6, refractionRatio: 1.98, shininess:  80, metal: true }, // #14 MILKY CLEAR
-      { color: 0x615c30, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  20, metal: true }, // P1 SWAMP GREEN
-      { color: 0x187889, opacity: 0.8, reflectivity: 0.3, refractionRatio: 1.98, shininess:  20, metal: true }, // P2 SEA BLUE
-      { color: 0xfbefd8, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P3 BONE
-      { color: 0x975d3b, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  40, metal: true }, // P4 BRONZE
-      { color: 0xddbd78, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true }, // P5 BEER
-      { color: 0xbbdcde, opacity: 0.7, reflectivity: 0.6, refractionRatio: 1.98, shininess: 100, metal: true }, // P6 ELECTRIC BLUE
-      { color: 0x923b5d, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P7 GRIMACE PURPLE
-      { color: 0x962e3f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P8 OXBLOOD
-      { color: 0xd4e0cb, opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess:  60, metal: true }, // P9 COKE BOTTLE GREEN
-      { color: 0xf0773c, opacity: 0.7, reflectivity: 0.3, refractionRatio: 1.98, shininess:  20, metal: true }, // P10 ORANGE CRUSH
-      { color: 0xd12b51, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P11 HOT PINK / MAGENTA
-      { color: 0xf5ccd4, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P12 BABY PINK
-      { color: 0x648044, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P13 OLIVE GREEN
-      { color: 0x18738e, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P14 AQUA BLUE
-      { color: 0xFFFFFF, opacity: 0.3, reflectivity: 0.6, refractionRatio: 1.98, shininess:  80, metal: true }, // P15 ULTRA CLEAR
-      { color: 0xb1cbe5, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P16 BABY BLUE
-      { color: 0xe4e343, opacity: 0.4, reflectivity: 0.6, refractionRatio: 1.98, shininess:  80, metal: true }, // P17 HIGHLIGHTER YELLOW
-      { color: 0x9d793a, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  50, metal: true }, // P18 GOLD
-      { color: 0xa7a8aa, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  50, metal: true }, // P19 SILVER
-      { color: 0xfed76f, opacity: 1.0, reflectivity: 0.1, refractionRatio: 1.98, shininess:  20, metal: true }, // P20 MUSTARD
-    ];
-
-    var sizes = ['7', '10', '12'];
-
-    var images = [];
-    var cubeTexture = new THREE.CubeTexture(images);
-    cubeTexture.flipY = false;
-
-    for (var i = 0; i < 6; ++i) {
-      cubeTexture.images[i] = assets['assetsTextureVinylEnvmap'];
-    }
-    cubeTexture.needsUpdate = true;
-
-    this.TYPE_BLACK    = 1;
-    this.TYPE_COLOR    = 2;
-    this.TYPE_SPLATTER = 3;
-
-    this._container = container;
-    this._size = sizes[opts.size - 1];
-    this._type = opts.type;
-    this._defaultColor = 0x000000;
-    this._opacity = 0;
-    this._rpm = opts.speed;
-    this._heavy = opts.heavy;
-    this._enableRotate = false;
-    this._opacityTweenDuration = 300;
-    this._clock = new THREE.Clock();
-
-    if (this._type === this.TYPE_SPLATTER) {
-      this._materialParams = this._materialPresets[1];
-      this._color = 0xffffff;
-    } else if (this._type === this.TYPE_COLOR) {
-      this._materialParams = this._materialPresets[opts.color];
-      this._color = this._materialParams.color;
-    } else {
-      this._materialParams = this._materialPresets[0];
-      this._color = 0;
-    }
-
-    this._front = {
-      '7'       : assets['assetsModelVinyl-7'],
-      '10'      : assets['assetsModelVinyl-10'],
-      '12'      : assets['assetsModelVinyl-12'],
-      'heavy-7' : assets['assetsModelVinylHeavy-7'],
-      'heavy-10': assets['assetsModelVinylHeavy-10'],
-      'heavy-12': assets['assetsModelVinylHeavy-12']
-    };
-
-    this._back = {
-      '7'       : assets['assetsModelVinyl-7'],
-      '10'      : assets['assetsModelVinyl-10'],
-      '12'      : assets['assetsModelVinyl-12'],
-      'heavy-7' : assets['assetsModelVinylHeavy-7'],
-      'heavy-10': assets['assetsModelVinylHeavy-10'],
-      'heavy-12': assets['assetsModelVinylHeavy-12']
-    };
-
-    this._textures = {
-      front: new THREE.Texture(),
-      back: new THREE.Texture(),
-      splatter: new THREE.Texture(),
-      bumpMap: {
-        'front-7' : new THREE.Texture(),
-        'front-10': new THREE.Texture(),
-        'front-12': new THREE.Texture(),
-        'back-7'  : new THREE.Texture(),
-        'back-10' : new THREE.Texture(),
-        'back-12' : new THREE.Texture()
-      },
-      envMap: cubeTexture
-    };
-
-    this.updateTexture(this._textures.front, opts.sideATexture);
-    this.updateTexture(this._textures.back,  opts.sideBTexture);
-    this.updateTexture(this._textures.bumpMap['front-7'],  opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-7']);
-    this.updateTexture(this._textures.bumpMap['front-10'], opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-10']);
-    this.updateTexture(this._textures.bumpMap['front-12'], opts.sideABumpMapTexture || assets['assetsTextureVinylBumpmap-12']);
-    this.updateTexture(this._textures.bumpMap['back-7'],   opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-7']);
-    this.updateTexture(this._textures.bumpMap['back-10'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-10']);
-    this.updateTexture(this._textures.bumpMap['back-12'],  opts.sideBBumpMapTexture || assets['assetsTextureVinylBumpmap-12']);
-
-    this._position = new THREE.Vector3(0, 0, 0);
-    this.rotation = new THREE.Vector3(0, 0, 0);
-
-    this._opacityTween = new TWEEN.Tween(this);
-
-    if (this._heavy) {
-      this._container.add(this._front['heavy-' + this._size]);
-    } else {
-      this._container.add(this._front[this._size]);
-    }
-
-    var self = this;
-
-    Object.keys(self._front).forEach(function(key) {
-      self.initMaterial(self._front[key], self._textures.front, self._textures.bumpMap['front-' + key]);
-    });
-
-    Object.keys(self._back).forEach(function(key) {
-      self.initMaterial(self._back[key], self._textures.back, self._textures.bumpMap['back-' + key]);
-    });
-
-    this.setOpacity(this._materialParams.opacity);
-  };
-
-  Vinyl.prototype.initMaterial = function(obj, tex, bumpMapTex) {
-    if (!obj) {
-      return false;
-    }
-
-    obj.name = 'vinyl';
-
-    var self = this;
-
-    obj.traverse(function(child) {
-      if (child instanceof THREE.Mesh) {
-        //var bumpScale = 0.02;
-        var bumpScale = 0.03;
-
-        if (self.TYPE_COLOR === self._type) {
-          //bumpScale = 0.04;
-          bumpScale = 0.06;
-        } else if (self.TYPE_SPLATTER === self._type) {
-          bumpScale = 0.28;
-        }
-
-        child.material = new THREE.MeshPhongMaterial({
-          ambient: new THREE.Color(1, 1, 1),
-          bumpMap: bumpMapTex,
-          bumpScale: bumpScale,
-          color: self._color,
-          combine: THREE.Multiply,
-          envMap: self._textures.envMap,
-          map: self.TYPE_SPLATTER === self._type ? tex : null,
-          needsUpdate: true,
-          opacity: self.TYPE_SPLATTER === self._type ? 0.7 : self._materialParams.opacity,
-          reflectivity: self.TYPE_SPLATTER === self._type ? 0.1 : self._materialParams.reflectivity,
-          refractionRatio: self._materialParams.refractionRatio,
-          shininess: self._materialParams.shininess,
-          //side: THREE.DoubleSide,
-          specular: 0x363636,
-          transparent: true,
-          metal: self._materialParams.metal,
-          shading: THREE.SmoothShading,
-        });
-
-        child.geometry.computeVertexNormals();
-      }
-    });
-
-    return obj;
-  };
-
-  Vinyl.prototype.updateTexture = function(tex, img) {
-    if (!tex || !img) {
-      return;
-    }
-
-    tex.image = img;
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    tex.needsUpdate = true;
-  };
-
-  Vinyl.prototype.setTexture = function(sideA, sideB) {
-    if (this.TYPE_SPLATTER !== this._type) {
-      return false;
-    }
-
-    var self = this;
-
-    if (sideA) {
-      this.updateTexture(this._textures.front, sideA);
-
-      Object.keys(self._front).forEach(function(key) {
-        var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : new THREE.Texture();
-        self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
-      });
-    }
-
-    if (sideB) {
-      this.updateTexture(this._textures.back, sideB);
-
-      Object.keys(self._back).forEach(function(key) {
-        var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : new THREE.Texture();
-        self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
-      });
-    }
-  };
-
-  Vinyl.prototype.setSideABumpMapTexture = function(image) {
-    this.updateTexture(this._textures.bumpMap['front-' + self._size], image);
-  };
-
-  Vinyl.prototype.setSideBBumpMapTexture = function(image) {
-    this.updateTexture(this._textures.bumpMap['back-' + self._size], image);
-  };
-
-  Vinyl.prototype.setBumpScale = function(value) {
-    var self = this;
-
-    Object.keys(self._front).forEach(function(key) {
-      self._front[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.bumpScale = value;
-        }
-      });
-    });
-
-    Object.keys(self._back).forEach(function(key) {
-      self._back[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.bumpScale = value;
-        }
-      });
-    });
-  };
-
-  Vinyl.prototype.getBumpScale = function() {
-    return this._front[this._size].children[0].material.bumpScale;
-  };
-
-  Vinyl.prototype.setSize = function(size) {
-    if (!size) {
-      console.error('[Vinyl::setSize] no size specified');
-      return;
-    }
-
-    this._container.remove(this._front[this._size]);
-    this._container.remove(this._front['heavy-' + this._size]);
-
-    this._size = size;
-
-    var self = this;
-
-    Object.keys(self._front).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : new THREE.Texture();
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
-    });
-
-    Object.keys(self._back).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : new THREE.Texture();
-      self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
-    });
-
-    if (this._heavy) {
-      this._container.add(this._front['heavy-' + this._size]);
-    } else {
-      this._container.add(this._front[this._size]);
-    }
-
-    this._opacity = 0;
-    this.setOpacity(this._materialParams.opacity);
-  };
-
-  Vinyl.prototype.setType = function(type) {
-    if (!type) {
-      return;
-    }
-
-    this._type = type;
-
-    if (this.TYPE_SPLATTER === type) {
-      this._materialParams = this._materialPresets[1];
-    } else {
-      this._materialParams = this._materialPresets[0];
-    }
-
-    this._color = this._materialParams.color;
-
-    var self = this;
-
-    Object.keys(self._front).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : new THREE.Texture();
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
-    });
-
-    Object.keys(self._back).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : new THREE.Texture();
-      self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
-    });
-
-    this._opacity = 0;
-    this.setOpacity(this._materialParams.opacity);
-  };
-
-  Vinyl.prototype.setColor = function(index) {
-    this._materialParams = this._materialPresets[index];
-    this._color = this.TYPE_SPLATTER === this._type ? 0xFFFFFF : this._materialParams.color;
-    this._opacity = this.TYPE_SPLATTER === this._type ? 0.8 : this._materialParams.opacity;
-
-    var self = this;
-
-    Object.keys(self._front).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : null;
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
-    });
-
-    Object.keys(self._back).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : null;
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap['back-' + self._size]);
-    });
-  };
-
-  Vinyl.prototype.setOpacity = function(to, duration) {
-    var self = this;
-
-    duration = undefined !== duration ? duration : 300;
-
-    this._opacityTween
-      .stop()
-      .to({ _opacity: to }, duration)
-      .onUpdate(function() {
-        self._front[self._size].traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            child.material.opacity = self._opacity;
+((global, exports) => {
+
+  class Vinyl {
+    //--------------------------------------------------------------
+    constructor(assets, container, loader) {
+      // Loader からアセットを取得するためのキー
+      this._paths = {
+        models: {
+          '7S': {
+            'normal': 'assetsModelVinylSmallHole-7',
+            'with-label': 'assetsModelVinylSmallHoleWithLabel-7',
+            'heavy': 'assetsModelVinylSmallHoleHeavy-7',
+            'heavy-with-label': 'assetsModelVinylSmallHoleHeavyWithLabel-7'
+          },
+          '7L': {
+            'normal': 'assetsModelVinylLargeHole-7',
+            'with-label': 'assetsModelVinylLargeHoleWithLabel-7',
+            'heavy': 'assetsModelVinylLargeHoleHeavy-7',
+            'heavy-with-label': 'assetsModelVinylLargeHoleHeavyWithLabel-7'
+          },
+          '10': {
+            'normal': 'assetsModelVinyl-10',
+            'with-label': 'assetsModelVinylWithLabel-10',
+            'heavy': 'assetsModelVinylHeavy-10',
+            'heavy-with-label': 'assetsModelVinylHeavyWithLabel-10'
+          },
+          '12': {
+            'normal': 'assetsModelVinyl-12',
+            'with-label': 'assetsModelVinylWithLabel-12',
+            'heavy': 'assetsModelVinylHeavy-12',
+            'heavy-with-label': 'assetsModelVinylHeavyWithLabel-12'
           }
-
-          if (child instanceof THREE.Object3D) {
-            child.traverse(function(nextChild) {
-              if (nextChild instanceof THREE.Mesh) {
-                nextChild.material.opacity = self._opacity;
+        },
+      
+        textures: {
+          '7S': {
+            'normal': {
+              'alpha': 'assetsTextureVinylAlphaSmallHole-7',
+              'ao': 'assetsTextureVinylAoSmallHole-7',
+              'bump': 'assetsTextureVinylBumpmapSmallHole-7',
+              'color': 'assetsTextureVinylColorSmallHole-7'
+            },
+            'with-label': {
+              'vinyl': {
+                'ao': 'assetsTextureVinylAoSmallHoleWithLabel-7',
+                'bump': 'assetsTextureVinylBumpmapSmallHoleWithLabel-7',
+                'color': 'assetsTextureVinylColorSmallHoleWithLabel-7'
+              },
+              'label': {
+                'ao': 'assetsTextureVinylAoSmallHoleWithLabelForLabel-7',
+                'bump': 'assetsTextureVinylBumpmapSmallHoleWithLabelForLabel-7',
+                'color': 'assetsTextureVinylColorSmallHoleWithLabelForLabel-7'
               }
-            });
+            },
+            'heavy': {
+              'alpha': 'assetsTextureVinylAlphaSmallHoleHeavy-7',
+              'ao': 'assetsTextureVinylAoSmallHoleHeavy-7',
+              'bump': 'assetsTextureVinylBumpmapSmallHoleHeavy-7',
+              'color': 'assetsTextureVinylColorSmallHoleHeavy-7'
+            },
+            'heavy-with-label': {
+              'vinyl': {
+                'ao': 'assetsTextureVinylAoSmallHoleHeavyWithLabel-7',
+                'bump': 'assetsTextureVinylBumpmapSmallHoleHeavyWithLabel-7',
+                'color': 'assetsTextureVinylColorSmallHoleHeavyWithLabel-7'
+              },
+              'label': {
+                'ao': 'assetsTextureVinylAoSmallHoleHeavyWithLabelForLabel-7',
+                'bump': 'assetsTextureVinylBumpmapSmallHoleHeavyWithLabelForLabel-7',
+                'color': 'assetsTextureVinylColorSmallHoleHeavyWithLabelForLabel-7'
+              }
+            }
+          },
+          '7L': {
+            'normal': {
+              'alpha': 'assetsTextureVinylLargeHoleAlpha-7',
+              'ao': 'assetsTextureVinylLargeHoleAo-7',
+              'bump': 'assetsTextureVinylLargeHoleBumpmap-7',
+              'color': 'assetsTextureVinylLargeHoleColor-7'
+            },
+            'with-label': {
+              'vinyl': {
+                'ao': 'assetsTextureVinylLargeHoleWithLabelAo-7',
+                'bump': 'assetsTextureVinylLargeHoleWithLabelBumpmap-7',
+                'color': 'assetsTextureVinylLargeHoleWithLabelColor-7'
+              },
+              'label': {
+                'ao': 'assetsTextureVinylLargeHoleWithLabelAoForLabel-7',
+                'bump': 'assetsTextureVinylLargeHoleWithLabelBumpmapForLabel-7',
+                'color': 'assetsTextureVinylLargeHoleWithLabelColorForLabel-7'
+              }
+            },
+            'heavy': {
+              'alpha': 'assetsTextureVinylLargeHoleHeavyAlpha-7',
+              'ao': 'assetsTextureVinylLargeHoleHeavyAo-7',
+              'bump': 'assetsTextureVinylLargeHoleHeavyBumpmap-7',
+              'color': 'assetsTextureVinylLargeHoleHeavyColor-7'
+            },
+            'heavy-with-label': {
+              'vinyl': {
+                'ao': 'assetsTextureVinylLargeHoleHeavyWithLabelAo-7',
+                'bump': 'assetsTextureVinylLargeHoleHeavyWithLabelBumpmap-7',
+                'color': 'assetsTextureVinylLargeHoleHeavyWithLabelColor-7'
+              },
+              'label': {
+                'ao': 'assetsTextureVinylLargeHoleHeavyWithLabelAoForLabel-7',
+                'bump': 'assetsTextureVinylLargeHoleHeavyWithLabelBumpmapForLabel-7',
+                'color': 'assetsTextureVinylLargeHoleHeavyWithLabelColorForLabel-7'
+              }
+            }
+          },
+          '10': {
+            'normal': {
+              'alpha': 'assetsTextureVinylAlpha-10',
+              'ao': 'assetsTextureVinylAo-10',
+              'bump': 'assetsTextureVinylBumpmap-10',
+              'color': 'assetsTextureVinylColor-10'
+            },
+            'with-label': {
+              'vinyl': {
+                'ao': 'assetsTextureVinylWithLabelAo-10',
+                'bump': 'assetsTextureVinylWithLabelBumpmap-10',
+                'color': 'assetsTextureVinylWithLabelColor-10'
+              },
+              'label': {
+                'ao': 'assetsTextureVinylWithLabelAoForLabel-10',
+                'bump': 'assetsTextureVinylWithLabelBumpmapForLabel-10',
+                'color': 'assetsTextureVinylWithLabelColorForLabel-10'
+              }
+            },
+            'heavy': {
+              'alpha': 'assetsTextureVinylHeavyAlpha-10',
+              'ao': 'assetsTextureVinylHeavyAo-10',
+              'bump': 'assetsTextureVinylHeavyBumpmap-10',
+              'color': 'assetsTextureVinylHeavyColor-10'
+            },
+            'heavy-with-label': {
+              'vinyl': {
+                'ao': 'assetsTextureVinylHeavyWithLabelAo-10',
+                'bump': 'assetsTextureVinylHeavyWithLabelBumpmap-10',
+                'color': 'assetsTextureVinylHeavyWithLabelColor-10'
+              },
+              'label': {
+                'ao': 'assetsTextureVinylHeavyWithLabelAoForLabel-10',
+                'bump': 'assetsTextureVinylHeavyWithLabelBumpmapForLabel-10',
+                'color': 'assetsTextureVinylHeavyWithLabelColorForLabel-10'
+              }
+            }
+          },
+          '12': {
+            'normal': {
+              'alpha': 'assetsTextureVinylAlpha-12',
+              'ao': 'assetsTextureVinylAo-12',
+              'bump': 'assetsTextureVinylBumpmap-12',
+              'color': 'assetsTextureVinylColor-12'
+            },
+            'with-label': {
+              'vinyl': {
+                'ao': 'assetsTextureVinylWithLabelAo-12',
+                'bump': 'assetsTextureVinylWithLabelBumpmap-12',
+                'color': 'assetsTextureVinylWithLabelColor-12'
+              },
+              'label': {
+                'ao': 'assetsTextureVinylWithLabelAoForLabel-12',
+                'bump': 'assetsTextureVinylWithLabelBumpmapForLabel-12',
+                'color': 'assetsTextureVinylWithLabelColorForLabel-12'
+              }
+            },
+            'heavy': {
+              'alpha': 'assetsTextureVinylHeavyAlpha-12',
+              'ao': 'assetsTextureVinylHeavyAo-12',
+              'bump': 'assetsTextureVinylHeavyBumpmap-12',
+              'color': 'assetsTextureVinylHeavyColor-12'
+            },
+            'heavy-with-label': {
+              'vinyl': {
+                'ao': 'assetsTextureVinylHeavyWithLabelAo-12',
+                'bump': 'assetsTextureVinylHeavyWithLabelBumpmap-12',
+                'color': 'assetsTextureVinylHeavyWithLabelColor-12'
+              },
+              'label': {
+                'ao': 'assetsTextureVinylHeavyWithLabelAoForLabel-12',
+                'bump': 'assetsTextureVinylHeavyWithLabelBumpmapForLabel-12',
+                'color': 'assetsTextureVinylHeavyWithLabelColorForLabel-12'
+              }
+            }
+          }
+        }
+      };
+
+      // アセット
+      this._textures = {
+        '7S': {
+          'normal': {
+            'alpha': assets['assetsTextureVinylAlphaSmallHole-7'],
+            'ao': assets['assetsTextureVinylAoSmallHole-7'],
+            'bump': assets['assetsTextureVinylBumpmapSmallHole-7'],
+            'color': assets['assetsTextureVinylColorSmallHole-7']
+          },
+          'with-label': {
+            'vinyl': {
+              'ao': assets['assetsTextureVinylAoSmallHoleWithLabel-7'],
+              'bump': assets['assetsTextureVinylBumpmapSmallHoleWithLabel-7'],
+              'color': assets['assetsTextureVinylColorSmallHoleWithLabel-7']
+            },
+            'label': {
+              'ao': assets['assetsTextureVinylAoSmallHoleWithLabelForLabel-7'],
+              'bump': assets['assetsTextureVinylBumpmapSmallHoleWithLabelForLabel-7'],
+              'color': assets['assetsTextureVinylColorSmallHoleWithLabelForLabel-7']
+            }
+          },
+          'heavy': {
+            'alpha': assets['assetsTextureVinylAlphaSmallHoleHeavy-7'],
+            'ao': assets['assetsTextureVinylAoSmallHoleHeavy-7'],
+            'bump': assets['assetsTextureVinylBumpmapSmallHoleHeavy-7'],
+            'color': assets['assetsTextureVinylColorSmallHoleHeavy-7']
+          },
+          'heavy-with-label': {
+            'vinyl': {
+              'ao': assets['assetsTextureVinylAoSmallHoleHeavyWithLabel-7'],
+              'bump': assets['assetsTextureVinylBumpmapSmallHoleHeavyWithLabel-7'],
+              'color': assets['assetsTextureVinylColorSmallHoleHeavyWithLabel-7']
+            },
+            'label': {
+              'ao': assets['assetsTextureVinylAoSmallHoleHeavyWithLabelForLabel-7'],
+              'bump': assets['assetsTextureVinylBumpmapSmallHoleHeavyWithLabelForLabel-7'],
+              'color': assets['assetsTextureVinylColorSmallHoleHeavyWithLabelForLabel-7']
+            }
+          }
+        },
+        '7L': {
+          'normal': {
+            'alpha': assets['assetsTextureVinylLargeHoleAlpha-7'],
+            'ao': assets['assetsTextureVinylLargeHoleAo-7'],
+            'bump': assets['assetsTextureVinylLargeHoleBumpmap-7'],
+            'color': assets['assetsTextureVinylLargeHoleColor-7']
+          },
+          'with-label': {
+            'vinyl': {
+              'ao': assets['assetsTextureVinylLargeHoleWithLabelAo-7'],
+              'bump': assets['assetsTextureVinylLargeHoleWithLabelBumpmap-7'],
+              'color': assets['assetsTextureVinylLargeHoleWithLabelColor-7']
+            },
+            'label': {
+              'ao': assets['assetsTextureVinylLargeHoleWithLabelAoForLabel-7'],
+              'bump': assets['assetsTextureVinylLargeHoleWithLabelBumpmapForLabel-7'],
+              'color': assets['assetsTextureVinylLargeHoleWithLabelColorForLabel-7']
+            }
+          },
+          'heavy': {
+            'alpha': assets['assetsTextureVinylLargeHoleHeavyAlpha-7'],
+            'ao': assets['assetsTextureVinylLargeHoleHeavyAo-7'],
+            'bump': assets['assetsTextureVinylLargeHoleHeavyBumpmap-7'],
+            'color': assets['assetsTextureVinylLargeHoleHeavyColor-7']
+          },
+          'heavy-with-label': {
+            'vinyl': {
+              'ao': assets['assetsTextureVinylLargeHoleHeavyWithLabelAo-7'],
+              'bump': assets['assetsTextureVinylLargeHoleHeavyWithLabelBumpmap-7'],
+              'color': assets['assetsTextureVinylLargeHoleHeavyWithLabelColor-7']
+            },
+            'label': {
+              'ao': assets['assetsTextureVinylLargeHoleHeavyWithLabelAoForLabel-7'],
+              'bump': assets['assetsTextureVinylLargeHoleHeavyWithLabelBumpmapForLabel-7'],
+              'color': assets['assetsTextureVinylLargeHoleHeavyWithLabelColorForLabel-7']
+            }
+          }
+        },
+        '10': {
+          'normal': {
+            'alpha': assets['assetsTextureVinylAlpha-10'],
+            'ao': assets['assetsTextureVinylAo-10'],
+            'bump': assets['assetsTextureVinylBumpmap-10'],
+            'color': assets['assetsTextureVinylColor-10']
+          },
+          'with-label': {
+            'vinyl': {
+              'ao': assets['assetsTextureVinylWithLabelAo-10'],
+              'bump': assets['assetsTextureVinylWithLabelBumpmap-10'],
+              'color': assets['assetsTextureVinylWithLabelColor-10']
+            },
+            'label': {
+              'ao': assets['assetsTextureVinylWithLabelAoForLabel-10'],
+              'bump': assets['assetsTextureVinylWithLabelBumpmapForLabel-10'],
+              'color': assets['assetsTextureVinylWithLabelColorForLabel-10']
+            }
+          },
+          'heavy': {
+            'alpha': assets['assetsTextureVinylHeavyAlpha-10'],
+            'ao': assets['assetsTextureVinylHeavyAo-10'],
+            'bump': assets['assetsTextureVinylHeavyBumpmap-10'],
+            'color': assets['assetsTextureVinylHeavyColor-10']
+          },
+          'heavy-with-label': {
+            'vinyl': {
+              'ao': assets['assetsTextureVinylHeavyWithLabelAo-10'],
+              'bump': assets['assetsTextureVinylHeavyWithLabelBumpmap-10'],
+              'color': assets['assetsTextureVinylHeavyWithLabelColor-10']
+            },
+            'label': {
+              'ao': assets['assetsTextureVinylHeavyWithLabelAoForLabel-10'],
+              'bump': assets['assetsTextureVinylHeavyWithLabelBumpmapForLabel-10'],
+              'color': assets['assetsTextureVinylHeavyWithLabelColorForLabel-10']
+            }
+          }
+        },
+        '12': {
+          'normal': {
+            'alpha': assets['assetsTextureVinylAlpha-12'],
+            'ao': assets['assetsTextureVinylAo-12'],
+            'bump': assets['assetsTextureVinylBumpmap-12'],
+            'color': assets['assetsTextureVinylColor-12']
+          },
+          'with-label': {
+            'vinyl': {
+              'ao': assets['assetsTextureVinylWithLabelAo-12'],
+              'bump': assets['assetsTextureVinylWithLabelBumpmap-12'],
+              'color': assets['assetsTextureVinylWithLabelColor-12']
+            },
+            'label': {
+              'ao': assets['assetsTextureVinylWithLabelAoForLabel-12'],
+              'bump': assets['assetsTextureVinylWithLabelBumpmapForLabel-12'],
+              'color': assets['assetsTextureVinylWithLabelColorForLabel-12']
+            }
+          },
+          'heavy': {
+            'alpha': assets['assetsTextureVinylHeavyAlpha-12'],
+            'ao': assets['assetsTextureVinylHeavyAo-12'],
+            'bump': assets['assetsTextureVinylHeavyBumpmap-12'],
+            'color': assets['assetsTextureVinylHeavyColor-12']
+          },
+          'heavy-with-label': {
+            'vinyl': {
+              'ao': assets['assetsTextureVinylHeavyWithLabelAo-12'],
+              'bump': assets['assetsTextureVinylHeavyWithLabelBumpmap-12'],
+              'color': assets['assetsTextureVinylHeavyWithLabelColor-12']
+            },
+            'label': {
+              'ao': assets['assetsTextureVinylHeavyWithLabelAoForLabel-12'],
+              'bump': assets['assetsTextureVinylHeavyWithLabelBumpmapForLabel-12'],
+              'color': assets['assetsTextureVinylHeavyWithLabelColorForLabel-12']
+            }
+          }
+        },
+      };
+
+      this._container = container;
+      this._loader = loader;
+    }
+
+    //--------------------------------------------------------------
+    async setup(opts) {
+      opts = opts || {
+        format: Vinyl.Format.NORMAL,
+        size: Vinyl.Size.SIZE_7_SMALL_HOLE,
+        color: Vinyl.Color.CLASSIC_BLACK,
+        speed: 45,
+        label: false
+      };
+  
+      opts.color = opts.color || 0;
+  
+      // --------
+      this._size = opts.size || Vinyl.Size.SIZE_12;
+      this._weight = opts.weight || Vinyl.Weight.NORMAL;
+      this._label = opts.label || false;
+      this._colorFormat = opts.colorFormat || Vinyl.ColorFormat.BLACK;
+      this._material = this._colorFormat === Vinyl.ColorFormat.COLOR ? Vinyl.Color.CLASSIC_BLACK : Vinyl.Color.WHITE;
+      this._defaultColor = 0x000000;
+      this._rpm = opts.speed;
+      this._enableRotate = false;
+      this._clock = new THREE.Clock();
+      this._boundingBox = null;
+      this._sleeveFormat;
+      this._index = opts.index || Vinyl.Index.FIRST;
+      this._assetName = '';
+      this._offsetX = 0;
+      this._offsetY = opts.offsetY;
+      this._visibility = opts.visibility;
+      this._gatefoldAngle = 0;
+      this._coveredRatio = 0;
+      this._basePosition = new THREE.Vector3();
+      this._transparent = false;
+      this._side = opts.side || THREE.FrontSide;
+
+      // weight と label の組み合わせで format を決定する
+      this._format = this.updateFormat(this._weight, this._label);
+  
+      // this._currentObject が変更される度に反映する必要があるプロパティ
+      this._bumpScale = 0.17;
+      this._labelBumpScale = 0.17;
+  
+      if (this._colorFormat === Vinyl.ColorFormat.SPECIAL) {
+        this._material = Vinyl.Color.WHITE;
+      }
+  
+      this._color = this._material.color;
+  
+      // 環境マップ
+      let images = [];
+      let path = this._loader.targets['assetsTextureVinylEnvmap'];
+  
+      for (let i = 0; i < 6; ++i) {
+        images.push(this._loader.targets['assetsTextureVinylEnvmap']);
+      }
+  
+      let cubeTextureLoader = new THREE.CubeTextureLoader();
+      cubeTextureLoader.setPath('');
+  
+      this._envMapTexture = cubeTextureLoader.load(images);
+      this._envMapTexture.flipY = false;
+      this._envMapTexture.needsUpdate = true;
+  
+      // Image として読み込まれたテクスチャを THREE.Texture に変換する
+      (function initTextures (obj, parentKey) {
+        Object.keys(obj).forEach((key) => {
+          
+          if (null === obj[key]) {
+            obj[key] = new THREE.Texture();
+          } else if (obj[key] instanceof Image) {
+            if (!obj[key] || obj[key] === undefined) {
+              console.error('texture ' + obj + ':' + key + ' is ' + obj[key]);
+            }
+  
+            obj[key] = new THREE.Texture(obj[key]);
+            obj[key].assetName = parentKey + '-' + key;
+            obj[key].needsUpdate = true;
+          } else if (obj[key] instanceof Object) {
+            initTextures(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
           }
         });
-      })
-      .start();
-  };
+      })(this._textures);
 
-  Vinyl.prototype.setEnableRotate = function(yn) {
-    this._enableRotate = yn;
-  };
+      await this._loadModel(this._size, this._format);
 
-  Vinyl.prototype.setRPM = function(rpm) {
-    this._rpm = rpm;
-  };
+      if (this._colorFormat === Vinyl.ColorFormat.COLOR) {
+        this.setColor(opts.color || 0);
+      }
 
-  Vinyl.prototype.setHeavy = function(yn) {
-    if (this._heavy === yn) {
-      return;
+      await this.setOpacity(this._material.opacity, 0, 0);
+
+      return this;
     }
 
-    this._heavy = yn;
+    //--------------------------------------------------------------
+    initMaterial(model, textures) {
+      
+      if (!model || !model.scene) {
+        return false;
+      }
 
-    var self = this;
+      model.scene.traverse(child => {
+        
+        if (child instanceof THREE.Mesh) {
+          this._bumpScale = 0.3;
 
-    Object.keys(self._front).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.front : new THREE.Texture();
-      self.initMaterial(self._front[key], tex, self._textures.bumpMap['front-' + self._size]);
-    });
+          if (Vinyl.ColorFormat.COLOR === this._colorFormat) {
+            this._bumpScale = 0.17;
+          } else if (Vinyl.ColorFormat.SPECIAL === this._colorFormat) {
+            this._bumpScale = 0.28;
+          }
 
-    Object.keys(self._back).forEach(function(key) {
-      var tex = self.TYPE_SPLATTER === self._type ? self._textures.back : new THREE.Texture();
-      self.initMaterial(self._back[key], tex, self._textures.bumpMap['back-' + self._size]);
-    });
+          child.material = child.material.clone();
+          child.material.combine = THREE.MultiplyOperation;
+          child.material.color = this._material.color;
+          child.material.opacity = this._material.opacity;
+          child.material.specular = new THREE.Color(0x363636);
+          child.material.transparent = this._transparent;
+          child.material.shading = THREE.SmoothShading;
+          // child.material.side = this._side;
+          child.material.side = THREE.FrontSide;
+          child.material.envMap = this._envMapTexture;
 
-    if (this._heavy) {
-      console.log('heavy');
-      this._container.remove(this._front[this._size]);
-      this._container.add(this._front['heavy-' + this._size]);
-    } else {
-      console.log('not heavy');
-      this._container.remove(this._front['heavy-' + this._size]);
-      this._container.add(this._front[this._size]);
+          if (-1 < model.assetName.indexOf(Vinyl.Format.WITH_LABEL)) {
+
+            const isLabel = this._isLabel(child);
+
+            if (!isLabel) {
+
+              child.material.bumpScale = this._bumpScale;
+              child.material.reflectivity = this._material.reflectivity;
+              child.material.refractionRatio = this._material.refractionRatio;
+              child.material.shininess = this._material.shininess;
+
+              if (textures) {
+                child.material.alphaMap = textures[Vinyl.Part.VINYL][Vinyl.Map.ALPHA] || null;
+                if (child.material.alphaMap) {
+                  child.material.alphaMap.needsUpdate = true;
+                }
+
+                child.material.aoMap = textures[Vinyl.Part.VINYL][Vinyl.Map.AO] || null;
+                if (child.material.aoMap) {
+                  child.material.aoMap.needsUpdate = true;
+                }
+
+                child.material.bumpMap = textures[Vinyl.Part.VINYL][Vinyl.Map.BUMP] || null;
+                if (child.material.bumpMap) {
+                  child.material.bumpMap.needsUpdate = true;
+                }
+
+                child.material.map = textures[Vinyl.Part.VINYL][Vinyl.Map.COLOR] || null;
+                if (child.material.map) {
+                  child.material.map.needsUpdate = true;
+                }
+              }
+            } else {
+              child.material.bumpScale = this._labelBumpScale;
+              child.material.color = new THREE.Color(0xffffff);
+              child.material.reflectivity = 0;
+              child.material.refractionRatio = 0;
+              child.material.shininess = 5;
+
+              if (textures) {
+                child.material.aoMap = textures[Vinyl.Part.LABEL][Vinyl.Map.AO] || null;
+                if (child.material.aoMap) {
+                  child.material.aoMap.needsUpdate = true;
+                }
+
+                child.material.bumpMap = textures[Vinyl.Part.LABEL][Vinyl.Map.BUMP] || null;
+                if (child.material.bumpMap) {
+                  child.material.bumpMap.needsUpdate = true;
+                }
+
+                child.material.map = textures[Vinyl.Part.LABEL][Vinyl.Map.COLOR] || null;
+                if (child.material.map) {
+                  child.material.map.needsUpdate = true;
+                }
+              }
+            }
+          } else {
+
+            child.material.reflectivity = this._material.reflectivity;
+            child.material.refractionRatio = this._material.refractionRatio;
+            child.material.shininess = this._material.shininess;
+
+            if (textures) {
+              child.material.alphaMap = textures[Vinyl.Map.ALPHA] || null;
+              if (child.material.alphaMap) {
+                child.material.alphaMap.needsUpdate = true;
+              }
+
+              child.material.aoMap = textures[Vinyl.Map.AO] || null;
+              if (child.material.aoMap) {
+                child.material.aoMap.needsUpdate = true;
+              }
+
+              child.material.bumpMap = textures[Vinyl.Map.BUMP] || null;
+              if (child.material.bumpMap) {
+                child.material.bumpMap.needsUpdate = true;
+              }
+
+              child.material.map = textures[Vinyl.Map.COLOR] || null;
+              if (child.material.map) {
+                child.material.map.needsUpdate = true;
+              }
+            }
+          }
+
+          child.geometry.computeFaceNormals();
+          child.geometry.computeVertexNormals();
+
+          child.material.needsUpdate = true;
+        }
+      });
+
+      return model;
     }
-  };
 
-  Vinyl.prototype.setVisibility = function(yn, opts, callback) {
-    this._front[this._size].visible = yn;
-  };
+    //--------------------------------------------------------------
+    setTransparent(value /* boolean */) {
 
-  Vinyl.prototype.update = function() {
-    if (!(this._front && this._front[this._size])) {
-      return;
-    }
-
-    var amount = this._enableRotate ? this._clock.getDelta() * (Math.PI * (this._rpm / 60)) : 0;
-    this.rotation.y -= amount;
-
-    var self = this;
-
-    Object.keys(this._front).forEach(function(key) {
-      if (!self._front[key]) {
+      if (this._transparent === value) {
         return;
       }
 
-      self._front[key].position.set(self._position.x, self._position.y, self._position.z);
-      self._front[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
-    });
+      this._transparent = value;
+
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          child.material.transparent = value;
+          child.material.needsUpdate = true;
+        }
+      });
+    }
+
+    //--------------------------------------------------------------
+    updateBoundingBox() {
+      this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
+    }
+
+    //--------------------------------------------------------------
+    updateTexture(texture, image) {
+      
+      if (!texture || !image) {
+        return;
+      }
+      
+      texture.image = image;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.needsUpdate = true;
+
+      return texture;
+    }
+
+    //--------------------------------------------------------------
+    _setTexture(part, type, image) {
+
+      if (Vinyl.Part.VINYL === part) {
+        if (Vinyl.ColorFormat.COLOR === this._colorFormat && 'color' === type) {
+          console.error('Vinyl.setTexture: colormap is only available when color format is set to "texture"');
+          return;
+        }
+      }
+
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          if (-1 < child.name.toLowerCase().indexOf(part)) {          
+            if ('alpha' == type) {
+              child.material.alphaMap = this.updateTexture(new THREE.Texture(), image);
+            } else if ('ao' === type) {
+              child.material.aoMap = this.updateTexture(new THREE.Texture(), image);
+            } else if ('bumpmap' === type) {
+              child.material.bumpMap = this.updateTexture(new THREE.Texture(), image);
+            } else if ('color' == type) {
+              child.material.map = this.updateTexture(new THREE.Texture(), image);
+            } else {
+              return;
+            }
+    
+            child.material.needsUpdate = true;
+          }
+        }
+      });
+    }
+
+    //--------------------------------------------------------------
+    setAlphaMap(image) {
+      
+      if (!image) {
+        return;
+      }
+
+      this._setTexture(Vinyl.Part.VINYL, 'alpha', image);
+    }
+
+    //--------------------------------------------------------------
+    setAoMap(image) {
+      
+      if (!image) {
+        return;
+      }
+
+      this._setTexture(Vinyl.Part.VINYL, 'ao', image);
+    }
+
+    //--------------------------------------------------------------
+    setBumpMap(image) {
+      
+      if (!image) {
+        return;
+      }
+
+      this._setTexture(Vinyl.Part.VINYL, 'bumpmap', image);
+    }
+
+    //--------------------------------------------------------------
+    setColorMap(image) {
+      
+      if (!image) {
+        return;
+      }
+
+      this._setTexture(Vinyl.Part.VINYL, 'color', image);
+    }
+
+    //--------------------------------------------------------------
+    setLabelAoMap(image) {
+      
+      if (!image) {
+        return;
+      }
+
+      if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
+        console.error('Vinyl.setLabelAoMap: label texture is only available for formats with labels. current format is "' + this._format + '"');
+        return;
+      }
+
+      this._setTexture(Vinyl.Part.LABEL, 'ao', image);
+    }
+
+    //--------------------------------------------------------------
+    setLabelBumpMap(image) {
+      
+      if (!image) {
+        return;
+      }
+
+      if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
+        console.error('Vinyl.setLabelBumpMap: label texture is only available for formats with labels. current format is "' + this._format + '"');
+        return;
+      }
+
+      this._setTexture(Vinyl.Part.LABEL, 'bumpmap', image);
+    }
+
+    //--------------------------------------------------------------
+    setLabelColorMap(image) {
+      
+      if (!image) {
+        return;
+      }
+
+      if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
+        console.error('Vinyl.setLabelColorMap: label texture is only available for formats with labels. current format is "' + this._format + '"');
+        return;
+      }
+
+      this._setTexture(Vinyl.Part.LABEL, 'color', image);
+    }
+
+    //--------------------------------------------------------------
+    updateFormat(weight, label) {
+
+      if (weight === Vinyl.Weight.NORMAL) {
+        if (label) {
+          return Vinyl.Format.WITH_LABEL;
+        } else {
+          return Vinyl.Format.NORMAL;
+        }
+      } else if (weight === Vinyl.Weight.HEAVY) {
+        if (label) {
+          return Vinyl.Format.HEAVY_WITH_LABEL;
+        } else {
+          return Vinyl.Format.HEAVY;
+        }
+      }
+    }
+
+    //--------------------------------------------------------------
+    setBumpScale(value) {
+
+      this._bumpScale = value;
+
+      this._currentObject.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.material.bumpScale = this._bumpScale;
+          child.material.needsUpdate = true;
+        }
+      });
+    }
+
+    //--------------------------------------------------------------
+    setLabelBumpScale(value) {
+      
+      this._labelBumpScale = value;
+
+      if (this._isWithLabel()) {
+        this._currentObject.traverse(child => {
+          if (child instanceof THREE.Mesh) {
+            if (this._isLabel(child)) {
+              child.material.bumpScale = this._labelBumpScale;
+              child.material.needsUpdate = true;
+            }
+          }
+        });
+      }
+    }
+
+    //--------------------------------------------------------------
+    getBumpScale() {
+
+      return this._bumpScale;
+    }
+
+    //--------------------------------------------------------------
+    async setSize(size) {
+
+      if (!size) {
+        console.warn('Vinyl.setSize: no size specified');
+        throw new Error('Vinyl.setSize: no size specified');
+      }
+
+      size += '';
+
+      if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
+        console.warn('Vinyl.setSize: invalid size "' + size + '"');
+        throw new Error('Vinyl.setSize: invalid size "' + size + '"');
+      }
+
+      if (this._size === size) {
+        console.info('Vinyl.setSize: already set to size ' + size);
+        return this;
+      }
+
+      this._size = size;
+
+      return this._loadModel(this._size, this._format);
+    }
+
+    //--------------------------------------------------------------
+    getSize() {
+
+      return this._size;
+    }
+
+    //--------------------------------------------------------------
+    async setColorFormat(format) {
+
+      if (-1 === Object.values(Vinyl.ColorFormat).indexOf(format)) {
+        console.error('Vinyl.setColorFormat: invalid color format"' + format + '"');
+        return;
+      }
+
+      if (this._colorFormat === format) {
+        return;
+      }
+      
+      this._colorFormat = format;
+
+      if (Vinyl.ColorFormat.COLOR === this._colorFormat) {
+        this._material = Vinyl.Color.CLASSIC_BLACK;
+      } else {
+        this._material = Vinyl.Color.WHITE;
+      } 
+
+      await this._loadModel(this._size, this._format);
+      await this.setOpacity(this._material.opacity, 0, 0);
+
+      return this;
+    }
+
+    //--------------------------------------------------------------
+    setColor(color /* = int */) {
+
+      if (Vinyl.ColorFormat.COLOR !== this._colorFormat) {
+        console.error('Vinyl.setColor: color option is valid when vinyl type = COLOR');
+        return;
+      }
+
+      color = Object.keys(Vinyl.Color)[color];
+
+      if (-1 === Object.keys(Vinyl.Color).indexOf(color)) {
+        console.error('Vinyl.setColor: unknown color "' + color + '"');
+        return;
+      }
+
+      this._material = Vinyl.Color[color];
+
+      if (this._colorFormat === Vinyl.ColorFormat.SPECIAL) {
+        this._material.color = 0xffffff;
+        this._material.opacity = 0.8;
+        this._material.reflectivity = 0.1;
+      }
+
+      this._currentObject.traverse((child) => {
+
+        if (child instanceof THREE.Mesh) {
+          if (!this._isLabel(child)) {
+            child.material.color = this._material.color;
+            child.material.opacity = this._material.opacity;
+            child.material.reflectivity = this._material.reflectivity;
+            child.material.refractionRatio = this._material.refractionRatio;
+            child.material.shininess = this._material.shininess;
+            child.material.needsUpdate = true;
+          }
+        }
+      });
+    }
+
+    //--------------------------------------------------------------
+    async enableLabel() {
+
+      this._label = true;
+      this._format = this.updateFormat(this._weight, this._label);
+      
+      await this._loadModel(this._size, this._format);
+      await this.setOpacity(this._material.opacity, 0, 0);
+
+      return;
+    }
+
+    //--------------------------------------------------------------
+    async disableLabel() {
+      
+      this._label = false;
+      this._format = this.updateFormat(this._weight, this._label);
+      
+      await this._loadModel(this._size, this._format);
+      await this.setOpacity(this._material.opacity, 0, 0);
+
+      return;
+    }
+
+    //--------------------------------------------------------------
+    async setOpacity(to, duration, delay) {
+
+      duration = undefined !== duration ? duration : 1000;
+      delay = undefined !== delay ? delay : 0;
+
+      this._currentObject.traverse((child) => {
+
+        if (child instanceof THREE.Mesh) {
+
+          let tween = new TWEEN.Tween(child.material);
+
+          if (0 < to) {
+            if (this._isLabel(child)) {
+              new TWEEN.Tween(child.material)
+                .stop()
+                .delay(delay)
+                .to({ opacity: 1.0 }, duration)
+                .onUpdate((value) => {
+                  child.material.needsUpdate = true;
+                })
+                .onComplete(() => {
+                  child.material.needsUpdate = true;
+                  return;
+                })
+                .start();
+            } else {
+              new TWEEN.Tween(child.material)
+                .stop()
+                .delay(delay)
+                .to({ opacity: to }, duration)
+                .onUpdate((value) => {
+                  child.material.needsUpdate = true;
+                })
+                .onComplete(() => {
+                  child.material.opacity = to;
+                  child.material.needsUpdate = true;
+                  return;
+                })
+                .start();
+            }
+          } else {
+            new TWEEN.Tween(child.material)
+              .stop()
+              .delay(delay)
+              .to({ opacity: 0 }, duration)
+              .onUpdate((value) => {
+                child.material.needsUpdate = true;
+              })
+              .onComplete(() => {
+                child.material.opacity = to;
+                child.material.needsUpdate = true;
+                return;
+              })
+              .start();
+          }
+        }
+      });
+    }
+
+    //--------------------------------------------------------------
+    setEnableRotate(yn) {
+      this._enableRotate = yn;
+    }
+
+    //--------------------------------------------------------------
+    setRPM(rpm) {
+      this._rpm = rpm;
+    }
+
+    //--------------------------------------------------------------
+    async setWeight(weight) {
+
+      if (-1 === Object.values(Vinyl.Weight).indexOf(weight)) {
+        console.warn('Vinyl.setWeight: unknown weight value "' + weight + '"');
+        throw new Error('Vinyl.setWeight: unknown weight value "' + weight + '"');
+      }
+      
+      if (this._weight === weight) {
+        return this;
+      }
+
+      this._weight = weight;
+      this._format = this.updateFormat(this._weight, this._label);
+
+      await this._loadModel(this._size, this._format);
+      await this.setOpacity(this._material.opacity, 0, 0);
+
+      return this;
+    }
+
+    //--------------------------------------------------------------
+    setVisibility(visibility) {
+      this._currentObject.visible = visibility;
+      this._visibility = visibility;
+    }
+
+    //--------------------------------------------------------------
+    setCoveredRatio(ratio, offsetX, offsetY) {
+
+      // this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
+      this._coveredRatio = ratio;
+      this._offsetX = offsetX || 0;
+      this._offsetY = offsetY || 0;
+      
+      const dist = this._boundingBox.max.x * (2 * this._coveredRatio + 1) - this._boundingBox.max.x;
+      const x = this._basePosition.x + this._offsetX + dist * Math.cos(this._gatefoldAngle);
+      const y = this._basePosition.y + this._offsetY + dist * Math.sin(this._gatefoldAngle);
+
+      this._currentObject.position.set(x, y, this._basePosition.z);
+    }
+
+    //--------------------------------------------------------------
+    getCoveredRatio() {
+
+      return this._coveredRatio;
+    }
+
+    //--------------------------------------------------------------
+    setRotationZ(angle /* in radians */, offsetX, offsetY) {
+
+      this._gatefoldAngle = angle;
+
+      const rotation = this._currentObject.rotation
+
+      this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
+    }
+
+    //--------------------------------------------------------------
+    setOffsetY(value) {
+
+      this._offsetY = value;
+      
+      const pos = this._currentObject.position;
+      this._currentObject.position.set(pos.x, this._offsetY, pos.z);
+    };
+
+    //--------------------------------------------------------------
+    setFrontSleevePositionAndAngle(vector, angle, offsetX) {
+
+      offsetX = offsetX || 0;
+      
+      this._basePosition = vector;
+      this._gatefoldAngle = angle;
+
+      const dist = this._boundingBox.max.x * (2 * this._coveredRatio + 1) - this._boundingBox.max.x;
+      const x = this._basePosition.x + 0.08 + dist * Math.cos(this._gatefoldAngle);
+      const y = this._basePosition.y + dist * Math.sin(this._gatefoldAngle);
+      const rotation = this._currentObject.rotation
+      
+      this._currentObject.position.set(x, y, this._basePosition.z);
+      this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
+    }
+
+    //--------------------------------------------------------------
+    setRenderOrder(order) {
+      if (!this._currentObject) {
+        return;
+      }
+
+      this._currentObject.renderOrder = order;
+    }
+
+    //--------------------------------------------------------------
+    resetRotation(angle /* in radians */, offsetX, offsetY) {
+      
+          this._gatefoldAngle = 0;
+      
+          const rotation = this._currentObject.rotation
+      
+          this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
+        };
+
+    //--------------------------------------------------------------
+    getCurrentProperties() {
+
+      return {
+        size: this._size,
+        weight: this._weight,
+        label: this._label,
+        colorFormat: this._colorFormat,
+        rpm: this._rpm
+      };
+    };
+
+    //--------------------------------------------------------------
+    getFormat() {
+      
+      return this._format;
+    };
+
+    //--------------------------------------------------------------
+    getAssetName() {
+
+      return this._assetName;
+    };
+
+    //--------------------------------------------------------------
+    removeFromContainer() {
+      
+      this._container.remove(this._currentObject);
+    }
+
+    //--------------------------------------------------------------
+    dispose() {
+
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          child.geometry.dispose();
+          child.material.dispose();
+          child.parent = null;
+
+          // dispose textures
+          if (child.material.alphaMap) child.material.alphaMap.dispose();
+          if (child.material.aoMap) child.material.aoMap.dispose();
+          if (child.material.bumpMap) child.material.bumpMap.dispose();
+          if (child.material.map) child.material.map.dispose();
+          if (child.material.envMap) child.material.envMap.dispose();
+        }
+      });
+    }
+
+    //--------------------------------------------------------------
+    async copy(parent) {
+
+      if (!(parent instanceof Vinyl)) {
+        console.error('Vinyl.copy: not an Vinyl object :', parent);
+        return;
+      }
+
+      this._size = parent._size;
+      this._format = parent._format;
+
+      await this._loadModel(this._size, this._format);
+
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          const obj = parent._currentObject.getObjectByName(child.name);
+          
+          if (obj) {
+            child.material = obj.material.clone();
+          }
+        }
+      });
+
+      return this;
+    }
+
+    //--------------------------------------------------------------
+    update() {
+
+      if (!this._currentObject) {
+        return;
+      }
+
+      if (this._enableRotate) {
+        const target = this._currentObject;
+        const amount = this._clock.getDelta() * (Math.PI * (this._rpm / 60));
+
+        this._currentObject.children.forEach(function (child) {
+          const rotation = child.rotation.clone();
+          rotation.y -= amount;
+          child.rotation.set(rotation.x, rotation.y, rotation.z);
+        });
+        
+      }
+    }
+
+    //--------------------------------------------------------------
+    async loadModelForSize(size) {
+      
+      await this._loadTextures(size, this._format);
+      
+      let result = await this._loader.loadAsset({
+        'assetType': 'model',
+        'key': this._paths.models[size][this._format]
+      });
+      
+      console.log('loaded model  ------', result);
+      
+      const assetType = result['assetType'];
+      const assetKey = result['key'];
+
+      if ('model' === assetType) {
+        const obj = this._loader.assets[assetKey];
+        
+        const scale = 5.5;  
+        const assetName = 'vinyl-' + size + '-' + this._format;
+                
+        obj.assetName = assetName;
+        obj.scene.assetName = assetName;
+    
+        if (this._textures[size][this._format]) {
+          this._textures[size][this._format].assetName = assetName;
+        }
+
+        this.initMaterial(obj.scene, this._textures[size][this._format]);
+
+        obj.scene.scale.set(scale, scale, scale);
+    
+        this._currentObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.material.opacity = 0;
+          }
+        });
+
+        obj.initialized = true;
+      }
+
+      return this;
+    }
+
+    //--------------------------------------------------------------
+    async _loadTextures(size, format) {
+
+      const targets = [];
+      
+      (function addTextureToTarget (obj, parentKey) {
+        Object.keys(obj).forEach((key) => {
+          if (typeof obj[key] === 'string') {
+            targets.push({
+              'assetType': 'texture',
+              'textureType': key,
+              'key': obj[key]
+            });
+          } else if (typeof obj[key] === 'object') {
+            addTextureToTarget(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
+          }
+        });
+      })(this._paths.textures[size][format]);
+
+      let results = await Promise.all(targets.map((target) => {
+        return this._loader.loadAsset(target);
+      }));
+
+      console.log('textures are loaded  ------', results);
+      
+      results.forEach((result) => {
+
+        const assetType = result['assetType'];
+        const textureType = result['textureType'];
+        const assetKey = result['key'];
+  
+        if ('texture' === assetType) {
+          if (this._isWithLabel()) {
+            if (-1 < assetKey.toLowerCase().indexOf('forlabel')) {
+              this.updateTexture(this._textures[size][format][Vinyl.Part.LABEL][textureType], this._loader.assets[assetKey]);
+            } else {
+              this.updateTexture(this._textures[size][format][Vinyl.Part.VINYL][textureType], this._loader.assets[assetKey]);
+            }
+          } else {
+            this.updateTexture(this._textures[size][format][textureType], this._loader.assets[assetKey]);
+          }
+        }
+      });
+
+      return results;
+    }
+
+    //--------------------------------------------------------------
+    async _loadModel(size, format) {
+
+      await this._loadTextures(size, format);
+
+      let result = await this._loader.loadAsset({
+        'assetType': 'model',
+        'key': this._paths.models[size][format]
+      });
+
+      // モデルをロード      
+      const assetType = result['assetType'];
+      const assetKey = result['key'];
+
+      if ('model' === assetType) {
+        const obj = this._loader.assets[assetKey];
+
+        if (!obj.initialized) {
+          console.log('model is not initialized', assetKey);
+          const scale = 5.5;  
+          const assetName = 'vinyl-' + size + '-' + format;
+
+          obj.assetName = assetName;
+          obj.scene.assetName = assetName;
+        
+          if (this._textures[size][format]) {
+            this._textures[size][format].assetName = assetName;
+          }
+
+          obj.scene.scale.set(scale, scale, scale);
+        } // finish initializing
+
+        console.log('model is initialized', assetKey);
+
+        this.initMaterial(obj, this._textures[size][format]);
+
+        let position = new THREE.Vector3(0, 0, 0);
+        let renderOrder;
+        
+        if (this._currentObject) {
+          position = this._currentObject.position;
+          renderOrder = this._currentObject.renderOrder;
+
+          this.removeFromContainer();
+          this.dispose();
+        }
+
+        this._currentObject = obj.scene.clone();
+        this._currentObject.renderOrder = renderOrder;
+
+        this._currentObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.material.opacity = 0;
+          }
+        });
+
+        this._setVinylScale(0.99);
+        this.updateBoundingBox();
+        this.setOffsetY(this._offsetY);
+        this.setVisibility(this._visibility);
+        this.setFrontSleevePositionAndAngle(this._basePosition, this._gatefoldAngle);
+        
+        this._container.add(this._currentObject);
+        this._currentObject.position.set(position.x, position.y, position.z);
+    
+        obj.initialized = true;
+      }
+
+      return this;
+    }
+
+    //--------------------------------------------------------------
+    _isWithLabel() {
+
+      if (Vinyl.Format.WITH_LABEL === this._format || Vinyl.Format.HEAVY_WITH_LABEL === this._format) {
+        return true;
+      }
+
+      return false;
+    }
+
+    //--------------------------------------------------------------
+    _isLabel(child /* = THREE.Mesh */) {
+
+      return -1 < child.name.toLowerCase().indexOf('label');
+    }
+
+    //--------------------------------------------------------------
+    _setVinylScale(scale) {
+      
+            this._currentObject.scale.y = scale;
+      
+            if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
+              return;
+            }
+      
+            this._currentObject.traverse((child) => {
+              if (child instanceof THREE.Mesh) {
+                if (this._isLabel(child)) {
+                  child.scale.set(1.0, 2.5, 1.0);
+                }
+              }
+            });
+          }
+  }
+
+
+  /**
+   * Constants
+   */
+  Vinyl.Size = {
+    SIZE_7S: '7S',
+    SIZE_7L: '7L',
+    SIZE_10: '10',
+    SIZE_12: '12'
   };
+
+  Vinyl.ColorFormat = {
+    COLOR: 'color',
+    TEXTURE: 'texture'
+  };
+
+  Vinyl.Weight = {
+    NORMAL: 'normal',
+    HEAVY: 'heavy'
+  };
+
+  Vinyl.Format = {
+    NORMAL: 'normal',
+    HEAVY: 'heavy',
+    WITH_LABEL: 'with-label',
+    HEAVY_WITH_LABEL: 'heavy-with-label'
+  };
+
+  Vinyl.Part = {
+    VINYL: 'vinyl',
+    LABEL: 'label'
+  };
+
+  Vinyl.Map = {
+    ALPHA: 'alpha',
+    AO: 'ao',
+    BUMP: 'bump',
+    COLOR: 'color'
+  };
+
+  Vinyl.Index = {
+    FIRST: 'first',
+    SECOND: 'second'
+  }
+
+  Vinyl.Color = {
+    CLASSIC_BLACK:      { color: new THREE.Color(0x000000), opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  25, metal: true },
+    WHITE:              { color: new THREE.Color(0xFCFCFC), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    EASTER_YELLOW:      { color: new THREE.Color(0xF3EB6E), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    RED:                { color: new THREE.Color(0xCA180B), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    HALLOWEEN_ORANGE:   { color: new THREE.Color(0xFF8C16), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    CYAN_BLUE:          { color: new THREE.Color(0x1092D6), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    DOOKIE_BROWN:       { color: new THREE.Color(0x673430), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    DOUBLE_MINT:        { color: new THREE.Color(0x8CD968), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    GREY:               { color: new THREE.Color(0x8A8E8E), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    KELLY_GREEN:        { color: new THREE.Color(0x008610), opacity: 0.7, reflectivity: 0.6, refractionRatio: 0.98, shininess:  35, metal: true },
+    PISS_YELLOW:        { color: new THREE.Color(0xFFEE00), opacity: 0.6, reflectivity: 0.3, refractionRatio: 0.98, shininess:  35, metal: true },
+    BLOOD_RED:          { color: new THREE.Color(0xCA0D00), opacity: 0.7, reflectivity: 0.2, refractionRatio: 0.98, shininess:  35, metal: true },
+    DEEP_PURPLE:        { color: new THREE.Color(0x6F035F), opacity: 0.8, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
+    ROYAL_BLUE:         { color: new THREE.Color(0x0012CA), opacity: 0.7, reflectivity: 0.6, refractionRatio: 0.98, shininess:  35, metal: true },
+    MILKY_CLEAR:        { color: new THREE.Color(0xECE4D9), opacity: 0.6, reflectivity: 0.6, refractionRatio: 0.98, shininess:  35, metal: true },
+    SWAMP_GREEN:        { color: new THREE.Color(0x283C01), opacity: 0.8, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
+    SEA_BLUE:           { color: new THREE.Color(0x003B77), opacity: 0.8, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
+    BONE:               { color: new THREE.Color(0xF7F6E5), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    BRONZE:             { color: new THREE.Color(0x926229), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    BEER:               { color: new THREE.Color(0xB07402), opacity: 0.6, reflectivity: 0.6, refractionRatio: 0.98, shininess:  35, metal: true },
+    ELECTRIC_BLUE:      { color: new THREE.Color(0x56B5FF), opacity: 0.6, reflectivity: 0.6, refractionRatio: 0.98, shininess:  35, metal: true },
+    GRIMACE_PURPLE:     { color: new THREE.Color(0xA715A9), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    OXBLOOD:            { color: new THREE.Color(0xA22828), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    COKE_BOTTLE_GREEN:  { color: new THREE.Color(0x5AC78C), opacity: 0.6, reflectivity: 0.6, refractionRatio: 0.98, shininess:  35, metal: true },
+    ORANGE_CRUSH:       { color: new THREE.Color(0xFF5100), opacity: 0.8, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
+    HOT_PINK:           { color: new THREE.Color(0xD2165B), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    BABY_PINK:          { color: new THREE.Color(0xFFA8C9), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    OLIVE_GREEN:        { color: new THREE.Color(0x71944F), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    AQUA_BLUE:          { color: new THREE.Color(0x286B9E), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    ULTRA_CLEAR:        { color: new THREE.Color(0xFFFDF6), opacity: 0.4, reflectivity: 0.6, refractionRatio: 0.98, shininess:  35, metal: true },
+    BABY_BLUE:          { color: new THREE.Color(0xA7C2FB), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    HIGHLIGHTER_YELLOW: { color: new THREE.Color(0xC2FF00), opacity: 0.6, reflectivity: 0.6, refractionRatio: 0.98, shininess:  35, metal: true },
+    GOLD:               { color: new THREE.Color(0x967D3D), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  30, metal: true },
+    SILVER:             { color: new THREE.Color(0xA2A9B1), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  30, metal: true },
+    MUSTARD:            { color: new THREE.Color(0xF0CF57), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true }
+  };
+
+
+  exports.world = exports.world || {};
+  exports.world.Vinyl = Vinyl;
 
 })(this, (this.qvv = (this.qvv || {})));

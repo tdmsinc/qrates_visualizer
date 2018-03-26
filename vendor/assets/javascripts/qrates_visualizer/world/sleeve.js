@@ -1,535 +1,1210 @@
 
-//= require tdmsinc-three.js
+//= require tdmsinc-three.js.js
 //= require_self
 
-(function(global, exports) {
+((global, exports) => {
+
+  class Sleeve {
+
+    //--------------------------------------------------------------
+    constructor(assets, container, loader) {
+
+      this._paths = {
+        models: {
+          '7': {
+            'no-spine': {
+              'normal': 'assetsModelSleeveSingleNoSpine-7',
+              'holed': 'assetsModelSleeveSingleNoSpineHoled-7'
+            },
+            'single': {
+              'normal': 'assetsModelSleeveSingle-7',
+              'holed': 'assetsModelSleeveSingleHoled-7'
+            },
+            'double': {
+              'normal': 'assetsModelSleeveDouble-7',
+              'holed': 'assetsModelSleeveDoubleHoled-7'
+            },
+            'gatefold': {
+              'normal': 'assetsModelSleeveGatefold-7'
+            }
+          },
+    
+          '10': {
+            'no-spine': {
+              'normal': 'assetsModelSleeveSingleNoSpine-10',
+              'holed': 'assetsModelSleeveSingleNoSpineHoled-10'
+            },
+            'single': {
+              'normal': 'assetsModelSleeveSingle-10',
+              'holed': 'assetsModelSleeveSingleHoled-10'
+            },
+            'double': {
+              'normal': 'assetsModelSleeveDouble-10',
+              'holed': 'assetsModelSleeveDoubleHoled-10'
+            },
+            'gatefold': {
+              'normal': 'assetsModelSleeveGatefold-10'
+            }
+          },
+    
+          '12': {
+            'no-spine': {
+              'normal': 'assetsModelSleeveSingleNoSpine-12',
+              'holed': 'assetsModelSleeveSingleNoSpineHoled-12'
+            },
+            'single': {
+              'normal': 'assetsModelSleeveSingle-12',
+              'holed': 'assetsModelSleeveSingleHoled-12'
+            },
+            'double': {
+              'normal': 'assetsModelSleeveDouble-12',
+              'holed': 'assetsModelSleeveDoubleHoled-12'
+            },
+            'gatefold': {
+              'normal': 'assetsModelSleeveGatefold-12',
+              'holed': 'assetsModelSleeveGatefold-12'
+            }
+          }
+        },
+  
+        textures: {
+          '7': {
+            'no-spine': {
+              'normal': {
+                'ao': 'assetsTextureSleeveSingleNoSpineAo-7',
+                'bumpmap': 'assetsTextureSleeveSingleNoSpineBumpmap-7',
+                'color': 'assetsTextureSleeveSingleNoSpineColor-7',
+              },
+              'holed': {
+                'ao': 'assetsTextureSleeveSingleNoSpineHoledAo-7',
+                'bumpmap': 'assetsTextureSleeveSingleNoSpineHoledBumpmap-7',
+                'color': 'assetsTextureSleeveSingleNoSpineHoledColor-7',
+              }
+            },
+            'single': {
+              'normal': {
+                'ao': 'assetsTextureSleeveSingleAo-7',
+                'bumpmap': 'assetsTextureSleeveSingleBumpmap-7',
+                'color': 'assetsTextureSleeveSingleColor-7',
+              },
+              'holed': {
+                'ao': 'assetsTextureSleeveSingleHoledAo-7',
+                'bumpmap': 'assetsTextureSleeveSingleHoledBumpmap-7',
+                'color': 'assetsTextureSleeveSingleHoledColor-7',
+              }
+            },
+            'double': {
+              'normal': {
+                'ao': 'assetsTextureSleeveDoubleAo-7',
+                'bumpmap': 'assetsTextureSleeveDoubleBumpmap-7',
+                'color': 'assetsTextureSleeveDoubleColor-7',
+              },
+              'holed': {
+                'ao': 'assetsTextureSleeveDoubleHoledAo-7',
+                'bumpmap': 'assetsTextureSleeveDoubleHoledBumpmap-7',
+                'color': 'assetsTextureSleeveDoubleHoledColor-7',
+              }
+            },
+            'gatefold': {
+              'normal': {
+                'front': {
+                  'ao': 'assetsTextureSleeveGatefoldFrontAo-7',
+                  'bumpmap': 'assetsTextureSleeveGatefoldFrontBumpmap-7',
+                  'color': 'assetsTextureSleeveGatefoldFrontColor-7'
+                },
+                'back': {
+                  'ao': 'assetsTextureSleeveGatefoldBackAo-7',
+                  'bumpmap': 'assetsTextureSleeveGatefoldBackBumpmap-7',
+                  'color': 'assetsTextureSleeveGatefoldBackColor-7'
+                },
+                'spine': {
+                  'ao': 'assetsTextureSleeveGatefoldSpineAo-7',
+                  'bumpmap': 'assetsTextureSleeveGatefoldSpineBumpmap-7',
+                  'color': 'assetsTextureSleeveGatefoldSpineColor-7'
+                }
+              },
+              'holed': null
+            }
+          },
+        
+          '10': {
+            'no-spine': {
+              'normal': {
+                'ao': 'assetsTextureSleeveSingleNoSpineAo-10',
+                'bumpmap': 'assetsTextureSleeveSingleNoSpineBumpmap-10',
+                'color': 'assetsTextureSleeveSingleNoSpineColor-10',
+              },
+              'holed': {
+                'ao': 'assetsTextureSleeveSingleNoSpineHoledAo-10',
+                'bumpmap': 'assetsTextureSleeveSingleNoSpineHoledBumpmap-10',
+                'color': 'assetsTextureSleeveSingleNoSpineHoledColor-10',
+              }
+            },
+            'single': {
+              'normal': {
+                'ao': 'assetsTextureSleeveSingleAo-10',
+                'bumpmap': 'assetsTextureSleeveSingleBumpmap-10',
+                'color': 'assetsTextureSleeveSingleColor-10',
+              },
+              'holed': {
+                'ao': 'assetsTextureSleeveSingleHoledAo-10',
+                'bumpmap': 'assetsTextureSleeveSingleHoledBumpmap-10',
+                'color': 'assetsTextureSleeveSingleHoledColor-10',
+              }
+            },
+            'double': {
+              'normal': {
+                'ao': 'assetsTextureSleeveDoubleAo-10',
+                'bumpmap': 'assetsTextureSleeveDoubleBumpmap-10',
+                'color': 'assetsTextureSleeveDoubleColor-10',
+              },
+              'holed': {
+                'ao': 'assetsTextureSleeveDoubleHoledAo-10',
+                'bumpmap': 'assetsTextureSleeveDoubleHoledBumpmap-10',
+                'color': 'assetsTextureSleeveDoubleHoledColor-10',
+              }
+            },
+            'gatefold': {
+              'normal': {
+                'front': {
+                  'ao': 'assetsTextureSleeveGatefoldFrontAo-10',
+                  'bumpmap': 'assetsTextureSleeveGatefoldFrontBumpmap-10',
+                  'color': 'assetsTextureSleeveGatefoldFrontColor-10'
+                },
+                'back': {
+                  'ao': 'assetsTextureSleeveGatefoldBackAo-10',
+                  'bumpmap': 'assetsTextureSleeveGatefoldBackBumpmap-10',
+                  'color': 'assetsTextureSleeveGatefoldBackColor-10'
+                },
+                'spine': {
+                  'ao': 'assetsTextureSleeveGatefoldSpineAo-10',
+                  'bumpmap': 'assetsTextureSleeveGatefoldSpineBumpmap-10',
+                  'color': 'assetsTextureSleeveGatefoldSpineColor-10'
+                }
+              },
+            }
+          },
+        
+          '12': {
+            'no-spine': {
+              'normal': {
+                'ao': 'assetsTextureSleeveSingleNoSpineAo-12',
+                'bumpmap': 'assetsTextureSleeveSingleNoSpineBumpmap-12',
+                'color': 'assetsTextureSleeveSingleNoSpineColor-12',
+              },
+              'holed': {
+                'ao': 'assetsTextureSleeveSingleNoSpineHoledAo-12',
+                'bumpmap': 'assetsTextureSleeveSingleNoSpineHoledBumpmap-12',
+                'color': 'assetsTextureSleeveSingleNoSpineHoledColor-12',
+              }
+            },
+            'single': {
+              'normal': {
+                'ao': 'assetsTextureSleeveSingleAo-12',
+                'bumpmap': 'assetsTextureSleeveSingleBumpmap-12',
+                'color': 'assetsTextureSleeveSingleColor-12',
+              },
+              'holed': {
+                'ao': 'assetsTextureSleeveSingleHoledAo-12',
+                'bumpmap': 'assetsTextureSleeveSingleHoledBumpmap-12',
+                'color': 'assetsTextureSleeveSingleHoledColor-12',
+              }
+            },
+            'double': {
+              'normal': {
+                'ao': 'assetsTextureSleeveDoubleAo-12',
+                'bumpmap': 'assetsTextureSleeveDoubleBumpmap-12',
+                'color': 'assetsTextureSleeveDoubleColor-12',
+              },
+              'holed': {
+                'ao': 'assetsTextureSleeveDoubleHoledAo-12',
+                'bumpmap': 'assetsTextureSleeveDoubleHoledBumpmap-12',
+                'color': 'assetsTextureSleeveDoubleHoledColor-12',
+              }
+            },
+            'gatefold': {
+              'normal': {
+                'front': {
+                  'ao': 'assetsTextureSleeveGatefoldFrontAo-12',
+                  'bumpmap': 'assetsTextureSleeveGatefoldFrontBumpmap-12',
+                  'color': 'assetsTextureSleeveGatefoldFrontColor-12'
+                },
+                'back': {
+                  'ao': 'assetsTextureSleeveGatefoldBackAo-12',
+                  'bumpmap': 'assetsTextureSleeveGatefoldBackBumpmap-12',
+                  'color': 'assetsTextureSleeveGatefoldBackColor-12'
+                },
+                'spine': {
+                  'ao': 'assetsTextureSleeveGatefoldSpineAo-12',
+                  'bumpmap': 'assetsTextureSleeveGatefoldSpineBumpmap-12',
+                  'color': 'assetsTextureSleeveGatefoldSpineColor-12'
+                }
+              },
+              'holed': {
+                'front': {
+                  'ao': 'assetsTextureSleeveGatefoldFrontAo-12',
+                  'bumpmap': 'assetsTextureSleeveGatefoldFrontBumpmap-12',
+                  'color': 'assetsTextureSleeveGatefoldFrontColor-12'
+                },
+                'back': {
+                  'ao': 'assetsTextureSleeveGatefoldBackAo-12',
+                  'bumpmap': 'assetsTextureSleeveGatefoldBackBumpmap-12',
+                  'color': 'assetsTextureSleeveGatefoldBackColor-12'
+                },
+                'spine': {
+                  'ao': 'assetsTextureSleeveGatefoldSpineAo-12',
+                  'bumpmap': 'assetsTextureSleeveGatefoldSpineBumpmap-12',
+                  'color': 'assetsTextureSleeveGatefoldSpineColor-12'
+                }
+              }
+            }
+          }
+        }
+      };
+  
+      this._textures = {
+        '7': {
+          'no-spine': {
+            'normal': {
+              'ao': assets['assetsTextureSleeveSingleNoSpineAo-7'],
+              'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-7'],
+              'color': assets['assetsTextureSleeveSingleNoSpineColor-7'],
+            },
+            'holed': {
+              'ao': assets['assetsTextureSleeveSingleNoSpineHoledAo-7'],
+              'bumpmap': assets['assetsTextureSleeveSingleNoSpineHoledBumpmap-7'],
+              'color': assets['assetsTextureSleeveSingleNoSpineHoledColor-7'],
+            }
+          },
+          'single': {
+            'normal': {
+              'ao': assets['assetsTextureSleeveSingledAo-7'],
+              'bumpmap': assets['assetsTextureSleeveSingleBumpmap-7'],
+              'color': assets['assetsTextureSleeveSingleColor-7'],
+            },
+            'holed': {
+              'ao': assets['assetsTextureSleeveSingleHoledAo-7'],
+              'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-7'],
+              'color': assets['assetsTextureSleeveSingleHoledColor-7'],
+            }
+          },
+          'double': {
+            'normal': {
+              'ao': assets['assetsTextureSleeveDoubleAo-7'],
+              'bumpmap': assets['assetsTextureSleeveDoubleBumpmap-7'],
+              'color': assets['assetsTextureSleeveDoubleColor-7'],
+            },
+            'holed': {
+              'ao': assets['assetsTextureSleeveDoubleHoledAo-7'],
+              'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-7'],
+              'color': assets['assetsTextureSleeveDoubleHoledColor-7'],
+            }
+          },
+          'gatefold': {
+            'normal': {
+              'front': {
+                'ao': assets['assetsTextureSleeveGatefoldFrontAo-7'],
+                'bumpmap': assets['assetsTextureSleeveGatefoldFrontBumpmap-7'],
+                'color': assets['assetsTextureSleeveGatefoldFrontColor-7']
+              },
+              'back': {
+                'ao': assets['assetsTextureSleeveGatefoldBackAo-7'],
+                'bumpmap': assets['assetsTextureSleeveGatefoldBackBumpmap-7'],
+                'color': assets['assetsTextureSleeveGatefoldBackColor-7']
+              },
+              'spine': {
+                'ao': assets['assetsTextureSleeveGatefoldSpineAo-7'],
+                'bumpmap': assets['assetsTextureSleeveGatefoldSpineBumpmap-7'],
+                'color': assets['assetsTextureSleeveGatefoldSpineColor-7']
+              }
+            },
+            'holed': null
+          }
+        },
+  
+        '10': {
+          'no-spine': {
+            'normal': {
+              'ao': assets['assetsTextureSleeveSingleNoSpineAo-10'],
+              'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-10'],
+              'color': assets['assetsTextureSleeveSingleNoSpineColor-10'],
+            },
+            'holed': {
+              'ao': assets['assetsTextureSleeveSingleNoSpineHoledAo-10'],
+              'bumpmap': assets['assetsTextureSleeveSingleNoSpineHoledBumpmap-10'],
+              'color': assets['assetsTextureSleeveSingleNoSpineHoledColor-10'],
+            }
+          },
+          'single': {
+            'normal': {
+              'ao': assets['assetsTextureSleeveSingleAo-10'],
+              'bumpmap': assets['assetsTextureSleeveSingleBumpmap-10'],
+              'color': assets['assetsTextureSleeveSingleColor-10'],
+            },
+            'holed': {
+              'ao': assets['assetsTextureSleeveSingleHoledAo-10'],
+              'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-10'],
+              'color': assets['assetsTextureSleeveSingleHoledColor-10'],
+            }
+          },
+          'double': {
+            'normal': {
+              'ao': assets['assetsTextureSleeveDoubleAo-10'],
+              'bumpmap': assets['assetsTextureSleeveDoubleBumpmap-10'],
+              'color': assets['assetsTextureSleeveDoubleColor-10'],
+            },
+            'holed': {
+              'ao': assets['assetsTextureSleeveDoubleHoledAo-10'],
+              'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-10'],
+              'color': assets['assetsTextureSleeveDoubleHoledColor-10'],
+            }
+          },
+          'gatefold': {
+            'normal': {
+              'front': {
+                'ao': assets['assetsTextureSleeveGatefoldFrontAo-10'],
+                'bumpmap': assets['assetsTextureSleeveGatefoldFrontBumpmap-10'],
+                'color': assets['assetsTextureSleeveGatefoldFrontColor-10']
+              },
+              'back': {
+                'ao': assets['assetsTextureSleeveGatefoldBackAo-10'],
+                'bumpmap': assets['assetsTextureSleeveGatefoldBackBumpmap-10'],
+                'color': assets['assetsTextureSleeveGatefoldBackColor-10']
+              },
+              'spine': {
+                'ao': assets['assetsTextureSleeveGatefoldSpineAo-10'],
+                'bumpmap': assets['assetsTextureSleeveGatefoldSpineBumpmap-10'],
+                'color': assets['assetsTextureSleeveGatefoldSpineColor-10']
+              }
+            },
+          }
+        },
+  
+        '12': {
+          'no-spine': {
+            'normal': {
+              'ao': assets['assetsTextureSleeveSingleNoSpineAo-12'],
+              'bumpmap': assets['assetsTextureSleeveSingleNoSpineBumpmap-12'],
+              'color': assets['assetsTextureSleeveSingleNoSpineColor-12'],
+            },
+            'holed': {
+              'ao': assets['assetsTextureSleeveSingleNoSpineHoledAo-12'],
+              'bumpmap': assets['assetsTextureSleeveSingleNoSpineHoledBumpmap-12'],
+              'color': assets['assetsTextureSleeveSingleNoSpineHoledColor-12'],
+            }
+          },
+          'single': {
+            'normal': {
+              'ao': assets['assetsTextureSleeveSingleAo-12'],
+              'bumpmap': assets['assetsTextureSleeveSingleBumpmap-12'],
+              'color': assets['assetsTextureSleeveSingleColor-12'],
+            },
+            'holed': {
+              'ao': assets['assetsTextureSleeveSingleHoledAo-12'],
+              'bumpmap': assets['assetsTextureSleeveSingleHoledBumpmap-12'],
+              'color': assets['assetsTextureSleeveSingleHoledColor-12'],
+            }
+          },
+          'double': {
+            'normal': {
+              'ao': assets['assetsTextureSleeveDoubleAo-12'],
+              'bumpmap': assets['assetsTextureSleeveDoubleBumpmap-12'],
+              'color': assets['assetsTextureSleeveDoubleColor-12'],
+            },
+            'holed': {
+              'ao': assets['assetsTextureSleeveDoubleHoledAo-12'],
+              'bumpmap': assets['assetsTextureSleeveDoubleHoledBumpmap-12'],
+              'color': assets['assetsTextureSleeveDoubleHoledColor-12'],
+            }
+          },
+          'gatefold': {
+            'normal': {
+              'front': {
+                'ao': assets['assetsTextureSleeveGatefoldFrontAo-12'],
+                'bumpmap': assets['assetsTextureSleeveGatefoldFrontBumpmap-12'],
+                'color': assets['assetsTextureSleeveGatefoldFrontColor-12']
+              },
+              'back': {
+                'ao': assets['assetsTextureSleeveGatefoldBackAo-12'],
+                'bumpmap': assets['assetsTextureSleeveGatefoldBackBumpmap-12'],
+                'color': assets['assetsTextureSleeveGatefoldBackColor-12']
+              },
+              'spine': {
+                'ao': assets['assetsTextureSleeveGatefoldSpineAo-12'],
+                'bumpmap': assets['assetsTextureSleeveGatefoldSpineBumpmap-12'],
+                'color': assets['assetsTextureSleeveGatefoldSpineColor-12']
+              }
+            }
+          }
+        }
+      };
+
+      this._container = container;
+      this._loader = loader;
+    }
+
+    //--------------------------------------------------------------
+    async setup(opts) {
+    
+      opts = opts || {
+        format: Sleeve.Format.SINGLE_WITHOUT_SPINE,
+        ColorFormat: Sleeve.ColorFormat.WHITE,
+        size: Sleeve.Size.SIZE_12,
+        hole: Sleeve.Hole.NO_HOLED,
+        finish: Sleeve.Finish.NORMAL,
+        textures: {
+  
+        }
+      };
+  
+      this._size = opts.size;
+      this._finish = opts.finish || Sleeve.Finish.NORMAL;
+      this._currentTextures = opts.textures;
+      this._coveredRatio = 0.0;
+      this._bumpScale = 0.3;
+      this._shininess = Sleeve.Shininess[this._finish];
+      this._boundingBox = null;
+      this._gatefoldAngle = 0;
+      this._globalObjectScale = 1.0;
+  
+      // hole
+      if (Sleeve.Format.GATEFOLD === opts.format) {
+        this._hole = Sleeve.Hole.NO_HOLE;
+      } else  {
+        if (opts.hole) {
+          this._hole = Sleeve.Hole.HOLED;
+        } else {
+          this._hole = Sleeve.Hole.NO_HOLE;
+        }
+      }
+  
+      const self = this;
+      // Image として読み込まれたテクスチャを THREE.Texture に変換する
+      (function initTextures (obj) {
+        Object.keys(obj).forEach((key) => {
+          if (obj[key]) {
+            if ('object' === typeof obj[key]) {
+              initTextures(obj[key]);
+              return;
+            } else if (obj[key] instanceof Image || undefined === obj[key]) {
+              if (undefined === obj[key]) {
+                obj[key] = new Image();
+              }
+    
+              let texture = new THREE.Texture();
+              obj[key] = self.updateTexture(texture, obj[key]);
+            }
+          } else {
+            let texture = new THREE.Texture();
+            obj[key] = self.updateTexture(texture, new Image());
+          }
+        });
+      })(this._textures);
+
+      await this.setFormat(opts.format);
+
+      // set initial textures
+      if (opts.textures) {
+        if (Sleeve.Format.GATEFOLD === this._format) {
+          Object.keys(opts.textures).forEach(side => {
+            Object.keys(opts.textures[side]).forEach(type => {
+              this._setTexture(type, opts.textures[side][type], side);
+            });
+          });
+        } else {
+          Object.keys(opts.textures).forEach(type => {
+            this._setTexture(type, opts.textures[type]);
+          });
+        }
+      }
+
+      this._coveredRatio = 0;
+      this.setCoveredRatio(this._coveredRatio);
+
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          child.material.opacity = 1.0;
+          child.material.needsUpdate = true;
+        }
+      });
+
+      return this;
+    }
+    
+    //--------------------------------------------------------------
+    initMaterial(model, textures) {
+  
+      if (!model || !textures) {
+        return;
+      }
+      
+      model.scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.material = child.material.clone();
+          child.material.bumpScale = this._bumpScale;
+          child.material.color = new THREE.Color(0xffffff);
+          child.material.shininess = this._shininess;
+          child.material.specular = new THREE.Color(0x363636);
+          child.material.shading = THREE.SmoothShading;
+          child.material.transparent = true;
+          child.material.side = THREE.FrontSide;
+
+          child.material.aoMap = textures['ao'] || null;
+          if (child.material.aoMap) {
+            child.material.aoMap.needsUpdate = true;
+          }
+          
+          child.material.bumpMap = textures['bumpmap'] || null;
+          if (child.material.bumpMap) {
+            child.material.bumpMap.needsUpdate = true;
+          }
+          
+          child.material.map = textures['color'] || null;
+          if (child.material.map) {
+            child.material.map.needsUpdate = true;
+          }
+
+          child.geometry.computeFaceNormals();
+
+          child.material.needsUpdate = true;
+        }
+      });
+  
+      return model;
+    }
+    
+    //--------------------------------------------------------------
+    updateBoundingBox() {
+  
+      this._boundingBox = new THREE.Box3().setFromObject(this._currentObject);
+    };
+  
+    //--------------------------------------------------------------
+    updateTexture(texture, image) {
+  
+      if (!texture || !image) {
+        return;
+      }
+  
+      if (!(texture instanceof THREE.Texture)) {
+        console.error('Sleeve.updateTexture: texture is not instance of THREE.Texture');
+        return;
+      }
+  
+      texture.image = image;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.needsUpdate = true;
+  
+      return texture;
+    }
+  
+    //--------------------------------------------------------------
+    async _loadTextures(size, format, hole) {
+  
+      let targets = [];
+      
+      (function addTextureToTarget (obj, parentKey) {
+        Object.keys(obj).forEach((key) => {
+          if (typeof obj[key] === 'string') {
+            targets.push({
+              'assetType': 'texture',
+              'textureType': key,
+              'key': obj[key]
+            });
+          } else if (typeof obj[key] === 'object') {
+            addTextureToTarget(obj[key], parentKey === undefined ? key : parentKey + '-' + key);
+          }
+        });
+      })(this._paths.textures[size][format][hole]);
+  
+      let assets = await Promise.all(targets.map((target) => {
+        return this._loader.loadAsset(target);
+      }));
+
+      console.log('Sleeve.setFormat: loaded textures  ------', assets);
+      
+      assets.forEach((asset) => {
+
+        const assetType = asset['assetType'];
+        const textureType = asset['textureType'];
+        const assetKey = asset['key'];
+
+        console.log('Sleeve.setFormat: asset loaded', assetType, textureType, assetKey);
+
+        if ('texture' === assetType) {
+          if (Sleeve.Format.GATEFOLD === format) {
+            let side;
+
+            if (-1 < assetKey.toLowerCase().indexOf('front')) {
+              side = 'front';
+            } else if (-1 < assetKey.toLowerCase().indexOf('back')) {
+              side = 'back';
+            } else if (-1 < assetKey.toLowerCase().indexOf('spine')) {
+              side = 'spine';
+            }
+
+            console.log('update gatefold texture - ' + side, this._loader.assets[assetKey]);
+            this.updateTexture(this._textures[size][format][hole][side][textureType], this._loader.assets[assetKey]);
+          } else {
+            console.log('update texture', this._loader.assets[assetKey]);
+            this.updateTexture(this._textures[size][format][hole][textureType], this._loader.assets[assetKey]);
+          }
+        }
+      });
+
+      return assets;
+    }
+  
+    //--------------------------------------------------------------
+    _setTexture(type, image, side) {
+  
+      console.log('Sleeve._setTexture - size:', this._size, ', format:', this._format, ', hole:', this._hole, ', side:', side, ', type:', type);
+  
+      if (undefined === side) {
+        console.log('try to update texture', this._textures[this._size][this._format][this._hole][type], image);
+        this.updateTexture(this._textures[this._size][this._format][this._hole][type], image);
+
+        this._currentObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            if ('ao' === type) {
+              child.material.aoMap = this._textures[this._size][this._format][this._hole][type];
+            } else if ('bumpmap' === type) {
+              child.material.bumpMap = this._textures[this._size][this._format][this._hole][type];
+            } else if ('color' == type) {
+              child.material.map = this._textures[this._size][this._format][this._hole][type];
+            }
+  
+            child.material.needsUpdate = true;
+          }
+        });
+      } else {
+        if (-1 === Object.values(Sleeve.GatefoldSide).indexOf(side)) {
+          return;
+        }
+  
+        this.updateTexture(this._textures[this._size][this._format][this._hole][side][type], image);
+  
+        this._currentObject.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            if (-1 < child.name.toLowerCase().indexOf(side)) {
+              if ('ao' === type) {
+                child.material.aoMap = this._textures[this._size][this._format][this._hole][side][type];
+              } else if ('bumpmap' === type) {
+                child.material.bumpMap = this._textures[this._size][this._format][this._hole][side][type];
+              } else if ('color' == type) {
+                child.material.map = this._textures[this._size][this._format][this._hole][side][type];
+              }
+            }
+  
+            child.material.needsUpdate = true;
+          }
+        });
+      }
+    }
+  
+    //--------------------------------------------------------------
+    setAoMap(image, side) {
+      
+      if (!image) {
+        return;
+      }
+  
+      this._setTexture('ao', image, side);
+    }
+  
+    //--------------------------------------------------------------
+    setBumpMap(image, side) {
+      
+      if (!image) {
+        return;
+      }
+  
+      this._setTexture('bumpmap', image, side);
+    }
+  
+    //--------------------------------------------------------------
+    setColorMap(image, side) {
+      
+      if (!image) {
+        return;
+      }
+  
+      this._setTexture('color', image, side);
+    }
+  
+    //--------------------------------------------------------------
+    async setFormat(format, callback) {
+  
+      if (!format) {
+        console.warn('Sleeve.setFormat: no format specified');
+        throw new Error('Sleeve.setFormat: no format specified');
+      }
+  
+      if (-1 === Object.values(Sleeve.Format).indexOf(format)) {
+        console.error('Sleeve.setFormat: unknown format "' + format + '"');
+        throw new Error('Sleeve.setFormat: unknown format "' + format + '"');
+      }
+  
+      if (format === Sleeve.Format.GATEFOLD && this._hole === Sleeve.Hole.HOLED) {
+        console.warn('Sleeve.setFormat: forcibly disabled hole option because gatefold cannot have hole');
+  
+        this._hole = Sleeve.Hole.NO_HOLE;
+      }
+
+      this._format = format;
+
+      await this._loadTextures(this._size, format, this._hole);
+
+      let result = await this._loader.loadAsset({
+        'assetType': 'model',
+        'key': this._paths.models[this._size][this._format][this._hole]
+      });
+
+      const assetKey = result['key'];
+      const obj = this._loader.assets[assetKey];
+
+      console.log('Sleeve.setFormat: model loaded', assetKey, obj);
+
+      const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
+  
+      obj.assetName = assetName;
+      obj.scene.assetName = assetName;
+      
+
+      if (this._currentObject) {
+        this._container.remove(this._currentObject);
+        this.dispose();
+      }
+
+      if (this._textures[this._size][this._format][this._hole]) { 
+        this._textures[this._size][this._format][this._hole].assetName = assetName;
+      }
+
+      this.initMaterial(obj, this._textures[this._size][this._format][this._hole]);
+
+      this._currentObject = obj.scene.clone();
+      this._currentObject.name = 'sleeve';
+  
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          child.material.opacity = 0;
+          child.material.needsUpdate = true;
+        }
+      });
+  
+      const position = this._currentObject.position;
+      this._currentObject.position.set(0, position.y, position.z);
+
+      const scale = 5.5;
+      this._currentObject.scale.set(scale, scale, scale);
+
+      this.updateBoundingBox();
+
+      if (Sleeve.Format.GATEFOLD === this._format) {
+        this.setGatefoldCoverAngle(this._gatefoldAngle);
+      }
+
+      this._container.add(this._currentObject);
+
+      return this;
+    }
+  
+    //--------------------------------------------------------------
+    getFormat() {
+  
+      return this._format;
+    }
+  
+    //--------------------------------------------------------------
+    async setSize(size, scale) {
+  
+      if (!size) {
+        console.warn('Sleeve.setSize: no size specified');
+        return;
+      }
+  
+      size += '';
+  
+      if (-1 === Object.values(Sleeve.Size).indexOf(size)) {
+        console.error('Sleeve.setSize: specified size "' + size + '" not found');
+        return;
+      }
+  
+      if (this._size === size) {
+        console.info('Sleeve.setSize: specified size "' + size + '" is already applied');
+        return;
+      }
+  
+      this._size = size;
+      this._globalObjectScale = scale;
+  
+      return this.setFormat(this._format);
+    }
+  
+    //--------------------------------------------------------------
+    getSize() {
+  
+      return this._size;
+    }
+  
+    //--------------------------------------------------------------
+    async setOpacity(to, duration, delay) {
+  
+      duration = undefined !== duration ? duration : 1000;
+      delay = undefined !== delay ? delay : 0;
+  
+      this._currentObject.traverse(child => {
+        if (child instanceof THREE.Mesh) {
+          new TWEEN.Tween(child.material)
+            .stop()
+            .delay(delay)
+            .to({ opacity: to }, duration)
+            .onUpdate(() => {
+              child.material.needsUpdate = true;
+            })
+            .onComplete(() => {
+              return;
+            })
+            .start();
+        }
+      });
+    }
+  
+    //--------------------------------------------------------------
+    async setHole(value) {
+  
+      if ('boolean' === typeof value) {
+        if (value) {
+          value = Sleeve.Hole.HOLED;
+        } else {
+          value = Sleeve.Hole.NO_HOLE;
+        }
+      } else {
+        if (!(value === Sleeve.Hole.NO_HOLE || value === Sleeve.Hole.HOLED)) {
+          console.warn('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
+          throw new Error('Sleeve.setHole: invalid value. use Sleeve.Hole.NO_HOLE or Sleeve.Hole.HOLED');
+        }
+    
+        if (value === Sleeve.Hole.HOLED && this._format === Sleeve.Format.GATEFOLD) {
+          console.warn('Sleeve.setHole: gatefold has no-hole format only');
+          throw new Error('Sleeve.setHole: gatefold has no-hole format only');
+        }
+      }
+  
+      if (this._hole === value) {
+        return this;
+      }
+  
+      this._hole = value;
+  
+      // await this.setOpacity(0.0, 250);
+
+      return this.setFormat(this._format);      
+    }
+  
+    //--------------------------------------------------------------
+    setFinish(finish) {
+  
+      if (!finish) {
+        return;
+      }
+  
+      if (-1 === Object.values(Sleeve.Finish).indexOf(finish)) {
+        console.error('Sleeve.setFinish: unknown value "' + finish + '"');
+        return;
+      }
+  
+      if (this._finish === finish) {
+        return;
+      }
+  
+      this._finish = finish;
+      this._shininess = Sleeve.Shininess[this._finish];
+  
+      this._currentObject.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.material.shininess = this._shininess;
+          child.material.needsUpdate = true;
+        }
+      });
+    }
+  
+    //--------------------------------------------------------------
+    setCoveredRatio(ratio) {
+      
+      if (Sleeve.Format.GATEFOLD === this._format || Sleeve.Format.DOUBLE === this._format) {
+        return;
+      }
+  
+      this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
+  
+      const offset = this._coveredRatio * -this._boundingBox.getSize().x;
+      const position = this._currentObject.position;
+      this._currentObject.position.set(offset, position.y, position.z);
+    }
+  
+    //--------------------------------------------------------------
+    getCoveredRatio() {
+      return this._coveredRatio;
+    }
+  
+    //--------------------------------------------------------------
+    setGatefoldCoverAngle(angle /* in radians */) {
+  
+      if (Sleeve.Format.GATEFOLD !== this._format) {
+        console.error('Sleeve.setGatefoldCoverAngle: not viable for sleeve type "' + this._format + '"');
+        return;
+      }
+  
+      this._gatefoldAngle = angle;
+  
+      let offsetX = this._boundingBox.max.x;
+      let offsetY = this._boundingBox.max.y * 0.1;
+
+      this._currentObject.translateX(-offsetX);
+      this._currentObject.rotation.set(0, 0, angle);
+      this._currentObject.translateX(offsetX);
+  
+      this._currentObject.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          if (-1 < child.name.toLowerCase().indexOf('front')) {
+            let rotation = child.rotation;
+            child.rotation.set(rotation.x, rotation.y, angle);
+            child.updateMatrix();
+          } else if (-1 < child.name.toLowerCase().indexOf('back')) {
+            let rotation = child.rotation;
+            child.rotation.set(rotation.x, rotation.y, -angle);
+            child.updateMatrix();
+          }
+        }
+      });
+    }
+  
+    //--------------------------------------------------------------
+    setBumpScale(value) {
+  
+      this._bumpScale = value;
+  
+      this._currentObject.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          console.log('bumpscale', this._bumpScale);
+          child.material.bumpScale = this._bumpScale;
+          child.material.needsUpdate = true;
+        }
+      });
+    }
+  
+    //--------------------------------------------------------------
+    setVisibility(yn, opts) {
+  
+      this._currentObject.visible = yn;
+    }
+  
+    //--------------------------------------------------------------
+    setObjectScale(scale) {
+  
+      this._globalObjectScale = scale;
+    }
+  
+    //--------------------------------------------------------------
+    getCurrentGatefoldAngle() {
+      
+      return this._gatefoldAngle;
+    }
+  
+    //--------------------------------------------------------------
+    dispose() {
+  
+      this._currentObject.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.geometry.dispose();
+          child.material.dispose();
+          child.parent = null;
+  
+          // dispose textures
+          if (child.material.alphaMap) child.material.alphaMap.dispose();
+          if (child.material.aoMap) child.material.aoMap.dispose();
+          if (child.material.bumpMap) child.material.bumpMap.dispose();
+          if (child.material.map) child.material.map.dispose();
+          if (child.material.envMap) child.material.envMap.dispose();
+        }
+      });
+    }
+  
+    //--------------------------------------------------------------
+    updateBoundingBoxMesh() {
+  
+      return;
+  
+      let name = 'bounding box';
+      let mesh = this._container.getObjectByName(name);
+      if (mesh) {
+        this._container.remove(mesh);
+  
+        mesh.geometry.dispose();
+        mesh.material.dispose();
+      }
+  
+      // const bounds = this._boundingBox;
+      
+      const targetName = 'Front';
+      if (!this._container.getObjectByName(targetName)) {
+        return;
+      }
+      this._container.getObjectByName('spine').visible = false;
+      this._container.updateMatrix();
+      this._container.updateMatrixWorld();
+      this._currentObject.updateMatrix();
+      this._currentObject.updateMatrixWorld();
+  
+      const object = this._container.getObjectByName(targetName);
+      object.updateMatrixWorld();
+      const bounds = new THREE.Box3().setFromBufferAttribute(object.geometry.attributes.position);
+      console.log('------------------------------------');
+      // console.log('position', object.position);
+      // console.log('world position', object.getWorldPosition());
+      // console.log('bounding box', bounds);
+  
+      let geometry = new THREE.BoxGeometry(
+        bounds.getSize().x * 5.5,
+        bounds.getSize().y * 5.5,
+        bounds.getSize().z * 5.5,
+        2, 2, 2
+      );
+  
+      let material = new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        wireframe: true
+      });
+  
+      mesh = new THREE.Mesh(geometry, material);
+      mesh.name = name;
+  
+      let vec = object.getWorldPosition();
+      vec.divideScalar(this._globalObjectScale);
+      let ratio = this._gatefoldAngle / (Math.PI * 0.5);
+      let size = bounds.getSize();
+      size.multiplyScalar(5.5);
+  
+      console.log(vec);
+  
+      let x = vec.x + (size.x * 0.5) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
+      let y = (vec.y + ((size.y * 0.15) * (ratio * 2 - 1))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
+      mesh.position.set(x, y, vec.z);
+      this._container.add(mesh);
+    }
+  
+    //--------------------------------------------------------------
+    getGatefoldFrontCoverPosition() {
+  
+      if (Sleeve.Format.GATEFOLD !== this._format) {
+        return new THREE.Vector3(0, 0, 0);
+      }
+  
+      if (!this._container.getObjectByName('Front')) {
+        return new THREE.Vector3(0, 0, 0);;
+      }
+  
+      const object = this._container.getObjectByName('Front');
+      const bounds = new THREE.Box3().setFromBufferAttribute(object.geometry.attributes.position);
+      
+      const size = bounds.getSize();
+      size.multiplyScalar(5.5);
+  
+      const position = this._container.worldToLocal(object.getWorldPosition());
+      // position.divideScalar(this._globalObjectScale);
+  
+      const ratio = this._gatefoldAngle / (Math.PI * 0.5);
+  
+      let vector = new THREE.Vector3();
+      
+      vector.x = (position.x + (size.x * 0.5)) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
+      vector.y = (position.y + (size.y * (0.15 * (ratio * 2 - 1)))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
+  
+      return vector;
+    }
+  
+    //--------------------------------------------------------------
+    update() {
+      
+    }
+  
+    //--------------------------------------------------------------
+    async loadModelForSize(size) {
+  
+      await this._loadTextures(size, this._format, this._hole);
+      
+      let result = await this._loader.loadAsset({
+        'assetType': 'model',
+        'key': this._paths.models[this._size][this._format][this._hole]
+      });
+
+      const assetKey = result['key'];
+      const obj = this._loader.assets[assetKey];
+
+      console.log('Sleeve.setFormat: model loaded', assetKey, obj);
+
+      const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
+  
+      obj.assetName = assetName;
+      obj.scene.assetName = assetName;
+
+      if (this._textures[size][this._format][this._hole]) { 
+        this._textures[size][this._format][this._hole].assetName = assetName;
+      }
+
+      this.initMaterial(obj, this._textures[this._size][this._format][this._hole]);
+  
+      return this;
+    }
+  }
+
+  /**
+   * Constants
+   */
+  
+  Sleeve.Size = {
+    SIZE_7: '7',
+    SIZE_10: '10',
+    SIZE_12: '12'
+  };
+
+  Sleeve.Format = {
+    SINGLE_WITHOUT_SPINE: 'no-spine',
+    SINGLE: 'single',
+    DOUBLE: 'double',
+    GATEFOLD: 'gatefold'
+  };
+
+  Sleeve.ColorFormat = {
+    WHITE: 'white',
+    BLACK: 'black',
+    PRINT: 'print'
+  };
+
+  Sleeve.Hole = {
+    NO_HOLE: 'normal',
+    HOLED: 'holed'
+  };
+
+  Sleeve.Finish = {
+    NORMAL: 'normal',
+    GLOSS: 'gloss'
+  };
+
+  Sleeve.Shininess = {
+    'normal': 5,
+    'gloss': 15
+  };
+
+  Sleeve.GatefoldSide = {
+    FRONT: 'front',
+    BACK: 'back',
+    SPINE: 'spine'
+  };
 
   exports.world = exports.world || {};
   exports.world.Sleeve = Sleeve;
-
-  //--------------------------------------------------------------
-  function Sleeve() {
-  }
-
-  Sleeve.prototype.setup = function(scene, assets, opts, container) {
-    opts = opts || {
-      glossFinish: false,
-      hole: false,
-      size: 1,
-      type: 1
-    };
-
-    var sizes = ['7', '10', '12'];
-
-    this.TYPE_BLACK       = 1;
-    this.TYPE_WHITE       = 2;
-    this.TYPE_PRINT       = 3;
-    this.TYPE_PRINT_SPINE = 4;
-
-    this._container = container;
-    this._size = sizes[opts.size - 1];
-    this._holed = opts.hole;
-    this._type = opts.type;
-    this._opacity = 0.0;
-    this._coveredRatio = 0.0;
-    this._glossFinish = opts.glossFinish;
-    this._opacityTweenDuration = 300;
-
-    this._front = {
-      current   : null,
-      '7'       : assets['assetsModelSleeveFront-7'],
-      '10'      : assets['assetsModelSleeveFront-10'],
-      '12'      : assets['assetsModelSleeveFront-12'],
-      'holed-7' : assets['assetsModelSleeveFrontHoled-7'],
-      'holed-10': assets['assetsModelSleeveFrontHoled-10'],
-      'holed-12': assets['assetsModelSleeveFrontHoled-12'],
-      'spine-7' : assets['assetsModelSleeveFrontSpine-7'],
-      'spine-10': assets['assetsModelSleeveFrontSpine-10'],
-      'spine-12': assets['assetsModelSleeveFrontSpine-12'],
-      'spine-holed-7' : assets['assetsModelSleeveFrontSpineHoled-7'],
-      'spine-holed-10': assets['assetsModelSleeveFrontSpineHoled-10'],
-      'spine-holed-12': assets['assetsModelSleeveFrontSpineHoled-12']
-    };
-
-    this._back = {
-      current   : null,
-      '7'       : assets['assetsModelSleeveBack-7'],
-      '10'      : assets['assetsModelSleeveBack-10'],
-      '12'      : assets['assetsModelSleeveBack-12'],
-      'holed-7' : assets['assetsModelSleeveBackHoled-7'],
-      'holed-10': assets['assetsModelSleeveBackHoled-10'],
-      'holed-12': assets['assetsModelSleeveBackHoled-12'],
-      'spine-7' : assets['assetsModelSleeveBackSpine-7'],
-      'spine-10': assets['assetsModelSleeveBackSpine-10'],
-      'spine-12': assets['assetsModelSleeveBackSpine-12'],
-      'spine-holed-7' : assets['assetsModelSleeveBackSpineHoled-7'],
-      'spine-holed-10': assets['assetsModelSleeveBackSpineHoled-10'],
-      'spine-holed-12': assets['assetsModelSleeveBackSpineHoled-12']
-    };
-
-    this._spine = {
-      '7' : assets['assetsModelSleeveSpine-7']  || new THREE.Object3D(),
-      '10': assets['assetsModelSleeveSpine-10'] || new THREE.Object3D(),
-      '12': assets['assetsModelSleeveSpine-12'] || new THREE.Object3D()
-    };
-
-    this._top = {
-      '7' : assets['assetsModelSleeveTopSpine-7'],
-      '10': assets['assetsModelSleeveTopSpine-10'],
-      '12': assets['assetsModelSleeveTopSpine-12']
-    };
-
-    this._bottom = {
-      '7' : assets['assetsModelSleeveBottomSpine-7'],
-      '10': assets['assetsModelSleeveBottomSpine-10'],
-      '12': assets['assetsModelSleeveBottomSpine-12']
-    };
-
-    this._textures = {
-      front: new THREE.Texture(),
-      back : new THREE.Texture(),
-      spine: new THREE.Texture(),
-      default: new THREE.Texture()
-    };
-
-    this._defaultTexture = assets['assetsTextureSleeveDefault'];
-
-    var self = this;
-
-    if (this.TYPE_PRINT === this._type || this.TYPE_PRINT_SPINE === this._type) {
-      this.updateTexture(this._textures.front, opts.frontTexture || assets['assetsTextureSleeveDefault']);
-      this.updateTexture(this._textures.back,  opts.backTexture  || assets['assetsTextureSleeveDefault']);
-      this.updateTexture(this._textures.spine, opts.spineTexture || assets['assetsTextureSleeveDefault']);
-    } else {
-      Object.keys(this._textures).forEach(function(key) {
-        self.updateTexture(self._textures[key], assets['assetsTextureSleeveDefault']);
-      });
-    }
-
-    this._front.current = this._holed ? this._front['holed-' + this._size] : this._front[this._size];
-    this._back.current  = this._holed ? this._back['holed-' + this._size]  : this._back[this._size];
-
-    Object.keys(this._front).forEach(function(key){
-      self.initMaterial(self._front[key], self._textures.front);
-      if (self._front[key]) self._front[key].name = key;
-    });
-
-    Object.keys(this._back).forEach(function(key) {
-      self.initMaterial(self._back[key], self._textures.back);
-      if (self._back[key]) self._back[key].name = key;
-    });
-
-    Object.keys(this._spine).forEach(function(key) {
-      self.initMaterial(self._spine[key], self._textures.spine);
-      if (self._spine[key]) self._spine[key].name = key;
-    });
-
-    Object.keys(this._top).forEach(function(key) {
-      self.initMaterial(self._top[key], null);
-      if (self._top[key]) self._top[key].name = key;
-    });
-
-    Object.keys(this._bottom).forEach(function(key) {
-      self.initMaterial(self._bottom[key], null);
-      if (self._bottom[key]) self._bottom[key].name = key;
-    });
-
-
-    this._object = {
-      '7'       : new THREE.Object3D(),
-      '10'      : new THREE.Object3D(),
-      '12'      : new THREE.Object3D(),
-      'holed-7' : new THREE.Object3D(),
-      'holed-10': new THREE.Object3D(),
-      'holed-12': new THREE.Object3D(),
-      'spine-7' : new THREE.Object3D(),
-      'spine-10': new THREE.Object3D(),
-      'spine-12': new THREE.Object3D(),
-      'spine-holed-7' : new THREE.Object3D(),
-      'spine-holed-10': new THREE.Object3D(),
-      'spine-holed-12': new THREE.Object3D()
-    };
-
-    this._object['7'].add(this._front['7']);
-    this._object['7'].add(this._back['7']);
-
-    this._object['10'].add(this._front['10']);
-    this._object['10'].add(this._back['10']);
-
-    this._object['12'].add(this._front['12']);
-    this._object['12'].add(this._back['12']);
-
-    this._object['holed-7'].add(this._front['holed-7']);
-    this._object['holed-7'].add(this._back['holed-7']);
-
-    this._object['holed-10'].add(this._front['holed-10']);
-    this._object['holed-10'].add(this._back['holed-10']);
-
-    this._object['holed-12'].add(this._front['holed-12']);
-    this._object['holed-12'].add(this._back['holed-12']);
-
-    this._object['spine-7'].add(this._front['spine-7']);
-    this._object['spine-7'].add(this._back['spine-7']);
-    this._object['spine-7'].add(this._top['7'].clone());
-    this._object['spine-7'].add(this._bottom['7']);
-    this._object['spine-7'].add(this._spine['7']);
-
-    this._object['spine-10'].add(this._front['spine-10']);
-    this._object['spine-10'].add(this._back['spine-10']);
-    this._object['spine-10'].add(this._top['10']);
-    this._object['spine-10'].add(this._bottom['10']);
-    this._object['spine-10'].add(this._spine['10']);
-
-    this._object['spine-12'].add(this._front['spine-12']);
-    this._object['spine-12'].add(this._back['spine-12']);
-    this._object['spine-12'].add(this._top['12']);
-    this._object['spine-12'].add(this._bottom['12']);
-    this._object['spine-12'].add(this._spine['12']);
-
-    this._object['spine-holed-7'].add(this._front['spine-holed-7']);
-    this._object['spine-holed-7'].add(this._back['spine-holed-7']);
-    this._object['spine-holed-7'].add(this._top['7'].clone());
-    this._object['spine-holed-7'].add(this._bottom['7'].clone());
-    this._object['spine-holed-7'].add(this._spine['7'].clone());
-
-    this._object['spine-holed-10'].add(this._front['spine-holed-10']);
-    this._object['spine-holed-10'].add(this._back['spine-holed-10']);
-    this._object['spine-holed-10'].add(this._top['10'].clone());
-    this._object['spine-holed-10'].add(this._bottom['10'].clone());
-    this._object['spine-holed-10'].add(this._spine['10'].clone());
-
-    this._object['spine-holed-12'].add(this._front['spine-holed-12']);
-    this._object['spine-holed-12'].add(this._back['spine-holed-12']);
-    this._object['spine-holed-12'].add(this._top['12'].clone());
-    this._object['spine-holed-12'].add(this._bottom['10'].clone());
-    this._object['spine-holed-12'].add(this._spine['12'].clone());
-
-
-    if (this._holed) {
-      if (this._type === this.TYPE_PRINT_SPINE) {
-        this._currentObject = this._object['spine-holed-' + this._size];
-      } else {
-        this._currentObject = this._object['holed-' + this._size];
-      }
-    } else {
-      this._currentObject = this._object[this._size];
-    }
-
-    this.position = new THREE.Vector3(0, 0, 0);
-    this.rotation = new THREE.Vector3(0, 0, 0);
-
-    this._positionTween = new TWEEN.Tween(this.position);
-    this._opacityTween = new TWEEN.Tween(this);
-
-    this.setType(opts.type);
-
-    this._currentObject.name = 'sleeve';
-
-    this._container.add(this._currentObject);
-
-    this._opacity = 0;
-    this.setOpacity(1);
-  };
-
-  Sleeve.prototype.initMaterial = function(obj, tex) {
-    if (!obj) {
-      return;
-    }
-
-    var self = this;
-
-    obj.traverse(function(child) {
-      if (child instanceof THREE.Mesh) {
-        child.material = new THREE.MeshPhongMaterial({
-          map: tex,
-          ambient: 0xFFFFFF,
-          color: self.TYPE_BLACK === self._type ? 0 : 0xffffff,
-          opacity: 0,
-          shininess: self._glossFinish ? 15 : 5,
-          side: THREE.DoubleSide,
-          specular: 0x363636,
-          shading: THREE.SmoothShading,
-          transparent: true,
-          vertexColor: THREE.VertexColors
-        });
-
-        child.geometry.computeVertexNormals();
-      }
-    });
-
-    return obj;
-  };
-
-  Sleeve.prototype.updateTexture = function(tex, img) {
-    if (!tex || !img) {
-      return;
-    }
-    tex.image = img;
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    tex.needsUpdate = true;
-  };
-
-  Sleeve.prototype.setTexture = function(sideA, sideB, spine) {
-    if (sideA) {
-      this.updateTexture(this._textures.front, sideA);
-    }
-    if (sideB) {
-      this.updateTexture(this._textures.back, sideB);
-    }
-    if (spine) {
-      this.updateTexture(this._textures.spine, spine);
-    }
-  };
-
-  Sleeve.prototype.clearTexture = function(side) {
-    switch(side){
-      case 'sideA':
-        this.updateTexture(this._textures.front, this._defaultTexture);
-        break;
-      case 'sideB':
-        this.updateTexture(this._textures.back, this._defaultTexture);
-        break;
-    }
-  };
-
-  Sleeve.prototype.setType = function(type) {
-
-    if (-1 === [this.TYPE_BLACK, this.TYPE_WHITE, this.TYPE_PRINT, this.TYPE_PRINT_SPINE].indexOf(type)) {
-      return;
-    }
-
-    var lastType = this._type;
-    this._type = type;
-
-    var isOpaque = false;
-
-    if (this.TYPE_BLACK === this._type || this.TYPE_WHITE === this._type) {
-      this._glossFinish = false;
-      isOpaque = true;
-    }
-
-    var self = this;
-
-    Object.keys(this._front).forEach(function(key) {
-      var tex = isOpaque ? self._textures.default : self._textures.front;
-      self.initMaterial(self._front[key], tex);
-    });
-
-    Object.keys(this._back).forEach(function(key) {
-      var tex = isOpaque ? self._textures.default : self._textures.back;
-      self.initMaterial(self._back[key], tex);
-    });
-
-    Object.keys(this._spine).forEach(function(key) {
-      var tex = isOpaque ? self._textures.default : self._textures.spine;
-      self.initMaterial(self._spine[key], tex);
-    });
-
-    Object.keys(this._top).forEach(function(key) {
-      self.initMaterial(self._top[key], null);
-    });
-
-    Object.keys(this._bottom).forEach(function(key) {
-      self.initMaterial(self._bottom[key], null);
-    });
-
-    this._container.remove(this._currentObject);
-
-    if (lastType !== this.TYPE_PRINT_SPINE && this._type === this.TYPE_PRINT_SPINE) {
-      if (this._holed) {
-        this._currentObject = this._object['spine-holed-' + this._size];
-      } else {
-        this._currentObject = this._object['spine-' + this._size];
-      }
-
-    } else if (lastType === this.TYPE_PRINT_SPINE && this._type !== this.TYPE_PRINT_SPINE) {
-      if (this._holed) {
-        this._currentObject = this._object['holed-' + this._size];
-      } else {
-        this._currentObject = this._object[this._size];
-      }
-    }
-
-    this._container.add(this._currentObject);
-
-    this.setOpacity(1.0, 0);
-  };
-
-  Sleeve.prototype.setSize = function(size) {
-    if (!size) {
-      console.error('[Sleeve::setSize] no size specified');
-      return;
-    }
-
-    this._container.remove(this._currentObject);
-
-    this._size = size;
-
-    if (this._type === this.TYPE_PRINT_SPINE) {
-      if (this._holed) {
-        this._currentObject = this._object['spine-holed-' + this._size];
-      } else {
-        this._currentObject = this._object['spine-' + this._size];
-      }
-    } else {
-      if (this._holed) {
-        this._currentObject = this._object['holed-' + this._size];
-      } else {
-        this._currentObject = this._object[this._size];
-      }
-    }
-
-    this._currentObject.name = 'sleeve';
-
-    var self = this;
-
-    this.setCoveredRatio(this._coveredRatio, { duration: 1 }, null, function() {
-      self._container.add(self._currentObject);
-
-      self.setOpacity(1.0, 0);
-    });
-  };
-
-  Sleeve.prototype.setOpacity = function(to, duration) {
-    var self = this;
-
-    duration = undefined !== duration ? duration : 300;
-
-    this._opacityTween
-      .stop()
-      .to({ _opacity: to }, duration)
-      .onUpdate(function() {
-        self._currentObject.traverse(function(child) {
-          if (child instanceof THREE.Mesh) {
-            child.material.opacity = self._opacity;
-          }
-
-          if (child instanceof THREE.Object3D) {
-            child.traverse(function(nextChild) {
-              if (nextChild instanceof THREE.Mesh) {
-                nextChild.material.opacity = self._opacity;
-              }
-            });
-          }
-        });
-      })
-      .start();
-  };
-
-  Sleeve.prototype.setHole = function(value) {
-    this._holed = value;
-    this.setSize(this._size);
-  };
-
-  Sleeve.prototype.setGlossFinish = function(yn) {
-    if (this.TYPE_BLACK === this._type || this.TYPE_WHITE === this._type) {
-      return;
-    }
-
-    this._glossFinish = '0' === yn ? false : true;
-
-    var self = this;
-    var shininess = self._glossFinish ? 15 : 5;
-
-    Object.keys(self._front).forEach(function(key){
-      self._front[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
-    });
-
-    Object.keys(self._back).forEach(function(key) {
-      self._back[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
-    });
-
-    Object.keys(self._spine).forEach(function(key) {
-      self._back[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
-    });
-
-    Object.keys(self._top).forEach(function(key) {
-      self._back[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
-    });
-
-    Object.keys(self._bottom).forEach(function(key) {
-      self._back[key].traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material.shininess = shininess;
-        }
-      });
-    });
-  };
-
-  Sleeve.prototype.setCoveredRatio = function(ratio, opts, updateCallback, completeCallback) {
-    opts.duration = undefined !== opts.duration ? opts.duration : 500;
-    opts.delay    = undefined !== opts.delay    ? opts.delay    : 0;
-
-    var tempObj = this._currentObject.clone();
-    tempObj.scale = 1.0;
-
-    var offset = new THREE.Box3().setFromObject(tempObj).size().x;
-
-    this._coveredRatio = Math.max(0, Math.min(1.0, ratio));
-
-    this._positionTween
-      .stop()
-      .delay(opts.delay)
-      .to({ x: this._coveredRatio * -offset }, opts.duration)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .onUpdate(function() {
-        if (updateCallback) updateCallback();
-      })
-      .onComplete(function() {
-        if (completeCallback) completeCallback();
-      })
-      .onStop(function() {
-        if (completeCallback) completeCallback();
-      })
-      .start();
-
-    tempObj = null;
-  };
-
-  Sleeve.prototype.setVisibility = function(yn, opts, callback) {
-    this._currentObject.visible = yn;
-  };
-
-  Sleeve.prototype.update = function() {
-    var self = this;
-
-    this._currentObject.position.set(this.position.x, this.position.y, this.position.z);
-    this._currentObject.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z);
-
-    // Object.keys(self._front).forEach(function(key) {
-    //   self._front[key].position.set(self.position.x, self.position.y, self.position.z);
-    //   self._front[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
-    //   self._front[key].children[0].material.opacity = self._opacity;
-    // });
-
-    // Object.keys(self._back).forEach(function(key) {
-    //   self._back[key].position.set(self.position.x, self.position.y, self.position.z);
-    //   self._back[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
-    //   self._back[key].children[0].material.opacity = self._opacity;
-    // });
-
-    // Object.keys(self._spine).forEach(function(key) {
-    //   self._spine[key].position.set(self.position.x, self.position.y, self.position.z);
-    //   self._spine[key].rotation.set(self.rotation.x, self.rotation.y, self.rotation.z);
-    //   // self._spine[key].children[0].material.opacity = self._opacity;
-    // });
-  };
 
 })(this, (this.qvv = (this.qvv || {})));

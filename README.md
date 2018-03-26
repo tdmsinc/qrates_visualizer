@@ -58,7 +58,6 @@ VinylVisualizer のコンストラクタ。
       - `perspective`: 透視投影法 (パースあり) でレンダリング。
       - `orthographic`: 平行投影法 (パースなし) でレンダリング。
   - `opts.defaults.vinyl:Object`: Vinyl の初期値。
-  - `opts.defaults.label:Object`: Label の初期値。
   - `opts.defaults.sleeve:Object`: Sleeve の初期値。
 
 #### VinylVisualizer#view(type:Number, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
@@ -151,6 +150,8 @@ Vinyl が Sleeve に収納されている状況を指定します。
 - `value:Number`: 収納状態を値で指定します。`0` が完全に Sleeve に収まっている状態、`1` が完全に Sleeve から出ている状態。
 - `opts:Object`
   - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
+  - `opts.delay:Number`: トランジション開始までのディレイをミリ秒で指定。
+  - `opts.index:VinylVisualizer.VinylIndex[FIRST|SECOND]`: Sleeve のタイプが Double または Gatefold の場合、index で指定した Vinyl の位置が変更されます。
 
 #### VinylVisualizer#zoom(step:Number, opts:Object):VinylVisualizer
 
@@ -160,10 +161,13 @@ Vinyl が Sleeve に収納されている状況を指定します。
 - `opts:Object`
   - `opts.duration:Number`: トランジションにかかる時間をミリ秒で指定。
 
-#### VinylVisualizer#vinylVisibility(value:Boolean, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
+#### VinylVisualizer#vinylVisibility(index:String, value:Boolean, opts:Object, callback:Function.&lt;Error&gt;):VinylVisualizer
 
 Vinyl の可視状態を変更します。
 
+- `index:String`
+  - `VinylVisualizer.VinylIndex.FIRST`
+  - `VinylVisualizer.VinylIndex.SECOND`: 2枚組になっていない場合は無効
 - `value:Boolean`
   - `true`: Vinyl を可視状態に変更
   - `false`: Vinyl を不可視状態に変更
@@ -194,54 +198,92 @@ Sleeve の可視状態を変更します。
 
 Vinyl モデルのハンドラ。
 
-#### VinylVisualizer.label:Label
-
-Label モデルのハンドラ。
-
 #### VinylVisualizer.sleeve:Sleeve
 
 Sleeve モデルのハンドラ。
 
 ### Vinyl
 
-#### Vinyl#type([value:Number]):Vinyl
-
-タイプを指定します。引数を省略すると現在値を返します。
-
-- `value:Number`
-  - `1`: black
-  - `2`: color
-  - `3`: splatter
-
-#### Vinyl#size([value:Number]):Vinyl
+#### Vinyl#size([value:String]):Vinyl
 
 サイズを指定します。引数を省略すると現在値を返します。
 
-- `value:Number`
-  - `1`: 7″
-  - `2`: 10″
-  - `3`: 12″
+- `value:String`
+  - `VinylVisualizer.VinylSize.SIZE_7_SMALL_HOLE`: 7″ with small hole
+  - `VinylVisualizer.VinylSize.SIZE_7_LARGE_HOLE`: 7″ with large hole
+  - `VinylVisualizer.VinylSize.SIZE_10`: 10″
+  - `VinylVisualizer.VinylSize.SIZE_12`: 12″
 
-#### Vinyl#color([value:Number]):Vinyl
+#### Vinyl#weight([value:String]):Vinyl
+
+ウェイトを指定します。引数を省略すると現在値を返します。
+
+- `value:String`
+  - `VinylVisualizer.VinylWeight.NORMAL`: ノーマル
+  - `VinylVisualizer.VinylWeight.HEAVY`: ヘビー
+
+#### Vinyl#label([value:String]):Vinyl
+
+カラーのフォーマットを指定します。引数を省略すると現在値を返します。
+
+- `value:String`
+  - `VinylVisualizer.VinylLabel.NONE`: レーベルなし
+  - `VinylVisualizer.VinylLabel.BLANK`: 無地
+  - `VinylVisualizer.VinylLabel.MONO_PRINT`: モノクロプリント
+  - `VinylVisualizer.VinylLabel.COLOR_PRINT`: カラープリント
+
+#### Vinyl#colorFormat([value:String]):Vinyl
+
+カラーのフォーマットを指定します。引数を省略すると現在値を返します。
+
+- `value:String`
+  - `VinylVisualizer.VinylColorFormat.BLACK`: ブラック
+  - `VinylVisualizer.VinylColorFormat.COLOR`: カラー
+  - `VinylVisualizer.VinylColorFormat.SPECIAL`: スペシャルカラー
+  - `VinylVisualizer.VinylColorFormat.PICTURE`: ピクチャー盤
+
+#### Vinyl#color([value:Object]):Vinyl
 
 カラーを設定します。引数を省略すると現在値を返します。
 
-- `value:Number`
-  - `0`: Black
-  - `1`: White
-  - `2`: Yellow
-  - `3`: Red
-  - `4`: Orange
-  - `5`: Blue
-  - `6`: Brown
-  - `7`: Green
-  - `8`: Gray
-  - `9`: Transparent Green
-  - `10`: Transparent Yellow
-  - `11`: Transparent Red
-  - `12`: Transparent Violet
-  - `13`: Transparent Blue
-  - `14`: Transparent
+`colorFormat` が `VinylVisualizer.VinylColorFormat.COLOR` の場合にのみ有効です。
+
+
+- `value:Object`
+  - `VinylVisualizer.VinylColor.CLASSIC_BLACK`: Black
+  - `VinylVisualizer.VinylColor.WHITE`: White
+  - `VinylVisualizer.VinylColor.EASTER_YELLOW`: Yellow
+  - `VinylVisualizer.VinylColor.RED`: Red
+  - `VinylVisualizer.VinylColor.HALLOWEEN_ORANGE`: Orange
+  - `VinylVisualizer.VinylColor.CYAN_BLUE`: Blue
+  - `VinylVisualizer.VinylColor.DOOKIE_BROWN`: Brown
+  - `VinylVisualizer.VinylColor.DOUBLE_MINT`: Green
+  - `VinylVisualizer.VinylColor.GREY`: Gray
+  - `VinylVisualizer.VinylColor.KELLY_GREEN`: Transparent Green
+  - `VinylVisualizer.VinylColor.PISS_YELLOW`: Transparent Yellow
+  - `VinylVisualizer.VinylColor.BLOOD_RED`: Transparent Red
+  - `VinylVisualizer.VinylColor.DEEP_PURPLE`: Transparent Violet
+  - `VinylVisualizer.VinylColor.ROYAL_BLUE`: Transparent Blue
+  - `VinylVisualizer.VinylColor.MILKY_CLEAR`: Transparent
+  - `VinylVisualizer.VinylColor.SWAMP_GREEN`: Swamp Green
+  - `VinylVisualizer.VinylColor.SEA_BLUE`: Sea Blue
+  - `VinylVisualizer.VinylColor.BONE`: Bone
+  - `VinylVisualizer.VinylColor.BRONZE`: Bronze
+  - `VinylVisualizer.VinylColor.BEER`: Beer
+  - `VinylVisualizer.VinylColor.ELECTRIC_BLUE`: Electric Blue
+  - `VinylVisualizer.VinylColor.GRIMACE_PURPLE`: Grimace Purple
+  - `VinylVisualizer.VinylColor.OXBLOOD`: Oxblood
+  - `VinylVisualizer.VinylColor.COKE_BOTTLE_GREEN`: Coke Bottle Green
+  - `VinylVisualizer.VinylColor.ORANGE_CRUSH`: Orange Crush
+  - `VinylVisualizer.VinylColor.HOT_PINK`: Hot Pink
+  - `VinylVisualizer.VinylColor.BABY_PINK`: Baby Pink
+  - `VinylVisualizer.VinylColor.OLIVE_GREEN`: Olive Green
+  - `VinylVisualizer.VinylColor.AQUA_BLUE`: Aqua Blue
+  - `VinylVisualizer.VinylColor.BABY_BLUE`: Baby Blue
+  - `VinylVisualizer.VinylColor.HIGHLIGHTER_YELLOW`: Highlighter Yellow
+  - `VinylVisualizer.VinylColor.GOLD`: Gold
+  - `VinylVisualizer.VinylColor.SILVER`: Silver
+  - `VinylVisualizer.VinylColor.MUSTARD`: Mustard
 
 #### Vinyl#splatterColor([value:Number]):Vinyl
 
@@ -249,22 +291,6 @@ Sleeve モデルのハンドラ。
 
 - `value:Number`
   - _`Vinyl#color`_ のパラメータと同様。
-
-#### Vinyl#holeSize([value:Number]):Vinyl
-
-ホールサイズを指定します。引数を省略すると現在値を返します。
-
-- `value:Number`
-  - `0`: small
-  - `1`: big
-
-#### Vinyl#heavy([value:Boolean]):Vinyl
-
-ヘビー vinyl を有効化・無効化します。引数を省略すると現在値を返します。
-
-- `value:Boolean`
-  - `true`: 有効
-  - `false`: 無効
 
 #### Vinyl#speed([value:Number]):Vinyl
 
@@ -274,98 +300,123 @@ Sleeve モデルのハンドラ。
   - `33`: 33rpm
   - `45`: 45rpm
 
-#### Vinyl#sideATexture([value:Image]):Vinyl
+#### Vinyl#texture([value:Object]):Vinyl
 
-A 面用の盤面のテクスチャを指定します。引数を省略すると現在値を返します。
+テクスチャを Object 形式で指定します。引数を省略すると現在値を返します。
 
-- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
 
-#### Vinyl#sideBTexture([value:Image]):Vinyl
+- `value:Object`: 
 
-B 面用の盤面のテクスチャを指定します。引数を省略すると現在値を返します。
+```
+{
+  aoMap: Image, // Ambient Occlusion
+  bumpMap: Image, // Bump Map
+  map: Image // Color Map
+}
+```
 
-- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
+どれかひとつだけを変更する場合は以下のように対象のキーにのみ Image をセットしてください。
 
-#### Vinyl#sideABumpMapTexture([value:Image]):Vinly
+```
+{
+  map: Image
+}
+```
 
-A 面の溝を表現するためのバンプマップ用テクスチャを指定します。引数を省略すると現在値を返します。
+#### Vinyl#labelTexture([value:Object]):Vinyl
 
-- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
+テクスチャを Object 形式で指定します。引数を省略すると現在値を返します。
 
-#### Vinyl#sideBBumpMapTexture([value:Image]):Vinly
+Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
 
-B 面の溝を表現するためのバンプマップ用テクスチャを指定します。引数を省略すると現在値を返します。
+- `value:Object`: 
 
-- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定して下さい。
+```
+{
+  aoMap: Image, // Ambient Occlusion
+  bumpMap: Image, // Bump Map
+  map: Image // Color Map
+}
+```
 
-### Label
+どれかひとつだけを変更する場合は以下のように対象のキーにのみ Image をセットしてください。
 
-#### Label#type([value:Number]):Label
-
-タイプを指定します。引数を省略すると現在値を返します。
-
-- `value:Number`
-  - `1`: white
-  - `2`: print - monochrome
-  - `3`: print - color
-
-#### Label#sideATexture([value:Image]):Label
-
-A 面用のレーベルのテクスチャを指定します。引数を省略すると現在値を返します。
-
-- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
-
-#### Label#sideBTexture([value:Image]):Label
-
-B 面用のレーベルのテクスチャを指定します。引数を省略すると現在値を返します。
-
-- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+```
+{
+  map: Image
+}
+```
 
 ### Sleeve
 
-#### Sleeve#type([value:Number]):Sleeve
+#### Sleeve#type([value:String]):Sleeve
 
 タイプを指定します。引数を省略すると現在値を返します。
 
 - `value:Number`
-  - `1`: black
-  - `2`: white
-  - `3`: print
-  - `4`: print - 3mm spine
+  - `VinylVisualizer.SleeveFormat.SINGLE_WITHOUT_SPINE`: Single w/o Spine
+  - `VinylVisualizer.SleeveFormat.SINGLE`: Single (3mm spine)
+  - `VinylVisualizer.SleeveFormat.DOUBLE`: Double (5mm spine)
+  - `VinylVisualizer.SleeveFormat.GATEFOLD`: Gatefold
 
-#### Sleeve#hole([value:Boolean]):Sleeve
+#### Sleeve#size([value:String]):Sleeve
 
-ホールの有無を指定します。引数を省略すると現在値を返します。
+サイズを指定します。引数を省略すると現在値を返します。
 
-- `value:Boolean`
-  - `true`: ホールあり
-  - `false`: ホールなし
+- `value:String`
+  - `VinylVisualizer.SleeveSize.SIZE_7`: 7″
+  - `VinylVisualizer.SleeveSize.SIZE_10`: 10″
+  - `VinylVisualizer.SleeveSize.SIZE_12`: 12″
 
-#### Sleeve#glossFinish([value:Boolean]):Sleeve
+#### Sleeve#colorFormat([value:String]):Sleeve
 
-光沢仕上げの有無を指定します。引数を省略すると現在値を返します。
+カラーのフォーマットを指定します。引数を省略すると現在値を返します。
 
-- `value:Boolean`
-  - `true`: 光沢仕上げあり
-  - `false`: 光沢仕上げなし
+- `value:String`
+  - `VinylVisualizer.SleeveColorFormat.WHITE`: ホワイト
+  - `VinylVisualizer.SleeveColorFormat.BLACK`: ブラック
+  - `VinylVisualizer.SleeveColorFormat.PRINT`: プリント
 
-#### Sleeve#frontTexture([value:Image]):Sleeve
+#### Sleeve#hole([value:String]):Sleeve
 
-前面のテクスチャを指定します。引数を省略すると現在値を返します。
+ホールのタイプを指定します。引数を省略すると現在値を返します。
 
-- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+- `value:String`
+  - `VinylVisualizer.SleeveHole.NO_HOLE`: ホールなし
+  - `VinylVisualizer.SleeveHole.HOLED`: ホールあり
 
-#### Sleeve#backTexture([value:Image]):Sleeve
+#### Sleeve#finish([value:String]):Sleeve
 
-背面のテクスチャを指定します。引数を省略すると現在値を返します。
+表面仕上げのタイプを指定します。引数を省略すると現在値を返します。
 
-- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+- `value:String`
+  - `VinylVisualizer.SleeveFinish.NORMAL`: 光沢なし
+  - `VinylVisualizer.SleeveFinish.GLOSS`: 光沢あり
 
-#### Sleeve#spineTexture([value:Image]):Sleeve
+#### Sleeve#texture([value:Object]):Sleeve
 
-背表紙のテクスチャを指定します。引数を省略すると現在値を返します。
+テクスチャを Object 形式で指定します。引数を省略すると現在値を返します。
 
-- `value:Image`: Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+Image は `HTMLImageElement` か `HTMLCanvasElement` で指定してください。
+
+- `value:Object`: 
+
+```
+{
+  aoMap: Image, // Ambient Occlusion
+  bumpMap: Image, // Bump Map
+  map: Image // Color Map
+}
+```
+
+どれかひとつだけを変更する場合は以下のように対象のキーにのみ Image をセットしてください。
+
+```
+{
+  map: Image
+}
+```
 
 ### World
 

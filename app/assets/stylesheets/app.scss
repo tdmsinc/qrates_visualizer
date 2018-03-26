@@ -19,18 +19,21 @@ body {
 }
 
 canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
   border: 1px solid red;
-  margin-left: 200px;
+  background-image: url(qrates_visualizer/checkerboard-2.png);
 }
 
 form {
   padding: 1em;
   width: 18em;
   position: fixed;
-  left: 1em;
-  top: 1em;
+  left: 0;
+  top: 0;
   background-color: #aaa;
-  height: 85%;
+  height: 100%;
   overflow-x: scroll;
   height: .25em;
   opacity: .3;
@@ -40,9 +43,9 @@ form {
   transition-property: height, opacity, background-color;
 
   &.show {
-    background-color: rgba(255, 255, 255, .8);
+    background-color: rgba(194, 194, 194, 0.671);
     opacity: 1;
-    height: 85%;
+    height: 100%;
   }
 
   h1 {
@@ -62,4 +65,11 @@ form {
   input[type=number] {
     width: 5em;
   }
+}
+
+.stats {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
 }
