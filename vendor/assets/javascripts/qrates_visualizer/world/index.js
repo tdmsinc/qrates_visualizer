@@ -1,5 +1,5 @@
 
-//= require tdmsinc-three.js
+//= require tdmsinc-three.js.js
 //= require ../emitter
 //= require_tree .
 //= require_self

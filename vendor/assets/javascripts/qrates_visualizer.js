@@ -1,5 +1,5 @@
 
-//= require tdmsinc-tween.js
+//= require tdmsinc-tween.js.js
 //= require_tree ./qrates_visualizer
 //= require_self
 
