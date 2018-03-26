@@ -441,7 +441,7 @@
         this.setColor(opts.color || 0);
       }
 
-      await this.setOpacity(this._material.opacity, 1000, 250);
+      await this.setOpacity(this._material.opacity, 0, 0);
 
       return this;
     }
@@ -829,7 +829,7 @@
       } 
 
       await this._loadModel(this._size, this._format);
-      await this.setOpacity(this._material.opacity, 1000, 250);
+      await this.setOpacity(this._material.opacity, 0, 0);
 
       return this;
     }
@@ -879,7 +879,7 @@
       this._format = this.updateFormat(this._weight, this._label);
       
       await this._loadModel(this._size, this._format);
-      await this.setOpacity(this._material.opacity, 1000, 250);
+      await this.setOpacity(this._material.opacity, 0, 0);
 
       return;
     }
@@ -891,7 +891,7 @@
       this._format = this.updateFormat(this._weight, this._label);
       
       await this._loadModel(this._size, this._format);
-      await this.setOpacity(this._material.opacity, 1000, 250);
+      await this.setOpacity(this._material.opacity, 0, 0);
 
       return;
     }
@@ -982,7 +982,7 @@
       this._format = this.updateFormat(this._weight, this._label);
 
       await this._loadModel(this._size, this._format);
-      await this.setOpacity(this._material.opacity, 1000, 250);
+      await this.setOpacity(this._material.opacity, 0, 0);
 
       return this;
     }

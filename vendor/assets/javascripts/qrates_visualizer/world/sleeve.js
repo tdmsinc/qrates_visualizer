@@ -770,6 +770,7 @@
   
       obj.assetName = assetName;
       obj.scene.assetName = assetName;
+      
 
       if (this._currentObject) {
         this._container.remove(this._currentObject);
@@ -897,7 +898,7 @@
   
       this._hole = value;
   
-      await this.setOpacity(0.0, 250);
+      // await this.setOpacity(0.0, 250);
 
       return this.setFormat(this._format);      
     }

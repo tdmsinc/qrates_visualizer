@@ -717,16 +717,16 @@
       }
   
       await Promise.all([
-        this._vinyls[0].setOpacity(0, 300, 0),
-        this._vinyls[1].setOpacity(0, 300, 0),
-        this._sleeve.setOpacity(0, 300, 0),
-      ]);
-
-      await Promise.all([
         this._vinyls[0].loadModelForSize(size),
         this._vinyls[1].loadModelForSize(size),
         this._sleeve.loadModelForSize(sleeveSize)
       ]);
+
+      // await Promise.all([
+      //   this._vinyls[0].setOpacity(0, 300, 0),
+      //   this._vinyls[1].setOpacity(0, 300, 0),
+      //   this._sleeve.setOpacity(0, 300, 0),
+      // ]);
 
       await Promise.all([
         this._vinyls[0].setSize(size),
@@ -761,9 +761,9 @@
       this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
       this._vinyls[1].setCoveredRatio(this._vinyls[0].getCoveredRatio() * 2, 0, secondOffsetY);
 
-      this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 250, 100);
-      this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 250, 100);
-      this._sleeve.setOpacity(1.0, 250, 100);
+      this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 0, 0);
+      this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 0, 0);
+      this._sleeve.setOpacity(1.0, 0, 0);
 
       return this;
     };
@@ -1433,7 +1433,7 @@
       
       coveredRatio = this._vinyls[0].getCoveredRatio();
   
-      await this._sleeve.setOpacity(0.0, 250);
+      // await this._sleeve.setOpacity(0.0, 250);
       await this._sleeve.setFormat(format);
 
       this._vinyls.forEach(function (vinyl) {
@@ -1470,7 +1470,7 @@
       this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
       this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
 
-      await this._sleeve.setOpacity(1.0, 250);
+      await this._sleeve.setOpacity(1.0, 0);
 
       this.updateVinylRenderOrder();
 
@@ -1502,7 +1502,7 @@
       this._vinyls[0].setCoveredRatio(this._vinyls[0].getCoveredRatio(), 0, firstOffsetY);
       this._vinyls[1].setCoveredRatio(this._vinyls[1].getCoveredRatio(), 0, secondOffsetY);
 
-      await this._sleeve.setOpacity(1.0, 100);
+      await this._sleeve.setOpacity(1.0, 0);
 
       return this;
     };
