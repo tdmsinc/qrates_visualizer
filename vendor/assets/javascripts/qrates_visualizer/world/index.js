@@ -699,8 +699,6 @@
       
       let sleeveSize, scale;
 
-      await this.fadeOut();
-
       switch (size) {
         case '7':
         case '7S':
@@ -766,8 +764,6 @@
       this._vinyls[0].setOpacity(this._vinyls[0]._material.opacity, 0, 0);
       this._vinyls[1].setOpacity(this._vinyls[1]._material.opacity, 0, 0);
       this._sleeve.setOpacity(1.0, 0, 0);
-
-      await this.fadeIn();
 
       return this;
     };
@@ -1511,13 +1507,14 @@
       return this;
     };
 
-    async fadeOut() {
+    async fadeOut(duration) {
+      duration = duration || 1000;
       return new Promise((resolve) => {
         let values = {opacity: 1};
         new TWEEN.Tween(values)
           .stop()
           .delay(0)
-          .to({ opacity: 0 }, 1000)
+          .to({ opacity: 0 }, duration)
           .onUpdate((value) => {
             this.getRenderer().domElement.style.opacity = values.opacity;
           })
@@ -1525,13 +1522,14 @@
       });
     }
 
-    async fadeIn() {
+    async fadeIn(duration) {
+      duration = duration || 1000;
       return new Promise((resolve) => {
         let values = {opacity: 0};
         new TWEEN.Tween(values)
           .stop()
           .delay(0)
-          .to({ opacity: 1 }, 2000)
+          .to({ opacity: 1 }, duration)
           .onUpdate((value) => {
             this.getRenderer().domElement.style.opacity = values.opacity;
           })

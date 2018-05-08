@@ -349,6 +349,20 @@
   
       return this;
     }
+
+    fadeOut(duration) {
+      if (!this.world) {
+        return this;
+      }
+      return this.world.fadeOut(duration);
+    }
+
+    fadeIn(duration) {
+      if (!this.world) {
+        return this;
+      }
+      return this.world.fadeIn(duration);
+    }
   }
 
   /**
