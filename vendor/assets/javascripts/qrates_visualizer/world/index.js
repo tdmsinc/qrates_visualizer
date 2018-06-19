@@ -698,7 +698,7 @@
       }
       
       let sleeveSize, scale;
-      
+
       switch (size) {
         case '7':
         case '7S':
@@ -715,7 +715,7 @@
           scale = this._objectScales['12'];
           break;
       }
-  
+
       await Promise.all([
         this._vinyls[0].loadModelForSize(size),
         this._vinyls[1].loadModelForSize(size),
@@ -735,11 +735,11 @@
       ]);
 
       this._containerObject.scale.set(scale, scale, scale);
-      
-      const format = this._sleeve.getFormat();      
+
+      const format = this._sleeve.getFormat();
 
       let firstOffsetY, secondOffsetY;
-      
+
       if (Sleeve.Format.GATEFOLD === format) {
         firstOffsetY = 0.08;
         secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
@@ -1506,6 +1506,36 @@
 
       return this;
     };
+
+    async fadeOut(duration) {
+      duration = duration || 1000;
+      return new Promise((resolve) => {
+        let values = {opacity: 1};
+        new TWEEN.Tween(values)
+          .stop()
+          .delay(0)
+          .to({ opacity: 0 }, duration)
+          .onUpdate((value) => {
+            this.getRenderer().domElement.style.opacity = values.opacity;
+          })
+          .onComplete(resolve).start()
+      });
+    }
+
+    async fadeIn(duration) {
+      duration = duration || 1000;
+      return new Promise((resolve) => {
+        let values = {opacity: 0};
+        new TWEEN.Tween(values)
+          .stop()
+          .delay(0)
+          .to({ opacity: 1 }, duration)
+          .onUpdate((value) => {
+            this.getRenderer().domElement.style.opacity = values.opacity;
+          })
+          .onComplete(resolve).start()
+      });
+    }
   }
 
   /**
