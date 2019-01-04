@@ -75,7 +75,7 @@ const vm = new Vue({ el: 'form', data: defaults });
 
 vv.on('ready', () => {
 
-  console.log('visualizer is ready.');
+  // console.log('visualizer is ready.');
 
   //
   // delegate resize.
@@ -133,14 +133,14 @@ vv.on('ready', () => {
   vm.$watch('vinyl.size1', value => { 
     vv.setSize(value)
       .then(() => {
-        console.log('size changed');
+        // console.log('size changed');
       });
   });
 
   vm.$watch('vinyl.size2', value => { 
     vv.setSize(value)
       .then(() => {
-        console.log('size changed');
+        // console.log('size changed');
       });
   });
 
@@ -167,7 +167,7 @@ vv.on('ready', () => {
 
     vv.world._vinyls[0].setWeight(weight)
       .then((vinyl) => {
-        console.log('vv.world._vinyls[0].setWeight: weight changed', vinyl);
+        // console.log('vv.world._vinyls[0].setWeight: weight changed', vinyl);
       });
   });
 
@@ -183,7 +183,7 @@ vv.on('ready', () => {
 
     vv.world._vinyls[1].setWeight(weight)
       .then((vinyl) => {
-        console.log('vv.world._vinyls[1].setWeight: weight changed', vinyl);
+        // console.log('vv.world._vinyls[1].setWeight: weight changed', vinyl);
       });
   });
 
@@ -191,12 +191,12 @@ vv.on('ready', () => {
     if (value === false) {
       vv.world._vinyls[0].disableLabel()
       .then((vinyl) => {
-        console.log('vv.world._vinyls[0].enableLabel: disabled label', vinyl);
+        // console.log('vv.world._vinyls[0].enableLabel: disabled label', vinyl);
       });
     } else {
       vv.world._vinyls[0].enableLabel()
         .then((vinyl) => {
-          console.log('vv.world._vinyls[0].enableLabel: enabled label', vinyl);
+          // console.log('vv.world._vinyls[0].enableLabel: enabled label', vinyl);
         });
     }
   });
@@ -209,12 +209,12 @@ vv.on('ready', () => {
     if (value === false) {
       vv.world._vinyls[1].disableLabel()
       .then((vinyl) => {
-        console.log('vv.world._vinyls[1].enableLabel: disabled label');
+        // console.log('vv.world._vinyls[1].enableLabel: disabled label');
       });
     } else {
       vv.world._vinyls[1].enableLabel()
         .then((vinyl) => {
-          console.log('vv.world._vinyls[1].enableLabel: enabled label');
+          // console.log('vv.world._vinyls[1].enableLabel: enabled label');
         });
     }
   });
@@ -228,14 +228,14 @@ vv.on('ready', () => {
   vm.$watch('sleeve.size', value => {
     vv.setSize(value)
       .then(world => {
-        console.log('size changed');
+        // console.log('size changed');
       });
   });
 
   vm.$watch('sleeve.type', value => {
     vv.world.setSleeveFormat(value)
       .then((format) => {
-        console.log('sleeve format changed: ', format);
+        // console.log('sleeve format changed: ', format);
       });
   });
 
@@ -444,7 +444,7 @@ vv.on('ready', () => {
     load(e.target.files.item(0), (err, img) => {
       if (err) return console.error(err);
       
-      console.log('sleeveColorMap.onchange', vv.world._sleeve.getFormat());
+      // console.log('sleeveColorMap.onchange', vv.world._sleeve.getFormat());
 
       if (qvv.VinylVisualizer.SleeveFormat.GATEFOLD === vv.world._sleeve.getFormat()) {
         vv.world._sleeve.setColorMap(img, 'front');

@@ -417,7 +417,6 @@
       });
   
       vinylOffsetYController.onChange(value => {
-        console.log(value);
         this._vinyls[0].setOffsetY(value);
   
         if (1 === this._vinyls.length) {
@@ -799,10 +798,10 @@
     flip(value, opts) {
       if (value === undefined) {
         this._flip = !this._flip;
-        console.log('(toggled) flip to', this._flip);
+        // console.log('(toggled) flip to', this._flip);
       } else {
         this._flip = value;
-        console.log('(set as) flip to', this._flip);
+        // console.log('(set as) flip to', this._flip);
       }
 
       opts = opts || { duration: 1000 };

@@ -622,7 +622,7 @@
         return this._loader.loadAsset(target);
       }));
 
-      console.log('Sleeve.setFormat: loaded textures  ------', assets);
+      // console.log('Sleeve.setFormat: loaded textures  ------', assets);
       
       assets.forEach((asset) => {
 
@@ -630,7 +630,7 @@
         const textureType = asset['textureType'];
         const assetKey = asset['key'];
 
-        console.log('Sleeve.setFormat: asset loaded', assetType, textureType, assetKey);
+        // console.log('Sleeve.setFormat: asset loaded', assetType, textureType, assetKey);
 
         if ('texture' === assetType) {
           if (Sleeve.Format.GATEFOLD === format) {
@@ -644,10 +644,10 @@
               side = 'spine';
             }
 
-            console.log('update gatefold texture - ' + side, this._loader.assets[assetKey]);
+            // console.log('update gatefold texture - ' + side, this._loader.assets[assetKey]);
             this.updateTexture(this._textures[size][format][hole][side][textureType], this._loader.assets[assetKey]);
           } else {
-            console.log('update texture', this._loader.assets[assetKey]);
+            // console.log('update texture', this._loader.assets[assetKey]);
             this.updateTexture(this._textures[size][format][hole][textureType], this._loader.assets[assetKey]);
           }
         }
@@ -659,10 +659,10 @@
     //--------------------------------------------------------------
     _setTexture(type, image, side) {
   
-      console.log('Sleeve._setTexture - size:', this._size, ', format:', this._format, ', hole:', this._hole, ', side:', side, ', type:', type);
+      // console.log('Sleeve._setTexture - size:', this._size, ', format:', this._format, ', hole:', this._hole, ', side:', side, ', type:', type);
   
       if (undefined === side) {
-        console.log('try to update texture', this._textures[this._size][this._format][this._hole][type], image);
+        // console.log('try to update texture', this._textures[this._size][this._format][this._hole][type], image);
         this.updateTexture(this._textures[this._size][this._format][this._hole][type], image);
 
         this._currentObject.traverse((child) => {
@@ -764,7 +764,7 @@
       const assetKey = result['key'];
       const obj = this._loader.assets[assetKey];
 
-      console.log('Sleeve.setFormat: model loaded', assetKey, obj);
+      // console.log('Sleeve.setFormat: model loaded', assetKey, obj);
 
       const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
   
@@ -832,7 +832,7 @@
       }
   
       if (this._size === size) {
-        console.info('Sleeve.setSize: specified size "' + size + '" is already applied');
+        // console.log('Sleeve.setSize: specified size "' + size + '" is already applied');
         return;
       }
   
@@ -988,7 +988,6 @@
   
       this._currentObject.traverse((child) => {
         if (child instanceof THREE.Mesh) {
-          console.log('bumpscale', this._bumpScale);
           child.material.bumpScale = this._bumpScale;
           child.material.needsUpdate = true;
         }
@@ -1061,10 +1060,6 @@
       const object = this._container.getObjectByName(targetName);
       object.updateMatrixWorld();
       const bounds = new THREE.Box3().setFromBufferAttribute(object.geometry.attributes.position);
-      console.log('------------------------------------');
-      // console.log('position', object.position);
-      // console.log('world position', object.getWorldPosition());
-      // console.log('bounding box', bounds);
   
       let geometry = new THREE.BoxGeometry(
         bounds.getSize().x * 5.5,
@@ -1086,8 +1081,6 @@
       let ratio = this._gatefoldAngle / (Math.PI * 0.5);
       let size = bounds.getSize();
       size.multiplyScalar(5.5);
-  
-      console.log(vec);
   
       let x = vec.x + (size.x * 0.5) + size.x * 0.5 * Math.cos(this._gatefoldAngle * 2) - (size.x * 0.5);
       let y = (vec.y + ((size.y * 0.15) * (ratio * 2 - 1))) + size.x * 0.5 * Math.sin(this._gatefoldAngle * 2);
@@ -1143,7 +1136,7 @@
       const assetKey = result['key'];
       const obj = this._loader.assets[assetKey];
 
-      console.log('Sleeve.setFormat: model loaded', assetKey, obj);
+      // console.log('Sleeve.setFormat: model loaded', assetKey, obj);
 
       const assetName = 'sleeve-' + this._size + '-' + this._format + '-' + this.hole;
   

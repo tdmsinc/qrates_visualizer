@@ -97,7 +97,7 @@
     loadAsset(target, onLoad, onProgress, onError) {
       
       if (this.isLoaded(target['key'])) {
-        console.log('Loader.loadAsset: ' + target['key'] + ' is already loaded');
+        // console.log('Loader.loadAsset: ' + target['key'] + ' is already loaded');
         return Promise.resolve({
           'assetType': -1 < target['key'].toLowerCase().indexOf('model') ? 'model' : 'texture',
           'textureType': target['textureType'] || '',
@@ -110,7 +110,7 @@
         const key = target['key'];
   
         if (!this.isLoaded(key)) {
-          console.log('Loader.loadAssets: try to load ' + key + '');
+          // console.log('Loader.loadAssets: try to load ' + key + '');
   
           let loader;
           let assetType = 'model';
@@ -126,7 +126,7 @@
             textureType = target['textureType'];
           }
     
-          console.log('Loader.loadAsset: target', key, 'loader', loader);
+          // console.log('Loader.loadAsset: target', key, 'loader', loader);
   
           if (!loader) {
             console.error('Loader.loadAsset: loader is ' + loader + ', key = ' + key);
@@ -141,7 +141,7 @@
             this.assets[key].extname = ext;
             this.assets[key].cached = true;
   
-            console.log('Loader.loadAssets: successfully loaded', this.assets[key]);
+            // console.log('Loader.loadAssets: successfully loaded', this.assets[key]);
     
             resolve({
               'assetType': assetType,

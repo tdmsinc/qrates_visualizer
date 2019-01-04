@@ -1174,7 +1174,7 @@
         'key': this._paths.models[size][this._format]
       });
       
-      console.log('loaded model  ------', result);
+      // console.log('loaded model  ------', result);
       
       const assetType = result['assetType'];
       const assetKey = result['key'];
@@ -1231,7 +1231,7 @@
         return this._loader.loadAsset(target);
       }));
 
-      console.log('textures are loaded  ------', results);
+      // console.log('textures are loaded  ------', results);
       
       results.forEach((result) => {
 
@@ -1273,7 +1273,7 @@
         const obj = this._loader.assets[assetKey];
 
         if (!obj.initialized) {
-          console.log('model is not initialized', assetKey);
+          // console.log('model is not initialized', assetKey);
           const scale = 5.5;  
           const assetName = 'vinyl-' + size + '-' + format;
 
@@ -1287,7 +1287,7 @@
           obj.scene.scale.set(scale, scale, scale);
         } // finish initializing
 
-        console.log('model is initialized', assetKey);
+        // console.log('model is initialized', assetKey);
 
         this.initMaterial(obj, this._textures[size][format]);
 
