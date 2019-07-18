@@ -1,12 +1,13 @@
 
 //= require qrates_visualizer
 //= require_self
-const canvas_width = window.innerWidth, canvas_height = window.innerHeight;
+const canvas_width = 1022;
+const canvas_height = 634;
 //
 // defaults
 //
 var defaults = {
-  view: 31,
+  view: 11,
   vinyl: [
     {
       size: qvv.VinylVisualizer.VinylSize.SIZE_12,
@@ -31,7 +32,7 @@ var defaults = {
   ],
   sleeve: {
     size: qvv.VinylVisualizer.SleeveSize.SIZE_12,
-    format: qvv.VinylVisualizer.SleeveFormat.DOUBLE,
+    format: qvv.VinylVisualizer.SleeveFormat.SINGLE,
     hole: false,
     finish: qvv.VinylVisualizer.SleeveFinish.NORMAL
   }
@@ -81,9 +82,9 @@ vv.on('ready', () => {
   // delegate resize.
   //
 
-  window.addEventListener('resize', e => {
-    vv.resize(e.target.innerWidth, e.target.innerHeight);
-  }, false);
+  // window.addEventListener('resize', e => {
+  //   vv.resize(e.target.innerWidth, e.target.innerHeight);
+  // }, false);
 
   //
   // delegate events
@@ -103,8 +104,8 @@ vv.on('ready', () => {
 
   vm.$watch('visualizer.capture', value => {
     const opts = {
-      canvas_width: 1280,
-      canvas_height: 794,
+      canvas_width: 1022,
+      canvas_height: 634,
       duration: 0
     };
     vv.view(value, {duration:0});

@@ -457,6 +457,10 @@
       
       const topSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - top');
       topSpotLightParamsFolder.add(this._topSpotLight, 'intensity', 0, 1);
+      topSpotLightParamsFolder.add(this._topSpotLight, 'distance', 0, 200);
+      topSpotLightParamsFolder.add(this._topSpotLight, 'angle', 0, 1.05);
+      topSpotLightParamsFolder.add(this._topSpotLight, 'penumbra', 0, 1);
+      topSpotLightParamsFolder.add(this._topSpotLight, 'decay', 0, 2);
       topSpotLightParamsFolder.add(this._topSpotLight.position, 'x', -2000, 2000);
       topSpotLightParamsFolder.add(this._topSpotLight.position, 'y', -2000, 2000);
       topSpotLightParamsFolder.add(this._topSpotLight.position, 'z', -2000, 2000);
@@ -469,6 +473,10 @@
 
       const sideSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - side');
       sideSpotLightParamsFolder.add(this._sideSpotLight, 'intensity', 0, 1);
+      sideSpotLightParamsFolder.add(this._sideSpotLight, 'distance', 0, 200);
+      sideSpotLightParamsFolder.add(this._sideSpotLight, 'angle', 0, 1.05);
+      sideSpotLightParamsFolder.add(this._sideSpotLight, 'penumbra', 0, 1);
+      sideSpotLightParamsFolder.add(this._sideSpotLight, 'decay', 0, 2);
       sideSpotLightParamsFolder.add(this._sideSpotLight.position, 'x', -500, 0);
       sideSpotLightParamsFolder.add(this._sideSpotLight.position, 'y', -500, 500);
       sideSpotLightParamsFolder.add(this._sideSpotLight.position, 'z', -500, 500);

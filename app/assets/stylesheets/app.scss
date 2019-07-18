@@ -18,10 +18,13 @@ body {
   cursor: pointer;
 }
 
-canvas {
+.vinyl-visualizer-container canvas {
   position: fixed;
   top: 0;
+  bottom: 0;
   left: 0;
+  right: 0;
+  margin: auto;
   border: 1px solid red;
   background-image: url(qrates_visualizer/checkerboard-2.png);
 }
