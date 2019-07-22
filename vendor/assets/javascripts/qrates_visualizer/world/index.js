@@ -90,23 +90,23 @@
       this._controls.enabled = this._opts.camera.control;
 
       // lights
-      this._topSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
-      this._topSpotLight.position.set(-159, 2000, -120);
       // this._topSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
-      // this._topSpotLight.position.set(90, 424, -69);
+      // this._topSpotLight.position.set(-159, 2000, -120);
+      this._topSpotLight = new THREE.SpotLight(0xffffff, 0.84, 2000, 4, 1, 2);
+      this._topSpotLight.position.set(90, 424, -69);
       this._scene.add(this._topSpotLight);
   
-      this._bottomSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.314, 0.26, 1);
-      this._bottomSpotLight.position.set(159, -2000, 120);
+      this._bottomSpotLight = new THREE.SpotLight(0xffffff, 0.8, 0, 0.314, 0.26, 1);
+      this._bottomSpotLight.position.set(155, -2000, 20);
       this._scene.add(this._bottomSpotLight);
 
-      this._sideSpotLight = new THREE.SpotLight(0xffffff, 0.3, 0, 0.314, 0.26, 1);
-      this._sideSpotLight.position.set(-500, 0, 0);
-      // this._sideSpotLight = new THREE.SpotLight(0xffffff, 0.45, 2000, 4, 1, 2);
-      // this._sideSpotLight.position.set(-158, 72, -17);
+      // this._sideSpotLight = new THREE.SpotLight(0xffffff, 0.3, 0, 0.314, 0.26, 1);
+      // this._sideSpotLight.position.set(-500, 0, 0);
+      this._sideSpotLight = new THREE.SpotLight(0xffffff, 0.45, 2000, 4, 1, 2);
+      this._sideSpotLight.position.set(-158, 72, -17);
       this._scene.add(this._sideSpotLight);
   
-      this._ambientLight = new THREE.AmbientLight(0x0D0D0D, 10);
+      this._ambientLight = new THREE.AmbientLight(0x0D0D0D, 7);
       this._scene.add(this._ambientLight);
     
       // 
