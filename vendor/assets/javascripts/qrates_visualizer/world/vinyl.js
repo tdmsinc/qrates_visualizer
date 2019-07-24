@@ -1441,7 +1441,13 @@
     HIGHLIGHTER_YELLOW: { color: new THREE.Color(0xC2FF00), opacity: 0.6, reflectivity: 0.6, refractionRatio: 0.98, shininess:  35, metal: true },
     GOLD:               { color: new THREE.Color(0x967D3D), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  30, metal: true },
     SILVER:             { color: new THREE.Color(0xA2A9B1), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  30, metal: true },
-    MUSTARD:            { color: new THREE.Color(0xF0CF57), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true }
+    MUSTARD:            { color: new THREE.Color(0xF0CF57), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  25, metal: true },
+    NEON_PURPLE:        { color: new THREE.Color(0xFF00FF), opacity: 1.0, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
+    NEON_GREEN:         { color: new THREE.Color(0x00FF00), opacity: 1.0, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
+    NEON_YELLOW:        { color: new THREE.Color(0xFFFF00), opacity: 1.0, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
+    NEON_ORANGE:        { color: new THREE.Color(0xFF8800), opacity: 1.0, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
+    NEON_RED:           { color: new THREE.Color(0xFF4400), opacity: 1.0, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
+    NEON_PINK:          { color: new THREE.Color(0xFF0088), opacity: 1.0, reflectivity: 0.3, refractionRatio: 0.98, shininess:  30, metal: true },
   };
 
 
