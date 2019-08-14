@@ -391,8 +391,8 @@
       this._format = this.updateFormat(this._weight, this._label);
   
       // this._currentObject が変更される度に反映する必要があるプロパティ
-      this._bumpScale = 0.17;
-      this._labelBumpScale = 0.17;
+      this._bumpScale = 0.23;
+      this._labelBumpScale = 0.23;
   
       if (this._colorFormat === Vinyl.ColorFormat.SPECIAL) {
         this._material = Vinyl.Color.WHITE;
@@ -459,7 +459,7 @@
           this._bumpScale = 0.3;
 
           if (Vinyl.ColorFormat.COLOR === this._colorFormat) {
-            this._bumpScale = 0.17;
+            this._bumpScale = 0.23;
           } else if (Vinyl.ColorFormat.SPECIAL === this._colorFormat) {
             this._bumpScale = 0.28;
           }
@@ -1412,7 +1412,7 @@
     EASTER_YELLOW:      { color: new THREE.Color(0xfbdd67), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     RED:                { color: new THREE.Color(0xc90000), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     HALLOWEEN_ORANGE:   { color: new THREE.Color(0xfb6d0e), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
-    CYAN_BLUE:          { color: new THREE.Color(0x008e9b), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+    CYAN_BLUE:          { color: new THREE.Color(0x0085a1), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     DOOKIE_BROWN:       { color: new THREE.Color(0x653018), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     DOUBLE_MINT:        { color: new THREE.Color(0x8ccf6d), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     GREY:               { color: new THREE.Color(0x8c887a), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
@@ -1433,8 +1433,8 @@
     COKE_BOTTLE_GREEN:  { color: new THREE.Color(0x57bf87), opacity: 0.55, reflectivity: 0.6, refractionRatio: 0.98, shininess:  25, metal: true },
     ORANGE_CRUSH:       { color: new THREE.Color(0xff4800), opacity: 0.85, reflectivity: 0.3, refractionRatio: 0.98, shininess:  25, metal: true },
     HOT_PINK:           { color: new THREE.Color(0xc80a40), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
-    BABY_PINK:          { color: new THREE.Color(0xfaa2a2), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
-    OLIVE_GREEN:        { color: new THREE.Color(0x728455), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+    BABY_PINK:          { color: new THREE.Color(0xfaabab), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+    OLIVE_GREEN:        { color: new THREE.Color(0x77885b), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     AQUA_BLUE:          { color: new THREE.Color(0x044b62), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     ULTRA_CLEAR:        { color: new THREE.Color(0xfffdf6), opacity: 0.4, reflectivity: 0.6, refractionRatio: 0.98, shininess:  30, metal: true },
     BABY_BLUE:          { color: new THREE.Color(0x9ddcd7), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
