@@ -453,7 +453,8 @@
           return;
         }
   
-        this._vinyl.setBumpScale(value);
+        this._vinyls[0].setBumpScale(value);
+        this._vinyls[1].setBumpScale(value);
       });
 
       // lights' parameters
