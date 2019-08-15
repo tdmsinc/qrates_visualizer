@@ -461,7 +461,7 @@
       this._finish = opts.finish || Sleeve.Finish.NORMAL;
       this._currentTextures = opts.textures;
       this._coveredRatio = 0.0;
-      this._bumpScale = 1.0;
+      this._bumpScale = 0.25;
       this._shininess = Sleeve.Shininess[this._finish];
       this._boundingBox = null;
       this._gatefoldAngle = 0;
