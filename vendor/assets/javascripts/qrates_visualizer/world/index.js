@@ -1193,7 +1193,7 @@
         }
         break;
       }
-      case 12: { // Renderer image #3 sleeve front
+      case 12: { // Renderer image #2 sleeve front
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(false, opts);
         this.setGatefoldCoverAngle(0, opts);
@@ -1202,21 +1202,21 @@
         this.setCameraPositionAndTarget(0, 200, 1, 0, 0, 0, opts, callback);
         break;
       }
-      case 13: { // Renderer image #4 sleeve back
+      case 13: { // Renderer image #3 sleeve back
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(true, opts);
-        this.setGatefoldCoverAngle(80, opts);
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setGatefoldCoverAngle(80, opts);
         this.setCameraPositionAndTarget(0, 200, 1, 0, 0, 0, opts, callback);
         break;
       }
       case 14: { // Renderer image #5 (for gatefold)
         this.setProjectionAndVisibility(true, true, true, true);
         this.flip(false, opts);
-        this.setGatefoldCoverAngle(90, opts);
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.SECOND });
         this.cover(0, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
+        this.setGatefoldCoverAngle(90, opts);
         this.setCameraPositionAndTarget(-50, 300, 10, -50, 0, 0, opts, callback);
         break;
       }
