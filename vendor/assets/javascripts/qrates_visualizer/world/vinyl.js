@@ -1421,7 +1421,7 @@
     BLOOD_RED:          { color: new THREE.Color(0xbf0009), opacity: 0.85, reflectivity: 0.2, refractionRatio: 0.98, shininess:  25, metal: true },
     DEEP_PURPLE:        { color: new THREE.Color(0x5c001a), opacity: 0.85, reflectivity: 0.3, refractionRatio: 0.98, shininess:  25, metal: true },
     ROYAL_BLUE:         { color: new THREE.Color(0x003585), opacity: 0.9, reflectivity: 0.6, refractionRatio: 0.98, shininess:  25, metal: true },
-    MILKY_CLEAR:        { color: new THREE.Color(0xe5d3bb), opacity: 0.8, reflectivity: 0.6, refractionRatio: 0.98, shininess:  25, metal: true },
+    MILKY_CLEAR:        { color: new THREE.Color(0xe5d3CC), opacity: 0.8, reflectivity: 0.6, refractionRatio: 0.98, shininess:  25, metal: true },
     SWAMP_GREEN:        { color: new THREE.Color(0x0e1500), opacity: 0.9, reflectivity: 0.3, refractionRatio: 0.98, shininess:  25, metal: true },
     SEA_BLUE:           { color: new THREE.Color(0x0394e), opacity: 0.85, reflectivity: 0.3, refractionRatio: 0.98, shininess:  25, metal: true },
     BONE:               { color: new THREE.Color(0xf5dbb7), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
