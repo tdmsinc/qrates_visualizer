@@ -1,0 +1,13 @@
+{
+  "name": "qrates_visualizer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:tdmsinc/qrates_visualizer.git",
+  "author": "Oleksii Vykhor <o.vykhor@ukr.net>",
+  "license": "MIT",
+  "dependencies": {
+    "three.js": "git+https://53298f4276133057fdcb3760296752c6c176ccdd:x-oauth-basic@github.com/tdmsinc/three.js.git",
+    "tiny-emitter": "^2.1.0",
+    "tween.js": "git+https://53298f4276133057fdcb3760296752c6c176ccdd:x-oauth-basic@github.com/tdmsinc/tween.js.git#0.14"
+  }
+}
