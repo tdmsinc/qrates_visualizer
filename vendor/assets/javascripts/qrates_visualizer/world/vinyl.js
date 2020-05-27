@@ -1407,7 +1407,7 @@
   }
 
   Vinyl.Color = {
-    CLASSIC_BLACK:      { color: new THREE.Color(0x000000), opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  30, metal: true },
+    CLASSIC_BLACK:      { color: new THREE.Color(0xff0000), opacity: 1.0, reflectivity: 1.0, refractionRatio: 0.98, shininess:  30, metal: true },
     WHITE:              { color: new THREE.Color(0xf9f6e9), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     EASTER_YELLOW:      { color: new THREE.Color(0xfbdd67), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     RED:                { color: new THREE.Color(0xc90000), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
