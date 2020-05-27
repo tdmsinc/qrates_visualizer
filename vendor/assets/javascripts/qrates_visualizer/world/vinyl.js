@@ -1435,7 +1435,7 @@
     HOT_PINK:           { color: new THREE.Color(0xc80a40), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     BABY_PINK:          { color: new THREE.Color(0xfaabab), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     OLIVE_GREEN:        { color: new THREE.Color(0x77885b), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
-    AQUA_BLUE:          { color: new THREE.Color(0x044b62), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+    AQUA_BLUE:          { color: new THREE.Color(0x003161), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     ULTRA_CLEAR:        { color: new THREE.Color(0xfffdf6), opacity: 0.4, reflectivity: 0.6, refractionRatio: 0.98, shininess:  30, metal: true },
     BABY_BLUE:          { color: new THREE.Color(0x9ddcd7), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     HIGHLIGHTER_YELLOW: { color: new THREE.Color(0xfcff00), opacity: 0.6, reflectivity: 0.6, refractionRatio: 0.98, shininess:  25, metal: true },
