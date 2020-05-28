@@ -1,3 +1,9 @@
+GIT
+  remote: git@github.com:tdmsinc/qrates-assets.git
+  revision: 8470d2d9d0ee530d08d0f902dfd74b277bf16872
+  specs:
+    qrates-assets (0.1.0)
+
 PATH
   remote: .
   specs:
@@ -51,6 +57,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.7)
+  qrates-assets!
   qrates_visualizer!
   rack
   rake (~> 10.0)
@@ -59,4 +66,4 @@ DEPENDENCIES
   slim
 
 BUNDLED WITH
-   1.16.6
+   1.17.2
