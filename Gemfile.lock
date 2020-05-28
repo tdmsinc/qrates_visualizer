@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:tdmsinc/qrates-assets.git
-  revision: 8470d2d9d0ee530d08d0f902dfd74b277bf16872
+  revision: 9894980fa7a32dcab2b0884c408ebcd35a978a18
   specs:
-    qrates-assets (0.1.0)
+    qrates-assets (0.1.1)
 
 PATH
   remote: .
