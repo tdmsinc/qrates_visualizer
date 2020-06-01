@@ -1,14 +1,16 @@
+GIT
+  remote: https://e7a8585b9be00d1f7cee5b04110c845a682f5f41:x-oauth-basic@github.com/tdmsinc/qrates-assets.git
+  revision: 9894980fa7a32dcab2b0884c408ebcd35a978a18
+  specs:
+    qrates-assets (0.1.1)
+
 PATH
   remote: .
   specs:
-    qrates_visualizer (0.0.2)
-      rails-assets-tdmsinc-three.js (~> 0.87.1)
-      rails-assets-tdmsinc-tween.js (~> 0.14.0)
-      rails-assets-tiny-emitter (= 1.0.0)
+    qrates_visualizer (0.0.3)
 
 GEM
   remote: https://rubygems.org/
-  remote: https://rails-assets.org/
   specs:
     coffee-script (2.4.1)
       coffee-script-source
@@ -20,9 +22,6 @@ GEM
     rack (1.6.8)
     rack-protection (1.5.3)
       rack
-    rails-assets-tdmsinc-three.js (0.87.1)
-    rails-assets-tdmsinc-tween.js (0.14.0)
-    rails-assets-tiny-emitter (1.0.0)
     rake (10.5.0)
     sass (3.4.24)
     sinatra (1.4.8)
@@ -58,15 +57,13 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.7)
+  qrates-assets!
   qrates_visualizer!
   rack
-  rails-assets-tdmsinc-three.js
-  rails-assets-tdmsinc-tween.js
-  rails-assets-tiny-emitter
   rake (~> 10.0)
   sinatra
   sinatra-asset-pipeline
   slim
 
 BUNDLED WITH
-   1.15.4
+   1.17.2

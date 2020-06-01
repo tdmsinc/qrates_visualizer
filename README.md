@@ -15,6 +15,14 @@ And then execute:
 
     $ bundle
 
+Also be sure that frontend dependencies are installed:
+
+```
+  'tdmsinc-three.js', '~> 0.87.1'
+  'tiny-emitter', '1.0.0'
+  'tdmsinc-tween.js', '~> 0.14.0'
+```
+
 ## Debugging
 
 単体動作確認用の Sinatra アプリケーションを起動して動作を確認できます。編集後の再起動は必要ありません。
