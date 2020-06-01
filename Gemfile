@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'qrates-assets', git: 'git@github.com:tdmsinc/qrates-assets.git'
+gem 'qrates-assets', git: 'https://e7a8585b9be00d1f7cee5b04110c845a682f5f41:x-oauth-basic@github.com/tdmsinc/qrates-assets.git'
 gem 'rack'
 gem 'slim'
 gem 'sinatra'

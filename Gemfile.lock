@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:tdmsinc/qrates-assets.git
+  remote: https://e7a8585b9be00d1f7cee5b04110c845a682f5f41:x-oauth-basic@github.com/tdmsinc/qrates-assets.git
   revision: 9894980fa7a32dcab2b0884c408ebcd35a978a18
   specs:
     qrates-assets (0.1.1)
