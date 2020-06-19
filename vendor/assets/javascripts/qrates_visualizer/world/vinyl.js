@@ -1415,7 +1415,7 @@
     CYAN_BLUE:          { color: new THREE.Color(0x0085bc), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     DOOKIE_BROWN:       { color: new THREE.Color(0x653018), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     DOUBLE_MINT:        { color: new THREE.Color(0x8ccf6d), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
-    GREY:               { color: new THREE.Color(0x8c887a), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
+    GREY:               { color: new THREE.Color(0x8c8980), opacity: 1.0, reflectivity: 0.1, refractionRatio: 0.98, shininess:  15, metal: true },
     KELLY_GREEN:        { color: new THREE.Color(0x006a28), opacity: 0.85, reflectivity: 0.6, refractionRatio: 0.98, shininess:  25, metal: true },
     PISS_YELLOW:        { color: new THREE.Color(0xeeda00), opacity: 0.7, reflectivity: 0.3, refractionRatio: 0.98, shininess:  25, metal: true },
     BLOOD_RED:          { color: new THREE.Color(0xbf0009), opacity: 0.85, reflectivity: 0.2, refractionRatio: 0.98, shininess:  25, metal: true },
