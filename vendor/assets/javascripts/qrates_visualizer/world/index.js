@@ -929,6 +929,7 @@
       this._width = width;
       this._height = height;
       this._camera.aspect = width / height;
+      console.log('aspect: ', this._camera.aspect, width, height);
       this._camera.setSize(this._width, this._height);
       this._camera.updateProjectionMatrix();
       this._renderer.setSize(width, height);
