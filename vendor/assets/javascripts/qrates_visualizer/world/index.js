@@ -5,7 +5,7 @@
 //= require_self
 
 ((global, exports) => {
-  
+
   let gui, axes;
 
   /**
@@ -33,10 +33,10 @@
         this._stats.domElement.setAttribute('class', 'stats');
         document.body.appendChild(this._stats.domElement);
       }
-  
+
       this._parent = parent;
       this._assets = assets;
-  
+
       this._opts = opts || {
         renderer: {
           antialias: true,
@@ -51,25 +51,25 @@
         '10': 0.6890566038,
         '12': 0.5833865815
       };
-  
+
       this._width = opts.width;
       this._height = opts.height;
-  
+
       this._isRendering = false;
-  
+
       // scene
       this._scene = new THREE.Scene();
-  
+
       // camera
       this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
       this._camera.lookAt(new THREE.Vector3(0, 0, 0));
       this._camera.position.set(212, 288, 251);
       this._orthographicZoom = 170;
-  
+
       if ('orthographic' === this._opts.camera.type) {
         this.setOrthographic();
       }
-  
+
       // renderer
       this._renderer = new THREE.WebGLRenderer(this._opts.renderer);
       this._renderer.setPixelRatio(this._opts.pixelRatio || window.devicePixelRatio || 1);
@@ -77,9 +77,9 @@
       this._renderer.autoClear = false;
       this._renderer.setClearColor(0, 0.0);
       this._renderer.sortObjects = false;
-  
+
       this._opts.camera.control = undefined !== this._opts.camera.control ? this._opts.camera.control : true;
-  
+
       // controls
       this._controls = new THREE.TrackballControls(this._camera, this._parent.el);
       this._controls.minDistance = 100;
@@ -95,7 +95,7 @@
       this._topSpotLight = new THREE.SpotLight(0xffffff, 0.5, 2000, 4, 1, 2);
       this._topSpotLight.position.set(65, 380, -25);
       this._scene.add(this._topSpotLight);
-  
+
       this._bottomSpotLight = new THREE.SpotLight(0xffffff, 0.4, 0, 0.314, 0.26, 1);
       this._bottomSpotLight.position.set(155, -2000, 20);
       this._scene.add(this._bottomSpotLight);
@@ -105,14 +105,14 @@
       this._sideSpotLight = new THREE.SpotLight(0xffffff, 0.2, 2000, 4, 1, 2);
       this._sideSpotLight.position.set(-50, 140, -50);
       this._scene.add(this._sideSpotLight);
-  
+
       this._ambientLight = new THREE.AmbientLight(0x0D0D0D, 10);
       this._scene.add(this._ambientLight);
-    
-      // 
+
+      //
       this._enableRotate = false;
       this._flip = false;
-  
+
       // sleeve と vinyl がぶら下がるコンテナ
       this._containerObject = new THREE.Object3D();
       this._containerObject.name = 'container';
@@ -121,7 +121,7 @@
       vinylSize_1 = -1 < vinylSize_1.indexOf('7') ? '7' : vinylSize_1;
 
       let vinylSize_2 = vinylSize_1;
-      
+
       if (1 < this._opts.defaults.vinyl.length) {
         vinylSize_2 = this._opts.defaults.vinyl[1].size;
         vinylSize_2 = -1 < vinylSize_2.indexOf('7') ? '7' : vinylSize_2;
@@ -134,9 +134,9 @@
       } else {
         sleeveSize = vinylSize_2;
       }
-      
+
       this._opts.defaults.sleeve.size = sleeveSize;
-  
+
       // sleeve
       this._sleeve = new Sleeve(this._assets, this._containerObject, this._opts.loader);
 
@@ -151,14 +151,14 @@
     async setup() {
 
       await this._sleeve.setup(this._opts.defaults.sleeve);
-      
+
       this._sleeve.setObjectScale(this._objectScales[this._opts.defaults.sleeve.size]);
-      
+
       // sleeve が single で複数の vinyl オプションが渡された場合は2つ目以降のオプションを削除して single フォーマットを採用する
       if ((Sleeve.Format.SINGLE_WITHOUT_SPINE === this._opts.defaults.sleeve.format || Sleeve.Format.SINGLE === this._opts.defaults.sleeve.format)) {
         if (1 < this._opts.defaults.vinyl.length) {
           console.warn('World: too many options for vinyl');
-          
+
           this._opts.defaults.vinyl.pop();
           this._opts.defaults.vinyl.length = 1;
         }
@@ -168,7 +168,7 @@
       const sleeveFormat = this._sleeve.getFormat();
 
       let firstOffsetY, secondOffsetY;
-      
+
       if (Sleeve.Format.GATEFOLD === sleeveFormat) {
         firstOffsetY = 0.08;
         secondOffsetY = this._containerObject.getObjectByName('Back').getWorldPosition().y;
@@ -209,7 +209,7 @@
       }
 
       await Promise.all(targets);
-        
+
       // scale を設定
       const scale = this._objectScales[this._vinyls[0]._size];
       this._containerObject.scale.set(scale, scale, scale);
@@ -241,11 +241,11 @@
     getRenderer() {
       return this._renderer;
     }
-  
+
     //--------------------------------------------------------------
     registerPresets() {
       // TODO: register preset parameters
-  
+
       this.registerPreset(1, function () {
         return {
           camera: null,
@@ -253,7 +253,7 @@
           object: null
         };
       });
-  
+
       this.registerPreset(2, function () {
         return {
           camera: null,
@@ -262,7 +262,7 @@
         };
       });
     };
-  
+
     //--------------------------------------------------------------
     initGui() {
 
@@ -270,7 +270,7 @@
         console.warn('dat.GUI is not loaded');
         return false;
       }
-  
+
       const props = {
         color: 0xFFFFFF,
         size: 12,
@@ -293,15 +293,15 @@
         sleeveX: -15,
         'vinyl offsetY': 0
       };
-  
+
       const cameraProps = {
         x: 0.0, y: 17.0, z: 30.0,
       };
-  
+
       const self = this;
       const axes = this.axes;
       const camera = this._camera;
-  
+
       const temp = {
         capture: function () {
           self.capture();
@@ -329,7 +329,7 @@
           }
         }
       };
-  
+
       if (!this.gui) {
         this.gui = new window.dat.GUI();
       }
@@ -355,16 +355,16 @@
       const vinylBumpScaleController = generalParamsFolder.add(props, 'vinyl bump', 0, 1.0);
       const sleeveAoController = generalParamsFolder.add(props, 'sleeve ao', 0.0, 1.0);
       const vinylAoController = generalParamsFolder.add(props, 'vinyl ao', 0.0, 1.0);
-  
+
       generalParamsFolder.add(this, 'flip');
-  
+
       generalParamsFolder.add(temp, 'zoom in');
       generalParamsFolder.add(temp, 'zoom out');
       generalParamsFolder.add(temp, 'rotate horizontal');
       generalParamsFolder.add(temp, 'rotate vertical');
       generalParamsFolder.add(temp, 'reset');
       generalParamsFolder.add(temp, 'toggle camera');
-  
+
       renderController.onChange(value => {
         if (value) {
           self.startRender();
@@ -372,64 +372,64 @@
           self.stopRender();
         }
       });
-  
+
       rotationController.onChange(value => {
-        
+
         if (value) {
           self.play();
         } else {
           self.pause();
         }
       });
-  
+
       coveredRatioController.onChange(value => {
         this.cover(value, { duration: 2000, index: Vinyl.Index.FIRST });
       });
-  
+
       secondCoveredRatioController.onChange(value => {
         this.cover(value, { duration: 2000, index: Vinyl.Index.SECOND });
       });
-  
+
       sleeveRotationController.onChange(value => {
         this.setGatefoldCoverAngle(value);
       });
-  
+
       sleeveFrontRotationController.onChange(value => {
         this.setSleeveFrontRotation(value);
       });
-  
+
       sleeveBackRotationController.onChange(value => {
         this._sleeve.setGatefoldBackRotation(value);
       });
-  
+
       sleeveVisibilityController.onChange(value => {
         this._sleeve.setVisibility(value);
       });
-  
+
       firstVinylVisibilityController.onChange(value => {
         this.setVinylVisibility(Vinyl.Index.FIRST, value, null, function () {
         });
       });
-  
+
       secondVinylVisibilityController.onChange(value => {
         this.setVinylVisibility(Vinyl.Index.SECOND, value, null, function () {
         });
       });
-  
+
       zoomController.onChange(value => {
         this.zoom(value);
       });
-  
+
       vinylOffsetYController.onChange(value => {
         this._vinyls[0].setOffsetY(value);
-  
+
         if (1 === this._vinyls.length) {
           return;
         }
-  
+
         this._vinyls[1].setOffsetY(-value);
       });
-  
+
       cameraXController.onChange(value => {
         this.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
       });
@@ -439,27 +439,27 @@
       cameraZController.onChange(value => {
         this.setCameraPosition(cameraProps.x, cameraProps.y, cameraProps.z, { duration: 0 });
       });
-  
+
       sleeveBumpScaleController.onChange(value => {
         if (!this._sleeve) {
           return;
         }
-  
+
         this._sleeve.setBumpScale(value);
       });
-  
+
       vinylBumpScaleController.onChange(value => {
         if (0 === this._vinyls.length) {
           return;
         }
-  
+
         this._vinyls[0].setBumpScale(value);
         this._vinyls[1].setBumpScale(value);
       });
 
       // lights' parameters
       const lightParamsFolder = this.gui.addFolder('lights');
-      
+
       const topSpotLightParamsFolder = lightParamsFolder.addFolder('spot light - top');
       topSpotLightParamsFolder.add(this._topSpotLight, 'intensity', 0, 1);
       topSpotLightParamsFolder.add(this._topSpotLight, 'distance', 0, 2000);
@@ -523,20 +523,20 @@
       this._axisHelper = new THREE.AxisHelper(100);
       this._scene.add(this._axisHelper);
     };
-  
+
     //--------------------------------------------------------------
     setCameraPosition(x, y, z, opts, callback) {
 
       if (!callback) {
         callback = null;
       }
-  
+
       opts = opts || {
         duration: 1000
       };
-  
+
       opts.duration = undefined === opts.duration ? 1000 : opts.duration;
-  
+
       new TWEEN.Tween(this._camera.position)
         .stop()
         .to({ x, y, z }, opts.duration)
@@ -552,15 +552,15 @@
 
     //--------------------------------------------------------------
     setCameraPositionAndTarget(x, y, z, tx, ty, tz, opts, callback) {
-      
+
       if (!callback) {
         callback = null;
       }
-  
+
       opts = opts || {
         duration: 1000
       };
-  
+
       opts.duration = undefined === opts.duration ? 1000 : opts.duration;
 
       let param = {
@@ -573,7 +573,7 @@
       };
 
       // this._controls.reset();
-      
+
       new TWEEN.Tween(param)
         .stop()
         .to({ x, y, z, tx, ty, tz }, opts.duration)
@@ -588,20 +588,20 @@
         })
         .start();
     };
-          
+
     //--------------------------------------------------------------
     setCameraRotation(tx, ty, tz, opts, callback) {
 
       if (!callback) {
         callback = null;
       }
-  
+
       opts = opts || {
         duration: 1000
       };
-  
+
       opts.duration = undefined === opts.duration ? 1000 : opts.duration;
-  
+
       new TWEEN.Tween(this._camera.rotation)
         .to({ x: tx, y: ty, z: tz }, opts.duration)
         .easing(TWEEN.Easing.Quartic.Out)
@@ -610,59 +610,59 @@
         })
         .start();
     };
-  
+
     //--------------------------------------------------------------
     resetCamera() {
       this._camera = new THREE.CombinedCamera(this._width / 2, this._height / 2, this._opts.camera.fov, this._opts.camera.near, this._opts.camera.far, -500, this._opts.camera.far);
       this._camera.position.set(212, 288, 251);
       this._camera.lookAt(new THREE.Vector3(0, 0, 0));
-  
+
       this._controls = new THREE.TrackballControls(this._camera, this._parent.el);
       this._controls.target = new THREE.Vector3(0, 0, 0);
       this._controls.handleResize({ left: 0, top: 0, width: this._width, height: this._height });
       this._controls.update();
     };
-  
+
     //--------------------------------------------------------------
     setPerspective() {
       this._camera.toPerspective();
       this._camera.setZoom(1);
     };
-  
+
     //--------------------------------------------------------------
     setOrthographic() {
       this._camera.toOrthographic();
       this._camera.setZoom(this._orthographicZoom);
     };
-  
+
     //--------------------------------------------------------------
     setVinylVisibility(index, yn, opts, callback) {
-  
+
       let idx = 0;
-  
+
       if (Vinyl.Index.SECOND === index) {
         idx = 1;
       }
-  
+
       this._vinyls[idx].setVisibility(yn);
-  
+
       if (callback) callback();
     };
-  
+
     //--------------------------------------------------------------
     setGatefoldCoverAngle(degree, opts, callback) {
-  
+
       if (Sleeve.Format.GATEFOLD !== this._sleeve.getFormat()) {
         console.warn('World.setGatefoldCoverAngle: changing rotation is not available for "' + this._sleeve.getFormat() + '"');
         return;
       }
-  
+
       let param = {
         rotation: this._sleeve.getCurrentGatefoldAngle() * (180 / Math.PI)
       };
-  
+
       opts = opts || { duration: 500 };
-      
+
       new TWEEN.Tween(param)
         .stop()
         .to({ rotation: degree }, opts.duration)
@@ -670,7 +670,7 @@
         .onUpdate(() => {
 
           let angleInRadians = param.rotation * (Math.PI / 180);
-  
+
           this._sleeve.setGatefoldCoverAngle(angleInRadians);
           this._vinyls[0].setFrontSleevePositionAndAngle(this._sleeve.getGatefoldFrontCoverPosition(), angleInRadians * 2);
           let offsetY = this._containerObject.worldToLocal(this._containerObject.getObjectByName('Back').getWorldPosition()).y;
@@ -682,7 +682,7 @@
           } else if (Sleeve.Size.SIZE_12 === this._sleeve.getSize()) {
             offsetY += 0.2;
           }
-  
+
           this._vinyls[1].setOffsetY(offsetY);
         })
         .onComplete(() => {
@@ -690,25 +690,25 @@
         })
         .start();
     };
-  
+
     //--------------------------------------------------------------
     async setSize(size, opts, callback) {
-  
+
       if (!size) {
         throw new Error('World.onVinylSizeChanged: no size value passed');
       }
-  
+
       // to string
       size += '';
-  
+
       if ('7' === size) {
         size = '7S';
       }
-  
+
       if (-1 === Object.values(Vinyl.Size).indexOf(size)) {
         throw new Error('Unknown vinyl size "' + size + '"');
       }
-      
+
       let sleeveSize, scale;
 
       switch (size) {
@@ -786,27 +786,20 @@
       if (0 === this._vinyls.length) {
         return;
       }
-      
+
       if (!this._vinyls[1]._visibility) {
-        this._vinyls[0].setTransparent(true);
         this._vinyls[0].setRenderOrder(0);
       } else {
         if (0 < this._camera.getWorldDirection().y) {
-          this._vinyls[0].setTransparent(false);
-          this._vinyls[1].setTransparent(true);
-
           this._vinyls[0].setRenderOrder(2);
           this._vinyls[1].setRenderOrder(1);
         } else {
-          this._vinyls[0].setTransparent(true);
-          this._vinyls[1].setTransparent(false);
-
           this._vinyls[0].setRenderOrder(1);
           this._vinyls[1].setRenderOrder(2);
         }
       }
     }
-  
+
     //--------------------------------------------------------------
     flip(value, opts) {
       if (value === undefined) {
@@ -818,7 +811,7 @@
       }
 
       opts = opts || { duration: 1000 };
-  
+
       this._flipTween
         .stop()
         .to({ _flipRotation: this._flip ? -Math.PI : 0 }, opts.duration)
@@ -828,14 +821,14 @@
         })
         .start();
     };
-  
+
     //--------------------------------------------------------------
     cover(value, opts) {
       opts = opts || { duration: 500 };
-      
+
       const self = this;
       const sleeveFormat = this._sleeve.getFormat();
-  
+
       if (Vinyl.Index.SECOND === opts.index) {
         if (1 === this._vinyls.length) {
           return;
@@ -846,7 +839,7 @@
 
       if (Vinyl.Index.FIRST === opts.index) {
         index = 0;
-        
+
         if (Sleeve.Format.GATEFOLD === sleeveFormat) {
           offsetY = 0.08;
         } else if (Sleeve.Format.DOUBLE === sleeveFormat) {
@@ -867,7 +860,7 @@
           } else if (Sleeve.Size.SIZE_12 === this._sleeve.getSize()) {
             offsetY += 0.2;
           }
-  
+
         } else if (Sleeve.Format.DOUBLE === sleeveFormat) {
           offsetY = -0.6;
         } else {
@@ -887,7 +880,7 @@
         })
         .start();
     };
-  
+
     //--------------------------------------------------------------
     zoomIn(step) {
       if (this._camera.type === this._camera.TYPE_PERSPECTIVE) {
@@ -899,7 +892,7 @@
         this._camera.setZoom(this._orthographicZoom);
       }
     };
-  
+
     //--------------------------------------------------------------
     zoomOut(step) {
       if (this._camera.type === this._camera.TYPE_PERSPECTIVE) {
@@ -911,7 +904,7 @@
         this._camera.setZoom(this._orthographicZoom);
       }
     };
-  
+
     //--------------------------------------------------------------
     capture(callback) {
       let image = new Image();
@@ -920,49 +913,49 @@
         if (callback) callback(null, this);
       };
     };
-  
+
     //--------------------------------------------------------------
     resize(width, height) {
-  
+
       this.stopRender();
-  
+
       this._width = width;
       this._height = height;
       this._camera.aspect = width / height;
       this._camera.setSize(this._width, this._height);
       this._camera.updateProjectionMatrix();
       this._renderer.setSize(width, height);
-  
+
       this._controls.handleResize({
         left: 0,
         top: 0,
         width: this._width,
         height: this._height
       });
-  
+
       this.startRender();
     };
-  
+
     //--------------------------------------------------------------
     play() {
-  
+
       this._enableRotate = true;
-  
+
       this._vinyls.forEach(function (vinyl) {
         vinyl.setEnableRotate(true);
       });
     };
-  
+
     //--------------------------------------------------------------
     pause() {
-  
+
       this._enableRotate = false;
-      
+
       this._vinyls.forEach(function (vinyl) {
         vinyl.setEnableRotate(false);
       });
     };
-  
+
     //--------------------------------------------------------------
     setProjectionAndVisibility(projection, sleeveVisibility, vinyl1Visibility, vinyl2Visibility) {
       const sleeveFormat = this._sleeve.getFormat();
@@ -977,20 +970,20 @@
         this._vinyls[1].setVisibility(vinyl2Visibility);
       }
     }
-    
+
     updateView(type, opts, callback) {
-  
+
       opts = opts || {
         duration: 0
       };
-  
+
       const sleeveFormat = this._sleeve.getFormat();
       const size = this._sleeve.getSize();
       const double = (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat);
       const pictureVinyl1 = this._vinyls[0].getFormat() === Vinyl.Format.NORMAL || this._vinyls[0].getFormat() === Vinyl.Format.HEAVY;
       const pictureVinyl2 = this._vinyls.length >= 2 && (this._vinyls[1].getFormat() === Vinyl.Format.NORMAL || this._vinyls[1].getFormat() === Vinyl.Format.HEAVY);
       let reset = true;
-  
+
       switch (Number(type)) {
       case 0: { // Default
         this.setProjectionAndVisibility(true, true, true, true);
@@ -1006,7 +999,7 @@
           } else if (size === Sleeve.Size.SIZE_12) {
             this.setCameraPositionAndTarget(57, 250, 10, 57, 0, 0, opts, callback);
           }
-  
+
         } else {
           this.cover(0.8, { duration: opts.duration, index: qvv.VinylVisualizer.VinylIndex.FIRST });
           if (size === Sleeve.Size.SIZE_7) {
@@ -1377,7 +1370,7 @@
       }
       }
     };
-  
+
     //--------------------------------------------------------------
     startRender() {
       if (!this._request) {
@@ -1392,17 +1385,17 @@
     resumeRender() {
       startRender();
     };
-  
+
     //--------------------------------------------------------------
     stopRender() {
       if (this._request) {
         this._isRendering = false;
         this._request = cancelAnimationFrame(this._request);
       }
-  
+
       return this;
     };
-  
+
     //--------------------------------------------------------------
     update() {
       if (this._sleeve) {
@@ -1410,39 +1403,39 @@
       }
 
       this.updateVinylRenderOrder();
-  
+
       this._vinyls.forEach(function (vinyl) {
         vinyl.update();
       });
-  
+
       this._controls.update();
     };
-  
+
     //--------------------------------------------------------------
     draw(time) {
-  
+
       if (this._stats) {
         this._stats.begin();
       }
-  
+
       if (!this._isRendering) {
         return;
       }
-  
+
       this.update();
-  
+
       this._renderer.clear();
       this._renderer.render(this._scene, this._camera);
-  
+
       if (this._stats) {
         this._stats.end();
       }
-  
+
       this._request = requestAnimationFrame(this.draw.bind(this));
-  
+
       TWEEN.update(time);
     };
-  
+
     //--------------------------------------------------------------
     registerPreset(type, fn) {
       if (this._presets[type]) {
@@ -1452,27 +1445,27 @@
       this._presets[type] = fn;
       return this;
     };
-  
+
     //--------------------------------------------------------------
     async setSleeveFormat(format) {
-  
+
       let lastFormat = this._sleeve.getFormat();
-  
+
       if (lastFormat === format) {
         return lastFormat;
       }
-  
+
       let coveredRatio = 0.0;
-      
+
       coveredRatio = this._vinyls[0].getCoveredRatio();
-  
+
       // await this._sleeve.setOpacity(0.0, 250);
       await this._sleeve.setFormat(format);
 
       this._vinyls.forEach(function (vinyl) {
         vinyl.setFrontSleevePositionAndAngle(new THREE.Vector3(), 0);
       });
-      
+
       let newFormat = this._sleeve.getFormat();
 
       let firstOffsetY, secondOffsetY;
@@ -1509,14 +1502,14 @@
 
       return this._sleeve.getFormat();
     };
-  
+
     //--------------------------------------------------------------
     async setSleeveHole(yn) {
-  
+
       if (Sleeve.Format.GATEFOLD === this._sleeve.getFormat()) {
         return this;
       }
-  
+
       await this._sleeve.setHole(yn);
 
       let sleeveFormat = this._sleeve.getFormat();

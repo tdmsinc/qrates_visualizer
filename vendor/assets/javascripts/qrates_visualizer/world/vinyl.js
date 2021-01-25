@@ -35,7 +35,7 @@
             'heavy-with-label': 'assetsModelVinylHeavyWithLabel-12'
           }
         },
-      
+
         textures: {
           '7S': {
             'normal': {
@@ -361,9 +361,9 @@
         speed: 45,
         label: false
       };
-  
+
       opts.color = opts.color || 0;
-  
+
       // --------
       this._size = opts.size || Vinyl.Size.SIZE_12;
       this._weight = opts.weight || Vinyl.Weight.NORMAL;
@@ -384,48 +384,48 @@
       this._gatefoldAngle = 0;
       this._coveredRatio = 0;
       this._basePosition = new THREE.Vector3();
-      this._transparent = false;
+      this._transparent = true;
       this._side = opts.side || THREE.FrontSide;
 
       // weight と label の組み合わせで format を決定する
       this._format = this.updateFormat(this._weight, this._label);
-  
+
       // this._currentObject が変更される度に反映する必要があるプロパティ
       this._bumpScale = 0.23;
       this._labelBumpScale = 0.23;
-  
+
       if (this._colorFormat === Vinyl.ColorFormat.SPECIAL) {
         this._material = Vinyl.Color.WHITE;
       }
-  
+
       this._color = this._material.color;
-  
+
       // 環境マップ
       let images = [];
       let path = this._loader.targets['assetsTextureVinylEnvmap'];
-  
+
       for (let i = 0; i < 6; ++i) {
         images.push(this._loader.targets['assetsTextureVinylEnvmap']);
       }
-  
+
       let cubeTextureLoader = new THREE.CubeTextureLoader();
       cubeTextureLoader.setPath('');
-  
+
       this._envMapTexture = cubeTextureLoader.load(images);
       this._envMapTexture.flipY = false;
       this._envMapTexture.needsUpdate = true;
-  
+
       // Image として読み込まれたテクスチャを THREE.Texture に変換する
       (function initTextures (obj, parentKey) {
         Object.keys(obj).forEach((key) => {
-          
+
           if (null === obj[key]) {
             obj[key] = new THREE.Texture();
           } else if (obj[key] instanceof Image) {
             if (!obj[key] || obj[key] === undefined) {
               console.error('texture ' + obj + ':' + key + ' is ' + obj[key]);
             }
-  
+
             obj[key] = new THREE.Texture(obj[key]);
             obj[key].assetName = parentKey + '-' + key;
             obj[key].needsUpdate = true;
@@ -448,13 +448,13 @@
 
     //--------------------------------------------------------------
     initMaterial(model, textures) {
-      
+
       if (!model || !model.scene) {
         return false;
       }
 
       model.scene.traverse(child => {
-        
+
         if (child instanceof THREE.Mesh) {
           this._bumpScale = 0.3;
 
@@ -594,11 +594,11 @@
 
     //--------------------------------------------------------------
     updateTexture(texture, image) {
-      
+
       if (!texture || !image) {
         return;
       }
-      
+
       texture.image = image;
       texture.minFilter = THREE.LinearFilter;
       texture.magFilter = THREE.LinearFilter;
@@ -619,7 +619,7 @@
 
       this._currentObject.traverse(child => {
         if (child instanceof THREE.Mesh) {
-          if (-1 < child.name.toLowerCase().indexOf(part)) {          
+          if (-1 < child.name.toLowerCase().indexOf(part)) {
             if ('alpha' == type) {
               child.material.alphaMap = this.updateTexture(new THREE.Texture(), image);
             } else if ('ao' === type) {
@@ -631,7 +631,7 @@
             } else {
               return;
             }
-    
+
             child.material.needsUpdate = true;
           }
         }
@@ -640,7 +640,7 @@
 
     //--------------------------------------------------------------
     setAlphaMap(image) {
-      
+
       if (!image) {
         return;
       }
@@ -650,7 +650,7 @@
 
     //--------------------------------------------------------------
     setAoMap(image) {
-      
+
       if (!image) {
         return;
       }
@@ -660,7 +660,7 @@
 
     //--------------------------------------------------------------
     setBumpMap(image) {
-      
+
       if (!image) {
         return;
       }
@@ -670,7 +670,7 @@
 
     //--------------------------------------------------------------
     setColorMap(image) {
-      
+
       if (!image) {
         return;
       }
@@ -680,7 +680,7 @@
 
     //--------------------------------------------------------------
     setLabelAoMap(image) {
-      
+
       if (!image) {
         return;
       }
@@ -695,7 +695,7 @@
 
     //--------------------------------------------------------------
     setLabelBumpMap(image) {
-      
+
       if (!image) {
         return;
       }
@@ -710,7 +710,7 @@
 
     //--------------------------------------------------------------
     setLabelColorMap(image) {
-      
+
       if (!image) {
         return;
       }
@@ -756,7 +756,7 @@
 
     //--------------------------------------------------------------
     setLabelBumpScale(value) {
-      
+
       this._labelBumpScale = value;
 
       if (this._isWithLabel()) {
@@ -819,14 +819,14 @@
       if (this._colorFormat === format) {
         return;
       }
-      
+
       this._colorFormat = format;
 
       if (Vinyl.ColorFormat.COLOR === this._colorFormat) {
         this._material = Vinyl.Color.CLASSIC_BLACK;
       } else {
         this._material = Vinyl.Color.WHITE;
-      } 
+      }
 
       await this._loadModel(this._size, this._format);
       await this.setOpacity(this._material.opacity, 0, 0);
@@ -877,7 +877,7 @@
 
       this._label = true;
       this._format = this.updateFormat(this._weight, this._label);
-      
+
       await this._loadModel(this._size, this._format);
       await this.setOpacity(this._material.opacity, 0, 0);
 
@@ -886,10 +886,10 @@
 
     //--------------------------------------------------------------
     async disableLabel() {
-      
+
       this._label = false;
       this._format = this.updateFormat(this._weight, this._label);
-      
+
       await this._loadModel(this._size, this._format);
       await this.setOpacity(this._material.opacity, 0, 0);
 
@@ -973,7 +973,7 @@
         console.warn('Vinyl.setWeight: unknown weight value "' + weight + '"');
         throw new Error('Vinyl.setWeight: unknown weight value "' + weight + '"');
       }
-      
+
       if (this._weight === weight) {
         return this;
       }
@@ -1000,7 +1000,7 @@
       this._coveredRatio = ratio;
       this._offsetX = offsetX || 0;
       this._offsetY = offsetY || 0;
-      
+
       const dist = this._boundingBox.max.x * (2 * this._coveredRatio + 1) - this._boundingBox.max.x;
       const x = this._basePosition.x + this._offsetX + dist * Math.cos(this._gatefoldAngle);
       const y = this._basePosition.y + this._offsetY + dist * Math.sin(this._gatefoldAngle);
@@ -1028,7 +1028,7 @@
     setOffsetY(value) {
 
       this._offsetY = value;
-      
+
       const pos = this._currentObject.position;
       this._currentObject.position.set(pos.x, this._offsetY, pos.z);
     };
@@ -1037,7 +1037,7 @@
     setFrontSleevePositionAndAngle(vector, angle, offsetX) {
 
       offsetX = offsetX || 0;
-      
+
       this._basePosition = vector;
       this._gatefoldAngle = angle;
 
@@ -1045,7 +1045,7 @@
       const x = this._basePosition.x + 0.08 + dist * Math.cos(this._gatefoldAngle);
       const y = this._basePosition.y + dist * Math.sin(this._gatefoldAngle);
       const rotation = this._currentObject.rotation
-      
+
       this._currentObject.position.set(x, y, this._basePosition.z);
       this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
     }
@@ -1061,11 +1061,11 @@
 
     //--------------------------------------------------------------
     resetRotation(angle /* in radians */, offsetX, offsetY) {
-      
+
           this._gatefoldAngle = 0;
-      
+
           const rotation = this._currentObject.rotation
-      
+
           this._currentObject.rotation.set(rotation.x, rotation.y, this._gatefoldAngle);
         };
 
@@ -1083,7 +1083,7 @@
 
     //--------------------------------------------------------------
     getFormat() {
-      
+
       return this._format;
     };
 
@@ -1095,7 +1095,7 @@
 
     //--------------------------------------------------------------
     removeFromContainer() {
-      
+
       this._container.remove(this._currentObject);
     }
 
@@ -1134,7 +1134,7 @@
       this._currentObject.traverse(child => {
         if (child instanceof THREE.Mesh) {
           const obj = parent._currentObject.getObjectByName(child.name);
-          
+
           if (obj) {
             child.material = obj.material.clone();
           }
@@ -1160,34 +1160,34 @@
           rotation.y -= amount;
           child.rotation.set(rotation.x, rotation.y, rotation.z);
         });
-        
+
       }
     }
 
     //--------------------------------------------------------------
     async loadModelForSize(size) {
-      
+
       await this._loadTextures(size, this._format);
-      
+
       let result = await this._loader.loadAsset({
         'assetType': 'model',
         'key': this._paths.models[size][this._format]
       });
-      
+
       // console.log('loaded model  ------', result);
-      
+
       const assetType = result['assetType'];
       const assetKey = result['key'];
 
       if ('model' === assetType) {
         const obj = this._loader.assets[assetKey];
-        
-        const scale = 5.5;  
+
+        const scale = 5.5;
         const assetName = 'vinyl-' + size + '-' + this._format;
-                
+
         obj.assetName = assetName;
         obj.scene.assetName = assetName;
-    
+
         if (this._textures[size][this._format]) {
           this._textures[size][this._format].assetName = assetName;
         }
@@ -1195,7 +1195,7 @@
         this.initMaterial(obj.scene, this._textures[size][this._format]);
 
         obj.scene.scale.set(scale, scale, scale);
-    
+
         this._currentObject.traverse((child) => {
           if (child instanceof THREE.Mesh) {
             child.material.opacity = 0;
@@ -1212,7 +1212,7 @@
     async _loadTextures(size, format) {
 
       const targets = [];
-      
+
       (function addTextureToTarget (obj, parentKey) {
         Object.keys(obj).forEach((key) => {
           if (typeof obj[key] === 'string') {
@@ -1232,13 +1232,13 @@
       }));
 
       // console.log('textures are loaded  ------', results);
-      
+
       results.forEach((result) => {
 
         const assetType = result['assetType'];
         const textureType = result['textureType'];
         const assetKey = result['key'];
-  
+
         if ('texture' === assetType) {
           if (this._isWithLabel()) {
             if (-1 < assetKey.toLowerCase().indexOf('forlabel')) {
@@ -1265,7 +1265,7 @@
         'key': this._paths.models[size][format]
       });
 
-      // モデルをロード      
+      // モデルをロード
       const assetType = result['assetType'];
       const assetKey = result['key'];
 
@@ -1274,12 +1274,12 @@
 
         if (!obj.initialized) {
           // console.log('model is not initialized', assetKey);
-          const scale = 5.5;  
+          const scale = 5.5;
           const assetName = 'vinyl-' + size + '-' + format;
 
           obj.assetName = assetName;
           obj.scene.assetName = assetName;
-        
+
           if (this._textures[size][format]) {
             this._textures[size][format].assetName = assetName;
           }
@@ -1293,7 +1293,7 @@
 
         let position = new THREE.Vector3(0, 0, 0);
         let renderOrder;
-        
+
         if (this._currentObject) {
           position = this._currentObject.position;
           renderOrder = this._currentObject.renderOrder;
@@ -1316,10 +1316,10 @@
         this.setOffsetY(this._offsetY);
         this.setVisibility(this._visibility);
         this.setFrontSleevePositionAndAngle(this._basePosition, this._gatefoldAngle);
-        
+
         this._container.add(this._currentObject);
         this._currentObject.position.set(position.x, position.y, position.z);
-    
+
         obj.initialized = true;
       }
 
@@ -1344,13 +1344,13 @@
 
     //--------------------------------------------------------------
     _setVinylScale(scale) {
-      
+
             this._currentObject.scale.y = scale;
-      
+
             if (Vinyl.Format.NORMAL === this._format || Vinyl.Format.HEAVY === this._format) {
               return;
             }
-      
+
             this._currentObject.traverse((child) => {
               if (child instanceof THREE.Mesh) {
                 if (this._isLabel(child)) {
