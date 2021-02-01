@@ -131,6 +131,10 @@ vv.on('ready', () => {
       });
   });
 
+  vm.$watch('num_of_vinyls', value => {
+    vv.world._num_of_vinyls = value;
+  });
+
   vm.$watch('vinyl.size1', value => { 
     vv.setSize(value)
       .then(() => {

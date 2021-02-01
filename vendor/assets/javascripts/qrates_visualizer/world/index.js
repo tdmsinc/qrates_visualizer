@@ -117,6 +117,8 @@
       this._containerObject = new THREE.Object3D();
       this._containerObject.name = 'container';
 
+      this._num_of_vinyls = 1;
+
       let vinylSize_1 = this._opts.defaults.vinyl[0].size;
       vinylSize_1 = -1 < vinylSize_1.indexOf('7') ? '7' : vinylSize_1;
 
@@ -986,6 +988,9 @@
   
       const sleeveFormat = this._sleeve.getFormat();
       const size = this._sleeve.getSize();
+      console.log('-------------------------------------------------------------');
+      console.log(this);
+      console.log('-------------------------------------------------------------');
       const double = (Sleeve.Format.GATEFOLD === sleeveFormat || Sleeve.Format.DOUBLE === sleeveFormat);
       const pictureVinyl1 = this._vinyls[0].getFormat() === Vinyl.Format.NORMAL || this._vinyls[0].getFormat() === Vinyl.Format.HEAVY;
       const pictureVinyl2 = this._vinyls.length >= 2 && (this._vinyls[1].getFormat() === Vinyl.Format.NORMAL || this._vinyls[1].getFormat() === Vinyl.Format.HEAVY);
@@ -1489,7 +1494,7 @@
           secondOffsetY += 0.2;
         }
 
-        this._vinyls[1].setVisibility(true);
+        this._vinyls[1].setVisibility(this._num_of_vinyls > 1);
       } else if (Sleeve.Format.DOUBLE === newFormat) {
         firstOffsetY = 0.6;
         secondOffsetY = -0.6;

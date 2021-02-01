@@ -317,6 +317,12 @@ form.show
   h1 Vinyl options
 
   p
+    label Single or Double: 
+    select number="" v-model="num_of_vinyls"
+      option value="1" Single
+      option value="2" Double
+
+  p
     label Size 1: 
     select number="" v-model="vinyl.size1"
       option value="7S" 7 (small hole)″
