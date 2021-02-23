@@ -1234,11 +1234,11 @@
         }
         if (pictureVinyl1) {
           if (size === Sleeve.Size.SIZE_7) {
-            this.setCameraPositionAndTarget(121.5, 150, 10, 121.5, 0, 0, opts, callback);
+            this.setCameraPositionAndTarget(121.5, 140, 10, 121.5, 0, 0, opts, callback);
           } else if (size === Sleeve.Size.SIZE_10) {
-            this.setCameraPositionAndTarget(123, 150, 10, 123, 0, 0, opts, callback);
+            this.setCameraPositionAndTarget(123, 140, 10, 123, 0, 0, opts, callback);
           } else if (size === Sleeve.Size.SIZE_12) {
-            this.setCameraPositionAndTarget(126, 150, 10, 126, 0, 0, opts, callback);
+            this.setCameraPositionAndTarget(126, 140, 10, 126, 0, 0, opts, callback);
           }
         } else {
           if (size === Sleeve.Size.SIZE_7) {
@@ -1263,11 +1263,11 @@
         }
         if (pictureVinyl1) {
           if (size === Sleeve.Size.SIZE_7) {
-            this.setCameraPositionAndTarget(-121.5, 150, 10, -121.5, 0, 0, opts, callback);
+            this.setCameraPositionAndTarget(-121.5, 140, 10, -121.5, 0, 0, opts, callback);
           } else if (size === Sleeve.Size.SIZE_10) {
-            this.setCameraPositionAndTarget(-123, 150, 10, -123, 0, 0, opts, callback);
+            this.setCameraPositionAndTarget(-123, 140, 10, -123, 0, 0, opts, callback);
           } else if (size === Sleeve.Size.SIZE_12) {
-            this.setCameraPositionAndTarget(-126, 150, 10, -126, 0, 0, opts, callback);
+            this.setCameraPositionAndTarget(-126, 140, 10, -126, 0, 0, opts, callback);
           }
         } else {
           if (size === Sleeve.Size.SIZE_7) {
