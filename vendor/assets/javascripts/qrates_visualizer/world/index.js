@@ -988,7 +988,7 @@
   
       const sleeveFormat = this._sleeve.getFormat();
       const size = this._sleeve.getSize();
-      const double = ((Sleeve.Format.GATEFOLD === sleeveFormat && this._num_of_vinyls > 1) || Sleeve.Format.DOUBLE === sleeveFormat);
+      const double = ((Sleeve.Format.GATEFOLD === sleeveFormat) || Sleeve.Format.DOUBLE === sleeveFormat);
       const pictureVinyl1 = this._vinyls[0].getFormat() === Vinyl.Format.NORMAL || this._vinyls[0].getFormat() === Vinyl.Format.HEAVY;
       const pictureVinyl2 = this._vinyls.length >= 2 && (this._vinyls[1].getFormat() === Vinyl.Format.NORMAL || this._vinyls[1].getFormat() === Vinyl.Format.HEAVY);
       let reset = true;
